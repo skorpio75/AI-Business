@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field
 AgentDomain = Literal["corporate", "delivery", "platform"]
 ApprovalClass = Literal["none", "bounded", "ceo_required"]
 AgentStatus = Literal["idle", "running", "waiting", "blocked", "disabled"]
+PrimaryTrack = Literal["track_a_internal", "track_b_client"]
+ReplicationMode = Literal["none", "replicate_later"]
 
 
 class AgentCapability(BaseModel):
@@ -30,12 +32,19 @@ class AgentRuntimeState(BaseModel):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+class AgentDeploymentPolicy(BaseModel):
+    primary_track: PrimaryTrack = "track_a_internal"
+    replication_mode: ReplicationMode = "none"
+    replication_notes: Optional[str] = None
+
+
 class AgentContract(BaseModel):
     agent_id: str
     display_name: str
     domain: AgentDomain
     role_summary: str
     approval_class: ApprovalClass
+    deployment: AgentDeploymentPolicy = Field(default_factory=AgentDeploymentPolicy)
     capabilities: list[AgentCapability] = Field(default_factory=list)
     kpis: list[AgentKPI] = Field(default_factory=list)
     tools: list[str] = Field(default_factory=list)
@@ -117,8 +126,16 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
             agent_id="cto-cio-agent",
             display_name="CTO/CIO Agent",
             domain="platform",
-            role_summary="Advises on technology architecture and internal platform improvement.",
+            role_summary="Produces strategy options, architecture advice, and internal improvement backlog items.",
             approval_class="ceo_required",
+            deployment=AgentDeploymentPolicy(
+                primary_track="track_a_internal",
+                replication_mode="replicate_later",
+                replication_notes=(
+                    "Track 1 owns the live internal instance. A separate Track 2 variant may be "
+                    "replicated later for client-facing CIO/CTO advisory services without sharing state."
+                ),
+            ),
             capabilities=[
                 AgentCapability(
                     id="architecture-counsel",
@@ -129,6 +146,11 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
                     id="platform-improvement",
                     name="Platform Improvement",
                     description="Recommend improvements to the internal platform.",
+                ),
+                AgentCapability(
+                    id="strategy-options",
+                    name="Strategy Options",
+                    description="Compare technology strategy paths, constraints, and sequencing.",
                 ),
             ],
             kpis=[
@@ -141,8 +163,123 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
             ],
             tools=["knowledge-base", "roadmap", "architecture-docs"],
             inputs=["client scope", "platform telemetry", "architecture state"],
-            outputs=["architecture advice", "improvement backlog", "risk assessment"],
+            outputs=["strategy options", "architecture advice", "improvement backlog", "risk assessment"],
             constraints=["no direct production changes", "CEO approval for roadmap commitments"],
+        ),
+        AgentContract(
+            agent_id="accountant-agent",
+            display_name="Accountant Agent",
+            domain="corporate",
+            role_summary="Enforces bookkeeping consistency, reconciliation rules, and close-readiness controls.",
+            approval_class="bounded",
+            capabilities=[
+                AgentCapability(
+                    id="ledger-reconciliation",
+                    name="Ledger Reconciliation",
+                    description="Detect mismatches between invoices, payments, expenses, and journal records.",
+                ),
+                AgentCapability(
+                    id="close-checklist",
+                    name="Close Checklist",
+                    description="Generate accounting close tasks, blockers, and accounting-ready exports.",
+                ),
+            ],
+            kpis=[
+                AgentKPI(
+                    id="reconciliation-lag",
+                    name="Reconciliation Lag",
+                    unit="days",
+                    description="Average age of unresolved reconciliation exceptions.",
+                )
+            ],
+            tools=["accounting-ledger", "workspace", "reporting"],
+            inputs=["ledger entries", "invoice records", "payment records", "expense records"],
+            outputs=["reconciliation exceptions", "close checklist", "export package"],
+            constraints=[
+                "no autonomous money movement",
+                "CEO review required for material unresolved exceptions",
+            ],
+        ),
+        AgentContract(
+            agent_id="cfo-agent",
+            display_name="CFO Agent",
+            domain="corporate",
+            role_summary="Produces scenario planning, cashflow risk analysis, and financial decision options for the CEO.",
+            approval_class="ceo_required",
+            capabilities=[
+                AgentCapability(
+                    id="scenario-planning",
+                    name="Scenario Planning",
+                    description="Model pricing, cost, hiring, and investment scenarios.",
+                ),
+                AgentCapability(
+                    id="cashflow-risk",
+                    name="Cashflow Risk",
+                    description="Interpret runway pressure, profitability drift, and mitigation options.",
+                ),
+            ],
+            kpis=[
+                AgentKPI(
+                    id="decision-readiness",
+                    name="Decision Readiness",
+                    unit="reviews/month",
+                    description="Number of CEO-ready finance decision packs produced per month.",
+                )
+            ],
+            tools=["finance-snapshots", "billing", "reporting"],
+            inputs=["financial KPIs", "forecast assumptions", "delivery pipeline"],
+            outputs=["scenario options", "cashflow recommendations", "decision memo"],
+            constraints=[
+                "recommendations only, no autonomous commitments",
+                "CEO approval required for pricing, hiring, and investment decisions",
+            ],
+        ),
+        AgentContract(
+            agent_id="chief-ai-digital-strategy-agent",
+            display_name="Chief AI / Digital Strategy Agent",
+            domain="platform",
+            role_summary="Builds AI opportunity maps, delivery blueprints, and maturity improvement plans.",
+            approval_class="ceo_required",
+            deployment=AgentDeploymentPolicy(
+                primary_track="track_a_internal",
+                replication_mode="replicate_later",
+                replication_notes=(
+                    "Track 1 owns the internal advisory pattern. A separate Track 2 variant may be "
+                    "replicated later for client consulting offers without sharing company memory or context."
+                ),
+            ),
+            capabilities=[
+                AgentCapability(
+                    id="ai-opportunity-mapping",
+                    name="AI Opportunity Mapping",
+                    description="Identify and prioritize AI, data, and digitalization opportunities.",
+                ),
+                AgentCapability(
+                    id="delivery-blueprint",
+                    name="Delivery Blueprint",
+                    description="Translate scope into phased AI/data implementation plans.",
+                ),
+                AgentCapability(
+                    id="maturity-assessment",
+                    name="Maturity Assessment",
+                    description="Assess AI and digital capability maturity and recommend next steps.",
+                ),
+            ],
+            kpis=[
+                AgentKPI(
+                    id="opportunity-conversion",
+                    name="Opportunity Conversion",
+                    unit="percent",
+                    description="Share of high-priority AI opportunities that progress into approved delivery plans.",
+                )
+            ],
+            tools=["knowledge-base", "delivery-roadmap", "architecture-docs", "workspace"],
+            inputs=["customer scope", "process context", "data landscape", "delivery constraints"],
+            outputs=["opportunity map", "AI/data blueprint", "maturity assessment", "delivery roadmap"],
+            constraints=[
+                "no client-facing commitment without CEO approval",
+                "replicate for Track 2 later instead of sharing Track 1 runtime state",
+            ],
         ),
     ]
 )

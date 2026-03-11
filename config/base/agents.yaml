@@ -1,6 +1,16 @@
 agents:
   - id: email-agent
     enabled: true
+  - id: personal-assistant-agent
+    enabled: true
+  - id: accountant-agent
+    enabled: true
+  - id: cfo-agent
+    enabled: true
+  - id: cto-cio-agent
+    enabled: true
+  - id: chief-ai-digital-strategy-agent
+    enabled: true
   - id: knowledge-agent
     enabled: true
   - id: document-agent

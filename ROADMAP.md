@@ -20,7 +20,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 |---|---|---|---|---|---|
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
-| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 11/14 tasks done |
+| Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 14/14 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 3/14 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
@@ -71,9 +71,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P2-T09: Define workflow templates for billing, finance, PO, PM, quality/testing, documentation handover
 - [x] P2-T10: Add inbox connector interface for personal assistant workflow
 - [x] P2-T11: Add calendar connector interface for personal assistant workflow
-- [ ] P2-T12: Define CTO/CIO counsel contract (strategy options, architecture advice, internal improvement backlog)
-- [ ] P2-T13: Define Accountant/CFO contracts (reconciliation rules, close process, scenario planning outputs)
-- [ ] P2-T14: Define Chief AI/Digital Strategy contract (AI opportunity map, AI/data delivery blueprint, maturity model)
+- [x] P2-T12: Define CTO/CIO counsel contract (strategy options, architecture advice, internal improvement backlog)
+- [x] P2-T13: Define Accountant/CFO contracts (reconciliation rules, close process, scenario planning outputs)
+- [x] P2-T14: Define Chief AI/Digital Strategy contract (AI opportunity map, AI/data delivery blueprint, maturity model)
 
 ### Phase 3 - Track A Internal MVP Workflows (React UI)
 - [x] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
@@ -157,6 +157,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a Vite/React `frontend/` scaffold for mission control.
 - Built the initial workflow monitor page against `GET /workflows/runs`.
 - Built the initial approval queue page against `GET /approvals/pending`, keeping decision mutations deferred to `P3-T08`.
+- Added explicit typed specialist contracts for CTO/CIO, Accountant, CFO, and Chief AI / Digital Strategy outputs.
+- Added internal-first agent specs for those roles, including replication-only notes for later Track 2 reuse of CTO/CIO and Chief AI / Digital Strategy patterns.
+- Expanded the agent registry and base agent config to include the new specialist contracts.
 
 ## Next Action
-Start `P3-T04`: build the agent activity page, or return to `P2-T12` through `P2-T14` to close remaining Phase 2 contract work.
+Start `P3-T04`: build the agent activity page.

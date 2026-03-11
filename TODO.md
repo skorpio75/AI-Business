@@ -10,9 +10,9 @@
 - [x] `P2-T11` Add calendar connector interface for personal assistant workflow
 
 ## Next
-- [ ] `P2-T12` Define CTO/CIO counsel contract
-- [ ] `P2-T13` Define Accountant/CFO contracts
-- [ ] `P2-T14` Define Chief AI/Digital Strategy contract
+- [x] `P2-T12` Define CTO/CIO counsel contract
+- [x] `P2-T13` Define Accountant/CFO contracts
+- [x] `P2-T14` Define Chief AI/Digital Strategy contract
 
 ## Soon After
 - [x] `P3-T01` Scaffold React mission-control app

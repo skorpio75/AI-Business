@@ -21,7 +21,11 @@ class MicrosoftGraphInboxConnector:
                 detail="Microsoft Graph inbox connector is selected but MICROSOFT_GRAPH_ACCESS_TOKEN is not configured.",
             )
         try:
-            get_json(url=f"{self.base_url}/{self._user_path(account_id)}", headers=self._headers())
+            get_json(
+                url=f"{self.base_url}/{self._user_path(account_id)}/mailFolders/inbox",
+                headers=self._headers(),
+                params={"$select": "id,displayName"},
+            )
         except ConnectorHttpError as exc:
             return ConnectorHealth(connector_id=self.connector_id, status="error", detail=str(exc))
         return ConnectorHealth(

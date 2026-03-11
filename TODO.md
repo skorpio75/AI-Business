@@ -23,6 +23,8 @@
 - [ ] `P3-T12` Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
+- [ ] `P3-T16` Add OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
+- [ ] `P3-T17` Add mission-control connector diagnostics plus live inbox/calendar detail views
 
 ## Watchlist
 - [ ] Keep `ROADMAP.md` as the full source of truth

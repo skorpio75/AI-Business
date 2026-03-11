@@ -20,6 +20,17 @@ class Settings(BaseSettings):
     max_local_input_chars: int = 3000
     force_local_only: bool = False
     knowledge_vector_dimensions: int = 8
+    inbox_connector: str = "null"
+    calendar_connector: str = "null"
+    personal_assistant_account_id: str = "me"
+    personal_assistant_calendar_id: str = "primary"
+    personal_assistant_window_hours: int = 24
+    personal_assistant_inbox_lookback_hours: int = 24
+    google_access_token: Optional[str] = None
+    outlook_tenant_id: Optional[str] = None
+    outlook_client_id: Optional[str] = None
+    outlook_graph_scopes: str = "offline_access https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/Calendars.Read"
+    microsoft_graph_access_token: Optional[str] = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

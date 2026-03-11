@@ -21,7 +21,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 14/14 tasks done |
-| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 11/14 tasks done |
+| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 12/17 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/7 tasks done |
@@ -90,6 +90,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P3-T12: Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] P3-T13: Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] P3-T14: Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
+- [x] P3-T15: Replace null-only inbox/calendar placeholders with provider-backed fetch connectors (Gmail, Google Calendar, Microsoft Graph)
+- [ ] P3-T16: Add OAuth/bootstrap flow and secret management for external inbox/calendar providers
+- [ ] P3-T17: Add connector diagnostics and live inbox/calendar detail views in mission control
 
 ### Phase 4 - Track B Client Template MVP
 - [ ] P4-T01: Create client deployment template pack
@@ -171,6 +174,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a dedicated Agents org view with grouped avatar/status cards.
 - Added dashboard KPI widgets for billing, cashflow, delivery health, and quality gate status.
 - Added a personal assistant summary panel fed by a new dashboard summary endpoint.
+- Replaced null-only personal assistant connector wiring with configurable Gmail, Google Calendar, and Microsoft Graph fetch connectors.
+- Added environment-driven connector selection, account/calendar IDs, and token-based configuration placeholders in `.env.example`.
+- Hardened personal assistant context assembly to use inbox lookback windows and degrade gracefully when connector fetches fail.
+- Added unit coverage for connector selection, normalization helpers, and assistant context error handling.
 
 ## Next Action
-Start `P3-T12`: add the CTO/CIO panel, then the finance cockpit and Chief AI / Digital Strategy panels.
+Start `P3-T16`: add OAuth/bootstrap and secret-handling flows for Gmail, Google Calendar, and Microsoft Graph so the new fetch connectors can be onboarded cleanly.

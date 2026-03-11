@@ -2,11 +2,13 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
+from app.connectors.factory import build_calendar_connector, build_inbox_connector
 from app.core.settings import get_settings
 from app.knowledge.pgvector_store import PgVectorRetrievalService
 from app.db.repository import get_approval, list_pending_approvals, list_workflow_runs, upsert_approval
 from app.db.session import get_db
 from app.models.agent_contract import AgentContract
+from app.models.connectors import PersonalAssistantContext
 from app.models.schemas import (
     ApprovalDecisionRequest,
     ApprovalItem,
@@ -32,7 +34,10 @@ email_workflow = EmailWorkflowService(model_gateway=gateway)
 agent_registry = AgentRegistryService()
 knowledge_qna = KnowledgeQnAService(retrieval_service=PgVectorRetrievalService(), model_gateway=gateway)
 proposal_workflow = ProposalWorkflowService(model_gateway=gateway)
-personal_assistant_context = PersonalAssistantContextService()
+personal_assistant_context = PersonalAssistantContextService(
+    inbox_connector=build_inbox_connector(settings),
+    calendar_connector=build_calendar_connector(settings),
+)
 dashboard_summary = DashboardSummaryService()
 
 app = FastAPI(title=settings.app_name)
@@ -78,14 +83,26 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> DashboardSummaryResp
     approvals = list_pending_approvals(db)
     workflow_runs = list_workflow_runs(db)
     assistant_context = personal_assistant_context.build_context(
-        account_id="ceo-inbox",
-        calendar_id="primary-calendar",
+        account_id=settings.personal_assistant_account_id,
+        calendar_id=settings.personal_assistant_calendar_id,
+        window_hours=settings.personal_assistant_window_hours,
+        inbox_lookback_hours=settings.personal_assistant_inbox_lookback_hours,
     )
     return dashboard_summary.build_summary(
         agents=agent_registry.list_agents(),
         approvals=approvals,
         workflow_runs_count=len(workflow_runs),
         personal_context=assistant_context,
+    )
+
+
+@app.get("/personal-assistant/context", response_model=PersonalAssistantContext)
+def get_personal_assistant_context() -> PersonalAssistantContext:
+    return personal_assistant_context.build_context(
+        account_id=settings.personal_assistant_account_id,
+        calendar_id=settings.personal_assistant_calendar_id,
+        window_hours=settings.personal_assistant_window_hours,
+        inbox_lookback_hours=settings.personal_assistant_inbox_lookback_hours,
     )
 
 

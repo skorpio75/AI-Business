@@ -28,6 +28,10 @@ Classify inbound emails, retrieve relevant context, and draft suggested replies.
 - retrieval service
 - logging service
 
+## Current Runtime Note
+- mailbox access can be backed by configured Gmail or Microsoft Graph fetch connectors
+- outbound send/write actions remain approval-gated and are not automated by default
+
 ## Human Approval
 Required before any outbound response.
 

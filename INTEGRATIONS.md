@@ -165,3 +165,13 @@ Integrate OpenClaw later as an edge channel/runtime adapter after:
 - webhook contracts
 - session correlation IDs
 - error handling and retry policy
+
+## Initial Provider Support
+The current backend now supports read-side connector implementations for:
+
+- Gmail inbox fetch via Google APIs
+- Google Calendar event fetch
+- Microsoft Graph mailbox fetch
+- Microsoft Graph calendar fetch
+
+These connectors are selected through environment settings and intentionally remain read-first for MVP governance. External send/write actions should continue to require explicit approval and separate execution steps.

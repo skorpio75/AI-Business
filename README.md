@@ -8,6 +8,9 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
+## Current Status
+The committed codebase is currently backend-first. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice. A React operator UI is part of the target architecture, but it is not in this repository yet.
+
 ## Principles
 - open source first
 - isolated deployment per company
@@ -19,7 +22,6 @@ The platform is not shared across clients. Each instance is deployed separately 
 
 ## Main Tech Components
 - FastAPI
-- React (operator UI)
 - LangGraph
 - LiteLLM
 - LlamaIndex
@@ -86,16 +88,16 @@ Start with a small, serious foundation. Do not over-engineer the first version.
 ```bash
 pip install -r requirements.txt
 ```
-3. Copy environment file:
+3. Create the local environment file:
 ```bash
-cp .env.example .env
+copy .env.example .env
 ```
 4. Start PostgreSQL + pgvector:
 ```bash
 make up
 ```
 Default compose port is `5433` to avoid collisions with existing local PostgreSQL services.
-5. Initialize DB schema:
+5. Apply database migrations:
 ```bash
 python scripts/init_db.py
 ```
@@ -115,3 +117,7 @@ make db-upgrade
 - `GET /workflows/runs`
 - `GET /approvals/pending`
 - `POST /approvals/{approval_id}/decision`
+
+## Git Hygiene
+- Local secrets, virtual environments, caches, and local database files are intentionally excluded via `.gitignore`.
+- Line endings are normalized through `.gitattributes` to keep Windows and GitHub diffs stable.

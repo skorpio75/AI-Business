@@ -3,6 +3,7 @@ import { startTransition, useState } from "react";
 import { AgentActivityPage } from "./pages/AgentActivityPage";
 import { AgentsOrgPage } from "./pages/AgentsOrgPage";
 import { EmailOperationsPage } from "./pages/EmailOperationsPage";
+import { InboxCalendarPage } from "./pages/InboxCalendarPage";
 import { KnowledgeQnaPage } from "./pages/KnowledgeQnaPage";
 import { ProposalGenerationPage } from "./pages/ProposalGenerationPage";
 import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
@@ -29,6 +30,11 @@ const VIEWS: Array<{ id: ViewKey; label: string; description: string }> = [
     id: "agents-org",
     label: "Agents Org",
     description: "See corporate and delivery agents as an operating roster.",
+  },
+  {
+    id: "inbox-calendar",
+    label: "Inbox and Calendar",
+    description: "Read live Outlook context and launch reply workflows from real messages.",
   },
   {
     id: "email-operations",
@@ -111,6 +117,12 @@ export default function App() {
             <AgentActivityPage refreshToken={refreshToken} />
           ) : null}
           {activeView === "agents-org" ? <AgentsOrgPage refreshToken={refreshToken} /> : null}
+          {activeView === "inbox-calendar" ? (
+            <InboxCalendarPage
+              refreshToken={refreshToken}
+              onDrafted={() => setRefreshToken((value) => value + 1)}
+            />
+          ) : null}
           {activeView === "email-operations" ? (
             <EmailOperationsPage onCreated={() => setRefreshToken((value) => value + 1)} />
           ) : null}

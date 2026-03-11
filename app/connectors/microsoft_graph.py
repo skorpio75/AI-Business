@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib import parse
 
-from app.connectors.http import ConnectorHttpError, get_json
+from app.connectors.http import ConnectorHttpError, get_json, post_json
 from app.models.connectors import CalendarEvent, CalendarSyncCursor, ConnectorHealth, InboxMessage, InboxSyncCursor
 
 
@@ -75,6 +75,23 @@ class MicrosoftGraphInboxConnector:
             account_id=account_id,
             cursor=latest.isoformat() if latest else (cursor.cursor if cursor else None),
             synced_at=datetime.now(timezone.utc),
+        )
+
+    def reply_to_message(
+        self,
+        *,
+        account_id: str,
+        message_id: str,
+        reply_body: str,
+    ) -> None:
+        if not self.access_token:
+            raise ConnectorHttpError(
+                "Microsoft Graph inbox connector is selected but MICROSOFT_GRAPH_ACCESS_TOKEN is not configured."
+            )
+        post_json(
+            url=f"{self.base_url}/{self._user_path(account_id)}/messages/{parse.quote(message_id, safe='')}/reply",
+            headers=self._headers(),
+            body={"comment": reply_body},
         )
 
     def _headers(self) -> dict[str, str]:

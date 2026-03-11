@@ -1,6 +1,6 @@
 export type WorkflowRun = {
   workflow_id: string;
-  status: "pending_approval";
+  status: "pending_approval" | "completed";
   approval_id: string;
   intent: string;
   confidence: number;
@@ -8,6 +8,11 @@ export type WorkflowRun = {
   provider_used: string;
   model_used: string;
   escalation_reason?: string | null;
+  approval_status: "pending" | "approved" | "rejected" | "edited";
+  send_status: "pending" | "sent" | "not_applicable";
+  sent_at?: string | null;
+  source_provider?: string | null;
+  source_message_id?: string | null;
 };
 
 export type ApprovalItem = {
@@ -19,6 +24,62 @@ export type ApprovalItem = {
   draft_reply: string;
   status: "pending" | "approved" | "rejected" | "edited";
   decision_note?: string | null;
+  source_account_id?: string | null;
+  source_message_id?: string | null;
+  source_thread_id?: string | null;
+  source_provider?: string | null;
+  send_status: "pending" | "sent" | "not_applicable";
+  send_detail?: string | null;
+  sent_at?: string | null;
+};
+
+export type InboxMessage = {
+  message_id: string;
+  thread_id?: string | null;
+  account_id: string;
+  folder: "inbox" | "sent" | "archive";
+  direction: "inbound" | "outbound";
+  sender: string;
+  recipients: string[];
+  subject: string;
+  body_text: string;
+  received_at: string;
+  is_unread: boolean;
+  labels: string[];
+  metadata: Record<string, string>;
+};
+
+export type CalendarEvent = {
+  event_id: string;
+  calendar_id: string;
+  title: string;
+  start_at: string;
+  end_at: string;
+  organizer?: string | null;
+  attendees: string[];
+  location?: string | null;
+  description?: string | null;
+  response_status: "accepted" | "tentative" | "declined" | "needs_action";
+  is_all_day: boolean;
+  metadata: Record<string, string>;
+};
+
+export type ConnectorHealth = {
+  connector_id: string;
+  status: "ok" | "degraded" | "error";
+  checked_at: string;
+  detail?: string | null;
+};
+
+export type PersonalAssistantContext = {
+  account_id: string;
+  calendar_id: string;
+  window_start: string;
+  window_end: string;
+  inbox_messages: InboxMessage[];
+  calendar_events: CalendarEvent[];
+  inbox_health?: ConnectorHealth | null;
+  calendar_health?: ConnectorHealth | null;
 };
 
 export type AgentCapability = {
@@ -136,6 +197,7 @@ export type ViewKey =
   | "approval-queue"
   | "agent-activity"
   | "agents-org"
+  | "inbox-calendar"
   | "email-operations"
   | "knowledge-qna"
   | "proposal-generation";

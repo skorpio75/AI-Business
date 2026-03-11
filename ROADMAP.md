@@ -21,7 +21,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 14/14 tasks done |
-| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 12/17 tasks done |
+| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 15/19 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/7 tasks done |
@@ -92,7 +92,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P3-T14: Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 - [x] P3-T15: Replace null-only inbox/calendar placeholders with provider-backed fetch connectors (Gmail, Google Calendar, Microsoft Graph)
 - [ ] P3-T16: Add OAuth/bootstrap flow and secret management for external inbox/calendar providers
-- [ ] P3-T17: Add connector diagnostics and live inbox/calendar detail views in mission control
+- [x] P3-T17: Add connector diagnostics and live inbox/calendar detail views in mission control
+- [x] P3-T18: Launch email workflows from live inbox messages with source metadata attached
+- [x] P3-T19: Send approved Outlook replies end-to-end through Microsoft Graph `Mail.Send`
+- [ ] P3-T20: Add explicit UI routing indicators for local model, cloud route, and fallback-rule execution
 
 ### Phase 4 - Track B Client Template MVP
 - [ ] P4-T01: Create client deployment template pack
@@ -125,6 +128,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Backlog - Model Routing
 - [ ] B-T01: Define multi-provider routing rules for cloud model usage via LiteLLM (task type, risk, cost, latency, fallback order, local-only policy)
+
+### Backlog - Connector Diagnostics
+- [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
 
 ## Status Log
 
@@ -178,6 +184,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added environment-driven connector selection, account/calendar IDs, and token-based configuration placeholders in `.env.example`.
 - Hardened personal assistant context assembly to use inbox lookback windows and degrade gracefully when connector fetches fail.
 - Added unit coverage for connector selection, normalization helpers, and assistant context error handling.
+- Added a dedicated mission-control inbox/calendar view backed by live personal-assistant context reads, including connector health, recent messages, and agenda items.
+- Extended email workflow persistence to carry source message metadata, approval/send status, and sent timestamps.
+- Wired Outlook approval completion to `Mail.Send` via Microsoft Graph reply calls so approved inbox-derived drafts can send end-to-end.
+- Added a schema migration for email source/send tracking and applied it locally.
 
 ## Next Action
-Start `P3-T16`: add OAuth/bootstrap and secret-handling flows for Gmail, Google Calendar, and Microsoft Graph so the new fetch connectors can be onboarded cleanly.
+Start `P3-T16`: finish secret management and refresh-token handling around provider bootstrap, then return to `P3-T12` through `P3-T14`.

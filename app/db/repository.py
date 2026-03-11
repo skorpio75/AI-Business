@@ -22,6 +22,11 @@ def insert_workflow_run(db: Session, run: EmailWorkflowResponse) -> None:
             provider_used=run.provider_used,
             model_used=run.model_used,
             escalation_reason=run.escalation_reason,
+            approval_status=run.approval_status,
+            send_status=run.send_status,
+            sent_at=run.sent_at,
+            source_provider=run.source_provider,
+            source_message_id=run.source_message_id,
         )
     )
 
@@ -37,6 +42,13 @@ def insert_approval(db: Session, item: ApprovalItem) -> None:
             draft_reply=item.draft_reply,
             status=item.status,
             decision_note=item.decision_note,
+            source_account_id=item.source_account_id,
+            source_message_id=item.source_message_id,
+            source_thread_id=item.source_thread_id,
+            source_provider=item.source_provider,
+            send_status=item.send_status,
+            send_detail=item.send_detail,
+            sent_at=item.sent_at,
         )
     )
 
@@ -70,13 +82,46 @@ def upsert_approval(db: Session, item: ApprovalItem) -> ApprovalItem:
             draft_reply=item.draft_reply,
             status=item.status,
             decision_note=item.decision_note,
+            source_account_id=item.source_account_id,
+            source_message_id=item.source_message_id,
+            source_thread_id=item.source_thread_id,
+            source_provider=item.source_provider,
+            send_status=item.send_status,
+            send_detail=item.send_detail,
+            sent_at=item.sent_at,
         )
         db.add(row)
     else:
         row.draft_reply = item.draft_reply
         row.status = item.status
         row.decision_note = item.decision_note
+        row.source_account_id = item.source_account_id
+        row.source_message_id = item.source_message_id
+        row.source_thread_id = item.source_thread_id
+        row.source_provider = item.source_provider
+        row.send_status = item.send_status
+        row.send_detail = item.send_detail
+        row.sent_at = item.sent_at
     return ApprovalItem.model_validate(row)
+
+
+def update_workflow_run_resolution(
+    db: Session,
+    *,
+    workflow_id: str,
+    status: str,
+    approval_status: str,
+    send_status: str,
+    sent_at: datetime | None = None,
+) -> EmailWorkflowResponse | None:
+    row = db.get(WorkflowRunORM, workflow_id)
+    if row is None:
+        return None
+    row.status = status
+    row.approval_status = approval_status
+    row.send_status = send_status
+    row.sent_at = sent_at
+    return EmailWorkflowResponse.model_validate(row)
 
 
 def upsert_workflow_state(db: Session, state: WorkflowState) -> WorkflowState:
@@ -97,4 +142,32 @@ def upsert_workflow_state(db: Session, state: WorkflowState) -> WorkflowState:
         row.status = state.status
         row.state_json = payload
         row.updated_at = now
+    return WorkflowState.model_validate(row.state_json)
+
+
+def resolve_workflow_state(
+    db: Session,
+    *,
+    workflow_id: str,
+    status: str,
+    approval_status: str,
+    send_status: str,
+    decision_note: str | None = None,
+) -> WorkflowState | None:
+    row = db.get(WorkflowStateSnapshotORM, workflow_id)
+    if row is None:
+        return None
+    payload = dict(row.state_json)
+    outputs = dict(payload.get("outputs") or {})
+    outputs["approval_status"] = approval_status
+    outputs["send_status"] = send_status
+    if decision_note:
+        outputs["decision_note"] = decision_note
+    payload["outputs"] = outputs
+    payload["status"] = status
+    payload["current_step_id"] = None
+    payload["updated_at"] = datetime.now(timezone.utc).isoformat()
+    row.status = status
+    row.state_json = payload
+    row.updated_at = datetime.now(timezone.utc)
     return WorkflowState.model_validate(row.state_json)

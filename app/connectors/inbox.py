@@ -29,6 +29,15 @@ class InboxConnector(Protocol):
     ) -> tuple[list[InboxMessage], InboxSyncCursor]:
         """Return only new mailbox items since the last sync."""
 
+    def reply_to_message(
+        self,
+        *,
+        account_id: str,
+        message_id: str,
+        reply_body: str,
+    ) -> None:
+        """Send a reply to a source message when supported by the provider."""
+
 
 class NullInboxConnector:
     connector_id = "null-inbox"
@@ -58,3 +67,12 @@ class NullInboxConnector:
         limit: int = 100,
     ) -> tuple[list[InboxMessage], InboxSyncCursor]:
         return [], InboxSyncCursor(account_id=account_id)
+
+    def reply_to_message(
+        self,
+        *,
+        account_id: str,
+        message_id: str,
+        reply_body: str,
+    ) -> None:
+        raise NotImplementedError("inbox_reply_not_supported")

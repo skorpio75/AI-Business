@@ -19,6 +19,11 @@ class WorkflowRunORM(Base):
     provider_used: Mapped[str] = mapped_column(String(32), nullable=False)
     model_used: Mapped[str] = mapped_column(String(128), nullable=False)
     escalation_reason: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    approval_status: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    send_status: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    source_provider: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    source_message_id: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
 
 
 class ApprovalORM(Base):
@@ -32,6 +37,13 @@ class ApprovalORM(Base):
     draft_reply: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     decision_note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    source_account_id: Mapped[Optional[str]] = mapped_column(String(320), nullable=True)
+    source_message_id: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
+    source_thread_id: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
+    source_provider: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    send_status: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    send_detail: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class WorkflowStateSnapshotORM(Base):

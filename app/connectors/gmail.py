@@ -81,6 +81,15 @@ class GmailInboxConnector:
             synced_at=datetime.now(timezone.utc),
         )
 
+    def reply_to_message(
+        self,
+        *,
+        account_id: str,
+        message_id: str,
+        reply_body: str,
+    ) -> None:
+        raise NotImplementedError("gmail_reply_not_implemented")
+
     def _headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self.access_token}"}
 

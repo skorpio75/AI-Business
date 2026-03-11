@@ -92,7 +92,7 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
     try {
       await apiClient.decideApproval(selectedApproval.id, {
         decision,
-        edited_reply: decision === "edit" ? editedReply : undefined,
+        edited_reply: editedReply || undefined,
         note: note || undefined,
       });
       const refreshed = await apiClient.getPendingApprovals();
@@ -100,8 +100,12 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
         right.created_at.localeCompare(left.created_at),
       );
       setApprovals(orderedApprovals);
-      setSelectedApprovalId(orderedApprovals[0]?.id ?? null);
-      setActionMessage(`Approval ${decision} completed.`);
+      setSelectedApprovalId(
+        decision === "edit"
+          ? orderedApprovals.find((item) => item.id === selectedApproval.id)?.id ?? orderedApprovals[0]?.id ?? null
+          : orderedApprovals[0]?.id ?? null,
+      );
+      setActionMessage(decision === "edit" ? "Draft updated and kept pending." : `Approval ${decision} completed.`);
     } catch (decisionError) {
       setActionError(decisionError instanceof Error ? decisionError.message : "unknown_error");
     } finally {
@@ -209,7 +213,7 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
                   Reject
                 </button>
                 <button type="button" disabled={acting || !editedReply.trim()} onClick={() => void handleDecision("edit")}>
-                  Edit
+                  Save draft
                 </button>
               </div>
             </div>

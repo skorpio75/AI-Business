@@ -3,8 +3,12 @@ from typing import Literal, Optional
 
 from pydantic import ConfigDict
 from pydantic import BaseModel, Field
+from pydantic import field_validator
 
 DecisionType = Literal["approve", "reject", "edit"]
+ApprovalStatus = Literal["pending", "approved", "rejected", "edited"]
+WorkflowRunStatus = Literal["pending_approval", "completed"]
+SendStatus = Literal["pending", "sent", "not_applicable"]
 
 
 class EmailWorkflowRequest(BaseModel):
@@ -13,6 +17,10 @@ class EmailWorkflowRequest(BaseModel):
     sender: str = Field(min_length=1)
     thread_context: Optional[str] = None
     risk_level: Literal["low", "medium", "high"] = "medium"
+    source_account_id: Optional[str] = None
+    source_message_id: Optional[str] = None
+    source_thread_id: Optional[str] = None
+    source_provider: Optional[str] = None
 
 
 class EmailDraftResult(BaseModel):
@@ -28,7 +36,7 @@ class EmailWorkflowResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     workflow_id: str
-    status: Literal["pending_approval"]
+    status: WorkflowRunStatus
     approval_id: str
     intent: str
     confidence: float
@@ -36,6 +44,21 @@ class EmailWorkflowResponse(BaseModel):
     provider_used: str
     model_used: str
     escalation_reason: Optional[str] = None
+    approval_status: ApprovalStatus = "pending"
+    send_status: SendStatus = "not_applicable"
+    sent_at: Optional[datetime] = None
+    source_provider: Optional[str] = None
+    source_message_id: Optional[str] = None
+
+    @field_validator("approval_status", mode="before")
+    @classmethod
+    def default_approval_status(cls, value: str | None) -> str:
+        return value or "pending"
+
+    @field_validator("send_status", mode="before")
+    @classmethod
+    def default_send_status(cls, value: str | None) -> str:
+        return value or "not_applicable"
 
 
 class ApprovalItem(BaseModel):
@@ -47,8 +70,20 @@ class ApprovalItem(BaseModel):
     sender: str
     subject: str
     draft_reply: str
-    status: Literal["pending", "approved", "rejected", "edited"]
+    status: ApprovalStatus
     decision_note: Optional[str] = None
+    source_account_id: Optional[str] = None
+    source_message_id: Optional[str] = None
+    source_thread_id: Optional[str] = None
+    source_provider: Optional[str] = None
+    send_status: SendStatus = "not_applicable"
+    send_detail: Optional[str] = None
+    sent_at: Optional[datetime] = None
+
+    @field_validator("send_status", mode="before")
+    @classmethod
+    def default_send_status(cls, value: str | None) -> str:
+        return value or "not_applicable"
 
 
 class ApprovalDecisionRequest(BaseModel):

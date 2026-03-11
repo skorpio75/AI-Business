@@ -3,6 +3,7 @@ import type {
   ApprovalItem,
   DashboardSummary,
   KnowledgeQueryResponse,
+  PersonalAssistantContext,
   ProposalGenerationResponse,
   WorkflowRun,
 } from "../types";
@@ -49,6 +50,25 @@ export const apiClient = {
     return getJson<DashboardSummary>("/dashboard/summary");
   },
 
+  getPersonalAssistantContext(params?: {
+    window_hours?: number;
+    inbox_lookback_hours?: number;
+    inbox_limit?: number;
+  }): Promise<PersonalAssistantContext> {
+    const search = new URLSearchParams();
+    if (params?.window_hours) {
+      search.set("window_hours", String(params.window_hours));
+    }
+    if (params?.inbox_lookback_hours) {
+      search.set("inbox_lookback_hours", String(params.inbox_lookback_hours));
+    }
+    if (params?.inbox_limit) {
+      search.set("inbox_limit", String(params.inbox_limit));
+    }
+    const suffix = search.size ? `?${search.toString()}` : "";
+    return getJson<PersonalAssistantContext>(`/personal-assistant/context${suffix}`);
+  },
+
   getWorkflowRuns(): Promise<WorkflowRun[]> {
     return getJson<WorkflowRun[]>("/workflows/runs");
   },
@@ -63,6 +83,10 @@ export const apiClient = {
     sender: string;
     thread_context?: string;
     risk_level: "low" | "medium" | "high";
+    source_account_id?: string;
+    source_message_id?: string;
+    source_thread_id?: string;
+    source_provider?: string;
   }): Promise<WorkflowRun> {
     return postJson<WorkflowRun>("/workflows/email-operations/run", payload);
   },

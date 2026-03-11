@@ -92,6 +92,12 @@ class EmailWorkflowService:
             context=WorkflowContextSnapshot(
                 input_summary=f"Email from {payload.sender}: {payload.subject}"
             ),
+            metadata={
+                "source_account_id": payload.source_account_id,
+                "source_message_id": payload.source_message_id,
+                "source_thread_id": payload.source_thread_id,
+                "source_provider": payload.source_provider,
+            },
             steps=[
                 WorkflowStepState(
                     step_id="draft_email",
@@ -125,6 +131,10 @@ class EmailWorkflowService:
             provider_used=result.provider_used,
             model_used=result.model_used,
             escalation_reason=result.escalation_reason,
+            approval_status="pending",
+            send_status="pending" if payload.source_message_id and payload.source_provider else "not_applicable",
+            source_provider=payload.source_provider,
+            source_message_id=payload.source_message_id,
         )
 
         approval = ApprovalItem(
@@ -135,6 +145,11 @@ class EmailWorkflowService:
             subject=payload.subject,
             draft_reply=result.draft_reply,
             status="pending",
+            source_account_id=payload.source_account_id,
+            source_message_id=payload.source_message_id,
+            source_thread_id=payload.source_thread_id,
+            source_provider=payload.source_provider,
+            send_status="pending" if payload.source_message_id and payload.source_provider else "not_applicable",
         )
         upsert_workflow_state(db, workflow_state)
         insert_workflow_run(db, run)

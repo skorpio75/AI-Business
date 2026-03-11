@@ -30,6 +30,7 @@ Classify inbound emails, retrieve relevant context, and draft suggested replies.
 
 ## Current Runtime Note
 - mailbox access can be backed by configured Gmail or Microsoft Graph fetch connectors
+- Outlook/Microsoft Graph replies can be sent after explicit approval when source message metadata is attached
 - outbound send/write actions remain approval-gated and are not automated by default
 
 ## Human Approval

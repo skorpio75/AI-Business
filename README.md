@@ -174,6 +174,15 @@ Then run:
 
 That script starts a Microsoft device-code flow and writes the resulting `MICROSOFT_GRAPH_ACCESS_TOKEN` into `.env` automatically. The Azure app still needs delegated Graph permissions for `Mail.Read` and `Calendars.Read`.
 
+### Outlook Send Approval Flow
+Inbox-derived email workflows now carry the source Outlook message ID through the approval queue. When a CEO approves such an item, the backend sends the reply through Microsoft Graph using the source message reply endpoint.
+
+For that full cycle, the Azure app needs:
+
+- `Mail.Read`
+- `Calendars.Read`
+- `Mail.Send`
+
 ### Read Verification
 Once the token is present in `.env`, start the API and read the normalized Outlook data directly:
 
@@ -183,6 +192,13 @@ Invoke-RestMethod -Method Get -Uri http://127.0.0.1:8000/personal-assistant/cont
 ```
 
 That endpoint returns connector health plus the current normalized `inbox_messages` and `calendar_events` payloads used by the dashboard.
+
+### End-to-End Operator Flow
+1. Open the new `Inbox and Calendar` mission-control view.
+2. Refresh live Outlook context and select a real inbox message.
+3. Launch a draft reply workflow from that message.
+4. Review the generated draft in `Approval Queue`.
+5. Edit the draft if needed and keep it pending, or approve it to send through Outlook.
 
 ## Frontend MVP Pages
 - Workflow monitor: reads workflow runs and surfaces model usage, confidence, and escalation indicators.

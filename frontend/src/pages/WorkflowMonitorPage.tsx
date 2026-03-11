@@ -5,6 +5,16 @@ import { apiClient } from "../lib/api";
 import { formatConfidence, truncate } from "../lib/format";
 import type { DashboardSummary, WorkflowRun } from "../types";
 
+function runStatusTone(run: WorkflowRun): "neutral" | "success" | "warning" | "critical" {
+  if (run.status === "completed" && run.approval_status === "approved") {
+    return run.send_status === "sent" ? "success" : "neutral";
+  }
+  if (run.status === "completed" && run.approval_status === "rejected") {
+    return "critical";
+  }
+  return "warning";
+}
+
 type WorkflowMonitorPageProps = {
   refreshToken: number;
 };
@@ -125,7 +135,7 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 onClick={() => setSelectedWorkflowId(run.workflow_id)}
               >
                 <div className="list-card__topline">
-                  <StatusPill label={run.status.replace("_", " ")} tone="warning" />
+                  <StatusPill label={`${run.status.replace("_", " ")} / ${run.approval_status}`} tone={runStatusTone(run)} />
                   <span>{formatConfidence(run.confidence)}</span>
                 </div>
                 <h4>{run.intent}</h4>
@@ -158,7 +168,14 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
               </div>
               <div className="detail-row">
                 <span>Status</span>
-                <StatusPill label="pending approval" tone="warning" />
+                <StatusPill label={`${selectedRun.status.replace("_", " ")} / ${selectedRun.approval_status}`} tone={runStatusTone(selectedRun)} />
+              </div>
+              <div className="detail-row">
+                <span>Send</span>
+                <strong>
+                  {selectedRun.send_status}
+                  {selectedRun.sent_at ? ` at ${new Date(selectedRun.sent_at).toLocaleString()}` : ""}
+                </strong>
               </div>
               <div className="detail-row">
                 <span>Model path</span>

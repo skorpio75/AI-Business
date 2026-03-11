@@ -1,0 +1,11 @@
+agents:
+  - id: email-agent
+    enabled: true
+  - id: knowledge-agent
+    enabled: true
+  - id: document-agent
+    enabled: true
+  - id: reporting-agent
+    enabled: true
+  - id: ops-agent
+    enabled: false

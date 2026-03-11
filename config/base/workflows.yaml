@@ -1,0 +1,9 @@
+workflows:
+  - id: email-operations
+    enabled: true
+  - id: knowledge-qna
+    enabled: true
+  - id: document-intake
+    enabled: true
+  - id: reporting
+    enabled: true

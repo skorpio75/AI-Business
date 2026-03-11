@@ -1,0 +1,4 @@
+platform:
+  name: enterprise-agent-platform
+  environment: local
+  approval_required_for_sensitive_actions: true

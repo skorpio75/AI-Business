@@ -1,0 +1,4 @@
+client:
+  id: client-template
+  name: template-company
+  isolated_deployment: true

@@ -1,0 +1,4 @@
+models:
+  primary_chat_model: gpt-4o-mini
+  fallback_chat_model: gpt-4.1-mini
+  embedding_model: text-embedding-3-large

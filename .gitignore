@@ -17,6 +17,7 @@ node_modules/
 *.db
 *.log
 .python-version
+*.tsbuildinfo
 .DS_Store
 Thumbs.db
 .idea/

@@ -9,7 +9,7 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
 ## Current Status
-The committed codebase is currently backend-first. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice. A React operator UI is part of the target architecture, but it is not in this repository yet.
+The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus an initial `frontend/` React mission-control scaffold with a workflow monitor and approval queue page.
 
 ## Principles
 - open source first
@@ -66,6 +66,7 @@ enterprise-agent-platform/
 |- prompts/
 |- agents/
 |- workflows/
+|- frontend/
 |- app/
 |- tests/
 `- scripts/
@@ -105,10 +106,42 @@ python scripts/init_db.py
 ```bash
 make api
 ```
+7. Start the frontend mission-control UI in a second terminal:
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 Alternative DB command:
 ```bash
 make db-upgrade
+```
+
+## Windows PowerShell Run
+If `make` is not installed, use the underlying commands directly from PowerShell.
+
+Start PostgreSQL + pgvector:
+```powershell
+docker compose up -d
+```
+
+Apply database migrations:
+```powershell
+.venv\Scripts\python.exe scripts\init_db.py
+```
+
+Start the FastAPI backend:
+```powershell
+.venv\Scripts\python.exe -m uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Start the frontend:
+```powershell
+cd frontend
+copy .env.example .env
+npm install
+npm run dev
 ```
 
 ## API Endpoints (Current)
@@ -117,6 +150,10 @@ make db-upgrade
 - `GET /workflows/runs`
 - `GET /approvals/pending`
 - `POST /approvals/{approval_id}/decision`
+
+## Frontend MVP Pages
+- Workflow monitor: reads workflow runs and surfaces model usage, confidence, and escalation indicators.
+- Approval queue: reads pending approvals and provides a review surface ahead of decision wiring.
 
 ## Git Hygiene
 - Local secrets, virtual environments, caches, and local database files are intentionally excluded via `.gitignore`.

@@ -10,7 +10,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - `DONE`
 
 ## Current Snapshot
-- Updated: 2026-03-09
+- Updated: 2026-03-11
 - Overall Status: `IN_PROGRESS`
 - Active Phase: `Phase 2 - Workflow + Knowledge Foundation`
 
@@ -20,8 +20,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 |---|---|---|---|---|---|
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
-| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 8/14 tasks done |
-| Phase 3 | Track A internal MVP workflows (React UI) | NOT_STARTED | dpizz | TBD | 0/14 tasks done |
+| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 11/14 tasks done |
+| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 3/14 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/7 tasks done |
@@ -68,17 +68,17 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P2-T06: Wire pgvector retrieval baseline
 - [x] P2-T07: Add workflow run persistence model
 - [x] P2-T08: Define shared agent contract for corporate and delivery functions (capabilities, KPIs, approval class)
-- [ ] P2-T09: Define workflow templates for billing, finance, PO, PM, quality/testing, documentation handover
-- [ ] P2-T10: Add inbox connector interface for personal assistant workflow
-- [ ] P2-T11: Add calendar connector interface for personal assistant workflow
+- [x] P2-T09: Define workflow templates for billing, finance, PO, PM, quality/testing, documentation handover
+- [x] P2-T10: Add inbox connector interface for personal assistant workflow
+- [x] P2-T11: Add calendar connector interface for personal assistant workflow
 - [ ] P2-T12: Define CTO/CIO counsel contract (strategy options, architecture advice, internal improvement backlog)
 - [ ] P2-T13: Define Accountant/CFO contracts (reconciliation rules, close process, scenario planning outputs)
 - [ ] P2-T14: Define Chief AI/Digital Strategy contract (AI opportunity map, AI/data delivery blueprint, maturity model)
 
 ### Phase 3 - Track A Internal MVP Workflows (React UI)
-- [ ] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
-- [ ] P3-T02: Build workflow monitor page
-- [ ] P3-T03: Build approval queue page
+- [x] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
+- [x] P3-T02: Build workflow monitor page
+- [x] P3-T03: Build approval queue page
 - [ ] P3-T04: Build agent activity page
 - [ ] P3-T05: Implement email operations workflow end-to-end
 - [ ] P3-T06: Implement knowledge Q&A workflow end-to-end
@@ -149,5 +149,14 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added shared agent contract models and registry service for reusable corporate, delivery, and platform agents.
 - Added roadmap coverage for governance and auditability: audit model, agent execution history, audit events, and trace endpoints.
 
+### 2026-03-11
+- Added workflow template specs for billing operations, finance review, procurement PO, project management control, quality/testing gate, and documentation handover.
+- Registered the new workflow templates in `config/base/workflows.yaml`.
+- Added normalized inbox and calendar connector interfaces plus null connectors for personal assistant workflow integration.
+- Added a personal assistant context assembly service to combine inbox and calendar inputs into one typed snapshot.
+- Added a Vite/React `frontend/` scaffold for mission control.
+- Built the initial workflow monitor page against `GET /workflows/runs`.
+- Built the initial approval queue page against `GET /approvals/pending`, keeping decision mutations deferred to `P3-T08`.
+
 ## Next Action
-Start `P2-T09`: define workflow templates for billing, finance, PO, PM, quality/testing, documentation handover.
+Start `P3-T04`: build the agent activity page, or return to `P2-T12` through `P2-T14` to close remaining Phase 2 contract work.

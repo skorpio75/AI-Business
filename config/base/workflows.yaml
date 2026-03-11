@@ -7,3 +7,15 @@ workflows:
     enabled: true
   - id: reporting
     enabled: true
+  - id: billing-operations
+    enabled: true
+  - id: finance-review
+    enabled: true
+  - id: procurement-po
+    enabled: true
+  - id: project-management
+    enabled: true
+  - id: quality-testing-gate
+    enabled: true
+  - id: documentation-handover
+    enabled: true

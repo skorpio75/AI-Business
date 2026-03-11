@@ -15,6 +15,11 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
   const [error, setError] = useState<string | null>(null);
   const [selectedApprovalId, setSelectedApprovalId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [note, setNote] = useState("");
+  const [editedReply, setEditedReply] = useState("");
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [acting, setActing] = useState(false);
   const deferredQuery = useDeferredValue(query);
 
   useEffect(() => {
@@ -34,7 +39,9 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
           right.created_at.localeCompare(left.created_at),
         );
         setApprovals(orderedApprovals);
-        setSelectedApprovalId((current) => current ?? orderedApprovals[0]?.id ?? null);
+        setSelectedApprovalId((current) =>
+          orderedApprovals.some((item) => item.id === current) ? current : orderedApprovals[0]?.id ?? null,
+        );
       } catch (loadError) {
         if (!active) {
           return;
@@ -66,16 +73,52 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
     filteredApprovals[0] ??
     null;
 
+  useEffect(() => {
+    setEditedReply(selectedApproval?.draft_reply ?? "");
+    setNote(selectedApproval?.decision_note ?? "");
+    setActionError(null);
+    setActionMessage(null);
+  }, [selectedApprovalId, selectedApproval?.draft_reply, selectedApproval?.decision_note]);
+
+  async function handleDecision(decision: "approve" | "reject" | "edit") {
+    if (!selectedApproval) {
+      return;
+    }
+
+    setActing(true);
+    setActionError(null);
+    setActionMessage(null);
+
+    try {
+      await apiClient.decideApproval(selectedApproval.id, {
+        decision,
+        edited_reply: decision === "edit" ? editedReply : undefined,
+        note: note || undefined,
+      });
+      const refreshed = await apiClient.getPendingApprovals();
+      const orderedApprovals = [...refreshed].sort((left, right) =>
+        right.created_at.localeCompare(left.created_at),
+      );
+      setApprovals(orderedApprovals);
+      setSelectedApprovalId(orderedApprovals[0]?.id ?? null);
+      setActionMessage(`Approval ${decision} completed.`);
+    } catch (decisionError) {
+      setActionError(decisionError instanceof Error ? decisionError.message : "unknown_error");
+    } finally {
+      setActing(false);
+    }
+  }
+
   return (
     <section className="page-grid">
       <div className="hero-card hero-card--amber">
         <div>
           <p className="eyebrow">Approval queue</p>
-          <h2>Review pending items without committing decisions yet.</h2>
+          <h2>Review pending items and resolve approval decisions from the UI.</h2>
         </div>
         <p className="hero-copy">
-          This page reads `GET /approvals/pending`. Decision actions stay out of scope until
-          `P3-T08`.
+          This page reads `GET /approvals/pending` and posts approval decisions to
+          `POST /approvals/:approval_id/decision`.
         </p>
       </div>
 
@@ -150,23 +193,25 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
               </div>
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>
-                <pre>{selectedApproval.draft_reply}</pre>
+                <textarea value={editedReply} onChange={(event) => setEditedReply(event.target.value)} rows={10} />
               </div>
-              <div className="action-bar action-bar--disabled">
-                <button type="button" disabled>
+              <label className="form-field">
+                <span>Decision note</span>
+                <textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
+              </label>
+              {actionError ? <p className="panel-state panel-state--error">{actionError}</p> : null}
+              {actionMessage ? <p className="panel-state">{actionMessage}</p> : null}
+              <div className="action-bar">
+                <button type="button" disabled={acting} onClick={() => void handleDecision("approve")}>
                   Approve
                 </button>
-                <button type="button" disabled>
+                <button type="button" disabled={acting} onClick={() => void handleDecision("reject")}>
                   Reject
                 </button>
-                <button type="button" disabled>
+                <button type="button" disabled={acting || !editedReply.trim()} onClick={() => void handleDecision("edit")}>
                   Edit
                 </button>
               </div>
-              <p className="muted-note">
-                Decision mutations are intentionally deferred to `P3-T08` so the page ships
-                before approval-write behavior is added.
-              </p>
             </div>
           ) : (
             <p className="panel-state">Select a pending item to review its details.</p>

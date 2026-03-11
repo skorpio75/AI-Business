@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { StatusPill } from "../components/StatusPill";
 import { apiClient } from "../lib/api";
 import { formatConfidence, truncate } from "../lib/format";
-import type { WorkflowRun } from "../types";
+import type { DashboardSummary, WorkflowRun } from "../types";
 
 type WorkflowMonitorPageProps = {
   refreshToken: number;
@@ -14,6 +14,7 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -23,13 +24,17 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
       setError(null);
 
       try {
-        const nextRuns = await apiClient.getWorkflowRuns();
+        const [nextRuns, nextSummary] = await Promise.all([
+          apiClient.getWorkflowRuns(),
+          apiClient.getDashboardSummary(),
+        ]);
         if (!active) {
           return;
         }
 
         const orderedRuns = [...nextRuns].reverse();
         setRuns(orderedRuns);
+        setSummary(nextSummary);
         setSelectedWorkflowId((current) => current ?? orderedRuns[0]?.workflow_id ?? null);
       } catch (loadError) {
         if (!active) {
@@ -84,7 +89,21 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
         </article>
       </div>
 
-      <div className="content-grid">
+      <div className="kpi-grid">
+        {summary?.kpis.map((kpi) => (
+          <article key={kpi.id} className={`panel kpi-card kpi-card--${kpi.tone}`}>
+            <div className="list-card__topline">
+              <p className="eyebrow">{kpi.label}</p>
+              <StatusPill label={kpi.tone} tone={kpi.tone} />
+            </div>
+            <strong>{kpi.value}</strong>
+            <p>{kpi.context}</p>
+            {kpi.footnote ? <span className="muted-note">{kpi.footnote}</span> : null}
+          </article>
+        ))}
+      </div>
+
+      <div className="dashboard-grid">
         <section className="panel">
           <div className="panel-header">
             <div>
@@ -170,6 +189,70 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
           ) : (
             <p className="panel-state">Select a workflow run to inspect it.</p>
           )}
+        </aside>
+
+        <aside className="panel panel--detail assistant-panel">
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">Personal assistant</p>
+              <h3>Today brief</h3>
+            </div>
+            <div className="list-card__topline">
+              <StatusPill label={`inbox ${summary?.personal_assistant.inbox_status ?? "unknown"}`} tone="neutral" />
+              <StatusPill label={`calendar ${summary?.personal_assistant.calendar_status ?? "unknown"}`} tone="neutral" />
+            </div>
+          </div>
+          <div className="assistant-section">
+            <p className="eyebrow">Priorities</p>
+            <div className="stack-list">
+              {summary?.personal_assistant.priorities.map((item) => (
+                <article key={item.title} className="list-card">
+                  <div className="list-card__topline">
+                    <strong>{item.title}</strong>
+                    <StatusPill label={item.urgency} tone={item.urgency === "high" ? "critical" : item.urgency === "medium" ? "warning" : "success"} />
+                  </div>
+                  <p>{item.reason}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+          <div className="assistant-section">
+            <p className="eyebrow">Schedule conflicts</p>
+            <div className="stack-list">
+              {summary?.personal_assistant.schedule_conflicts.length ? (
+                summary.personal_assistant.schedule_conflicts.map((item) => (
+                  <article key={item.title} className="list-card">
+                    <div className="list-card__topline">
+                      <strong>{item.title}</strong>
+                      <StatusPill label={item.severity} tone={item.severity === "critical" ? "critical" : item.severity === "warning" ? "warning" : "neutral"} />
+                    </div>
+                    <p>{item.detail}</p>
+                  </article>
+                ))
+              ) : (
+                <p className="panel-state">No conflicts detected in the current assistant window.</p>
+              )}
+            </div>
+          </div>
+          <div className="assistant-section">
+            <p className="eyebrow">Quick actions</p>
+            <div className="tag-cloud">
+              {summary?.personal_assistant.quick_actions.map((item) => (
+                <span key={item.label} className="tag-chip">
+                  {item.label}
+                </span>
+              ))}
+            </div>
+            <div className="mini-list">
+              <ul>
+                {summary?.personal_assistant.quick_actions.map((item) => (
+                  <li key={`${item.label}-${item.target_view}`}>
+                    <strong>{item.label}</strong>: {item.reason}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </aside>
       </div>
     </section>

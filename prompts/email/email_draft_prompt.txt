@@ -1,0 +1,6 @@
+Write a short professional email reply.
+Return only the reply body text.
+Do not invent commitments.
+
+Subject: ${subject}
+Body: ${body}

@@ -1,23 +1,53 @@
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app.core.settings import get_settings
+from app.knowledge.pgvector_store import PgVectorRetrievalService
 from app.db.repository import get_approval, list_pending_approvals, list_workflow_runs, upsert_approval
 from app.db.session import get_db
+from app.models.agent_contract import AgentContract
 from app.models.schemas import (
     ApprovalDecisionRequest,
     ApprovalItem,
+    DashboardSummaryResponse,
     EmailWorkflowRequest,
     EmailWorkflowResponse,
+    KnowledgeQueryRequest,
+    KnowledgeQueryResponse,
+    ProposalGenerationRequest,
+    ProposalGenerationResponse,
 )
+from app.services.dashboard_summary import DashboardSummaryService
+from app.services.agent_registry import AgentRegistryService
 from app.services.email_workflow import EmailWorkflowService
+from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import ModelGateway
+from app.services.personal_assistant_context import PersonalAssistantContextService
+from app.services.proposal_workflow import ProposalWorkflowService
 
 settings = get_settings()
 gateway = ModelGateway(settings=settings)
 email_workflow = EmailWorkflowService(model_gateway=gateway)
+agent_registry = AgentRegistryService()
+knowledge_qna = KnowledgeQnAService(retrieval_service=PgVectorRetrievalService(), model_gateway=gateway)
+proposal_workflow = ProposalWorkflowService(model_gateway=gateway)
+personal_assistant_context = PersonalAssistantContextService()
+dashboard_summary = DashboardSummaryService()
 
 app = FastAPI(title=settings.app_name)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/healthz")
@@ -36,6 +66,39 @@ def run_email_operations(
     payload: EmailWorkflowRequest, db: Session = Depends(get_db)
 ) -> EmailWorkflowResponse:
     return email_workflow.run(payload, db=db)
+
+
+@app.get("/agents", response_model=list[AgentContract])
+def list_agents_endpoint() -> list[AgentContract]:
+    return agent_registry.list_agents()
+
+
+@app.get("/dashboard/summary", response_model=DashboardSummaryResponse)
+def get_dashboard_summary(db: Session = Depends(get_db)) -> DashboardSummaryResponse:
+    approvals = list_pending_approvals(db)
+    workflow_runs = list_workflow_runs(db)
+    assistant_context = personal_assistant_context.build_context(
+        account_id="ceo-inbox",
+        calendar_id="primary-calendar",
+    )
+    return dashboard_summary.build_summary(
+        agents=agent_registry.list_agents(),
+        approvals=approvals,
+        workflow_runs_count=len(workflow_runs),
+        personal_context=assistant_context,
+    )
+
+
+@app.post("/knowledge/qna", response_model=KnowledgeQueryResponse)
+def run_knowledge_qna(payload: KnowledgeQueryRequest) -> KnowledgeQueryResponse:
+    return knowledge_qna.answer(payload)
+
+
+@app.post("/workflows/proposal-generation/run", response_model=ProposalGenerationResponse)
+def run_proposal_generation(
+    payload: ProposalGenerationRequest,
+) -> ProposalGenerationResponse:
+    return proposal_workflow.run(payload)
 
 
 @app.get("/workflows/runs")

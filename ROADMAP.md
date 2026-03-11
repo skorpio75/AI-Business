@@ -12,7 +12,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 ## Current Snapshot
 - Updated: 2026-03-11
 - Overall Status: `IN_PROGRESS`
-- Active Phase: `Phase 2 - Workflow + Knowledge Foundation`
+- Active Phase: `Phase 3 - Track A Internal MVP Workflows`
 
 ## Phase Tracker
 
@@ -21,7 +21,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 14/14 tasks done |
-| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 3/14 tasks done |
+| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 11/14 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/7 tasks done |
@@ -79,14 +79,14 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
 - [x] P3-T02: Build workflow monitor page
 - [x] P3-T03: Build approval queue page
-- [ ] P3-T04: Build agent activity page
-- [ ] P3-T05: Implement email operations workflow end-to-end
-- [ ] P3-T06: Implement knowledge Q&A workflow end-to-end
-- [ ] P3-T07: Implement proposal generation workflow baseline
-- [ ] P3-T08: Connect approval actions from UI to API
-- [ ] P3-T09: Add Agents org view with avatars/status for corporate + delivery agents
-- [ ] P3-T10: Add KPI widgets (billing, cashflow, delivery health, quality gate status)
-- [ ] P3-T11: Add personal assistant panel (today priorities, schedule conflicts, quick actions)
+- [x] P3-T04: Build agent activity page
+- [x] P3-T05: Implement email operations workflow end-to-end
+- [x] P3-T06: Implement knowledge Q&A workflow end-to-end
+- [x] P3-T07: Implement proposal generation workflow baseline
+- [x] P3-T08: Connect approval actions from UI to API
+- [x] P3-T09: Add Agents org view with avatars/status for corporate + delivery agents
+- [x] P3-T10: Add KPI widgets (billing, cashflow, delivery health, quality gate status)
+- [x] P3-T11: Add personal assistant panel (today priorities, schedule conflicts, quick actions)
 - [ ] P3-T12: Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] P3-T13: Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] P3-T14: Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
@@ -119,6 +119,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P6-T05: Define evaluation dataset strategy
 - [ ] P6-T06: Define rollback and incident process
 - [ ] P6-T07: Define agent-assisted release checklist
+
+### Backlog - Model Routing
+- [ ] B-T01: Define multi-provider routing rules for cloud model usage via LiteLLM (task type, risk, cost, latency, fallback order, local-only policy)
 
 ## Status Log
 
@@ -160,6 +163,14 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added explicit typed specialist contracts for CTO/CIO, Accountant, CFO, and Chief AI / Digital Strategy outputs.
 - Added internal-first agent specs for those roles, including replication-only notes for later Track 2 reuse of CTO/CIO and Chief AI / Digital Strategy patterns.
 - Expanded the agent registry and base agent config to include the new specialist contracts.
+- Added `GET /agents` for agent activity visibility in the UI.
+- Added knowledge Q&A and proposal generation backend services plus their API endpoints.
+- Added agent activity, email operations, knowledge Q&A, and proposal generation pages to the React mission-control UI.
+- Wired approval actions from the approval queue page to the backend decision API.
+- Expanded the agent registry to reflect a fuller corporate and delivery roster for mission-control views.
+- Added a dedicated Agents org view with grouped avatar/status cards.
+- Added dashboard KPI widgets for billing, cashflow, delivery health, and quality gate status.
+- Added a personal assistant summary panel fed by a new dashboard summary endpoint.
 
 ## Next Action
-Start `P3-T04`: build the agent activity page.
+Start `P3-T12`: add the CTO/CIO panel, then the finance cockpit and Chief AI / Digital Strategy panels.

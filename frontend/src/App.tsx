@@ -1,5 +1,10 @@
 import { startTransition, useState } from "react";
 
+import { AgentActivityPage } from "./pages/AgentActivityPage";
+import { AgentsOrgPage } from "./pages/AgentsOrgPage";
+import { EmailOperationsPage } from "./pages/EmailOperationsPage";
+import { KnowledgeQnaPage } from "./pages/KnowledgeQnaPage";
+import { ProposalGenerationPage } from "./pages/ProposalGenerationPage";
 import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
 import type { ViewKey } from "./types";
@@ -13,7 +18,32 @@ const VIEWS: Array<{ id: ViewKey; label: string; description: string }> = [
   {
     id: "approval-queue",
     label: "Approval Queue",
-    description: "Review pending decisions before action wiring lands.",
+    description: "Review pending decisions and resolve them from the UI.",
+  },
+  {
+    id: "agent-activity",
+    label: "Agent Activity",
+    description: "Inspect registered agents, runtime states, and deployment policies.",
+  },
+  {
+    id: "agents-org",
+    label: "Agents Org",
+    description: "See corporate and delivery agents as an operating roster.",
+  },
+  {
+    id: "email-operations",
+    label: "Email Operations",
+    description: "Trigger the email workflow and feed the approval queue.",
+  },
+  {
+    id: "knowledge-qna",
+    label: "Knowledge Q&A",
+    description: "Run grounded internal Q&A against the knowledge store.",
+  },
+  {
+    id: "proposal-generation",
+    label: "Proposal Generation",
+    description: "Create a baseline consulting proposal from opportunity context.",
   },
 ];
 
@@ -77,6 +107,15 @@ export default function App() {
           {activeView === "approval-queue" ? (
             <ApprovalQueuePage refreshToken={refreshToken} />
           ) : null}
+          {activeView === "agent-activity" ? (
+            <AgentActivityPage refreshToken={refreshToken} />
+          ) : null}
+          {activeView === "agents-org" ? <AgentsOrgPage refreshToken={refreshToken} /> : null}
+          {activeView === "email-operations" ? (
+            <EmailOperationsPage onCreated={() => setRefreshToken((value) => value + 1)} />
+          ) : null}
+          {activeView === "knowledge-qna" ? <KnowledgeQnaPage /> : null}
+          {activeView === "proposal-generation" ? <ProposalGenerationPage /> : null}
         </div>
       </main>
     </div>

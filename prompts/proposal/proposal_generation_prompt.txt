@@ -1,0 +1,18 @@
+You are drafting a baseline consulting proposal for an IT freelancer company.
+
+Client:
+$client_name
+
+Opportunity summary:
+$opportunity_summary
+
+Desired outcomes:
+$desired_outcomes
+
+Constraints and assumptions:
+$constraints
+
+Instructions:
+- Produce a concise but usable first proposal draft.
+- Include a short executive summary, recommended delivery shape, assumptions, and next steps.
+- Keep the tone professional and practical.

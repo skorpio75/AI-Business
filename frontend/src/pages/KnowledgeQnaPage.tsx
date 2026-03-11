@@ -1,0 +1,108 @@
+import { useState } from "react";
+
+import { StatusPill } from "../components/StatusPill";
+import { apiClient } from "../lib/api";
+import type { KnowledgeQueryResponse } from "../types";
+
+export function KnowledgeQnaPage() {
+  const [question, setQuestion] = useState("");
+  const [limit, setLimit] = useState(3);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<KnowledgeQueryResponse | null>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const nextResult = await apiClient.runKnowledgeQna({ question, limit });
+      setResult(nextResult);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "unknown_error");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <section className="page-grid">
+      <div className="hero-card hero-card--mint">
+        <div>
+          <p className="eyebrow">Knowledge Q&A</p>
+          <h2>Ask grounded questions against the internal knowledge store.</h2>
+        </div>
+        <p className="hero-copy">
+          This page submits to `POST /knowledge/qna` and returns the answer plus source citations.
+        </p>
+      </div>
+
+      <div className="content-grid">
+        <form className="panel form-panel" onSubmit={handleSubmit}>
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">Question</p>
+              <h3>Knowledge query</h3>
+            </div>
+          </div>
+          <label className="form-field">
+            <span>Question</span>
+            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} rows={6} required />
+          </label>
+          <label className="form-field">
+            <span>Source limit</span>
+            <select value={limit} onChange={(event) => setLimit(Number(event.target.value))}>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              <option value={5}>5</option>
+            </select>
+          </label>
+          {error ? <p className="panel-state panel-state--error">{error}</p> : null}
+          <button className="refresh-button" type="submit" disabled={submitting}>
+            {submitting ? "Searching..." : "Ask question"}
+          </button>
+        </form>
+
+        <aside className="panel panel--detail">
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">Answer</p>
+              <h3>{result?.grounded ? "Grounded response" : "No answer yet"}</h3>
+            </div>
+          </div>
+          {result ? (
+            <div className="detail-stack">
+              <div className="detail-row">
+                <span>Grounded</span>
+                <StatusPill label={result.grounded ? "yes" : "no"} tone={result.grounded ? "success" : "critical"} />
+              </div>
+              <div className="detail-row">
+                <span>Model path</span>
+                <strong>
+                  {result.provider_used} / {result.model_used}
+                </strong>
+              </div>
+              <div className="draft-block">
+                <p className="eyebrow">Answer</p>
+                <pre>{result.answer}</pre>
+              </div>
+              <div className="mini-list">
+                <p className="eyebrow">Citations</p>
+                <ul>
+                  {result.citations.map((citation) => (
+                    <li key={`${citation.source_path}-${citation.title}`}>
+                      <strong>{citation.title}</strong>: {citation.snippet}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <p className="panel-state">Ask a grounded question to see the answer and source evidence.</p>
+          )}
+        </aside>
+      </div>
+    </section>
+  );
+}

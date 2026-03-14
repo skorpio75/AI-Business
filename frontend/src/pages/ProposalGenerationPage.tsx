@@ -1,5 +1,10 @@
 import { useState } from "react";
 
+import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
+import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
 import { apiClient } from "../lib/api";
 import type { ProposalGenerationResponse } from "../types";
 
@@ -55,11 +60,11 @@ export function ProposalGenerationPage() {
           </div>
           <label className="form-field">
             <span>Client name</span>
-            <input value={clientName} onChange={(event) => setClientName(event.target.value)} required />
+            <Input value={clientName} onChange={(event) => setClientName(event.target.value)} required />
           </label>
           <label className="form-field">
             <span>Opportunity summary</span>
-            <textarea
+            <Textarea
               value={opportunitySummary}
               onChange={(event) => setOpportunitySummary(event.target.value)}
               rows={7}
@@ -68,7 +73,7 @@ export function ProposalGenerationPage() {
           </label>
           <label className="form-field">
             <span>Desired outcomes (one per line)</span>
-            <textarea
+            <Textarea
               value={desiredOutcomes}
               onChange={(event) => setDesiredOutcomes(event.target.value)}
               rows={4}
@@ -76,12 +81,12 @@ export function ProposalGenerationPage() {
           </label>
           <label className="form-field">
             <span>Constraints (one per line)</span>
-            <textarea value={constraints} onChange={(event) => setConstraints(event.target.value)} rows={4} />
+            <Textarea value={constraints} onChange={(event) => setConstraints(event.target.value)} rows={4} />
           </label>
           {error ? <p className="panel-state panel-state--error">{error}</p> : null}
-          <button className="refresh-button" type="submit" disabled={submitting}>
+          <Button className="refresh-button" type="submit" disabled={submitting}>
             {submitting ? "Generating..." : "Generate proposal"}
-          </button>
+          </Button>
         </form>
 
         <aside className="panel panel--detail">
@@ -103,6 +108,19 @@ export function ProposalGenerationPage() {
                   {result.provider_used} / {result.model_used}
                 </strong>
               </div>
+              <div className="detail-row">
+                <span>Local LLM</span>
+                <StatusPill
+                  label={result.local_llm_invoked ? "invoked" : "not invoked"}
+                  tone={result.local_llm_invoked ? "success" : "neutral"}
+                />
+              </div>
+              <ModelRouteIndicator
+                providerUsed={result.provider_used}
+                modelUsed={result.model_used}
+                localLlmInvoked={result.local_llm_invoked}
+                cloudLlmInvoked={result.cloud_llm_invoked}
+              />
               <div className="callout callout--soft">
                 <p className="eyebrow">Executive summary</p>
                 <strong>{result.executive_summary}</strong>

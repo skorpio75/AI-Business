@@ -21,6 +21,8 @@ class GenerationResult:
     provider_used: str
     model_used: str
     escalation_reason: Optional[str] = None
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
 
 
 @dataclass
@@ -28,6 +30,8 @@ class TextGenerationResult:
     content: str
     provider_used: str
     model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
 
 
 class ModelGateway:
@@ -64,9 +68,11 @@ class ModelGateway:
             model_used="rules-v1",
         )
 
-    def _call_model(self, *, provider: str, model: str, prompt: str) -> Optional[GenerationResult]:
+    def _call_model(
+        self, *, provider: str, model: str, prompt: str
+    ) -> tuple[Optional[GenerationResult], bool]:
         if completion is None:
-            return None
+            return None, False
 
         kwargs = {
             "model": model,
@@ -86,15 +92,20 @@ class ModelGateway:
             response = completion(**kwargs)
             content = response.choices[0].message.content
             payload = json.loads(content)
-            return GenerationResult(
-                intent=str(payload["intent"]),
-                confidence=float(payload["confidence"]),
-                draft_reply=str(payload["draft_reply"]),
-                provider_used=provider,
-                model_used=model,
+            return (
+                GenerationResult(
+                    intent=str(payload["intent"]),
+                    confidence=float(payload["confidence"]),
+                    draft_reply=str(payload["draft_reply"]),
+                    provider_used=provider,
+                    model_used=model,
+                    local_llm_invoked=provider == "local",
+                    cloud_llm_invoked=provider == "cloud",
+                ),
+                True,
             )
         except Exception:
-            return None
+            return None, True
 
     def _ollama_request(self, *, path: str, payload: Optional[dict] = None) -> Optional[dict]:
         body = None
@@ -171,10 +182,12 @@ class ModelGateway:
         self._resolved_local_model = available[0]
         return self._resolved_local_model
 
-    def _call_local_ollama_structured(self, *, prompt: str) -> Optional[GenerationResult]:
+    def _call_local_ollama_structured(
+        self, *, prompt: str
+    ) -> tuple[Optional[GenerationResult], bool]:
         model_name = self._resolve_local_model_name()
         if not model_name:
-            return None
+            return None, False
 
         payload = self._ollama_request(
             path="/api/generate",
@@ -187,24 +200,30 @@ class ModelGateway:
             },
         )
         if not payload:
-            return None
+            return None, True
 
         content = str(payload.get("response") or "").strip()
         parsed = self._parse_json_object(content)
         if not parsed:
-            return None
+            return None, True
 
-        return GenerationResult(
-            intent=str(parsed["intent"]),
-            confidence=float(parsed["confidence"]),
-            draft_reply=str(parsed["draft_reply"]),
-            provider_used="local",
-            model_used=f"ollama/{model_name}",
+        return (
+            GenerationResult(
+                intent=str(parsed["intent"]),
+                confidence=float(parsed["confidence"]),
+                draft_reply=str(parsed["draft_reply"]),
+                provider_used="local",
+                model_used=f"ollama/{model_name}",
+                local_llm_invoked=True,
+            ),
+            True,
         )
 
-    def _call_text_model(self, *, provider: str, model: str, prompt: str) -> Optional[TextGenerationResult]:
+    def _call_text_model(
+        self, *, provider: str, model: str, prompt: str
+    ) -> tuple[Optional[TextGenerationResult], bool]:
         if completion is None:
-            return None
+            return None, False
 
         kwargs = {
             "model": model,
@@ -223,18 +242,25 @@ class ModelGateway:
         try:
             response = completion(**kwargs)
             content = response.choices[0].message.content
-            return TextGenerationResult(
-                content=str(content),
-                provider_used=provider,
-                model_used=model,
+            return (
+                TextGenerationResult(
+                    content=str(content),
+                    provider_used=provider,
+                    model_used=model,
+                    local_llm_invoked=provider == "local",
+                    cloud_llm_invoked=provider == "cloud",
+                ),
+                True,
             )
         except Exception:
-            return None
+            return None, True
 
-    def _call_local_ollama_text(self, *, prompt: str) -> Optional[TextGenerationResult]:
+    def _call_local_ollama_text(
+        self, *, prompt: str
+    ) -> tuple[Optional[TextGenerationResult], bool]:
         model_name = self._resolve_local_model_name()
         if not model_name:
-            return None
+            return None, False
 
         payload = self._ollama_request(
             path="/api/generate",
@@ -246,16 +272,20 @@ class ModelGateway:
             },
         )
         if not payload:
-            return None
+            return None, True
 
         content = str(payload.get("response") or "").strip()
         if not content:
-            return None
+            return None, True
 
-        return TextGenerationResult(
-            content=content,
-            provider_used="local",
-            model_used=f"ollama/{model_name}",
+        return (
+            TextGenerationResult(
+                content=content,
+                provider_used="local",
+                model_used=f"ollama/{model_name}",
+                local_llm_invoked=True,
+            ),
+            True,
         )
 
     def draft_email(
@@ -282,9 +312,11 @@ class ModelGateway:
             thread_context=thread_context or "none",
         )
 
-        local_result = self._call_local_ollama_structured(prompt=prompt)
+        local_result, local_structured_invoked = self._call_local_ollama_structured(prompt=prompt)
+        local_llm_invoked = local_structured_invoked
         if local_result is None:
-            local_text = self._call_local_ollama_text(prompt=draft_prompt)
+            local_text, local_text_invoked = self._call_local_ollama_text(prompt=draft_prompt)
+            local_llm_invoked = local_llm_invoked or local_text_invoked
             if local_text is not None:
                 intent, confidence = self._heuristic_classification(subject, body)
                 local_result = GenerationResult(
@@ -293,9 +325,13 @@ class ModelGateway:
                     draft_reply=local_text.content,
                     provider_used=local_text.provider_used,
                     model_used=local_text.model_used,
+                    local_llm_invoked=local_llm_invoked,
+                    cloud_llm_invoked=local_text.cloud_llm_invoked,
                 )
         if local_result is None:
-            return self._heuristic_fallback(subject, body)
+            fallback_result = self._heuristic_fallback(subject, body)
+            fallback_result.local_llm_invoked = local_llm_invoked
+            return fallback_result
 
         needs_cloud = (
             not self.settings.force_local_only
@@ -307,40 +343,52 @@ class ModelGateway:
         )
 
         if not needs_cloud:
+            local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             return local_result
 
         if not self.settings.openrouter_api_key:
+            local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             local_result.escalation_reason = "cloud_unconfigured_used_local"
             return local_result
 
-        cloud_result = self._call_model(
+        cloud_result, cloud_llm_invoked = self._call_model(
             provider="cloud",
             model=f"openrouter/{self.settings.cloud_model}",
             prompt=prompt,
         )
         if cloud_result is None:
+            local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
+            local_result.cloud_llm_invoked = cloud_llm_invoked
             local_result.escalation_reason = "cloud_unavailable_used_local"
             return local_result
 
+        cloud_result.local_llm_invoked = local_llm_invoked
+        cloud_result.cloud_llm_invoked = cloud_llm_invoked or cloud_result.cloud_llm_invoked
         cloud_result.escalation_reason = "routed_to_cloud"
         return cloud_result
 
     def generate_text(self, *, prompt: str, fallback_content: str) -> TextGenerationResult:
-        local_result = self._call_local_ollama_text(prompt=prompt)
+        local_result, local_llm_invoked = self._call_local_ollama_text(prompt=prompt)
         if local_result is not None:
+            local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             return local_result
 
+        cloud_llm_invoked = False
         if not self.settings.force_local_only and self.settings.openrouter_api_key:
-            cloud_result = self._call_text_model(
+            cloud_result, cloud_llm_invoked = self._call_text_model(
                 provider="cloud",
                 model=f"openrouter/{self.settings.cloud_model}",
                 prompt=prompt,
             )
             if cloud_result is not None:
+                cloud_result.local_llm_invoked = local_llm_invoked
+                cloud_result.cloud_llm_invoked = cloud_llm_invoked or cloud_result.cloud_llm_invoked
                 return cloud_result
 
         return TextGenerationResult(
             content=fallback_content,
             provider_used="fallback-rule",
             model_used="rules-v1",
+            local_llm_invoked=local_llm_invoked,
+            cloud_llm_invoked=cloud_llm_invoked,
         )

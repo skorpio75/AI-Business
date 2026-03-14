@@ -1,6 +1,11 @@
 import { useState } from "react";
 
+import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
 import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Select } from "../components/ui/select";
+import { Textarea } from "../components/ui/textarea";
 import { apiClient } from "../lib/api";
 import { formatConfidence } from "../lib/format";
 import type { WorkflowRun } from "../types";
@@ -64,19 +69,19 @@ export function EmailOperationsPage({ onCreated }: EmailOperationsPageProps) {
           </div>
           <label className="form-field">
             <span>Sender</span>
-            <input value={sender} onChange={(event) => setSender(event.target.value)} required />
+            <Input value={sender} onChange={(event) => setSender(event.target.value)} required />
           </label>
           <label className="form-field">
             <span>Subject</span>
-            <input value={subject} onChange={(event) => setSubject(event.target.value)} required />
+            <Input value={subject} onChange={(event) => setSubject(event.target.value)} required />
           </label>
           <label className="form-field">
             <span>Body</span>
-            <textarea value={body} onChange={(event) => setBody(event.target.value)} rows={8} required />
+            <Textarea value={body} onChange={(event) => setBody(event.target.value)} rows={8} required />
           </label>
           <label className="form-field">
             <span>Thread context</span>
-            <textarea
+            <Textarea
               value={threadContext}
               onChange={(event) => setThreadContext(event.target.value)}
               rows={4}
@@ -84,16 +89,16 @@ export function EmailOperationsPage({ onCreated }: EmailOperationsPageProps) {
           </label>
           <label className="form-field">
             <span>Risk level</span>
-            <select value={riskLevel} onChange={(event) => setRiskLevel(event.target.value as typeof riskLevel)}>
+            <Select value={riskLevel} onChange={(event) => setRiskLevel(event.target.value as typeof riskLevel)}>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
-            </select>
+            </Select>
           </label>
           {error ? <p className="panel-state panel-state--error">{error}</p> : null}
-          <button className="refresh-button" type="submit" disabled={submitting}>
+          <Button className="refresh-button" type="submit" disabled={submitting}>
             {submitting ? "Running..." : "Run workflow"}
-          </button>
+          </Button>
         </form>
 
         <aside className="panel panel--detail">
@@ -117,6 +122,19 @@ export function EmailOperationsPage({ onCreated }: EmailOperationsPageProps) {
                 <span>Approval ID</span>
                 <code>{result.approval_id}</code>
               </div>
+              <div className="detail-row">
+                <span>Local LLM</span>
+                <StatusPill
+                  label={result.local_llm_invoked ? "invoked" : "not invoked"}
+                  tone={result.local_llm_invoked ? "success" : "neutral"}
+                />
+              </div>
+              <ModelRouteIndicator
+                providerUsed={result.provider_used}
+                modelUsed={result.model_used}
+                localLlmInvoked={result.local_llm_invoked}
+                cloudLlmInvoked={result.cloud_llm_invoked}
+              />
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>
                 <pre>{result.draft_reply}</pre>

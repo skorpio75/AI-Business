@@ -1,6 +1,10 @@
 import { useState } from "react";
 
+import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
 import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/ui/button";
+import { Select } from "../components/ui/select";
+import { Textarea } from "../components/ui/textarea";
 import { apiClient } from "../lib/api";
 import type { KnowledgeQueryResponse } from "../types";
 
@@ -48,20 +52,20 @@ export function KnowledgeQnaPage() {
           </div>
           <label className="form-field">
             <span>Question</span>
-            <textarea value={question} onChange={(event) => setQuestion(event.target.value)} rows={6} required />
+            <Textarea value={question} onChange={(event) => setQuestion(event.target.value)} rows={6} required />
           </label>
           <label className="form-field">
             <span>Source limit</span>
-            <select value={limit} onChange={(event) => setLimit(Number(event.target.value))}>
+            <Select value={limit} onChange={(event) => setLimit(Number(event.target.value))}>
               <option value={2}>2</option>
               <option value={3}>3</option>
               <option value={5}>5</option>
-            </select>
+            </Select>
           </label>
           {error ? <p className="panel-state panel-state--error">{error}</p> : null}
-          <button className="refresh-button" type="submit" disabled={submitting}>
+          <Button className="refresh-button" type="submit" disabled={submitting}>
             {submitting ? "Searching..." : "Ask question"}
-          </button>
+          </Button>
         </form>
 
         <aside className="panel panel--detail">
@@ -83,6 +87,19 @@ export function KnowledgeQnaPage() {
                   {result.provider_used} / {result.model_used}
                 </strong>
               </div>
+              <div className="detail-row">
+                <span>Local LLM</span>
+                <StatusPill
+                  label={result.local_llm_invoked ? "invoked" : "not invoked"}
+                  tone={result.local_llm_invoked ? "success" : "neutral"}
+                />
+              </div>
+              <ModelRouteIndicator
+                providerUsed={result.provider_used}
+                modelUsed={result.model_used}
+                localLlmInvoked={result.local_llm_invoked}
+                cloudLlmInvoked={result.cloud_llm_invoked}
+              />
               <div className="draft-block">
                 <p className="eyebrow">Answer</p>
                 <pre>{result.answer}</pre>

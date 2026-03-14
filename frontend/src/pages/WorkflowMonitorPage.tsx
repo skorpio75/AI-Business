@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
 import { StatusPill } from "../components/StatusPill";
 import { apiClient } from "../lib/api";
 import { formatConfidence, truncate } from "../lib/format";
@@ -140,6 +141,13 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 </div>
                 <h4>{run.intent}</h4>
                 <p>{truncate(run.draft_reply, 118)}</p>
+                <ModelRouteIndicator
+                  providerUsed={run.provider_used}
+                  modelUsed={run.model_used}
+                  localLlmInvoked={run.local_llm_invoked}
+                  cloudLlmInvoked={run.cloud_llm_invoked}
+                  compact
+                />
                 <div className="list-card__meta">
                   <span>{run.provider_used}</span>
                   <span>{truncate(run.model_used, 28)}</span>
@@ -184,9 +192,22 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 </strong>
               </div>
               <div className="detail-row">
+                <span>Local LLM</span>
+                <StatusPill
+                  label={selectedRun.local_llm_invoked ? "invoked" : "not invoked"}
+                  tone={selectedRun.local_llm_invoked ? "success" : "neutral"}
+                />
+              </div>
+              <div className="detail-row">
                 <span>Confidence</span>
                 <strong>{formatConfidence(selectedRun.confidence)}</strong>
               </div>
+              <ModelRouteIndicator
+                providerUsed={selectedRun.provider_used}
+                modelUsed={selectedRun.model_used}
+                localLlmInvoked={selectedRun.local_llm_invoked}
+                cloudLlmInvoked={selectedRun.cloud_llm_invoked}
+              />
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>
                 <pre>{selectedRun.draft_reply}</pre>

@@ -9,7 +9,7 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
 ## Current Status
-The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus an initial `frontend/` React mission-control scaffold with a workflow monitor, approval queue, and personal assistant summary fed by configurable inbox/calendar connectors.
+The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus an initial `frontend/` React mission-control scaffold with a workflow monitor, approval queue, explicit model-routing visibility, and personal assistant summary fed by configurable inbox/calendar connectors.
 
 ## Principles
 - open source first
@@ -78,6 +78,11 @@ Deliver one internal instance for real usage and one client-ready deployment tem
 ## Delivery Philosophy
 Start with a small, serious foundation. Do not over-engineer the first version.
 
+## Documentation Rule
+- Keep markdown governance files aligned as part of every material change.
+- `ROADMAP.md` is the status source of truth and `TODO.md` is the short execution view derived from it.
+- When architecture, integrations, workflow scope, or implementation status changes, update the affected markdown files in the same change.
+
 ## MVP Slice 1 (Working)
 - Use case: inbox triage + draft reply + CEO approval.
 - Backend: FastAPI endpoint for `email-operations`.
@@ -144,6 +149,12 @@ npm install
 npm run dev
 ```
 
+Daily startup shortcut:
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\dev_start.ps1
+```
+This script starts Docker, initializes the database, creates `frontend\.env` from `frontend\.env.example` if needed, installs frontend dependencies on first run, and opens separate backend/frontend PowerShell windows.
+
 ## API Endpoints (Current)
 - `GET /healthz`
 - `POST /workflows/email-operations/run`
@@ -158,6 +169,7 @@ The personal assistant backend can now fetch real inbox and calendar data when c
 - `CALENDAR_CONNECTOR=google_calendar` uses `GOOGLE_ACCESS_TOKEN` against Google Calendar.
 - `INBOX_CONNECTOR=outlook` or `microsoft_graph` uses `MICROSOFT_GRAPH_ACCESS_TOKEN` against Microsoft 365 mail.
 - `CALENDAR_CONNECTOR=outlook` or `microsoft_graph` uses `MICROSOFT_GRAPH_ACCESS_TOKEN` against Microsoft 365 calendar.
+- If `MICROSOFT_GRAPH_REFRESH_TOKEN` is configured, the backend refreshes the Microsoft Graph access token automatically each time the API starts.
 
 Use `PERSONAL_ASSISTANT_ACCOUNT_ID` and `PERSONAL_ASSISTANT_CALENDAR_ID` to target the mailbox/calendar, and keep both connector settings at `null` if you want the previous placeholder behavior.
 
@@ -172,7 +184,7 @@ Then run:
 .venv\Scripts\python.exe scripts\microsoft_graph_device_code.py
 ```
 
-That script starts a Microsoft device-code flow and writes the resulting `MICROSOFT_GRAPH_ACCESS_TOKEN` into `.env` automatically. The Azure app still needs delegated Graph permissions for `Mail.Read` and `Calendars.Read`.
+That script starts a Microsoft device-code flow and writes the resulting `MICROSOFT_GRAPH_ACCESS_TOKEN` and `MICROSOFT_GRAPH_REFRESH_TOKEN` into `.env` automatically. After that initial bootstrap, backend startup refreshes the access token automatically. The Azure app still needs delegated Graph permissions for `Mail.Read` and `Calendars.Read`.
 
 ### Outlook Send Approval Flow
 Inbox-derived email workflows now carry the source Outlook message ID through the approval queue. When a CEO approves such an item, the backend sends the reply through Microsoft Graph using the source message reply endpoint.

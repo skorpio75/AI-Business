@@ -2,7 +2,7 @@
 
 ## Current Focus
 - Active phase: `Phase 3 - Track A Internal MVP Workflows`
-- Immediate goal: turn the current backend foundation into a usable operator workflow UI
+- Immediate goal: finish provider auth/bootstrap and secret handling, then expand specialist operator panels on top of the `shadcn/ui` mission-control foundation
 
 ## Now
 - [x] `P3-T01` Scaffold React mission-control app
@@ -15,16 +15,16 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [x] `P3-T09` Add Agents org view with avatars/status for corporate + delivery agents
-- [x] `P3-T10` Add KPI widgets (billing, cashflow, delivery health, quality gate status)
-- [x] `P3-T11` Add personal assistant panel (today priorities, schedule conflicts, quick actions)
+- [ ] `P3-T16` Add OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
 
 ## Soon After
 - [ ] `P3-T12` Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
-- [ ] `P3-T16` Add OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
-- [ ] `P3-T20` Add explicit routing badges for local model, cloud route, and fallback-rule execution
+
+## Recently Finished
+- [x] `P3-T01A` Adopt `shadcn/ui` + Tailwind foundation and migrate shared mission-control UI primitives
+- [x] `P3-T20` Add explicit routing badges for local model, cloud route, fallback-rule execution, and local LLM invocation status
 
 ## Watchlist
 - [ ] Keep `ROADMAP.md` as the full source of truth

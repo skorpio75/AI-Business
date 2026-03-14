@@ -157,7 +157,7 @@ Integrate OpenClaw later as an edge channel/runtime adapter after:
 - workflow contracts are stable
 - memory model is implemented
 - approval model is stable
-- operator UI baseline exists
+- provider auth/bootstrap and secret lifecycle are stable
 
 ## Future Integration Document Extensions
 - connector-specific schemas
@@ -166,12 +166,22 @@ Integrate OpenClaw later as an edge channel/runtime adapter after:
 - session correlation IDs
 - error handling and retry policy
 
-## Initial Provider Support
-The current backend now supports read-side connector implementations for:
+## Current Provider Support
+The current backend supports the following provider capabilities:
 
+### Read-side context ingestion
 - Gmail inbox fetch via Google APIs
 - Google Calendar event fetch
 - Microsoft Graph mailbox fetch
 - Microsoft Graph calendar fetch
 
-These connectors are selected through environment settings and intentionally remain read-first for MVP governance. External send/write actions should continue to require explicit approval and separate execution steps.
+### Approval-bound execution
+- Microsoft Graph reply send for approved Outlook-originated email workflows
+
+These connectors are selected through environment settings. Write actions remain approval-bound in MVP and execute only through platform-controlled paths after approval is recorded here.
+
+## Current Integration Gaps
+- OAuth/bootstrap flow for Gmail, Google Calendar, and Microsoft Graph
+- secret storage and rotation strategy
+- refresh-token lifecycle handling across providers
+- connector diagnostics for token/bootstrap state beyond the current health views

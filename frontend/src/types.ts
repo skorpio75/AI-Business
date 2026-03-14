@@ -7,6 +7,8 @@ export type WorkflowRun = {
   draft_reply: string;
   provider_used: string;
   model_used: string;
+  local_llm_invoked: boolean;
+  cloud_llm_invoked: boolean;
   escalation_reason?: string | null;
   approval_status: "pending" | "approved" | "rejected" | "edited";
   send_status: "pending" | "sent" | "not_applicable";
@@ -139,6 +141,8 @@ export type KnowledgeQueryResponse = {
   grounded: boolean;
   provider_used: string;
   model_used: string;
+  local_llm_invoked: boolean;
+  cloud_llm_invoked: boolean;
 };
 
 export type ProposalGenerationResponse = {
@@ -150,6 +154,8 @@ export type ProposalGenerationResponse = {
   next_steps: string[];
   provider_used: string;
   model_used: string;
+  local_llm_invoked: boolean;
+  cloud_llm_invoked: boolean;
 };
 
 export type DashboardKpi = {

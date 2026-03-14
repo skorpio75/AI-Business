@@ -1,6 +1,12 @@
 # Epics
 
+## Status Legend
+- `NOT_STARTED`
+- `IN_PROGRESS`
+- `DONE`
+
 ## Epic 1 - Project Foundation
+- Status: `IN_PROGRESS`
 ### Outcome
 A clean repo, documentation system, and project conventions.
 
@@ -16,6 +22,7 @@ A clean repo, documentation system, and project conventions.
 - two-track scope is documented
 
 ## Epic 2 - Core Platform Foundation
+- Status: `DONE`
 ### Outcome
 A runnable backend with config, persistence, and model access.
 
@@ -34,6 +41,7 @@ A runnable backend with config, persistence, and model access.
 - model gateway can answer a test prompt
 
 ## Epic 3 - Workflow Engine
+- Status: `DONE`
 ### Outcome
 Reusable deterministic workflows with approval checkpoints.
 
@@ -47,6 +55,7 @@ Reusable deterministic workflows with approval checkpoints.
 - workflow state is persisted
 
 ## Epic 4 - Knowledge Layer
+- Status: `DONE`
 ### Outcome
 Documents can be ingested and used for grounded answers.
 
@@ -62,11 +71,14 @@ Documents can be ingested and used for grounded answers.
 - retrieval returns relevant chunks
 
 ## Epic 5 - Track A Internal Operations MVP
+- Status: `IN_PROGRESS`
 ### Outcome
 The internal business can run key workflows with one human approver.
 
 ### Main tech components
 - React
+- `shadcn/ui`
+- Tailwind
 - FastAPI
 - LangGraph
 - LiteLLM
@@ -77,8 +89,15 @@ The internal business can run key workflows with one human approver.
 - knowledge workflow works
 - proposal workflow produces drafts
 - approval UI is usable
+- provider-backed inbox/calendar context is visible in Mission Control
+- approved Outlook replies can execute through Microsoft Graph after approval
+
+### Current remaining scope
+- OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
+- CTO/CIO, finance, and Chief AI / Digital Strategy panels
 
 ## Epic 6 - Track B Client Template MVP
+- Status: `NOT_STARTED`
 ### Outcome
 A reproducible isolated client platform can be deployed quickly.
 
@@ -95,6 +114,7 @@ A reproducible isolated client platform can be deployed quickly.
 - workflows run with client-specific context
 
 ## Epic 7 - Observability
+- Status: `NOT_STARTED`
 ### Outcome
 The platform provides traces and debugging visibility.
 
@@ -107,6 +127,7 @@ The platform provides traces and debugging visibility.
 - model usage visible
 
 ## Epic 8 - Testing Foundation
+- Status: `NOT_STARTED`
 ### Outcome
 Reliable automated tests for core modules and workflows.
 
@@ -120,6 +141,7 @@ Reliable automated tests for core modules and workflows.
 - workflow tests cover main branches
 
 ## Epic 9 - Later Ops Automation
+- Status: `NOT_STARTED`
 ### Outcome
 Controlled delivery pipeline with agent support for repetitive engineering work.
 

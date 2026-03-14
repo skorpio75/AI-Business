@@ -8,6 +8,9 @@ This document lists the canonical agents used to run an IT freelancer company wi
 - Agents can execute routine tasks within workflow and policy constraints.
 - No autonomous external commitment in MVP without CEO approval.
 - Track 1 internal agents own their own state and memory. If an agent pattern is reused for Track 2 client services, it must be replicated as a separate agent/instance, not shared.
+- When implementation, architecture, workflow scope, integrations, or priorities change, update all affected markdown governance files in the same work session to keep them aligned.
+- `ROADMAP.md` is the implementation status source of truth. `TODO.md` is the short execution view derived from it.
+- At minimum, review `ROADMAP.md`, `TODO.md`, `ARCHITECTURE.md`, `EPICS.md`, `INTEGRATIONS.md`, and `DECISIONS.md` for drift whenever a material change is made.
 
 ## Corporate Function Agents
 ### Email Agent

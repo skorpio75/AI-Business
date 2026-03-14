@@ -57,6 +57,8 @@ class EmailWorkflowRunner(BaseLangGraphRunner):
         workflow.outputs["confidence"] = result.confidence
         workflow.outputs["provider_used"] = result.provider_used
         workflow.outputs["model_used"] = result.model_used
+        workflow.outputs["local_llm_invoked"] = result.local_llm_invoked
+        workflow.outputs["cloud_llm_invoked"] = result.cloud_llm_invoked
         mark_step_completed(
             workflow,
             "draft_email",
@@ -131,6 +133,8 @@ class EmailWorkflowService:
             provider_used=result.provider_used,
             model_used=result.model_used,
             escalation_reason=result.escalation_reason,
+            local_llm_invoked=result.local_llm_invoked,
+            cloud_llm_invoked=result.cloud_llm_invoked,
             approval_status="pending",
             send_status="pending" if payload.source_message_id and payload.source_provider else "not_applicable",
             source_provider=payload.source_provider,

@@ -1,6 +1,9 @@
 import { useDeferredValue, useEffect, useState } from "react";
 
 import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
 import { apiClient } from "../lib/api";
 import { formatDateTime, truncate } from "../lib/format";
 import type { ApprovalItem } from "../types";
@@ -135,7 +138,7 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
             </div>
             <label className="search-field">
               <span>Filter</span>
-              <input
+              <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Sender, subject, workflow id"
@@ -197,24 +200,29 @@ export function ApprovalQueuePage({ refreshToken }: ApprovalQueuePageProps) {
               </div>
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>
-                <textarea value={editedReply} onChange={(event) => setEditedReply(event.target.value)} rows={10} />
+                <Textarea value={editedReply} onChange={(event) => setEditedReply(event.target.value)} rows={10} />
               </div>
               <label className="form-field">
                 <span>Decision note</span>
-                <textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
+                <Textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} />
               </label>
               {actionError ? <p className="panel-state panel-state--error">{actionError}</p> : null}
               {actionMessage ? <p className="panel-state">{actionMessage}</p> : null}
               <div className="action-bar">
-                <button type="button" disabled={acting} onClick={() => void handleDecision("approve")}>
+                <Button type="button" disabled={acting} onClick={() => void handleDecision("approve")}>
                   Approve
-                </button>
-                <button type="button" disabled={acting} onClick={() => void handleDecision("reject")}>
+                </Button>
+                <Button type="button" disabled={acting} onClick={() => void handleDecision("reject")} variant="outline">
                   Reject
-                </button>
-                <button type="button" disabled={acting || !editedReply.trim()} onClick={() => void handleDecision("edit")}>
+                </Button>
+                <Button
+                  type="button"
+                  disabled={acting || !editedReply.trim()}
+                  onClick={() => void handleDecision("edit")}
+                  variant="secondary"
+                >
                   Save draft
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

@@ -1,3 +1,5 @@
+import logging
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -34,10 +36,12 @@ from app.services.dashboard_summary import DashboardSummaryService
 from app.services.agent_registry import AgentRegistryService
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
+from app.services.microsoft_graph_auth import MicrosoftGraphAuthError, outlook_connectors_enabled, refresh_access_token
 from app.services.model_gateway import ModelGateway
 from app.services.personal_assistant_context import PersonalAssistantContextService
 from app.services.proposal_workflow import ProposalWorkflowService
 
+logger = logging.getLogger(__name__)
 settings = get_settings()
 gateway = ModelGateway(settings=settings)
 email_workflow = EmailWorkflowService(model_gateway=gateway)
@@ -57,7 +61,28 @@ def build_personal_assistant_context_service(current_settings: Settings) -> Pers
         calendar_connector=build_calendar_connector(current_settings),
     )
 
-app = FastAPI(title=settings.app_name)
+
+def refresh_graph_token_on_startup() -> None:
+    current_settings = get_runtime_settings()
+    if not outlook_connectors_enabled(current_settings):
+        return
+    if not current_settings.microsoft_graph_refresh_token:
+        logger.info("Outlook connectors enabled without MICROSOFT_GRAPH_REFRESH_TOKEN; skipping startup refresh.")
+        return
+    try:
+        refresh_access_token(current_settings)
+        logger.info("Refreshed Microsoft Graph access token during startup.")
+    except MicrosoftGraphAuthError as exc:
+        logger.warning("Microsoft Graph token refresh failed during startup: %s", exc)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    refresh_graph_token_on_startup()
+    yield
+
+
+app = FastAPI(title=settings.app_name, lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

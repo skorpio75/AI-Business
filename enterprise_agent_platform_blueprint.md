@@ -1,11 +1,23 @@
-# Enterprise Agent Platform MVP — Two-Track Blueprint
+﻿# Enterprise Agent Platform MVP - Two-Track Blueprint
+
+## Current Implementation Note
+
+This blueprint describes the target platform shape. Current execution status and task sequencing live in `ROADMAP.md` and `TODO.md`.
+
+As of 2026-03-13:
+- Phase 3 (`Track A Internal MVP Workflows`) is in progress.
+- Mission Control is implemented in `frontend/` as a React operator console using `shadcn/ui` + Tailwind.
+- Email operations, internal knowledge Q&A, and proposal generation are working end-to-end in the internal MVP.
+- Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are in place.
+- Approved Outlook replies can send through Microsoft Graph after platform approval.
+- The next integration focus is OAuth/bootstrap, refresh-token handling, and secret management for external providers (`P3-T16`).
 
 ## 1. Objective
 
 Build a reproducible, privacy-isolated enterprise agent platform with two parallel tracks:
 
-- **Track A — Internal Instance**: run the freelance company with agents, with one human approver.
-- **Track B — Client Instance Template**: reusable client-ready platform blueprint, deployed separately per client.
+- **Track A â€” Internal Instance**: run the freelance company with agents, with one human approver.
+- **Track B â€” Client Instance Template**: reusable client-ready platform blueprint, deployed separately per client.
 
 Constraints:
 
@@ -19,19 +31,19 @@ Constraints:
 
 ## 2. Top-Down Architecture
 
-### Layer 1 — Interfaces
+### Layer 1 â€” Interfaces
 
-- erdfoperator console
+- Mission Control operator console (`frontend/`)
 - FastAPI endpoints
 - webhooks / scheduled jobs
 
-### Layer 2 — Workflows
+### Layer 2 â€” Workflows
 
 - deterministic workflows
 - human approval checkpoints
 - reusable workflow templates
 
-### Layer 3 — Agent Modules
+### Layer 3 â€” Agent Modules
 
 - email agent
 - knowledge agent
@@ -39,7 +51,7 @@ Constraints:
 - reporting agent
 - internal ops agent
 
-### Layer 4 — Platform Foundation
+### Layer 4 â€” Platform Foundation
 
 - model gateway
 - knowledge ingestion
@@ -48,7 +60,7 @@ Constraints:
 - configuration system
 - observability
 
-### Layer 5 — Infrastructure
+### Layer 5 â€” Infrastructure
 
 - PostgreSQL
 - pgvector
@@ -64,6 +76,8 @@ Constraints:
 
 - **FastAPI**
 - **React**
+- **shadcn/ui**
+- **Tailwind**
 - **LangGraph**
 - **LiteLLM**
 - **LlamaIndex**
@@ -78,7 +92,7 @@ Constraints:
 
 ---
 
-## 4. Track A — Internal Instance
+## 4. Track A â€” Internal Instance
 
 ### Purpose
 
@@ -95,6 +109,8 @@ Create an agent-assisted operating system for the freelance business, with the u
 ### Main tech components
 
 - React UI
+- shadcn/ui
+- Tailwind
 - FastAPI
 - LangGraph
 - LiteLLM
@@ -105,7 +121,7 @@ Create an agent-assisted operating system for the freelance business, with the u
 
 ---
 
-## 5. Track B — Client Instance Template
+## 5. Track B â€” Client Instance Template
 
 ### Purpose
 
@@ -155,68 +171,68 @@ Create a reproducible client-ready platform template that can be deployed in iso
 
 ```text
 enterprise-agent-platform/
-├─ README.md
-├─ ROADMAP.md
-├─ EPICS.md
-├─ ARCHITECTURE.md
-├─ AGENTS.md
-├─ WORKFLOWS.md
-├─ DECISIONS.md
-├─ TODO.md
-├─ .env.example
-├─ docker-compose.yml
-├─ Makefile
-├─ docs/
-│  ├─ vision.md
-│  ├─ platform-foundation.md
-│  ├─ deployment-model.md
-│  ├─ llmops-mlops-later.md
-│  └─ testing-strategy.md
-├─ config/
-│  ├─ base/
-│  │  ├─ platform.yaml
-│  │  ├─ models.yaml
-│  │  ├─ agents.yaml
-│  │  └─ workflows.yaml
-│  ├─ internal/
-│  │  └─ company.yaml
-│  └─ client-template/
-│     └─ client.yaml
-├─ prompts/
-│  ├─ email/
-│  ├─ knowledge/
-│  ├─ document/
-│  └─ reporting/
-├─ agents/
-│  ├─ email-agent.md
-│  ├─ knowledge-agent.md
-│  ├─ document-agent.md
-│  ├─ reporting-agent.md
-│  └─ ops-agent.md
-├─ workflows/
-│  ├─ email-operations.md
-│  ├─ knowledge-qna.md
-│  ├─ document-intake.md
-│  └─ reporting.md
-├─ app/
-│  ├─ api/
-│  ├─ ui/
-│  ├─ core/
-│  ├─ orchestration/
-│  ├─ connectors/
-│  ├─ knowledge/
-│  ├─ models/
-│  ├─ observability/
-│  ├─ db/
-│  └─ services/
-├─ tests/
-│  ├─ unit/
-│  ├─ integration/
-│  └─ workflow/
-└─ scripts/
-   ├─ ingest_docs.py
-   ├─ init_db.py
-   └─ seed_config.py
+|- README.md
+|- ROADMAP.md
+|- EPICS.md
+|- ARCHITECTURE.md
+|- AGENTS.md
+|- WORKFLOWS.md
+|- DECISIONS.md
+|- TODO.md
+|- .env.example
+|- docker-compose.yml
+|- Makefile
+|- docs/
+|  |- vision.md
+|  |- platform-foundation.md
+|  |- deployment-model.md
+|  |- llmops-mlops-later.md
+|  `- testing-strategy.md
+|- config/
+|  |- base/
+|  |  |- platform.yaml
+|  |  |- models.yaml
+|  |  |- agents.yaml
+|  |  `- workflows.yaml
+|  |- internal/
+|  |  `- company.yaml
+|  `- client-template/
+|     `- client.yaml
+|- prompts/
+|  |- email/
+|  |- knowledge/
+|  |- document/
+|  `- reporting/
+|- agents/
+|  |- email-agent.md
+|  |- knowledge-agent.md
+|  |- document-agent.md
+|  |- reporting-agent.md
+|  `- ops-agent.md
+|- workflows/
+|  |- email-operations.md
+|  |- knowledge-qna.md
+|  |- document-intake.md
+|  `- reporting.md
+|- app/
+|  |- api/
+|  |- core/
+|  |- orchestration/
+|  |- connectors/
+|  |- knowledge/
+|  |- models/
+|  |- observability/
+|  |- db/
+|  `- services/
+|- frontend/
+|- tests/
+|  |- unit/
+|  |- integration/
+|  `- workflow/
+`- scripts/
+   |- ingest_docs.py
+   |- init_db.py
+   `- seed_config.py
 ```
 
 ---
@@ -390,7 +406,7 @@ Inbound email received.
 
 ## 11. MVP Epics
 
-### Epic 1 — Project Foundation
+### Epic 1 â€” Project Foundation
 
 Outcome:
 
@@ -403,7 +419,7 @@ Main tech components
 - FastAPI skeleton
 - Docker Compose
 
-### Epic 2 — Core Platform Foundation
+### Epic 2 â€” Core Platform Foundation
 
 Outcome:
 
@@ -418,7 +434,7 @@ Main tech components
 - LiteLLM
 - Pydantic Settings
 
-### Epic 3 — Workflow Engine
+### Epic 3 â€” Workflow Engine
 
 Outcome:
 
@@ -429,7 +445,7 @@ Main tech components
 - LangGraph
 - Pydantic
 
-### Epic 4 — Knowledge Layer
+### Epic 4 â€” Knowledge Layer
 
 Outcome:
 
@@ -442,7 +458,7 @@ Main tech components
 - PostgreSQL
 - Unstructured
 
-### Epic 5 — Internal MVP Workflows
+### Epic 5 â€” Internal MVP Workflows
 
 Outcome:
 
@@ -455,7 +471,7 @@ Main tech components
 - LiteLLM
 - PostgreSQL
 
-### Epic 6 — Client Template MVP
+### Epic 6 â€” Client Template MVP
 
 Outcome:
 
@@ -467,7 +483,7 @@ Main tech components
 - config packs
 - seed scripts
 
-### Epic 7 — Observability
+### Epic 7 â€” Observability
 
 Outcome:
 
@@ -477,7 +493,7 @@ Main tech components
 
 - Langfuse
 
-### Epic 8 — Testing Foundation
+### Epic 8 â€” Testing Foundation
 
 Outcome:
 
@@ -489,7 +505,7 @@ Main tech components
 - httpx
 - test fixtures
 
-### Epic 9 — Agent-Managed Ops Later
+### Epic 9 â€” Agent-Managed Ops Later
 
 Outcome:
 
@@ -505,14 +521,14 @@ Main tech components
 
 ## 12. Roadmap
 
-### Phase 0 — Documentation and Repo Skeleton
+### Phase 0 â€” Documentation and Repo Skeleton
 
 - create repo
 - create markdown-first structure
 - define conventions
 - define MVP scope
 
-### Phase 1 — Platform Core
+### Phase 1 â€” Platform Core
 
 - FastAPI app
 - config loader
@@ -520,34 +536,34 @@ Main tech components
 - LiteLLM gateway
 - Docker Compose
 
-### Phase 2 — Workflow + Knowledge
+### Phase 2 â€” Workflow + Knowledge
 
 - LangGraph base workflow engine
 - document ingestion
 - pgvector retrieval
 - first shared services
 
-### Phase 3 — Track A Internal MVP
+### Phase 3 â€” Track A Internal MVP
 
 - email operations workflow
 - knowledge assistant workflow
 - proposal workflow
 - React approval UI
 
-### Phase 4 — Track B Client Template MVP
+### Phase 4 â€” Track B Client Template MVP
 
 - isolated deployment template
 - client config pack
 - seed + setup scripts
 - reusable workflow packaging
 
-### Phase 5 — Observability + Testing
+### Phase 5 â€” Observability + Testing
 
 - Langfuse integration
 - pytest structure
 - workflow test scenarios
 
-### Phase 6 — Later Ops Layer
+### Phase 6 â€” Later Ops Layer
 
 - Git workflow
 - CI/CD
@@ -620,7 +636,7 @@ Build **one clean open-source platform blueprint**, deploy it **separately per i
 
 ---
 
-# Appendix A — Starter Markdown Files
+# Appendix A â€” Starter Markdown Files
 
 ## File: `README.md`
 
@@ -630,8 +646,8 @@ Build **one clean open-source platform blueprint**, deploy it **separately per i
 ## Overview
 This project is a reproducible, privacy-isolated enterprise agent platform designed for two parallel goals:
 
-- **Track A — Internal Instance**: operate a freelance/consulting business with AI-assisted workflows and one human approver.
-- **Track B — Client Instance Template**: deploy isolated, reusable agent-platform instances for end customers without rebuilding from scratch.
+- **Track A â€” Internal Instance**: operate a freelance/consulting business with AI-assisted workflows and one human approver.
+- **Track B â€” Client Instance Template**: deploy isolated, reusable agent-platform instances for end customers without rebuilding from scratch.
 
 The platform is **not shared across clients**. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
@@ -675,22 +691,22 @@ The platform is **not shared across clients**. Each instance is deployed separat
 ## Repository Structure
 ```text
 enterprise-agent-platform/
-├─ README.md
-├─ ROADMAP.md
-├─ EPICS.md
-├─ ARCHITECTURE.md
-├─ AGENTS.md
-├─ WORKFLOWS.md
-├─ DECISIONS.md
-├─ TODO.md
-├─ docs/
-├─ config/
-├─ prompts/
-├─ agents/
-├─ workflows/
-├─ app/
-├─ tests/
-└─ scripts/
+â”œâ”€ README.md
+â”œâ”€ ROADMAP.md
+â”œâ”€ EPICS.md
+â”œâ”€ ARCHITECTURE.md
+â”œâ”€ AGENTS.md
+â”œâ”€ WORKFLOWS.md
+â”œâ”€ DECISIONS.md
+â”œâ”€ TODO.md
+â”œâ”€ docs/
+â”œâ”€ config/
+â”œâ”€ prompts/
+â”œâ”€ agents/
+â”œâ”€ workflows/
+â”œâ”€ app/
+â”œâ”€ tests/
+â””â”€ scripts/
 ````
 
 ## Startup Goal
@@ -733,13 +749,13 @@ The system is built as a reproducible enterprise agent platform blueprint with i
 
 ```text
 Interfaces
-   ↓
+   â†“
 Workflows
-   ↓
+   â†“
 Agent Modules
-   ↓
+   â†“
 Platform Foundation
-   ↓
+   â†“
 Infrastructure
 ````
 
@@ -921,7 +937,7 @@ Later layers may include:
 ```md
 # Roadmap
 
-## Phase 0 — Repo and Documentation Foundation
+## Phase 0 â€” Repo and Documentation Foundation
 ### Objective
 Create the markdown-first structure and project conventions.
 
@@ -940,7 +956,7 @@ Create the markdown-first structure and project conventions.
 
 ---
 
-## Phase 1 — Platform Core
+## Phase 1 â€” Platform Core
 ### Objective
 Build the minimum technical backbone.
 
@@ -963,7 +979,7 @@ Build the minimum technical backbone.
 
 ---
 
-## Phase 2 — Workflow + Knowledge Foundation
+## Phase 2 â€” Workflow + Knowledge Foundation
 ### Objective
 Add workflow orchestration and knowledge retrieval.
 
@@ -982,7 +998,7 @@ Add workflow orchestration and knowledge retrieval.
 
 ---
 
-## Phase 3 — Track A Internal MVP
+## Phase 3 â€” Track A Internal MVP
 ### Objective
 Deploy the first working internal instance.
 
@@ -1002,7 +1018,7 @@ Deploy the first working internal instance.
 
 ---
 
-## Phase 4 — Track B Client Template MVP
+## Phase 4 â€” Track B Client Template MVP
 ### Objective
 Create the first isolated client deployment template.
 
@@ -1020,7 +1036,7 @@ Create the first isolated client deployment template.
 
 ---
 
-## Phase 5 — Observability and Tests
+## Phase 5 â€” Observability and Tests
 ### Objective
 Add reliability and traceability.
 
@@ -1037,7 +1053,7 @@ Add reliability and traceability.
 
 ---
 
-## Phase 6 — Ops and Delivery Later
+## Phase 6 â€” Ops and Delivery Later
 ### Objective
 Introduce controlled delivery and agent-assisted operations.
 
@@ -1078,7 +1094,7 @@ Introduce controlled delivery and agent-assisted operations.
 ```md
 # Epics
 
-## Epic 1 — Project Foundation
+## Epic 1 â€” Project Foundation
 ### Outcome
 A clean repo, documentation system, and project conventions.
 
@@ -1095,7 +1111,7 @@ A clean repo, documentation system, and project conventions.
 
 ---
 
-## Epic 2 — Core Platform Foundation
+## Epic 2 â€” Core Platform Foundation
 ### Outcome
 A runnable backend with config, persistence, and model access.
 
@@ -1115,7 +1131,7 @@ A runnable backend with config, persistence, and model access.
 
 ---
 
-## Epic 3 — Workflow Engine
+## Epic 3 â€” Workflow Engine
 ### Outcome
 Reusable deterministic workflows with approval checkpoints.
 
@@ -1130,7 +1146,7 @@ Reusable deterministic workflows with approval checkpoints.
 
 ---
 
-## Epic 4 — Knowledge Layer
+## Epic 4 â€” Knowledge Layer
 ### Outcome
 Documents can be ingested and used for grounded answers.
 
@@ -1147,7 +1163,7 @@ Documents can be ingested and used for grounded answers.
 
 ---
 
-## Epic 5 — Track A Internal Operations MVP
+## Epic 5 â€” Track A Internal Operations MVP
 ### Outcome
 The internal business can run key workflows with one human approver.
 
@@ -1166,7 +1182,7 @@ The internal business can run key workflows with one human approver.
 
 ---
 
-## Epic 6 — Track B Client Template MVP
+## Epic 6 â€” Track B Client Template MVP
 ### Outcome
 A reproducible isolated client platform can be deployed quickly.
 
@@ -1184,7 +1200,7 @@ A reproducible isolated client platform can be deployed quickly.
 
 ---
 
-## Epic 7 — Observability
+## Epic 7 â€” Observability
 ### Outcome
 The platform provides traces and debugging visibility.
 
@@ -1198,7 +1214,7 @@ The platform provides traces and debugging visibility.
 
 ---
 
-## Epic 8 — Testing Foundation
+## Epic 8 â€” Testing Foundation
 ### Outcome
 Reliable automated tests for core modules and workflows.
 
@@ -1213,7 +1229,7 @@ Reliable automated tests for core modules and workflows.
 
 ---
 
-## Epic 9 — Later Ops Automation
+## Epic 9 â€” Later Ops Automation
 ### Outcome
 Controlled delivery pipeline with agent support for repetitive engineering work.
 
@@ -1254,14 +1270,14 @@ It allows the operator to:
 
 ```text
 Mission Control Dashboard
-        │
-        ▼
+        â”‚
+        â–¼
 API Layer (FastAPI)
-        │
-        ▼
+        â”‚
+        â–¼
 Workflow Orchestrator (LangGraph)
-        │
-        ▼
+        â”‚
+        â–¼
 Agents / Tools / Knowledge
 ```
 
@@ -1315,7 +1331,7 @@ The dashboard interacts with the platform through the **API layer**.
 
 ---
 
-## Appendix B — Immediate Next Files
+## Appendix B â€” Immediate Next Files
 
 ## File: `AGENTS.md`
 
@@ -1393,7 +1409,7 @@ A human approver validates before execution.
 ## Purpose
 This document lists the reusable workflow templates.
 
-## Workflow 1 — Email Operations
+## Workflow 1 â€” Email Operations
 Steps:
 1. ingest email
 2. classify intent
@@ -1409,7 +1425,7 @@ Main tech components
 - **LlamaIndex**
 - **FastAPI connectors**
 
-## Workflow 2 — Knowledge Q&A
+## Workflow 2 â€” Knowledge Q&A
 Steps:
 1. receive question
 2. retrieve relevant chunks
@@ -1421,7 +1437,7 @@ Main tech components
 - **pgvector**
 - **LiteLLM**
 
-## Workflow 3 — Document Intake
+## Workflow 3 â€” Document Intake
 Steps:
 1. upload document
 2. extract text
@@ -1436,7 +1452,7 @@ Main tech components
 - **PostgreSQL**
 - **LiteLLM**
 
-## Workflow 4 — Proposal Generation
+## Workflow 4 â€” Proposal Generation
 Steps:
 1. collect opportunity data
 2. load reusable context

@@ -1,3 +1,5 @@
+import { Badge } from "./ui/badge";
+
 type StatusTone = "neutral" | "warning" | "success" | "critical";
 
 type StatusPillProps = {
@@ -6,5 +8,5 @@ type StatusPillProps = {
 };
 
 export function StatusPill({ label, tone = "neutral" }: StatusPillProps) {
-  return <span className={`status-pill status-pill--${tone}`}>{label}</span>;
+  return <Badge className={`status-pill status-pill--${tone}`}>{label}</Badge>;
 }

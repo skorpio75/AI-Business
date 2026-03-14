@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     outlook_client_id: Optional[str] = None
     outlook_graph_scopes: str = "offline_access https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/Calendars.Read"
     microsoft_graph_access_token: Optional[str] = None
+    microsoft_graph_refresh_token: Optional[str] = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

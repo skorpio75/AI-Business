@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import { apiClient } from "../lib/api";
 import { formatDateTime, truncate } from "../lib/format";
 import type { InboxMessage, PersonalAssistantContext, WorkflowRun } from "../types";
@@ -127,7 +129,7 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
           <div className="toolbar-row">
             <label className="form-field form-field--compact">
               <span>Inbox lookback (hours)</span>
-              <input
+              <Input
                 type="number"
                 min={1}
                 max={720}
@@ -137,7 +139,7 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
             </label>
             <label className="form-field form-field--compact">
               <span>Inbox limit</span>
-              <input
+              <Input
                 type="number"
                 min={1}
                 max={100}
@@ -233,9 +235,9 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
                   <strong>{draftResult.approval_id}</strong>
                 </div>
               ) : null}
-              <button className="refresh-button" type="button" disabled={drafting} onClick={() => void handleDraftFromInbox()}>
+              <Button className="refresh-button" type="button" disabled={drafting} onClick={() => void handleDraftFromInbox()}>
                 {drafting ? "Drafting..." : "Draft reply workflow"}
-              </button>
+              </Button>
             </div>
           ) : (
             <p className="panel-state">Select a live inbox message to inspect or draft a reply.</p>

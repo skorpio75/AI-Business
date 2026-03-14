@@ -37,6 +37,8 @@ class KnowledgeQnAService:
                 grounded=False,
                 provider_used="fallback-rule",
                 model_used="rules-v1",
+                local_llm_invoked=False,
+                cloud_llm_invoked=False,
             )
 
         context = "\n\n".join(
@@ -59,6 +61,8 @@ class KnowledgeQnAService:
             grounded=True,
             provider_used=generation.provider_used,
             model_used=generation.model_used,
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
         )
 
     def _fallback_answer(

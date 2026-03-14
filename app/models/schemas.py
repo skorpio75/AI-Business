@@ -30,6 +30,8 @@ class EmailDraftResult(BaseModel):
     provider_used: Literal["local", "cloud", "fallback-rule"]
     model_used: str
     escalation_reason: Optional[str] = None
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
 
 
 class EmailWorkflowResponse(BaseModel):
@@ -44,6 +46,8 @@ class EmailWorkflowResponse(BaseModel):
     provider_used: str
     model_used: str
     escalation_reason: Optional[str] = None
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
     approval_status: ApprovalStatus = "pending"
     send_status: SendStatus = "not_applicable"
     sent_at: Optional[datetime] = None
@@ -111,6 +115,8 @@ class KnowledgeQueryResponse(BaseModel):
     grounded: bool
     provider_used: str
     model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
 
 
 class ProposalGenerationRequest(BaseModel):
@@ -129,6 +135,8 @@ class ProposalGenerationResponse(BaseModel):
     next_steps: list[str] = Field(default_factory=list)
     provider_used: str
     model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
 
 
 KpiTone = Literal["neutral", "success", "warning", "critical"]

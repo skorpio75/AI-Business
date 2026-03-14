@@ -40,6 +40,8 @@ class ProposalWorkflowService:
             ],
             provider_used=generation.provider_used,
             model_used=generation.model_used,
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
         )
 
     def _fallback_draft(

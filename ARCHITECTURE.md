@@ -35,7 +35,7 @@ Infrastructure
 
 ## 3. Layer Breakdown
 ### Interfaces
-- React operator console
+- React operator console using `shadcn/ui` as the default component system for mission control surfaces
 - FastAPI endpoints
 
 ### Workflows
@@ -50,7 +50,7 @@ Infrastructure
 - LlamaIndex
 - PostgreSQL
 - pgvector
-- Langfuse
+- Langfuse (planned operational tracing in Phase 5)
 - Jinja2
 - Pydantic Settings
 
@@ -59,10 +59,13 @@ Infrastructure
 - PostgreSQL
 - local file storage
 
-## 4. MVP Workflows Supported
+## 4. MVP Workflow Coverage
+### Implemented end-to-end in the current internal MVP
 - email operations
 - internal knowledge Q&A
 - proposal generation
+
+### Defined as workflow templates or next-stage operator surfaces
 - document intake
 - billing and collections
 - finance reporting
@@ -71,20 +74,84 @@ Infrastructure
 - quality/testing gate
 - documentation handover
 
-## 5. Architectural Rule
+## 5. Current Track A Delivery State
+- Mission Control runs as a React operator console with a `shadcn/ui` + Tailwind component foundation in `frontend/`.
+- Mission Control groups navigation by operating task and constrains detail panes so operator views remain readable across desktop and tablet layouts.
+- Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are available for live inbox/calendar context.
+- Approved Outlook replies can execute through Microsoft Graph after approval is recorded in this platform.
+- Mission Control exposes explicit routing visibility for local model, cloud route, fallback-rule execution, and whether the local LLM was invoked.
+- OAuth/bootstrap flow, refresh-token lifecycle handling, and broader secret management are the next integration step (`P3-T16`).
+
+## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.
 
-## 6. Operating Model
+## 7. Operating Model
 - Single human CEO approval authority for high-risk actions.
 - Agent modules are organized into two domains:
   - corporate functions (billing, finance, reporting, PO, compliance)
   - service delivery functions (PM, delivery, quality, consulting, documentation, testing)
 - Mission Control UI is the operational control layer for visibility, approval, and audit.
 
-## 7. Memory Model
+## 8. Memory Model
 - Working memory: active workflow state and approval checkpoints.
 - Episodic memory: past runs, approvals, and traces.
 - Semantic memory: retrieved knowledge from documents and vector search.
 - Shared workspace: current operational truth for clients, projects, tasks, invoices, and related entities.
+
+## 9. Production Readiness Control Areas
+The following control areas are required for production readiness and extend the current MVP architecture:
+
+- authentication, secrets, and token lifecycle
+- audit trail and execution traceability
+- automated testing and migration validation
+- observability and failure diagnosis
+- authorization and approval policy enforcement
+- multi-tenant hardening and isolated operational controls
+- model governance
+- input/output safety controls
+- frontend operational maturity beyond the current `shadcn/ui` mission-control baseline
+- data lifecycle management
+- deployment packaging and implementation runbooks
+
+## 10. Production Control Intent
+### Authorization
+The MVP single-approver model will evolve toward role-based permissions, delegated authority, approval classes, and workflow-specific policy enforcement.
+
+### Audit and Traceability
+The platform must preserve trustworthy traces for workflow execution, approvals, model/provider choice, routing path, fallback mode, and outbound actions.
+
+### Observability
+Production operation requires:
+- structured logs
+- per-workflow metrics
+- connector health visibility
+- routing/fallback visibility
+- alerting on critical workflow, send, approval, and retrieval failures
+
+### Safety Controls
+Generative workflows that create external communications must include:
+- prompt-injection defensive patterns
+- structured input validation
+- outbound content validation
+- grounded retrieval where applicable
+- explicit review gates for risky outputs
+
+### Data Lifecycle
+The platform must define:
+- retention periods by data class
+- archival and deletion procedures
+- backup frequency
+- restore procedures and validation
+- residency and storage boundary assumptions
+
+### Multi-Tenant Enforcement
+Isolation must be enforced through:
+- tenant bootstrap automation
+- separate secrets and runtime configuration
+- isolated storage boundaries
+- backup/restore per instance
+- tenant-specific observability and operational controls
+
+
 
 See [MEMORY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/MEMORY_MODEL.md) for the full shared-brain definition and consistency rules.

@@ -21,6 +21,8 @@ def insert_workflow_run(db: Session, run: EmailWorkflowResponse) -> None:
             draft_reply=run.draft_reply,
             provider_used=run.provider_used,
             model_used=run.model_used,
+            local_llm_invoked=run.local_llm_invoked,
+            cloud_llm_invoked=run.cloud_llm_invoked,
             escalation_reason=run.escalation_reason,
             approval_status=run.approval_status,
             send_status=run.send_status,

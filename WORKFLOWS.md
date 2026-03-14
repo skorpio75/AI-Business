@@ -41,13 +41,15 @@ Each workflow should increasingly specify:
 - State objects: `project_state`, `run_state`, `approval_state`
 - Handoff:
   1. PMO / Project Control Agent opens project structure
-  2. BA / Requirements Agent updates requirements
-  3. Architect Agent produces design
-  4. Build / Automation Agent implements
-  5. QA / Review Agent validates
-  6. Documentation Agent packages handover and working docs
-  7. PMO / Project Control Agent updates delivery status
-  8. Finance trigger if milestone is reached
+  2. Project Management / Delivery Coordination Agent activates work packages, actions, and checkpoint cadence
+  3. BA / Requirements Agent updates requirements
+  4. Architect Agent produces design
+  5. Build / Automation Agent implements
+  6. QA / Review Agent validates
+  7. Documentation Agent packages handover and working docs
+  8. Project Management / Delivery Coordination Agent updates follow-ups and checkpoint readiness
+  9. PMO / Project Control Agent updates steering status and escalations
+  10. Finance trigger if milestone is reached
 - Emitted events:
   - `project.created`
   - `requirements.updated`
@@ -204,10 +206,11 @@ State objects:
 - `approval_state` where release gating applies
 
 1. ingest project scope and milestones
-2. generate task plan
-3. monitor progress and risks
-4. trigger quality gate
-5. route release recommendation to CEO
+2. PMO / Project Control Agent establishes control structure, milestones, and RAID baseline
+3. Project Management / Delivery Coordination Agent turns scope and milestones into active tasks, checkpoints, and follow-ups
+4. monitor progress and risks
+5. trigger quality gate
+6. route release recommendation to CEO
 
 ### Workflow 12 - Quality and Testing Gate
 Start event:

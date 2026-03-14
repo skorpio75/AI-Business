@@ -115,6 +115,9 @@ export type AgentContract = {
   agent_id: string;
   display_name: string;
   domain: "corporate" | "delivery" | "platform";
+  pod?: "growth" | "delivery" | "ops" | "executive" | "specialist_overlay";
+  family_id?: string | null;
+  operating_modes?: ("internal_operating" | "client_delivery" | "client_facing_service")[];
   role_summary: string;
   approval_class: "none" | "bounded" | "ceo_required";
   deployment: AgentDeploymentPolicy;

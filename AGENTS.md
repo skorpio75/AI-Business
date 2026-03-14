@@ -90,6 +90,16 @@ The following agents are canonical first-class pod agents that complement the ex
 - Autonomy class: `supervised_executor`
 - State ownership: governance fields in `project_state`
 - Replication rule: internal PMO and client PMO are separate instances even when they share the same family
+- Operating distinction: acts as the control tower for milestones, RAID, steering summaries, slippage detection, and portfolio visibility rather than the deepest execution specialist
+
+#### Project Management / Delivery Coordination Agent
+- Purpose: keep day-to-day execution moving across tasks, checkpoints, and follow-ups
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`, `client_facing_service`
+- Autonomy class: `supervised_executor`
+- State ownership: execution-follow-up and checkpoint-readiness fields in `project_state`
+- Replication rule: internal and client-delivery coordination instances are separate even when they share the same family
+- Operating distinction: unlike PMO, this role is execution-oriented and turns plans, meeting notes, and milestone decisions into active tasks, reminders, and next checkpoints
 
 #### BA / Requirements Agent
 - Purpose: turn workshops and documents into structured requirements
@@ -250,6 +260,7 @@ The following agents are canonical first-class pod agents that complement the ex
 ### Project Management Agent
 - maintain project plan, tasks, and deadlines
 - produce delivery forecasts and risk flags
+- transitional note: this legacy label maps most closely to `Project Management / Delivery Coordination Agent` and should be treated as that family during later registry/config alignment
 
 ### Delivery Agent
 - orchestrate delivery checklists per engagement
@@ -279,6 +290,7 @@ The following agents are canonical first-class pod agents that complement the ex
 The following families are strong candidates for replicated client-delivery or client-facing service use:
 
 - PMO / Project Control Agent
+- Project Management / Delivery Coordination Agent
 - BA / Requirements Agent
 - Architect Agent
 - Build / Automation Agent

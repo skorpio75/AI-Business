@@ -4,21 +4,26 @@
 Scheduled project review, milestone update, or delivery risk signal.
 
 ## Goal
-Maintain an accurate project execution picture with priorities, deadline risks, and recommended interventions.
+Maintain an accurate project execution picture with distinct governance and execution-coordination responsibilities.
+
+## Primary Agent Roles
+- `PMO / Project Control Agent`: governance, RAID, steering summaries, slippage detection, and portfolio/control visibility
+- `Project Management / Delivery Coordination Agent`: task activation, checkpoint sequencing, follow-up momentum, and deliverable-readiness tracking
 
 ## Steps
-1. collect task, milestone, capacity, and dependency updates
-2. reconcile current delivery state against the plan
+1. collect task, milestone, capacity, dependency, and meeting-note updates
+2. `PMO / Project Control Agent` reconciles current delivery state against the control plan
 3. detect slippage, blockers, and scope pressure
-4. generate a prioritized action list and stakeholder notes
+4. `Project Management / Delivery Coordination Agent` generates the active action list, follow-ups, and next checkpoint plan
 5. flag items requiring leadership intervention
-6. update project control record
+6. update project control record and execution follow-up state
 7. route high-risk changes for CEO review
 
 ## AI Steps
 - blocker summarization
 - action list prioritization
 - stakeholder update drafting
+- checkpoint and follow-up drafting
 
 ## Deterministic Steps
 - schedule ingestion

@@ -9,6 +9,8 @@ ApprovalClass = Literal["none", "bounded", "ceo_required"]
 AgentStatus = Literal["idle", "running", "waiting", "blocked", "disabled"]
 PrimaryTrack = Literal["track_a_internal", "track_b_client"]
 ReplicationMode = Literal["none", "replicate_later"]
+AgentPod = Literal["growth", "delivery", "ops", "executive", "specialist_overlay"]
+OperatingMode = Literal["internal_operating", "client_delivery", "client_facing_service"]
 
 
 class AgentCapability(BaseModel):
@@ -42,6 +44,9 @@ class AgentContract(BaseModel):
     agent_id: str
     display_name: str
     domain: AgentDomain
+    pod: Optional[AgentPod] = None
+    family_id: Optional[str] = None
+    operating_modes: list[OperatingMode] = Field(default_factory=list)
     role_summary: str
     approval_class: ApprovalClass
     deployment: AgentDeploymentPolicy = Field(default_factory=AgentDeploymentPolicy)
@@ -359,15 +364,97 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
             constraints=["never invent facts outside retrieved evidence"],
         ),
         AgentContract(
-            agent_id="project-management-agent",
-            display_name="Project Management Agent",
+            agent_id="pmo-project-control-agent",
+            display_name="PMO / Project Control Agent",
             domain="delivery",
-            role_summary="Maintains project plans, deadlines, and delivery risk flags.",
+            pod="delivery",
+            family_id="pmo-project-control",
+            operating_modes=["internal_operating", "client_delivery", "client_facing_service"],
+            role_summary=(
+                "Acts as the project governance and control-tower role for milestones, RAID, "
+                "steering summaries, slippage detection, and portfolio visibility."
+            ),
             approval_class="bounded",
-            tools=["project-plan", "calendar", "workspace"],
-            inputs=["tasks", "milestones", "dependencies"],
-            outputs=["delivery forecast", "priority plan", "risk alert"],
-            constraints=["material plan changes require CEO review"],
+            deployment=AgentDeploymentPolicy(
+                primary_track="track_a_internal",
+                replication_mode="replicate_later",
+                replication_notes=(
+                    "Use a separate client-delivery instance for Track 2 or client-facing PMO "
+                    "support rather than sharing the internal PMO runtime state."
+                ),
+            ),
+            capabilities=[
+                AgentCapability(
+                    id="milestone-governance",
+                    name="Milestone Governance",
+                    description="Track milestones, dependencies, and slippage against the control plan.",
+                ),
+                AgentCapability(
+                    id="raid-management",
+                    name="RAID Management",
+                    description="Maintain RAID signals, steering summaries, and escalation views.",
+                ),
+                AgentCapability(
+                    id="portfolio-visibility",
+                    name="Portfolio Visibility",
+                    description="Summarize project health, action backlog, and capacity pressure.",
+                ),
+            ],
+            kpis=[
+                AgentKPI(
+                    id="slippage-detection-lag",
+                    name="Slippage Detection Lag",
+                    unit="days",
+                    description="Average time between a delivery slip emerging and being surfaced.",
+                )
+            ],
+            tools=["project-plan", "calendar", "reporting", "workspace"],
+            inputs=["milestones", "dependencies", "task state", "meeting notes", "timesheet data"],
+            outputs=["steering summary", "RAID update", "escalation list", "portfolio dashboard"],
+            constraints=[
+                "escalate material delivery risk instead of committing externally",
+                "client-facing commitments still require approval through workflow policy",
+            ],
+        ),
+        AgentContract(
+            agent_id="project-management-agent",
+            display_name="Project Management / Delivery Coordination Agent",
+            domain="delivery",
+            pod="delivery",
+            family_id="project-management-delivery-coordination",
+            operating_modes=["internal_operating", "client_delivery", "client_facing_service"],
+            role_summary=(
+                "Keeps day-to-day execution moving by turning plans, meeting notes, and milestone "
+                "decisions into active tasks, checkpoints, and follow-ups."
+            ),
+            approval_class="bounded",
+            deployment=AgentDeploymentPolicy(
+                primary_track="track_a_internal",
+                replication_mode="replicate_later",
+                replication_notes=(
+                    "Track 1 may use an internal coordination instance, while Track 2 delivery work "
+                    "uses a separate client-specific coordination instance."
+                ),
+            ),
+            capabilities=[
+                AgentCapability(
+                    id="checkpoint-coordination",
+                    name="Checkpoint Coordination",
+                    description="Turn plans and meetings into next checkpoints, follow-ups, and reminders.",
+                ),
+                AgentCapability(
+                    id="work-package-followup",
+                    name="Work Package Follow-Up",
+                    description="Track work-package readiness, pending actions, and stakeholder follow-up.",
+                ),
+            ],
+            tools=["project-plan", "task-system", "calendar", "workspace"],
+            inputs=["tasks", "milestones", "dependencies", "meeting notes"],
+            outputs=["delivery forecast", "checkpoint plan", "action list", "readiness alert"],
+            constraints=[
+                "material plan changes require CEO review",
+                "day-to-day coordination does not replace PMO governance or steering oversight",
+            ],
         ),
         AgentContract(
             agent_id="delivery-agent",

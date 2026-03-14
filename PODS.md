@@ -35,6 +35,7 @@ Purpose:
 
 Primary agents:
 - PMO / Project Control Agent
+- Project Management / Delivery Coordination Agent
 - BA / Requirements Agent
 - Architect Agent
 - Build / Automation Agent
@@ -109,6 +110,7 @@ Suggested overlay mapping:
 ## Pod Boundaries
 - Growth owns pre-sale opportunity progression.
 - Delivery owns project execution artifacts and client-delivery coordination.
+- Inside Delivery, `PMO / Project Control Agent` is the governance and control-tower role, while `Project Management / Delivery Coordination Agent` is the execution-follow-up role that keeps plans, checkpoints, and actions moving.
 - Ops owns internal business operations and company records.
 - Executive owns visibility, escalation, prioritization, and approval routing.
 

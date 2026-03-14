@@ -80,6 +80,18 @@ export function AgentActivityPage({ refreshToken }: AgentActivityPageProps) {
                 <span>Approval class</span>
                 <strong>{agent.approval_class.replace("_", " ")}</strong>
               </div>
+              {agent.pod ? (
+                <div className="detail-row">
+                  <span>Pod</span>
+                  <strong>{agent.pod.replace("_", " ")}</strong>
+                </div>
+              ) : null}
+              {agent.family_id ? (
+                <div className="detail-row">
+                  <span>Family</span>
+                  <strong>{agent.family_id}</strong>
+                </div>
+              ) : null}
               <div className="detail-row">
                 <span>Primary track</span>
                 <strong>{agent.deployment.primary_track.replaceAll("_", " ")}</strong>
@@ -89,6 +101,13 @@ export function AgentActivityPage({ refreshToken }: AgentActivityPageProps) {
                 <strong>{agent.deployment.replication_mode.replace("_", " ")}</strong>
               </div>
             </div>
+
+            {agent.operating_modes && agent.operating_modes.length > 0 ? (
+              <div className="callout callout--soft">
+                <p className="eyebrow">Operating modes</p>
+                <strong>{agent.operating_modes.map((mode) => mode.replaceAll("_", " ")).join(", ")}</strong>
+              </div>
+            ) : null}
 
             {agent.deployment.replication_notes ? (
               <div className="callout callout--soft">

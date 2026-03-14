@@ -140,6 +140,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - normalized tool taxonomy and permissions
 - autonomy classes that bound what agent instances may do
 - specialist overlay roles that complement, rather than replace, pod-native agents
+- a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
 
 ## 10. Production Readiness Control Areas
 The following control areas are required for production readiness and extend the current MVP architecture:

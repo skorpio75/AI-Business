@@ -10,21 +10,22 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - `DONE`
 
 ## Current Snapshot
-- Updated: 2026-03-13
+- Updated: 2026-03-14
 - Overall Status: `IN_PROGRESS`
 - Active Phase: `Phase 3 - Track A Internal MVP Workflows`
+- Active Cross-Cutting Stream: `AI-Business IDE handoff integration`
 
 ## Phase Tracker
 
 | Phase | Objective | Status | Owner | Target | Progress |
 |---|---|---|---|---|---|
-| Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
+| Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 16/22 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
-| Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 14/14 tasks done |
+| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 14/18 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 17/20 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
-| Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
-| Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/7 tasks done |
+| Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
+| Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/9 tasks done |
 
 ## Completed Baseline Items
 - [x] Create repository folder skeleton
@@ -48,6 +49,16 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P0-T10: Clean blueprint encoding artifacts and typos
 - [x] P0-T11: Define explicit memory/shared-brain model in `MEMORY_MODEL.md`
 - [x] P0-T12: Define external integration boundaries in `INTEGRATIONS.md`
+- [x] P0-T13: Add `PODS.md` for the 4-pod operating structure and family/mode/instance reuse model
+- [x] P0-T14: Add `PLATFORM_MODEL.md` for the formal operating meta-model
+- [x] P0-T15: Add `STATE_MODEL.md` for canonical operating state contracts
+- [x] P0-T16: Add `TOOLS.md` for normalized tool taxonomy and permissions
+- [x] P0-T17: Add `AUTONOMY_MODEL.md` for agent autonomy classes
+- [x] P0-T18: Add `EVENT_MODEL.md` for normalized event families and trigger patterns
+- [ ] P0-T19: Update agent and workflow markdown specs to consistently reference pod, event, state, autonomy, and tool models
+- [x] P0-T19A: Clarify the distinction between `PMO / Project Control Agent` and `Project Management / Delivery Coordination Agent`
+- [ ] P0-T20: Define business-scaling maturity guidance across solo, micro-firm, and boutique operating stages
+- [ ] P0-T21: Clean `AI-Business_IDE_Handoff.md` encoding artifacts and align it with canonical terminology
 
 ### Phase 1 - Platform Core
 - [x] P1-T01: Scaffold FastAPI app entrypoint (`app/api`)
@@ -74,6 +85,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P2-T12: Define CTO/CIO counsel contract (strategy options, architecture advice, internal improvement backlog)
 - [x] P2-T13: Define Accountant/CFO contracts (reconciliation rules, close process, scenario planning outputs)
 - [x] P2-T14: Define Chief AI/Digital Strategy contract (AI opportunity map, AI/data delivery blueprint, maturity model)
+- [ ] P2-T15: Align agent registry and base contracts with pod model, family/mode/instance identity, and specialist overlay mapping
+- [ ] P2-T16: Define normalized event names, approval classes, and autonomy classes in backend contracts/config
+- [ ] P2-T17: Define state ownership and persistence mapping for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
+- [ ] P2-T18: Define normalized tool permission profiles by agent family and operating mode
 
 ### Phase 3 - Track A Internal MVP Workflows (React UI)
 - [x] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
@@ -95,7 +110,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P3-T17: Add connector diagnostics and live inbox/calendar detail views in mission control
 - [x] P3-T18: Launch email workflows from live inbox messages with source metadata attached
 - [x] P3-T19: Send approved Outlook replies end-to-end through Microsoft Graph `Mail.Send`
-- [ ] P3-T20: Add explicit UI routing indicators for local model, cloud route, and fallback-rule execution
+- [x] P3-T20: Add explicit UI routing indicators for local model, cloud route, fallback-rule execution, and local LLM invocation status
 
 ### Phase 4 - Track B Client Template MVP
 - [ ] P4-T01: Create client deployment template pack
@@ -116,6 +131,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P5-T08: Add `agent_runs` persistence for per-agent execution history
 - [ ] P5-T09: Add `audit_events` persistence for step-level actions, tool usage, and approval events
 - [ ] P5-T10: Expose audit/trace endpoints for workflow, agent, and approval inspection
+- [ ] P5-T11: Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
+- [ ] P5-T12: Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
 
 ### Phase 6 - Later Ops Layer (CI/CD, LLMOps/MLOps)
 - [ ] P6-T01: Define git branching and release workflow
@@ -125,6 +142,14 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P6-T05: Define evaluation dataset strategy
 - [ ] P6-T06: Define rollback and incident process
 - [ ] P6-T07: Define agent-assisted release checklist
+- [ ] P6-T08: Introduce role-based policy model and delegated authority beyond the MVP single-approver model
+- [ ] P6-T09: Define workflow- and agent-class-specific model/prompt governance controls
+
+### Cross-Cutting Stream - AI-Business IDE Handoff Integration
+- [x] H-T01: Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
+- [x] H-T02: Update governance docs to adopt the 4-pod model, reusable family/mode/instance agent model, and normalized event/state/tool/autonomy language
+- [ ] H-T03: Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
+- [ ] H-T04: Reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work
 
 ### Backlog - Model Routing
 - [ ] B-T01: Define multi-provider routing rules for cloud model usage via LiteLLM (task type, risk, cost, latency, fallback order, local-only policy)
@@ -243,5 +268,13 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Wired Outlook approval completion to `Mail.Send` via Microsoft Graph reply calls so approved inbox-derived drafts can send end-to-end.
 - Added a schema migration for email source/send tracking and applied it locally.
 
+### 2026-03-14
+- Integrated the AI-Business IDE handoff into the roadmap as an explicit cross-cutting architecture stream.
+- Added the missing meta-model docs: `PODS.md`, `PLATFORM_MODEL.md`, `STATE_MODEL.md`, `TOOLS.md`, `AUTONOMY_MODEL.md`, and `EVENT_MODEL.md`.
+- Formalized the reusable agent `family -> mode -> instance` model so the same agent family can exist in internal-operating and client-delivery forms without shared runtime state.
+- Extended governance docs to reflect the 4-pod operating model, normalized event/state/tool/autonomy language, and Mission Control as an operating supervisor.
+- Clarified that `PMO / Project Control Agent` is the governance/control-tower role, while `Project Management / Delivery Coordination Agent` is the day-to-day execution coordination role.
+- Carried the PMO split into runtime-facing layers by adding distinct agent contracts, config entries, and frontend metadata fields for pod, family, and operating modes.
+
 ## Next Action
-Start `P3-T16`: finish secret management and refresh-token handling around provider bootstrap, then return to `P3-T12` through `P3-T14`.
+Complete the remaining handoff-alignment doc tasks and contract mapping work, then continue `P3-T16` for provider bootstrap, secret handling, and refresh-token lifecycle.

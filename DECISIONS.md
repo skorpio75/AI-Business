@@ -122,3 +122,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-14
 - Decision: Mission Control is not only a frontend shell; it is the platform's operating supervision layer for visibility, escalation, approval routing, and run-state observation.
 - Rationale: The handoff integration clarifies that oversight is a first-class platform concern distinct from reasoning and workflow execution.
+
+## ADR-021: PMO control and project-management execution coordination are distinct agent families
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: `PMO / Project Control Agent` is the governance, control-tower, steering, and portfolio-visibility role, while `Project Management / Delivery Coordination Agent` is the execution-follow-up role that keeps plans, tasks, checkpoints, and next actions moving.
+- Rationale: The delivery model needs a stable distinction between governance oversight and day-to-day execution coordination, especially when the same firm operates both internal missions and client-delivery engagements.

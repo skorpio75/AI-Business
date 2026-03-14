@@ -3,6 +3,10 @@ agents:
     enabled: true
   - id: personal-assistant-agent
     enabled: true
+  - id: pmo-project-control-agent
+    enabled: true
+  - id: project-management-agent
+    enabled: true
   - id: accountant-agent
     enabled: true
   - id: cfo-agent

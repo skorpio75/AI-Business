@@ -80,3 +80,45 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-13
 - Decision: `ROADMAP.md` is the implementation status source of truth, `TODO.md` is the short execution view derived from it, and any change to architecture, workflow scope, implementation status, integrations, or priorities must update all affected markdown governance files in the same work session.
 - Rationale: The platform is managed markdown-first, so stale or conflicting docs create avoidable execution mistakes. Alignment must be treated as part of the change itself, not follow-up cleanup.
+
+## ADR-014: The platform adopts a pod-based operating model
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: The operating model is formalized into Growth, Delivery, Ops, and Executive pods.
+- Rationale: The repo already had strong workflow and specialist-agent coverage, but the handoff integration showed it needed clearer ownership boundaries and a reusable operating structure.
+
+## ADR-015: Specialist agents are preserved as overlays in the pod model
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: Existing specialist roles such as CFO, Accountant, CTO/CIO, Chief AI / Digital Strategy, Compliance/Contract, and Procurement remain valid and are mapped into the pod model as overlays or adjacent specialists rather than being removed.
+- Rationale: The repository's business ambition already depends on these specialist roles, and the pod model is intended to add structure, not flatten the agent taxonomy.
+
+## ADR-016: Agent reuse is modeled as family, mode, and instance
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: Reusable capability is defined at the agent family level, while internal-operating and client-delivery use run as separate mode-specific instances with isolated memory, tools, and state.
+- Rationale: This preserves reuse without breaking Track A and Track B isolation or accidentally sharing runtime state between internal operations and client work.
+
+## ADR-017: State and event normalization are first-class platform contracts
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: `opportunity_state`, `project_state`, `run_state`, and `approval_state`, along with normalized event families and triggers, become formal architecture contracts.
+- Rationale: The platform already persisted workflow state, but it lacked a clear cross-workflow operating language for handoffs, supervision, and future registry/runtime alignment.
+
+## ADR-018: Tool access is governed through normalized tool IDs and permission profiles
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: Tool access is expressed through normalized IDs and policy-bound profiles rather than by ad hoc connector-specific capability assumptions.
+- Rationale: Approval enforcement, auditability, and safe reuse across internal and client-delivery contexts require a consistent tool vocabulary.
+
+## ADR-019: Autonomy classes distinguish advisory, execution, and approval-gated behavior
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: Agent autonomy is modeled through explicit classes such as `assistant`, `supervised_executor`, `bounded_autonomous`, and `approval_gated`.
+- Rationale: The handoff integration identified autonomy boundaries as a missing control layer between workflow design, tool use, and approval policy.
+
+## ADR-020: Mission Control is both UI and operating supervisor
+- Status: Accepted
+- Date: 2026-03-14
+- Decision: Mission Control is not only a frontend shell; it is the platform's operating supervision layer for visibility, escalation, approval routing, and run-state observation.
+- Rationale: The handoff integration clarifies that oversight is a first-class platform concern distinct from reasoning and workflow execution.

@@ -2,9 +2,12 @@
 
 ## Current Focus
 - Active phase: `Phase 3 - Track A Internal MVP Workflows`
-- Immediate goal: finish provider auth/bootstrap and secret handling, then expand specialist operator panels on top of the `shadcn/ui` mission-control foundation
+- Active cross-cutting stream: `AI-Business IDE handoff integration`
+- Immediate goal: finish the handoff-alignment documentation and contract layer, then continue provider auth/bootstrap and secret handling
 
 ## Now
+- [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
+- [x] `H-T02` Update governance docs to adopt the 4-pod model and normalized event/state/tool/autonomy language
 - [x] `P3-T01` Scaffold React mission-control app
 - [x] `P3-T02` Build workflow monitor page
 - [x] `P3-T03` Build approval queue page
@@ -15,9 +18,12 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
+- [ ] `H-T03` Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
+- [ ] `P2-T15` Align agent registry and base contracts with pod model and family/mode/instance identity
 - [ ] `P3-T16` Add OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
 
 ## Soon After
+- [ ] `P2-T16` Define normalized event names, approval classes, autonomy classes, and tool permission profiles in backend contracts/config
 - [ ] `P3-T12` Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
@@ -29,4 +35,5 @@
 ## Watchlist
 - [ ] Keep `ROADMAP.md` as the full source of truth
 - [ ] Keep `TODO.md` short and execution-oriented
+- [ ] Keep Track A internal instances and Track B client instances isolated even when they share an agent family
 - [ ] Avoid adding UI logic before API/contracts are stable enough to consume

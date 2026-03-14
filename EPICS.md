@@ -157,3 +157,66 @@ Controlled delivery pipeline with agent support for repetitive engineering work.
 - lint and tests run automatically
 - release checklist is documented
 - ops automation backlog exists
+
+## Epic 10 - Platform Operating Meta-Model
+- Status: `IN_PROGRESS`
+### Outcome
+The repository has a formal operating model for pods, workflows, state, events, tools, and approvals.
+
+### Main tech components
+- Markdown
+- Pydantic contracts
+- YAML config
+
+### Acceptance criteria
+- meta-model docs exist
+- platform objects are defined consistently
+- family/mode/instance reuse model is documented
+- roadmap and governance docs reference the same model
+
+## Epic 11 - Pod Model and Agent Taxonomy
+- Status: `IN_PROGRESS`
+### Outcome
+The platform distinguishes pod-native agents, specialist overlays, and reusable agent families across internal and client-delivery modes.
+
+### Main tech components
+- Markdown
+- agent registry/config
+
+### Acceptance criteria
+- 4-pod model is documented
+- first-class Growth, Delivery, Ops, and Executive agents are defined
+- existing specialist roles are preserved and mapped
+- Track A and Track B reuse rules are explicit
+
+## Epic 12 - State, Event, Tool, and Autonomy Control Layer
+- Status: `IN_PROGRESS`
+### Outcome
+Workflow and agent execution is described through normalized state, event, tool, and autonomy contracts.
+
+### Main tech components
+- Markdown
+- FastAPI contracts
+- Pydantic
+- LangGraph
+
+### Acceptance criteria
+- canonical state objects are documented
+- event families and trigger patterns are defined
+- normalized tool IDs and permission profiles are defined
+- autonomy classes and approval implications are defined
+
+## Epic 13 - Business Scaling Maturity Model
+- Status: `NOT_STARTED`
+### Outcome
+The operating model supports growth from solo operator use to a boutique agent-augmented consulting firm.
+
+### Main tech components
+- Markdown
+- policy model
+- operating runbooks
+
+### Acceptance criteria
+- maturity stages are described
+- delegation and scaling implications are documented
+- pod model remains valid across stages

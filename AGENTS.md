@@ -12,6 +12,170 @@ This document lists the canonical agents used to run an IT freelancer company wi
 - `ROADMAP.md` is the implementation status source of truth. `TODO.md` is the short execution view derived from it.
 - At minimum, review `ROADMAP.md`, `TODO.md`, `ARCHITECTURE.md`, `EPICS.md`, `INTEGRATIONS.md`, and `DECISIONS.md` for drift whenever a material change is made.
 
+## Agent Model
+The platform models reusable capability through:
+
+- `family`: the reusable capability pattern
+- `mode`: the operating context, such as `internal_operating` or `client_delivery`
+- `instance`: the concrete runtime identity with isolated state, memory, tools, and approvals
+
+This allows the same family to exist in both internal-operating and client-delivery forms without sharing runtime state.
+
+Example:
+- `PMO / Project Control Agent` is a family
+- `Internal PMO Agent` is a Track A instance
+- `Client PMO Agent - Acme` is a separate Track B instance
+
+## Pod Model
+The canonical operating model uses four pods:
+
+- `Growth`
+- `Delivery`
+- `Ops`
+- `Executive`
+
+Existing specialist roles remain valid and can overlay pod workflows.
+
+## First-Class Pod Agents
+The following agents are canonical first-class pod agents that complement the existing specialist catalog.
+
+### Growth Pod
+#### Lead Intake Agent
+- Purpose: ingest inbound lead signals and create structured opportunity records
+- Pod: `Growth`
+- Modes: `internal_operating`, later `client_delivery` where relevant
+- Autonomy class: `supervised_executor`
+- State ownership: initializes `opportunity_state`
+
+#### Account Research Agent
+- Purpose: enrich opportunities with account and market context
+- Pod: `Growth`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `assistant`
+- State ownership: enriches `opportunity_state`
+
+#### Qualification Agent
+- Purpose: score fit and recommend next commercial path
+- Pod: `Growth`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `assistant` or `supervised_executor` depending on write path
+- State ownership: updates qualification fields in `opportunity_state`
+
+#### Outreach Draft Agent
+- Purpose: prepare bounded outreach drafts and follow-up messaging
+- Pod: `Growth`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `assistant`
+- State ownership: contributes next-step outputs to `opportunity_state`
+
+#### Proposal / SOW Agent
+- Purpose: prepare commercial scope, proposal, and SOW drafts
+- Pod: `Growth`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `supervised_executor`
+- State ownership: updates proposal-related fields in `opportunity_state`
+
+#### CRM Hygiene Agent
+- Purpose: keep commercial records structured and current
+- Pod: `Growth`
+- Modes: `internal_operating`, later `client_delivery`
+- Autonomy class: `supervised_executor`
+- State ownership: maintains CRM-aligned opportunity metadata
+
+### Delivery Pod
+#### PMO / Project Control Agent
+- Purpose: own project governance and operational control
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`, `client_facing_service`
+- Autonomy class: `supervised_executor`
+- State ownership: governance fields in `project_state`
+- Replication rule: internal PMO and client PMO are separate instances even when they share the same family
+
+#### BA / Requirements Agent
+- Purpose: turn workshops and documents into structured requirements
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `assistant`
+- State ownership: updates requirements-related project fields
+
+#### Architect Agent
+- Purpose: convert requirements into solution structure
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `assistant`
+- State ownership: updates design and risk fields in `project_state`
+
+#### Build / Automation Agent
+- Purpose: implement scripts, automations, configuration, and scaffolds
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `supervised_executor`
+- State ownership: updates build/progress fields in `project_state`
+
+#### QA / Review Agent
+- Purpose: validate quality and consistency before release or milestone close
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `assistant`
+- State ownership: updates quality and readiness fields in `project_state`
+
+#### Documentation Agent
+- Purpose: produce working documentation and handover packs
+- Pod: `Delivery`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `supervised_executor`
+- State ownership: updates documentation and handover readiness fields
+
+### Ops Pod
+#### Finance Ops Agent
+- Purpose: run internal finance operations and exceptions
+- Pod: `Ops`
+- Modes: `internal_operating`
+
+#### Invoice / Receivables Agent
+- Purpose: manage invoice drafts, receivable tracking, and payment reminders
+- Pod: `Ops`
+- Modes: `internal_operating`
+
+#### Vendor / Procurement Agent
+- Purpose: control vendor requests and procurement flows
+- Pod: `Ops`
+- Modes: `internal_operating`
+
+#### Admin / HR Ops Agent
+- Purpose: support bounded administrative and people-ops workflows
+- Pod: `Ops`
+- Modes: `internal_operating`
+
+#### Company Reporting Agent
+- Purpose: generate internal reporting and KPI views
+- Pod: `Ops`
+- Modes: `internal_operating`, later `client_delivery` in scoped reporting-service form
+
+### Executive Pod
+#### CEO Briefing Agent
+- Purpose: summarize leadership-relevant activity, blockers, and decisions
+- Pod: `Executive`
+- Modes: `internal_operating`
+
+#### Strategy / Opportunity Agent
+- Purpose: synthesize strategic options across growth, delivery, and financial signals
+- Pod: `Executive`
+- Modes: `internal_operating`, later `client_facing_service` in advisory form
+
+#### Risk / Watchdog Agent
+- Purpose: detect, summarize, and escalate operational or delivery risks
+- Pod: `Executive`
+- Modes: `internal_operating`, `client_delivery`
+
+#### Mission Control Agent
+- Purpose: supervise runs, approvals, escalations, and operating visibility
+- Pod: `Executive`
+- Modes: `internal_operating`, `client_delivery`
+- Autonomy class: `supervised_executor`
+- State ownership: supervises `run_state` and `approval_state` visibility, but does not own business entity state
+- Replication rule: if used for client delivery supervision, it must run as a separate tenant-specific supervisor instance
+
 ## Corporate Function Agents
 ### Email Agent
 - classify inbound email
@@ -110,6 +274,23 @@ This document lists the canonical agents used to run an IT freelancer company wi
 ### Ops Agent
 - assist with internal operations and runbooks
 - support release checklists and execution hygiene
+
+## Reuse Guidance for Track B
+The following families are strong candidates for replicated client-delivery or client-facing service use:
+
+- PMO / Project Control Agent
+- BA / Requirements Agent
+- Architect Agent
+- Build / Automation Agent
+- QA / Review Agent
+- Documentation Agent
+- Knowledge Agent
+- CTO/CIO Agent
+- Chief AI / Digital Strategy Agent
+- Reporting Agent
+- Document Agent
+
+These are reused as separate instances per client, not shared Track A agents.
 
 ## Approval Principle
 No sensitive external action is sent automatically in MVP. CEO approval is required before execution for:

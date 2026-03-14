@@ -10,6 +10,14 @@ Workflows
   ->
 Agent Modules
   ->
+Tools and Actions
+  ->
+Policies and Approvals
+  ->
+State and Events
+  ->
+Memory
+  ->
 Platform Foundation
   ->
 Infrastructure
@@ -44,6 +52,26 @@ Infrastructure
 ### Agent Modules
 - Python modules
 - Pydantic contracts
+
+### Tools and Actions
+- provider connectors
+- bounded external actions
+- normalized tool IDs and tool profiles
+
+### Policies and Approvals
+- approval-first model for sensitive actions
+- later role-based policy enforcement
+- autonomy classes and approval classes
+
+### State and Events
+- normalized event families and workflow triggers
+- canonical operating state objects
+- run and approval state for Mission Control visibility
+
+### Memory
+- working memory
+- episodic memory
+- semantic memory
 
 ### Platform Foundation
 - LiteLLM
@@ -87,10 +115,15 @@ The workflow controls the process. AI is used only inside selected steps.
 
 ## 7. Operating Model
 - Single human CEO approval authority for high-risk actions.
-- Agent modules are organized into two domains:
-  - corporate functions (billing, finance, reporting, PO, compliance)
-  - service delivery functions (PM, delivery, quality, consulting, documentation, testing)
-- Mission Control UI is the operational control layer for visibility, approval, and audit.
+- Agent modules are organized into a 4-pod operating model:
+  - Growth
+  - Delivery
+  - Ops
+  - Executive
+- Existing specialist roles remain valid as overlays across pods rather than being removed.
+- Agent reuse follows a `family -> mode -> instance` model.
+- The same family may exist in internal-operating and client-delivery forms, but runtime instances, memory, tools, and state remain isolated.
+- Mission Control is both the operator UI surface and the operating supervisor layer for visibility, escalation, approval routing, and audit.
 
 ## 8. Memory Model
 - Working memory: active workflow state and approval checkpoints.
@@ -98,7 +131,17 @@ The workflow controls the process. AI is used only inside selected steps.
 - Semantic memory: retrieved knowledge from documents and vector search.
 - Shared workspace: current operational truth for clients, projects, tasks, invoices, and related entities.
 
-## 9. Production Readiness Control Areas
+## 9. Formal Operating Layer
+The handoff integration adds an explicit formal operating layer to the architecture:
+
+- pod ownership for Growth, Delivery, Ops, and Executive work
+- normalized events and triggers for workflow start and stage progression
+- canonical state objects for opportunity, project, run, and approval state
+- normalized tool taxonomy and permissions
+- autonomy classes that bound what agent instances may do
+- specialist overlay roles that complement, rather than replace, pod-native agents
+
+## 10. Production Readiness Control Areas
 The following control areas are required for production readiness and extend the current MVP architecture:
 
 - authentication, secrets, and token lifecycle
@@ -113,7 +156,7 @@ The following control areas are required for production readiness and extend the
 - data lifecycle management
 - deployment packaging and implementation runbooks
 
-## 10. Production Control Intent
+## 11. Production Control Intent
 ### Authorization
 The MVP single-approver model will evolve toward role-based permissions, delegated authority, approval classes, and workflow-specific policy enforcement.
 
@@ -155,3 +198,5 @@ Isolation must be enforced through:
 
 
 See [MEMORY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/MEMORY_MODEL.md) for the full shared-brain definition and consistency rules.
+See [PODS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PODS.md) for pod ownership and reuse rules.
+See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

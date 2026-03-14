@@ -77,7 +77,6 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Phase 3 - Track A Internal MVP Workflows (React UI)
 - [x] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
-- [x] P3-T01A: Adopt `shadcn/ui` + Tailwind foundation for mission control and migrate existing shared UI primitives/layout shells
 - [x] P3-T02: Build workflow monitor page
 - [x] P3-T03: Build approval queue page
 - [x] P3-T04: Build agent activity page
@@ -96,7 +95,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P3-T17: Add connector diagnostics and live inbox/calendar detail views in mission control
 - [x] P3-T18: Launch email workflows from live inbox messages with source metadata attached
 - [x] P3-T19: Send approved Outlook replies end-to-end through Microsoft Graph `Mail.Send`
-- [x] P3-T20: Add explicit UI routing indicators for local model, cloud route, fallback-rule execution, and local LLM invocation status
+- [ ] P3-T20: Add explicit UI routing indicators for local model, cloud route, and fallback-rule execution
 
 ### Phase 4 - Track B Client Template MVP
 - [ ] P4-T01: Create client deployment template pack
@@ -132,6 +131,60 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
+
+### Backlog - Authorization and Approval Policy
+- [ ] B-T03: Define generalized role-based access control model for operators, approvers, and tenant-level roles
+- [ ] B-T04: Add multi-approver and delegated-approval model for workflow execution and outbound actions
+- [ ] B-T05: Define approval classes by workflow risk level
+- [ ] B-T06: Add workflow-specific approval policy enforcement model
+- [ ] B-T07: Prevent sensitive action execution outside explicit approval policy
+
+### Backlog - Observability and Failure Diagnosis
+- [ ] B-T08: Implement structured application logging across API, workflow, approval, and connector boundaries
+- [ ] B-T09: Add per-workflow execution metrics, including success, escalation, failure, and retry counts
+- [ ] B-T10: Add connector health metrics and explicit status persistence
+- [ ] B-T11: Add model latency, error, route, and fallback metrics
+- [ ] B-T12: Add alerting thresholds for send failures, approval failures, connector failures, and retrieval failures
+
+### Backlog - Model Governance
+- [ ] B-T13: Define approved model catalog by environment and workflow type
+- [ ] B-T14: Formalize prompt versioning and routing policy versioning
+- [ ] B-T15: Persist model/provider/routing/fallback decisions for workflow runs
+- [ ] B-T16: Create small evaluation datasets per workflow
+- [ ] B-T17: Define rollback rules for prompt/model regressions
+
+### Backlog - Input / Output Safety Controls
+- [ ] B-T18: Add prompt-injection defensive patterns for retrieval and external-content workflows
+- [ ] B-T19: Add outbound content validation rules before external send
+- [ ] B-T20: Add structured workflow-input validation for risky or externally sourced inputs
+- [ ] B-T21: Add attachment and document validation rules in ingestion and email-derived workflows
+- [ ] B-T22: Add grounded-output checks and explicit risky-output review gates
+
+### Backlog - Frontend Operational Maturity
+- [ ] B-T23: Improve loading, empty, degraded, and error states across Mission Control pages
+- [ ] B-T24: Add approval history view with execution trail context
+- [ ] B-T25: Add workflow search and filtering capabilities
+- [ ] B-T26: Surface connector state and failure reasons clearly in UI
+- [ ] B-T27: Extend UI routing indicators for local model, cloud route, and fallback execution paths
+
+### Backlog - Data Lifecycle Management
+- [ ] B-T28: Define retention periods by data class
+- [ ] B-T29: Add archive and deletion procedures for workflow, document, and communication records
+- [ ] B-T30: Define backup frequency and restore validation process
+- [ ] B-T31: Document residency and storage-boundary assumptions
+
+### Backlog - CI/CD and Reliability Hardening
+- [ ] B-T32: Add schema migration validation in CI
+- [ ] B-T33: Add send/reply safety tests for approval-gated communication workflows
+- [ ] B-T34: Add incident and rollback playbooks
+- [ ] B-T35: Define release tagging/version process
+
+### Backlog - Multi-Tenant Hardening
+- [ ] B-T36: Add tenant bootstrap automation
+- [ ] B-T37: Enforce tenant-specific secret, storage, and runtime-config separation
+- [ ] B-T38: Add backup and restore procedures per tenant instance
+- [ ] B-T39: Add tenant-specific observability and operational controls
+
 
 ## Status Log
 
@@ -189,14 +242,6 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Extended email workflow persistence to carry source message metadata, approval/send status, and sent timestamps.
 - Wired Outlook approval completion to `Mail.Send` via Microsoft Graph reply calls so approved inbox-derived drafts can send end-to-end.
 - Added a schema migration for email source/send tracking and applied it locally.
-
-### 2026-03-13
-- Standardized the React mission-control frontend on `shadcn/ui` + Tailwind and added `components.json` plus frontend path aliases.
-- Added shared UI primitives (`Button`, `Badge`, `Card`, `Input`, `Textarea`, `Select`) and migrated the shell/status/form controls onto the new foundation.
-- Replaced the monolithic custom stylesheet with Tailwind-backed mission-control component classes while preserving the existing operator UI structure.
-- Validated the frontend migration with a successful production build in `frontend/`.
-- Added explicit routing indicators in Mission Control for local model, cloud route, fallback-rule execution, and whether the local LLM was actually invoked.
-- Refined the Mission Control shell by grouping sidebar navigation into logical operating sections, tightening detail-panel widths, and hardening text/button wrapping for dense operator content.
 
 ## Next Action
 Start `P3-T16`: finish secret management and refresh-token handling around provider bootstrap, then return to `P3-T12` through `P3-T14`.

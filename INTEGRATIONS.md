@@ -88,6 +88,9 @@ Shared memory promotion happens only here, not in external systems.
 ### Rule 5
 External sessions may cache local context, but canonical context remains in this platform.
 
+### Rule 6
+External connectors and runtimes map their capabilities to normalized platform tool IDs and must not bypass the platform's approval, autonomy, or state rules.
+
 ## OpenClaw Interaction Pattern
 
 ### Pattern A: Event Ingress
@@ -185,3 +188,4 @@ These connectors are selected through environment settings. Write actions remain
 - secret storage and rotation strategy
 - refresh-token lifecycle handling across providers
 - connector diagnostics for token/bootstrap state beyond the current health views
+- connector-to-tool-ID mapping for normalized tool/audit contracts

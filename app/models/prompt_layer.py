@@ -1,3 +1,4 @@
+import re
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
@@ -61,9 +62,43 @@ class PromptRenderRequest(BaseModel):
     injected_context: dict[PromptContextKey, str] = Field(default_factory=dict)
 
 
+class PromptNamingConvention(BaseModel):
+    family_base_asset_pattern: str = "<family_id>.family.base"
+    workflow_step_asset_pattern: str = "<family_id>.workflow.<step_id>"
+    composition_pattern: str = "<workflow_id>.<step_id>"
+    workflow_step_filename_style: Literal["snake_case"] = "snake_case"
+
+
+class PromptStorageConvention(BaseModel):
+    prompts_root: str = "prompts"
+    family_base_directory: str = "agents/{agent_family_id}"
+    family_base_filename: str = "system.txt"
+    workflow_step_directory: str = "workflows/{workflow_id}"
+    workflow_step_filename: str = "{step_file}.txt"
+
+
+class PromptLoadingConvention(BaseModel):
+    explicit_relative_path_override: bool = True
+    family_base_optional: bool = True
+    workflow_step_required: bool = True
+    append_runtime_context: bool = True
+
+
+class PromptConventionSet(BaseModel):
+    naming: PromptNamingConvention = Field(default_factory=PromptNamingConvention)
+    storage: PromptStorageConvention = Field(default_factory=PromptStorageConvention)
+    loading: PromptLoadingConvention = Field(default_factory=PromptLoadingConvention)
+
+
 class PromptLayerRegistry(BaseModel):
+    conventions: PromptConventionSet = Field(default_factory=PromptConventionSet)
     assets: list[PromptAsset] = Field(default_factory=list)
     compositions: list[PromptCompositionContract] = Field(default_factory=list)
+
+
+def normalize_prompt_file_segment(value: str) -> str:
+    normalized = re.sub(r"[^a-zA-Z0-9]+", "_", value).strip("_").lower()
+    return normalized or "prompt"
 
 
 def _asset(
@@ -99,6 +134,7 @@ def _context(
 
 
 DEFAULT_PROMPT_LAYER_REGISTRY = PromptLayerRegistry(
+    conventions=PromptConventionSet(),
     assets=[
         _asset(
             "email.family.base",

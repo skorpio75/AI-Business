@@ -57,6 +57,7 @@ Infrastructure
 - runtime prompt/template loader
 - context injection for state, tool profile, approvals, tenant, and output schema
 - typed prompt composition contracts and config bindings
+- canonical prompt naming, storage, and loading conventions
 
 ### Agent Modules
 - Python modules
@@ -163,6 +164,7 @@ Prompting is a first-class runtime layer in the target architecture, but it is n
 - workflow-step prompts define task-specific instructions for a bounded execution step
 - runtime execution composes base prompt, step prompt, and injected operating context rather than relying on one giant static agent prompt
 - backend prompt contracts live in `app/models/prompt_layer.py`, mirrored in `config/base/prompt_layer.yaml`, and rendered through the composable loader in `app/core/prompt_loader.py`
+- the target filesystem convention is `prompts/agents/<family_id>/system.txt` and `prompts/workflows/<workflow_id>/<step_id_snake_case>.txt`, while legacy explicit `relative_path` mappings remain valid during migration
 - prompt expansion should be phased after state contracts, tool boundaries, approvals, and workflow choreography are stable enough to support safe reuse and evaluation
 
 ## 10. Multi-Agent Evolution Principle
@@ -261,5 +263,6 @@ Isolation must be enforced through:
 
 
 See [MEMORY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/MEMORY_MODEL.md) for the full shared-brain definition and consistency rules.
+See [PROMPTS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PROMPTS.md) for canonical prompt naming, storage, and loading conventions.
 See [PODS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PODS.md) for pod ownership and reuse rules.
 See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

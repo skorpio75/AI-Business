@@ -1,3 +1,21 @@
+conventions:
+  naming:
+    family_base_asset_pattern: <family_id>.family.base
+    workflow_step_asset_pattern: <family_id>.workflow.<step_id>
+    composition_pattern: <workflow_id>.<step_id>
+    workflow_step_filename_style: snake_case
+  storage:
+    prompts_root: prompts
+    family_base_directory: agents/{agent_family_id}
+    family_base_filename: system.txt
+    workflow_step_directory: workflows/{workflow_id}
+    workflow_step_filename: "{step_file}.txt"
+  loading:
+    explicit_relative_path_override: true
+    family_base_optional: true
+    workflow_step_required: true
+    append_runtime_context: true
+
 assets:
   - asset_id: email.family.base
     asset_kind: family_base

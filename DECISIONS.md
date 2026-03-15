@@ -152,3 +152,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-15
 - Decision: The target operating model will include a dedicated prompt layer composed of family-level base prompts plus workflow-step prompts, with runtime context injection for state, tools, approvals, tenant, and output schema. `AGENTS.md` remains the operating catalog for roles and boundaries rather than the primary location for prompt text.
 - Rationale: Modular prompt composition is safer and more reusable than embedding one large prompt per agent in the business catalog. This approach fits the workflow-first architecture, reduces duplication across steps, and allows prompt authoring, versioning, evaluation, and rollback to evolve as a controlled runtime concern after contracts and workflow boundaries are stable.
+
+## ADR-026: Prompt assets follow canonical naming, storage, and loading conventions
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: Prompt assets will follow canonical ID patterns and target filesystem conventions: family base prompts belong under `prompts/agents/<family_id>/system.txt`, workflow-step prompts belong under `prompts/workflows/<workflow_id>/<step_id_snake_case>.txt`, and the loader resolves explicit `relative_path` overrides first so existing legacy prompt files remain valid during migration.
+- Rationale: The runtime prompt layer needs stable naming and storage rules so new prompt assets can be added consistently without requiring an immediate rewrite of every existing prompt file. Supporting explicit-path compatibility keeps the current MVP prompt set working while we gradually migrate toward the cleaner canonical layout.

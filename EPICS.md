@@ -173,6 +173,7 @@ The repository has a formal operating model for pods, workflows, state, events, 
 - family/mode/instance reuse model is documented
 - prompt-layer target model is documented separately from the business agent catalog
 - prompt-layer runtime contracts are defined without requiring broad prompt authoring
+- prompt naming, storage, and loading conventions are defined with legacy-path compatibility
 - roadmap and governance docs reference the same model
 
 ## Epic 11 - Pod Model and Agent Taxonomy
@@ -208,6 +209,7 @@ Workflow and agent execution is described through normalized state, event, tool,
 - autonomy classes and approval implications are defined
 - family-level base prompts and workflow-step prompts are planned as separate runtime concerns
 - prompt composition and context-injection contracts are defined in backend/config
+- prompt naming, storage, and loader fallback rules are defined
 
 ## Epic 13 - Business Scaling Maturity Model
 - Status: `NOT_STARTED`

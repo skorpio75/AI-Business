@@ -55,6 +55,7 @@ enterprise-agent-platform/
 |- EPICS.md
 |- ARCHITECTURE.md
 |- AGENTS.md
+|- PROMPTS.md
 |- WORKFLOWS.md
 |- DECISIONS.md
 |- TODO.md
@@ -168,6 +169,7 @@ This script starts Docker, initializes the database, creates `frontend\.env` fro
 - state ownership and persistence mapping is defined for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
 - normalized tool permission profiles are bound by agent family and operating mode
 - runtime prompt composition contracts now define family-base prompt assets, workflow-step prompt assets, and injected operating context rules
+- prompt asset naming, storage, and loading conventions are defined, with legacy explicit-path compatibility during migration
 
 ## Inbox and Calendar Connectors
 The personal assistant backend can now fetch real inbox and calendar data when configured.

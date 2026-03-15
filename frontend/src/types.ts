@@ -252,12 +252,68 @@ export type CTOCIOPanel = {
   approval_required: boolean;
 };
 
+export type ReconciliationRule = {
+  rule_id: string;
+  description: string;
+  severity: "warning" | "blocking";
+};
+
+export type ReconciliationException = {
+  exception_id: string;
+  summary: string;
+  impacted_records: string[];
+  severity: "warning" | "material" | "critical";
+  recommended_action: string;
+};
+
+export type CloseChecklistItem = {
+  item_id: string;
+  title: string;
+  owner: string;
+  status: "pending" | "in_progress" | "completed" | "blocked";
+  notes?: string | null;
+};
+
+export type FinancialScenario = {
+  scenario_id: string;
+  title: string;
+  horizon: "30_days" | "90_days" | "12_months";
+  assumptions: string[];
+  projected_outcomes: string[];
+  risks: string[];
+};
+
+export type FinancePanelAgentSummary = {
+  agent_id: string;
+  display_name: string;
+  role_summary: string;
+  primary_track: "track_a_internal" | "track_b_client";
+  operating_modes: string[];
+  tool_profile_by_mode: Record<string, string>;
+  approval_class: "none" | "bounded" | "ceo_required";
+  autonomy_class: "assistant" | "supervised_executor" | "bounded_autonomous" | "approval_gated";
+};
+
+export type FinancePanel = {
+  agents: FinancePanelAgentSummary[];
+  reconciliation_rules: ReconciliationRule[];
+  accounting_exceptions: ReconciliationException[];
+  close_checklist: CloseChecklistItem[];
+  accounting_ready_exports: string[];
+  scenarios: FinancialScenario[];
+  cashflow_risks: string[];
+  recommendations: string[];
+  executive_summary: string;
+  approval_required: boolean;
+};
+
 export type ViewKey =
   | "workflow-monitor"
   | "approval-queue"
   | "agent-activity"
   | "agents-org"
   | "cto-cio"
+  | "finance-cockpit"
   | "inbox-calendar"
   | "email-operations"
   | "knowledge-qna"

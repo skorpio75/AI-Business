@@ -3,6 +3,7 @@ import type {
   ApprovalItem,
   CTOCIOPanel,
   DashboardSummary,
+  FinancePanel,
   KnowledgeQueryResponse,
   PersonalAssistantContext,
   ProposalGenerationResponse,
@@ -53,6 +54,10 @@ export const apiClient = {
 
   getCtoCioPanel(): Promise<CTOCIOPanel> {
     return getJson<CTOCIOPanel>("/specialists/cto-cio/panel");
+  },
+
+  getFinancePanel(): Promise<FinancePanel> {
+    return getJson<FinancePanel>("/specialists/finance/panel");
   },
 
   getPersonalAssistantContext(params?: {

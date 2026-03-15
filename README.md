@@ -9,7 +9,7 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
 ## Current Status
-The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, and a dedicated CTO/CIO advisory panel.
+The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, and dedicated CTO/CIO plus finance advisory panels.
 
 ## Principles
 - open source first
@@ -160,6 +160,7 @@ This script starts Docker, initializes the database, creates `frontend\.env` fro
 - `GET /healthz`
 - `GET /connectors/bootstrap-status`
 - `GET /specialists/cto-cio/panel`
+- `GET /specialists/finance/panel`
 - `POST /workflows/email-operations/run`
 - `GET /workflows/runs`
 - `GET /approvals/pending`
@@ -254,6 +255,7 @@ That endpoint returns connector health plus the current normalized `inbox_messag
 - Workflow monitor: reads workflow runs and surfaces model usage, confidence, and escalation indicators.
 - Approval queue: reads pending approvals and provides a review surface ahead of decision wiring.
 - CTO/CIO panel: packages technology strategy options, architecture advice, and internal platform improvements into one specialist advisory view.
+- Finance cockpit: packages accounting exceptions, close readiness, and CFO scenario cards into one finance review surface.
 
 ## Git Hygiene
 - Local secrets, virtual environments, caches, and local database files are intentionally excluded via `.gitignore`.

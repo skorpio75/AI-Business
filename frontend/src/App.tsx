@@ -22,6 +22,7 @@ import { KnowledgeQnaPage } from "./pages/KnowledgeQnaPage";
 import { ProposalGenerationPage } from "./pages/ProposalGenerationPage";
 import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
 import { CtoCioPage } from "./pages/CtoCioPage";
+import { FinanceCockpitPage } from "./pages/FinanceCockpitPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
 import type { ViewKey } from "./types";
 
@@ -97,6 +98,12 @@ const VIEW_GROUPS: Array<{
         id: "cto-cio",
         label: "CTO/CIO",
         description: "Review architecture guidance, strategy options, and internal tech priorities.",
+        icon: Sparkles,
+      },
+      {
+        id: "finance-cockpit",
+        label: "Finance Cockpit",
+        description: "Review accounting exceptions, close readiness, and CFO scenario cards.",
         icon: Sparkles,
       },
     ],
@@ -280,6 +287,7 @@ export default function App() {
           {activeView === "knowledge-qna" ? <KnowledgeQnaPage /> : null}
           {activeView === "proposal-generation" ? <ProposalGenerationPage /> : null}
           {activeView === "cto-cio" ? <CtoCioPage refreshToken={refreshToken} /> : null}
+          {activeView === "finance-cockpit" ? <FinanceCockpitPage refreshToken={refreshToken} /> : null}
         </div>
       </main>
     </div>

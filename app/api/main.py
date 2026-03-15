@@ -28,6 +28,7 @@ from app.models.schemas import (
     DashboardSummaryResponse,
     EmailWorkflowRequest,
     EmailWorkflowResponse,
+    FinancePanelResponse,
     KnowledgeQueryRequest,
     KnowledgeQueryResponse,
     ProposalGenerationRequest,
@@ -37,6 +38,7 @@ from app.services.dashboard_summary import DashboardSummaryService
 from app.services.agent_registry import AgentRegistryService
 from app.services.cto_cio_panel import CTOCIOPanelService
 from app.services.email_workflow import EmailWorkflowService
+from app.services.finance_panel import FinancePanelService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import ModelGateway
 from app.services.personal_assistant_context import PersonalAssistantContextService
@@ -57,6 +59,7 @@ knowledge_qna = KnowledgeQnAService(retrieval_service=PgVectorRetrievalService()
 proposal_workflow = ProposalWorkflowService(model_gateway=gateway)
 dashboard_summary = DashboardSummaryService()
 cto_cio_panel = CTOCIOPanelService()
+finance_panel = FinancePanelService()
 
 
 def get_runtime_settings() -> Settings:
@@ -154,6 +157,20 @@ def get_cto_cio_panel() -> CTOCIOPanelResponse:
     if agent is None:
         raise HTTPException(status_code=404, detail="agent_not_found")
     return cto_cio_panel.build_panel(agent=agent)
+
+
+@app.get("/specialists/finance/panel", response_model=FinancePanelResponse)
+def get_finance_panel() -> FinancePanelResponse:
+    accountant_agent = agent_registry.get_agent("accountant-agent")
+    cfo_agent = agent_registry.get_agent("cfo-agent")
+    finance_ops_agent = agent_registry.get_agent("finance-ops-agent")
+    if accountant_agent is None or cfo_agent is None or finance_ops_agent is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    return finance_panel.build_panel(
+        accountant_agent=accountant_agent,
+        cfo_agent=cfo_agent,
+        finance_ops_agent=finance_ops_agent,
+    )
 
 
 @app.get("/personal-assistant/context", response_model=PersonalAssistantContext)

@@ -105,7 +105,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P3-T10: Add KPI widgets (billing, cashflow, delivery health, quality gate status)
 - [x] P3-T11: Add personal assistant panel (today priorities, schedule conflicts, quick actions)
 - [x] P3-T12: Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
-- [ ] P3-T13: Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
+- [x] P3-T13: Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] P3-T14: Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 - [x] P3-T15: Replace null-only inbox/calendar placeholders with provider-backed fetch connectors (Gmail, Google Calendar, Microsoft Graph)
 - [x] P3-T16: Add OAuth/bootstrap flow and secret management for external inbox/calendar providers
@@ -253,6 +253,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P2-T19` by adding typed prompt-layer contracts and config bindings for family-base assets, workflow-step assets, and runtime context injection, and wired the implemented email, knowledge, and proposal prompt flows through the composable prompt loader.
 - Completed `P2-T20` by formalizing canonical prompt asset naming, storage, and loader resolution conventions, including explicit legacy-path compatibility so current prompt files remain valid during migration.
 - Completed `P3-T12` by adding a typed CTO/CIO specialist advisory endpoint and mission-control panel for customer scope insight, architecture guidance, strategy options, and internal improvement priorities.
+- Completed `P3-T13` by adding a typed finance cockpit endpoint and mission-control panel for accounting exceptions, close-readiness review, and CFO scenario cards.
 - Added Personal Assistant scope (inbox + calendar triage + prioritized daily list) to agent/workflow model.
 - Added CTO/CIO agent scope for customer technology counsel and internal continuous platform improvement.
 - Added Accountant and CFO scopes for operational accounting and strategic finance decision support.
@@ -313,4 +314,4 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a medium-suitability tier for families that are valuable in bounded collaboration, exception handling, or synthesis chains but may remain workflow-stage-oriented or rules-based longer.
 
 ## Next Action
-Resume the remaining Phase 3 UI panels, starting with `P3-T13` for the finance cockpit.
+Resume the remaining Phase 3 UI panels, starting with `P3-T14` for the Chief AI / Digital Strategy panel.

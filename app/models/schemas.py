@@ -204,3 +204,27 @@ class CTOCIOPanelResponse(BaseModel):
     architecture_advice: ArchitectureAdvice
     internal_improvement_backlog: list[ImprovementBacklogItem] = Field(default_factory=list)
     approval_required: bool = True
+
+
+class FinancePanelAgentSummary(BaseModel):
+    agent_id: str
+    display_name: str
+    role_summary: str
+    primary_track: Literal["track_a_internal", "track_b_client"]
+    operating_modes: list[str] = Field(default_factory=list)
+    tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    approval_class: Literal["none", "bounded", "ceo_required"]
+    autonomy_class: Literal["assistant", "supervised_executor", "bounded_autonomous", "approval_gated"]
+
+
+class FinancePanelResponse(BaseModel):
+    agents: list[FinancePanelAgentSummary] = Field(default_factory=list)
+    reconciliation_rules: list[ReconciliationRule] = Field(default_factory=list)
+    accounting_exceptions: list[ReconciliationException] = Field(default_factory=list)
+    close_checklist: list[CloseChecklistItem] = Field(default_factory=list)
+    accounting_ready_exports: list[str] = Field(default_factory=list)
+    scenarios: list[FinancialScenario] = Field(default_factory=list)
+    cashflow_risks: list[str] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
+    executive_summary: str
+    approval_required: bool = True

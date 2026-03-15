@@ -307,6 +307,54 @@ export type FinancePanel = {
   approval_required: boolean;
 };
 
+export type OpportunityMapItem = {
+  opportunity_id: string;
+  title: string;
+  problem_statement: string;
+  expected_value: string;
+  priority: "now" | "next" | "later";
+  dependencies: string[];
+};
+
+export type DeliveryBlueprintPhase = {
+  phase_id: string;
+  title: string;
+  objectives: string[];
+  deliverables: string[];
+  risks: string[];
+};
+
+export type MaturityDimension = {
+  dimension: string;
+  current_level: "ad_hoc" | "emerging" | "repeatable" | "managed" | "optimized";
+  target_level: "ad_hoc" | "emerging" | "repeatable" | "managed" | "optimized";
+  gap_summary: string;
+  next_actions: string[];
+};
+
+export type ChiefAIScopeSignal = {
+  signal_id: string;
+  title: string;
+  summary: string;
+  focus_area: "offer_design" | "delivery_controls" | "commercialization";
+  tone: "neutral" | "success" | "warning" | "critical";
+};
+
+export type ChiefAIPanel = {
+  agent_id: string;
+  display_name: string;
+  role_summary: string;
+  primary_track: "track_a_internal" | "track_b_client";
+  operating_modes: string[];
+  tool_profile_by_mode: Record<string, string>;
+  executive_summary: string;
+  scope_signals: ChiefAIScopeSignal[];
+  opportunity_map: OpportunityMapItem[];
+  delivery_blueprint: DeliveryBlueprintPhase[];
+  maturity_model: MaturityDimension[];
+  approval_required: boolean;
+};
+
 export type ViewKey =
   | "workflow-monitor"
   | "approval-queue"
@@ -314,6 +362,7 @@ export type ViewKey =
   | "agents-org"
   | "cto-cio"
   | "finance-cockpit"
+  | "chief-ai-strategy"
   | "inbox-calendar"
   | "email-operations"
   | "knowledge-qna"

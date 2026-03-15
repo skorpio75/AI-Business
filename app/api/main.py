@@ -24,6 +24,7 @@ from app.models.connectors import ConnectorBootstrapStatusResponse, PersonalAssi
 from app.models.schemas import (
     ApprovalDecisionRequest,
     ApprovalItem,
+    ChiefAIPanelResponse,
     CTOCIOPanelResponse,
     DashboardSummaryResponse,
     EmailWorkflowRequest,
@@ -36,6 +37,7 @@ from app.models.schemas import (
 )
 from app.services.dashboard_summary import DashboardSummaryService
 from app.services.agent_registry import AgentRegistryService
+from app.services.chief_ai_panel import ChiefAIPanelService
 from app.services.cto_cio_panel import CTOCIOPanelService
 from app.services.email_workflow import EmailWorkflowService
 from app.services.finance_panel import FinancePanelService
@@ -60,6 +62,7 @@ proposal_workflow = ProposalWorkflowService(model_gateway=gateway)
 dashboard_summary = DashboardSummaryService()
 cto_cio_panel = CTOCIOPanelService()
 finance_panel = FinancePanelService()
+chief_ai_panel = ChiefAIPanelService()
 
 
 def get_runtime_settings() -> Settings:
@@ -171,6 +174,14 @@ def get_finance_panel() -> FinancePanelResponse:
         cfo_agent=cfo_agent,
         finance_ops_agent=finance_ops_agent,
     )
+
+
+@app.get("/specialists/chief-ai-digital-strategy/panel", response_model=ChiefAIPanelResponse)
+def get_chief_ai_panel() -> ChiefAIPanelResponse:
+    agent = agent_registry.get_agent("chief-ai-digital-strategy-agent")
+    if agent is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    return chief_ai_panel.build_panel(agent=agent)
 
 
 @app.get("/personal-assistant/context", response_model=PersonalAssistantContext)

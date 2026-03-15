@@ -1,6 +1,7 @@
 import type {
   AgentContract,
   ApprovalItem,
+  ChiefAIPanel,
   CTOCIOPanel,
   DashboardSummary,
   FinancePanel,
@@ -58,6 +59,10 @@ export const apiClient = {
 
   getFinancePanel(): Promise<FinancePanel> {
     return getJson<FinancePanel>("/specialists/finance/panel");
+  },
+
+  getChiefAiPanel(): Promise<ChiefAIPanel> {
+    return getJson<ChiefAIPanel>("/specialists/chief-ai-digital-strategy/panel");
   },
 
   getPersonalAssistantContext(params?: {

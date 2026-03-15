@@ -71,7 +71,7 @@ Documents can be ingested and used for grounded answers.
 - retrieval returns relevant chunks
 
 ## Epic 5 - Track A Internal Operations MVP
-- Status: `IN_PROGRESS`
+- Status: `DONE`
 ### Outcome
 The internal business can run key workflows with one human approver.
 
@@ -91,9 +91,6 @@ The internal business can run key workflows with one human approver.
 - approval UI is usable
 - provider-backed inbox/calendar context is visible in Mission Control
 - approved Outlook replies can execute through Microsoft Graph after approval
-
-### Current remaining scope
-- Chief AI / Digital Strategy panel
 
 ## Epic 6 - Track B Client Template MVP
 - Status: `NOT_STARTED`

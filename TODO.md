@@ -1,9 +1,9 @@
 # TODO
 
 ## Current Focus
-- Active phase: `Phase 3 - Track A Internal MVP Workflows`
+- Active phase: `Phase 4 - Track B Client Template MVP`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: resume the remaining Phase 3 UI panels, starting with the Chief AI / Digital Strategy panel
+- Immediate goal: begin Track B by creating the client deployment template pack
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,12 +18,14 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
+- [ ] `P4-T01` Create client deployment template pack
 
 ## Soon After
+- [ ] `P4-T02` Finalize `config/client-template/client.yaml`
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 
 ## Recently Finished
+- [x] `P3-T14` Add a typed Chief AI / Digital Strategy endpoint and mission-control panel for AI opportunity portfolio, delivery blueprinting, and maturity guidance
 - [x] `P3-T13` Add a typed finance cockpit endpoint and mission-control panel for accounting exceptions, close-readiness review, and CFO scenario cards
 - [x] `P3-T12` Add a typed CTO/CIO specialist advisory endpoint and mission-control panel for customer scope insight, architecture guidance, strategy options, and internal improvement priorities
 - [x] `P2-T20` Define canonical prompt asset naming, storage, and loading conventions with legacy explicit-path compatibility

@@ -37,8 +37,8 @@ class CTOCIOPanelService:
                 insight_id="scope-signal-ui",
                 title="Executive advisory surfaces still need operator panels",
                 summary=(
-                    "The React cockpit still needs the Chief AI / Digital Strategy specialist surface, so "
-                    "advisory workflows are improved but not yet fully surfaced for day-to-day operator use."
+                    "The React cockpit now has CTO/CIO, finance, and AI strategy specialist surfaces, so "
+                    "the next gap is turning those advisory views into repeatable operator routines and offer packaging."
                 ),
                 focus_area="internal_platform",
                 tone="warning",

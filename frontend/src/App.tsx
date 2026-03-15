@@ -21,6 +21,7 @@ import { InboxCalendarPage } from "./pages/InboxCalendarPage";
 import { KnowledgeQnaPage } from "./pages/KnowledgeQnaPage";
 import { ProposalGenerationPage } from "./pages/ProposalGenerationPage";
 import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
+import { ChiefAiStrategyPage } from "./pages/ChiefAiStrategyPage";
 import { CtoCioPage } from "./pages/CtoCioPage";
 import { FinanceCockpitPage } from "./pages/FinanceCockpitPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
@@ -104,6 +105,12 @@ const VIEW_GROUPS: Array<{
         id: "finance-cockpit",
         label: "Finance Cockpit",
         description: "Review accounting exceptions, close readiness, and CFO scenario cards.",
+        icon: Sparkles,
+      },
+      {
+        id: "chief-ai-strategy",
+        label: "AI Strategy",
+        description: "Review AI opportunity maps, delivery blueprinting, and maturity signals.",
         icon: Sparkles,
       },
     ],
@@ -288,6 +295,7 @@ export default function App() {
           {activeView === "proposal-generation" ? <ProposalGenerationPage /> : null}
           {activeView === "cto-cio" ? <CtoCioPage refreshToken={refreshToken} /> : null}
           {activeView === "finance-cockpit" ? <FinanceCockpitPage refreshToken={refreshToken} /> : null}
+          {activeView === "chief-ai-strategy" ? <ChiefAiStrategyPage refreshToken={refreshToken} /> : null}
         </div>
       </main>
     </div>

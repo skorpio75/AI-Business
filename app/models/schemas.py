@@ -228,3 +228,26 @@ class FinancePanelResponse(BaseModel):
     recommendations: list[str] = Field(default_factory=list)
     executive_summary: str
     approval_required: bool = True
+
+
+class ChiefAIScopeSignal(BaseModel):
+    signal_id: str
+    title: str
+    summary: str
+    focus_area: Literal["offer_design", "delivery_controls", "commercialization"]
+    tone: KpiTone = "neutral"
+
+
+class ChiefAIPanelResponse(BaseModel):
+    agent_id: str
+    display_name: str
+    role_summary: str
+    primary_track: Literal["track_a_internal", "track_b_client"]
+    operating_modes: list[str] = Field(default_factory=list)
+    tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    executive_summary: str
+    scope_signals: list[ChiefAIScopeSignal] = Field(default_factory=list)
+    opportunity_map: list[OpportunityMapItem] = Field(default_factory=list)
+    delivery_blueprint: list[DeliveryBlueprintPhase] = Field(default_factory=list)
+    maturity_model: list[MaturityDimension] = Field(default_factory=list)
+    approval_required: bool = True

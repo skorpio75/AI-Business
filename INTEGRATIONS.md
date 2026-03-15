@@ -181,11 +181,16 @@ The current backend supports the following provider capabilities:
 ### Approval-bound execution
 - Microsoft Graph reply send for approved Outlook-originated email workflows
 
+### Bootstrap and secret handling
+- Microsoft Graph device-code bootstrap via `scripts/microsoft_graph_device_code.py`
+- Google local-loopback OAuth bootstrap via `scripts/google_oauth_local_server.py`
+- refresh-token lifecycle handling for Google and Microsoft Graph
+- optional JSON secret-store paths via `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH`
+- bootstrap diagnostics through `GET /connectors/bootstrap-status`
+
 These connectors are selected through environment settings. Write actions remain approval-bound in MVP and execute only through platform-controlled paths after approval is recorded here.
 
 ## Current Integration Gaps
-- OAuth/bootstrap flow for Gmail, Google Calendar, and Microsoft Graph
 - secret storage and rotation strategy
-- refresh-token lifecycle handling across providers
-- connector diagnostics for token/bootstrap state beyond the current health views
 - connector-to-tool-ID mapping for normalized tool/audit contracts
+- richer connector diagnostics in Mission Control UI beyond the current API and health/status surfaces

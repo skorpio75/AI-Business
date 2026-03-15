@@ -20,7 +20,7 @@ from app.db.repository import (
 )
 from app.db.session import get_db
 from app.models.agent_contract import AgentContract
-from app.models.connectors import PersonalAssistantContext
+from app.models.connectors import ConnectorBootstrapStatusResponse, PersonalAssistantContext
 from app.models.schemas import (
     ApprovalDecisionRequest,
     ApprovalItem,
@@ -36,9 +36,14 @@ from app.services.dashboard_summary import DashboardSummaryService
 from app.services.agent_registry import AgentRegistryService
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
-from app.services.microsoft_graph_auth import MicrosoftGraphAuthError, outlook_connectors_enabled, refresh_access_token
 from app.services.model_gateway import ModelGateway
 from app.services.personal_assistant_context import PersonalAssistantContextService
+from app.services.provider_auth import (
+    ProviderAuthError,
+    describe_provider_bootstrap,
+    ensure_provider_tokens,
+    hydrate_provider_settings,
+)
 from app.services.proposal_workflow import ProposalWorkflowService
 
 logger = logging.getLogger(__name__)
@@ -56,29 +61,29 @@ def get_runtime_settings() -> Settings:
 
 
 def build_personal_assistant_context_service(current_settings: Settings) -> PersonalAssistantContextService:
+    prepared_settings = hydrate_provider_settings(current_settings)
+    try:
+        prepared_settings = ensure_provider_tokens(prepared_settings)
+    except ProviderAuthError as exc:
+        logger.warning("Provider token bootstrap failed while building connector context: %s", exc)
     return PersonalAssistantContextService(
-        inbox_connector=build_inbox_connector(current_settings),
-        calendar_connector=build_calendar_connector(current_settings),
+        inbox_connector=build_inbox_connector(prepared_settings),
+        calendar_connector=build_calendar_connector(prepared_settings),
     )
 
 
-def refresh_graph_token_on_startup() -> None:
+def bootstrap_provider_tokens_on_startup() -> None:
     current_settings = get_runtime_settings()
-    if not outlook_connectors_enabled(current_settings):
-        return
-    if not current_settings.microsoft_graph_refresh_token:
-        logger.info("Outlook connectors enabled without MICROSOFT_GRAPH_REFRESH_TOKEN; skipping startup refresh.")
-        return
     try:
-        refresh_access_token(current_settings)
-        logger.info("Refreshed Microsoft Graph access token during startup.")
-    except MicrosoftGraphAuthError as exc:
-        logger.warning("Microsoft Graph token refresh failed during startup: %s", exc)
+        ensure_provider_tokens(current_settings, force_refresh=True)
+        logger.info("Completed provider token bootstrap during startup.")
+    except ProviderAuthError as exc:
+        logger.warning("Provider token bootstrap failed during startup: %s", exc)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    refresh_graph_token_on_startup()
+    bootstrap_provider_tokens_on_startup()
     yield
 
 
@@ -155,6 +160,11 @@ def get_personal_assistant_context(
         inbox_lookback_hours=inbox_lookback_hours,
         inbox_limit=inbox_limit,
     )
+
+
+@app.get("/connectors/bootstrap-status", response_model=ConnectorBootstrapStatusResponse)
+def get_connector_bootstrap_status() -> ConnectorBootstrapStatusResponse:
+    return describe_provider_bootstrap(get_runtime_settings())
 
 
 @app.post("/knowledge/qna", response_model=KnowledgeQueryResponse)

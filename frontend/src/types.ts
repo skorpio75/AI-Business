@@ -120,6 +120,7 @@ export type AgentContract = {
   operating_modes?: ("internal_operating" | "client_delivery" | "client_facing_service")[];
   role_summary: string;
   approval_class: "none" | "bounded" | "ceo_required";
+  autonomy_class: "assistant" | "supervised_executor" | "bounded_autonomous" | "approval_gated";
   deployment: AgentDeploymentPolicy;
   capabilities: AgentCapability[];
   kpis: AgentKpi[];

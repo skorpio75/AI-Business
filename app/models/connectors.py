@@ -8,6 +8,7 @@ InboxFolder = Literal["inbox", "sent", "archive"]
 MessageDirection = Literal["inbound", "outbound"]
 ConnectorStatus = Literal["ok", "degraded", "error"]
 EventResponseStatus = Literal["accepted", "tentative", "declined", "needs_action"]
+ProviderBootstrapState = Literal["disabled", "degraded", "configured", "ready"]
 
 
 class ConnectorHealth(BaseModel):
@@ -69,3 +70,21 @@ class PersonalAssistantContext(BaseModel):
     calendar_events: list[CalendarEvent] = Field(default_factory=list)
     inbox_health: Optional[ConnectorHealth] = None
     calendar_health: Optional[ConnectorHealth] = None
+
+
+class ProviderBootstrapStatus(BaseModel):
+    provider_id: str
+    inbox_selected: bool = False
+    calendar_selected: bool = False
+    access_token_present: bool = False
+    refresh_token_present: bool = False
+    client_id_present: bool = False
+    client_secret_present: bool = False
+    secret_store_path: Optional[str] = None
+    refresh_supported: bool = False
+    status: ProviderBootstrapState = "disabled"
+    detail: str
+
+
+class ConnectorBootstrapStatusResponse(BaseModel):
+    providers: list[ProviderBootstrapStatus] = Field(default_factory=list)

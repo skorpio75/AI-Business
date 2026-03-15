@@ -26,12 +26,24 @@ class Settings(BaseSettings):
     personal_assistant_calendar_id: str = "primary"
     personal_assistant_window_hours: int = 24
     personal_assistant_inbox_lookback_hours: int = 24
+    google_client_id: Optional[str] = None
+    google_client_secret: Optional[str] = None
+    google_oauth_scopes: str = (
+        "https://www.googleapis.com/auth/gmail.readonly "
+        "https://www.googleapis.com/auth/calendar.readonly"
+    )
+    google_oauth_redirect_uri: str = "http://127.0.0.1:8765/oauth/google/callback"
+    google_token_uri: str = "https://oauth2.googleapis.com/token"
     google_access_token: Optional[str] = None
+    google_refresh_token: Optional[str] = None
+    google_secrets_path: Optional[str] = None
     outlook_tenant_id: Optional[str] = None
     outlook_client_id: Optional[str] = None
+    outlook_client_secret: Optional[str] = None
     outlook_graph_scopes: str = "offline_access https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/Calendars.Read"
     microsoft_graph_access_token: Optional[str] = None
     microsoft_graph_refresh_token: Optional[str] = None
+    microsoft_graph_secrets_path: Optional[str] = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

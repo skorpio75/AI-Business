@@ -3,9 +3,9 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
+from app.models.control_plane import ApprovalClass, AutonomyClass
 
 AgentDomain = Literal["corporate", "delivery", "platform"]
-ApprovalClass = Literal["none", "bounded", "ceo_required"]
 AgentStatus = Literal["idle", "running", "waiting", "blocked", "disabled"]
 PrimaryTrack = Literal["track_a_internal", "track_b_client"]
 ReplicationMode = Literal["none", "replicate_later"]
@@ -57,6 +57,7 @@ class AgentContract(BaseModel):
     operating_modes: list[OperatingMode] = Field(default_factory=list)
     role_summary: str
     approval_class: ApprovalClass
+    autonomy_class: AutonomyClass = "assistant"
     deployment: AgentDeploymentPolicy = Field(default_factory=AgentDeploymentPolicy)
     capabilities: list[AgentCapability] = Field(default_factory=list)
     kpis: list[AgentKPI] = Field(default_factory=list)
@@ -674,6 +675,49 @@ AGENT_METADATA_OVERRIDES: dict[str, dict[str, object]] = {
     },
 }
 
+AGENT_AUTONOMY_BY_ID: dict[str, AutonomyClass] = {
+    "email-agent": "approval_gated",
+    "personal-assistant-agent": "supervised_executor",
+    "cto-cio-agent": "assistant",
+    "accountant-agent": "supervised_executor",
+    "cfo-agent": "assistant",
+    "chief-ai-digital-strategy-agent": "assistant",
+    "billing-agent": "approval_gated",
+    "finance-agent": "assistant",
+    "procurement-agent": "approval_gated",
+    "reporting-agent": "assistant",
+    "compliance-contract-agent": "approval_gated",
+    "document-agent": "supervised_executor",
+    "knowledge-agent": "assistant",
+    "pmo-project-control-agent": "supervised_executor",
+    "project-management-agent": "supervised_executor",
+    "delivery-agent": "supervised_executor",
+    "quality-management-agent": "approval_gated",
+    "consulting-support-agent": "assistant",
+    "documentation-agent": "supervised_executor",
+    "testing-qa-agent": "supervised_executor",
+    "ops-agent": "supervised_executor",
+    "lead-intake-agent": "supervised_executor",
+    "account-research-agent": "assistant",
+    "qualification-agent": "assistant",
+    "outreach-draft-agent": "assistant",
+    "proposal-sow-agent": "approval_gated",
+    "crm-hygiene-agent": "supervised_executor",
+    "ba-requirements-agent": "assistant",
+    "architect-agent": "assistant",
+    "build-automation-agent": "supervised_executor",
+    "qa-review-agent": "assistant",
+    "finance-ops-agent": "supervised_executor",
+    "invoice-receivables-agent": "supervised_executor",
+    "vendor-procurement-agent": "approval_gated",
+    "admin-hr-ops-agent": "supervised_executor",
+    "company-reporting-agent": "supervised_executor",
+    "ceo-briefing-agent": "assistant",
+    "strategy-opportunity-agent": "assistant",
+    "risk-watchdog-agent": "supervised_executor",
+    "mission-control-agent": "supervised_executor",
+}
+
 ADDITIONAL_AGENT_CONTRACTS = [
     AgentContract(
         agent_id="lead-intake-agent",
@@ -1148,3 +1192,8 @@ existing_agent_ids = {agent.agent_id for agent in DEFAULT_AGENT_REGISTRY.agents}
 for agent in ADDITIONAL_AGENT_CONTRACTS:
     if agent.agent_id not in existing_agent_ids:
         DEFAULT_AGENT_REGISTRY.agents.append(agent)
+
+for agent in DEFAULT_AGENT_REGISTRY.agents:
+    autonomy_class = AGENT_AUTONOMY_BY_ID.get(agent.agent_id)
+    if autonomy_class is not None:
+        agent.autonomy_class = autonomy_class

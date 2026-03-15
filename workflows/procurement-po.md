@@ -3,8 +3,30 @@
 ## Trigger
 A purchase request is submitted for software, services, equipment, or subcontracting.
 
+## Pod Owner
+`Ops`
+
+## Start Event
+- `purchase.requested`
+- manual procurement intake
+
 ## Goal
 Validate budget and policy constraints, draft a purchase order, and route it for approval before any commitment.
+
+## State Objects
+- `run_state`
+- `approval_state`
+
+## Primary Agent Roles
+- `Procurement Agent`: validate budget and draft purchase-order artifacts
+- `Vendor / Procurement Agent`: maintain supplier, renewal, and procurement context
+- `Risk / Watchdog Agent`: later surfaces threshold breaches or missing approvals
+
+## Emitted Events
+- `procurement.validated`
+- `procurement.exception_detected`
+- `approval.pending`
+- `po.issued`
 
 ## Steps
 1. intake purchase request and supplier details
@@ -14,6 +36,9 @@ Validate budget and policy constraints, draft a purchase order, and route it for
 5. detect policy exceptions and commitment risks
 6. route the PO to CEO approval
 7. release PO only after approval
+
+## Approval Gates
+- no purchase order or external commitment is released without CEO approval
 
 ## AI Steps
 - supplier justification drafting

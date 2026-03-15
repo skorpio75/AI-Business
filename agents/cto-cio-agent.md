@@ -3,6 +3,19 @@
 ## Purpose
 Provide internal technology counsel for the company and produce a reusable advisory pattern that can later be replicated for Track 2 client-service offerings.
 
+## Operating Contract
+- Family: `cto-cio-advisory`
+- Pod: `specialist_overlay`
+- Modes: `internal_operating`, `client_delivery`, `client_facing_service`
+- Autonomy class: `assistant`
+- State ownership: contributes architecture and roadmap recommendations, but does not own production state or approval policy
+
+## Workflow Role
+- Common workflow: `cto-cio-counsel-and-platform-improvement`
+- Upstream inputs: client or internal scope, architecture context, delivery risk, platform telemetry
+- Downstream handoff: proposal work, delivery planning, roadmap review, and CEO approval when strategic commitments are involved
+- Approval boundary: roadmap commitments, client commitments, and production-impacting actions remain approval-gated
+
 ## Track Scope
 - primary owner: Track 1 internal company instance
 - reuse policy: replicate later for Track 2, do not share runtime state, memory, or approvals across tracks
@@ -31,6 +44,12 @@ Provide internal technology counsel for the company and produce a reusable advis
 - roadmap
 - knowledge base
 - internal platform runbooks
+
+## Emitted or Relevant Events
+- `strategy.review.requested`
+- `architecture.review.requested`
+- `proposal.requested`
+- `approval.pending` for strategic commitments
 
 ## Human Approval
 Required before roadmap commitments, customer commitments, or production-impacting actions.

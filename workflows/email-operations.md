@@ -3,8 +3,24 @@
 ## Trigger
 A new inbound email is received.
 
+## Pod Owner
+`Growth` with `Email Agent` acting as a specialist overlay inside the workflow.
+
+## Start Event
+- `email.received`
+- operator launch from Mission Control
+
 ## Goal
 Produce a grounded draft reply and route it for approval.
+
+## State Objects
+- `run_state`
+- `approval_state` when outbound send is requested
+
+## Primary Agent Roles
+- `Email Agent`: classify intent, retrieve context, draft the reply, and route approval
+- `Knowledge Agent`: contributes evidence-backed retrieval context when grounding is needed
+- `Mission Control Agent`: later supervises run visibility, approval status, and escalation state
 
 ## Steps
 1. ingest inbound email
@@ -14,6 +30,16 @@ Produce a grounded draft reply and route it for approval.
 5. assign confidence score
 6. route to approval queue
 7. send only after approval
+
+## Emitted Events
+- `email.classified`
+- `knowledge.retrieved`
+- `approval.pending`
+- `approval.approved` or `approval.rejected`
+- `email.sent` when an approved send occurs
+
+## Approval Gates
+- any outbound send requires CEO approval
 
 ## AI Steps
 - intent classification

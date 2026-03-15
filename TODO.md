@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 3 - Track A Internal MVP Workflows`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: finish the handoff-alignment documentation and contract layer, then continue provider auth/bootstrap and secret handling
+- Immediate goal: return to state ownership and tool-permission profile mapping, then resume the remaining Phase 3 UI panels
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,17 +18,19 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `H-T03` Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
-- [ ] `P3-T16` Add OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
+- [ ] `P2-T17` Define state ownership and persistence mapping for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
+- [ ] `P2-T18` Define normalized tool permission profiles by agent family and operating mode
 
 ## Soon After
-- [ ] `P2-T16` Define normalized event names, approval classes, autonomy classes, and tool permission profiles in backend contracts/config
 - [ ] `P2-T19` Define the runtime prompt-layer model and context-injection rules
 - [ ] `P3-T12` Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 
 ## Recently Finished
+- [x] `P3-T16` Add provider bootstrap, secret handling, refresh-token lifecycle support, and bootstrap-status diagnostics for Google and Microsoft inbox/calendar connectors
+- [x] `P2-T16` Add backend control-plane contracts for normalized event names, approval classes, and autonomy classes, and enrich workflow config with trigger/emitted-event/control metadata
+- [x] `H-T03` Align the current markdown agent/workflow spec set with pod ownership, operating modes, state objects, emitted events, approval gates, and cross-agent handoff roles
 - [x] `P2-T15` Align the runtime agent registry and base config with the pod model, family/mode/instance identity, and specialist-overlay mapping
 - [x] Carry the PMO split into runtime-facing registry/config/contracts and surface pod/family/mode metadata in the agent activity view
 - [x] Clarify the distinction between PMO governance/control and project-management execution coordination

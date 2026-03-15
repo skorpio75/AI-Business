@@ -80,6 +80,10 @@ export function AgentActivityPage({ refreshToken }: AgentActivityPageProps) {
                 <span>Approval class</span>
                 <strong>{agent.approval_class.replace("_", " ")}</strong>
               </div>
+              <div className="detail-row">
+                <span>Autonomy class</span>
+                <strong>{agent.autonomy_class.replaceAll("_", " ")}</strong>
+              </div>
               {agent.pod ? (
                 <div className="detail-row">
                   <span>Pod</span>

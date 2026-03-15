@@ -1,0 +1,83 @@
+control_plane:
+  approval_classes:
+    - id: none
+      description: No explicit human approval gate is required for the bounded action.
+    - id: bounded
+      description: Bounded writes or controlled actions are allowed inside workflow policy, but sensitive outcomes still escalate.
+    - id: ceo_required
+      description: Final approval from the CEO is required before the sensitive action or commitment is finalized.
+
+  autonomy_classes:
+    - id: assistant
+      description: Analyze, draft, summarize, and recommend without committing sensitive external actions.
+    - id: supervised_executor
+      description: Perform bounded writes and operational actions inside workflow and policy constraints.
+    - id: bounded_autonomous
+      description: Execute low-risk recurring actions within explicit guardrails and domain boundaries.
+    - id: approval_gated
+      description: Prepare sensitive actions and approval context, but never finalize without approval.
+
+  normalized_event_names:
+    sales:
+      - lead.received
+      - lead.enriched
+      - lead.qualified
+      - meeting.discovery.completed
+      - proposal.requested
+      - proposal.submitted
+      - deal.won
+      - deal.lost
+    delivery:
+      - project.created
+      - workshop.completed
+      - requirements.updated
+      - design.requested
+      - design.completed
+      - build.requested
+      - build.completed
+      - qa.failed
+      - qa.passed
+      - milestone.completed
+      - project.risk.detected
+      - project.control.updated
+      - release.candidate_ready
+      - release.blocked
+      - documentation.packaged
+      - handover.ready
+      - handover.released
+    operations:
+      - invoice.triggered
+      - invoice.drafted
+      - invoice.sent
+      - invoice.released
+      - invoice.overdue
+      - billing.exception_detected
+      - vendor.renewal_approaching
+      - month_end.started
+      - timesheet.missing
+      - finance.review.scheduled
+      - finance.snapshot.completed
+      - purchase.requested
+      - procurement.validated
+      - procurement.exception_detected
+      - po.issued
+      - reporting.refresh_requested
+    executive:
+      - risk.alert
+      - approval.pending
+      - approval.approved
+      - approval.rejected
+      - run.failed
+      - schedule.daily_brief
+      - schedule.weekly_review
+      - schedule.monthly_strategy
+    knowledge:
+      - document.ingested
+      - knowledge.retrieved
+      - meeting.summary.created
+      - project.closed
+      - lessons_learned.created
+    communication:
+      - email.received
+      - email.classified
+      - email.sent

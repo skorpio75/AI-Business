@@ -157,6 +157,7 @@ This script starts Docker, initializes the database, creates `frontend\.env` fro
 
 ## API Endpoints (Current)
 - `GET /healthz`
+- `GET /connectors/bootstrap-status`
 - `POST /workflows/email-operations/run`
 - `GET /workflows/runs`
 - `GET /approvals/pending`
@@ -169,15 +170,43 @@ The personal assistant backend can now fetch real inbox and calendar data when c
 - `CALENDAR_CONNECTOR=google_calendar` uses `GOOGLE_ACCESS_TOKEN` against Google Calendar.
 - `INBOX_CONNECTOR=outlook` or `microsoft_graph` uses `MICROSOFT_GRAPH_ACCESS_TOKEN` against Microsoft 365 mail.
 - `CALENDAR_CONNECTOR=outlook` or `microsoft_graph` uses `MICROSOFT_GRAPH_ACCESS_TOKEN` against Microsoft 365 calendar.
-- If `MICROSOFT_GRAPH_REFRESH_TOKEN` is configured, the backend refreshes the Microsoft Graph access token automatically each time the API starts.
+- If `GOOGLE_REFRESH_TOKEN` is configured together with `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, the backend refreshes the Google access token automatically when building connector context.
+- If `MICROSOFT_GRAPH_REFRESH_TOKEN` is configured, the backend refreshes the Microsoft Graph access token automatically each time the API starts and when connector context is rebuilt.
+- Provider credentials can live either directly in `.env` or in JSON secret files referenced by `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH`.
 
 Use `PERSONAL_ASSISTANT_ACCOUNT_ID` and `PERSONAL_ASSISTANT_CALENDAR_ID` to target the mailbox/calendar, and keep both connector settings at `null` if you want the previous placeholder behavior.
+
+### Connector Bootstrap Status
+Check the current provider bootstrap state directly from the API:
+
+```powershell
+Invoke-RestMethod -Method Get -Uri http://127.0.0.1:8000/connectors/bootstrap-status | ConvertTo-Json -Depth 6
+```
+
+That endpoint reports whether Google and Microsoft Graph are selected, whether access and refresh tokens are present, whether client credentials are present, whether refresh is supported, and whether a secret-store path is configured.
+
+### Google Bootstrap
+For Gmail and Google Calendar, set:
+
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- optional `GOOGLE_SECRETS_PATH` if you prefer JSON-file secret storage over `.env`
+
+Then run:
+
+```powershell
+.venv\Scripts\python.exe scripts\google_oauth_local_server.py
+```
+
+That script opens a Google OAuth authorization URL against the local loopback redirect defined by `GOOGLE_OAUTH_REDIRECT_URI`, exchanges the returned code for tokens, and writes `GOOGLE_ACCESS_TOKEN` plus `GOOGLE_REFRESH_TOKEN` into `.env` or the configured secret store.
 
 ### Outlook Bootstrap
 If you have an Azure app registration for Outlook/Microsoft Graph, set:
 
 - `OUTLOOK_TENANT_ID`
 - `OUTLOOK_CLIENT_ID`
+- optional `OUTLOOK_CLIENT_SECRET` if your app registration uses a confidential client
+- optional `MICROSOFT_GRAPH_SECRETS_PATH` if you prefer JSON-file secret storage over `.env`
 
 Then run:
 ```powershell

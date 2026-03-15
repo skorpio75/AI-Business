@@ -3,8 +3,31 @@
 ## Trigger
 Scheduled daily/weekly finance snapshot or a manual CFO/CEO review request.
 
+## Pod Owner
+`Ops` with executive review output
+
+## Start Event
+- `finance.review.scheduled`
+- manual CFO or CEO review request
+
 ## Goal
 Produce a current financial view with risk flags, cashflow interpretation, and recommended actions.
+
+## State Objects
+- `run_state`
+- later feeds company-level reporting and executive review state
+
+## Primary Agent Roles
+- `Finance Agent`: produce current cash and finance snapshot
+- `Finance Ops Agent`: validate internal control and forecast-versus-actual signals
+- `CFO Agent`: interpret financial posture and recommend strategic options
+- `CEO Briefing Agent`: later consumes accepted finance summaries for executive synthesis
+
+## Emitted Events
+- `finance.snapshot.completed`
+- `risk.threshold_crossed`
+- `approval.pending` when high-risk findings require review
+- `reporting.refresh_requested`
 
 ## Steps
 1. collect revenue, expense, receivable, payable, and cash position data
@@ -14,6 +37,9 @@ Produce a current financial view with risk flags, cashflow interpretation, and r
 5. generate finance commentary and recommended actions
 6. route high-risk findings to CEO review
 7. persist approved finance snapshot for reporting
+
+## Approval Gates
+- high-risk findings and executive actions require CEO review before they are treated as approved guidance
 
 ## AI Steps
 - anomaly interpretation

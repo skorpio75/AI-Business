@@ -19,10 +19,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 | Phase | Objective | Status | Owner | Target | Progress |
 |---|---|---|---|---|---|
-| Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 16/22 tasks done |
+| Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 17/22 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
-| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 15/20 tasks done |
-| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 17/20 tasks done |
+| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 16/20 tasks done |
+| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 18/20 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
@@ -55,7 +55,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P0-T16: Add `TOOLS.md` for normalized tool taxonomy and permissions
 - [x] P0-T17: Add `AUTONOMY_MODEL.md` for agent autonomy classes
 - [x] P0-T18: Add `EVENT_MODEL.md` for normalized event families and trigger patterns
-- [ ] P0-T19: Update agent and workflow markdown specs to consistently reference pod, event, state, autonomy, and tool models
+- [x] P0-T19: Update agent and workflow markdown specs to consistently reference pod, event, state, autonomy, and tool models
 - [x] P0-T19A: Clarify the distinction between `PMO / Project Control Agent` and `Project Management / Delivery Coordination Agent`
 - [ ] P0-T20: Define business-scaling maturity guidance across solo, micro-firm, and boutique operating stages
 - [ ] P0-T21: Clean `AI-Business_IDE_Handoff.md` encoding artifacts and align it with canonical terminology
@@ -86,7 +86,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P2-T13: Define Accountant/CFO contracts (reconciliation rules, close process, scenario planning outputs)
 - [x] P2-T14: Define Chief AI/Digital Strategy contract (AI opportunity map, AI/data delivery blueprint, maturity model)
 - [x] P2-T15: Align agent registry and base contracts with pod model, family/mode/instance identity, and specialist overlay mapping
-- [ ] P2-T16: Define normalized event names, approval classes, and autonomy classes in backend contracts/config
+- [x] P2-T16: Define normalized event names, approval classes, and autonomy classes in backend contracts/config
 - [ ] P2-T17: Define state ownership and persistence mapping for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
 - [ ] P2-T18: Define normalized tool permission profiles by agent family and operating mode
 - [ ] P2-T19: Define the runtime prompt-layer model: family base prompts, workflow-step prompts, and context-injection rules
@@ -108,7 +108,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P3-T13: Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] P3-T14: Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 - [x] P3-T15: Replace null-only inbox/calendar placeholders with provider-backed fetch connectors (Gmail, Google Calendar, Microsoft Graph)
-- [ ] P3-T16: Add OAuth/bootstrap flow and secret management for external inbox/calendar providers
+- [x] P3-T16: Add OAuth/bootstrap flow and secret management for external inbox/calendar providers
 - [x] P3-T17: Add connector diagnostics and live inbox/calendar detail views in mission control
 - [x] P3-T18: Launch email workflows from live inbox messages with source metadata attached
 - [x] P3-T19: Send approved Outlook replies end-to-end through Microsoft Graph `Mail.Send`
@@ -151,7 +151,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 ### Cross-Cutting Stream - AI-Business IDE Handoff Integration
 - [x] H-T01: Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
 - [x] H-T02: Update governance docs to adopt the 4-pod model, reusable family/mode/instance agent model, and normalized event/state/tool/autonomy language
-- [ ] H-T03: Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
+- [x] H-T03: Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
 - [ ] H-T04: Reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work
 
 ### Backlog - Multi-Agent Runtime Evolution
@@ -245,6 +245,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 ### 2026-03-15
 - Added prompt-layer target architecture guidance: prompts are planned as a dedicated runtime layer with family-level base prompts plus workflow-step prompts rather than being embedded directly into the business agent catalog.
 - Completed `P2-T15` by aligning the runtime agent registry with the pod model, family/mode identity, and specialist-overlay mapping, and mirrored the same metadata into `config/base/agents.yaml`.
+- Completed `H-T03` / `P0-T19` for the current markdown spec set by aligning existing agent and workflow specs with pod ownership, operating modes, state objects, emitted events, approval gates, and cross-agent handoff roles.
+- Completed `P2-T16` by adding a shared backend control-plane contract for normalized events, approval classes, and autonomy classes, and by enriching workflow config with trigger, emitted-event, approval, and autonomy metadata.
+- Completed `P3-T16` by adding shared provider bootstrap and secret-management plumbing for Google and Microsoft connectors, including refresh-token lifecycle support, bootstrap-status diagnostics, and Google local-loopback OAuth onboarding.
 - Added Personal Assistant scope (inbox + calendar triage + prioritized daily list) to agent/workflow model.
 - Added CTO/CIO agent scope for customer technology counsel and internal continuous platform improvement.
 - Added Accountant and CFO scopes for operational accounting and strategic finance decision support.
@@ -305,4 +308,4 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a medium-suitability tier for families that are valuable in bounded collaboration, exception handling, or synthesis chains but may remain workflow-stage-oriented or rules-based longer.
 
 ## Next Action
-Complete the remaining handoff-alignment doc tasks and contract mapping work, then continue `P3-T16` for provider bootstrap, secret handling, and refresh-token lifecycle.
+Return to `P2-T17` and `P2-T18` for state ownership and tool-permission profile mapping, then resume the remaining Phase 3 UI panels.

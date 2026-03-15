@@ -1,21 +1,71 @@
 workflows:
   - id: email-operations
     enabled: true
+    trigger_kind: event
+    start_event: email.received
+    emitted_events: [email.classified, knowledge.retrieved, approval.pending, approval.approved, approval.rejected, email.sent]
+    approval_class: ceo_required
+    autonomy_class: approval_gated
   - id: knowledge-qna
     enabled: true
+    trigger_kind: operator
+    operator_action: knowledge.query
+    emitted_events: []
+    approval_class: none
+    autonomy_class: assistant
   - id: document-intake
     enabled: true
+    trigger_kind: event
+    start_event: document.ingested
+    emitted_events: []
+    approval_class: bounded
+    autonomy_class: supervised_executor
   - id: reporting
     enabled: true
+    trigger_kind: schedule
+    schedule: weekly
+    emitted_events: [reporting.refresh_requested]
+    approval_class: bounded
+    autonomy_class: supervised_executor
   - id: billing-operations
     enabled: true
+    trigger_kind: event
+    start_event: invoice.triggered
+    emitted_events: [invoice.drafted, billing.exception_detected, approval.pending, invoice.released]
+    approval_class: ceo_required
+    autonomy_class: approval_gated
   - id: finance-review
     enabled: true
+    trigger_kind: event
+    start_event: finance.review.scheduled
+    emitted_events: [finance.snapshot.completed, risk.alert, approval.pending, reporting.refresh_requested]
+    approval_class: bounded
+    autonomy_class: supervised_executor
   - id: procurement-po
     enabled: true
+    trigger_kind: event
+    start_event: purchase.requested
+    emitted_events: [procurement.validated, procurement.exception_detected, approval.pending, po.issued]
+    approval_class: ceo_required
+    autonomy_class: approval_gated
   - id: project-management
     enabled: true
+    trigger_kind: event
+    start_event: project.created
+    emitted_events: [project.control.updated, requirements.updated, risk.alert, approval.pending, milestone.completed]
+    approval_class: bounded
+    autonomy_class: supervised_executor
   - id: quality-testing-gate
     enabled: true
+    trigger_kind: event
+    start_event: build.completed
+    emitted_events: [qa.passed, qa.failed, approval.pending, release.blocked]
+    approval_class: bounded
+    autonomy_class: supervised_executor
   - id: documentation-handover
     enabled: true
+    trigger_kind: event
+    start_event: qa.passed
+    emitted_events: [documentation.packaged, handover.ready, approval.pending, handover.released]
+    approval_class: ceo_required
+    autonomy_class: supervised_executor

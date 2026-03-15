@@ -3,8 +3,32 @@
 ## Trigger
 Approved timesheet entries, milestone completion, or a manual billing run request.
 
+## Pod Owner
+`Ops`
+
+## Start Event
+- `invoice.triggered`
+- `milestone.completed`
+- manual billing run request
+
 ## Goal
 Generate an invoice-ready billing package and route it for CEO approval before external release.
+
+## State Objects
+- `run_state`
+- `approval_state`
+- reads delivery and billing source records associated with the engagement
+
+## Primary Agent Roles
+- `Billing Agent`: generate invoice-ready package and customer-facing note drafts
+- `Finance Ops Agent`: flag missing billable items, margin issues, or control exceptions
+- `Invoice / Receivables Agent`: later owns invoice packet tracking and follow-up after approval
+
+## Emitted Events
+- `invoice.drafted`
+- `billing.exception_detected`
+- `approval.pending`
+- `invoice.released`
 
 ## Steps
 1. collect approved delivery and time records
@@ -14,6 +38,9 @@ Generate an invoice-ready billing package and route it for CEO approval before e
 5. flag anomalies such as missing rates, duplicate items, or budget overruns
 6. route invoice package to approval queue
 7. release invoice only after approval
+
+## Approval Gates
+- invoice release is CEO-approved in the current MVP
 
 ## AI Steps
 - anomaly explanation

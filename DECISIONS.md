@@ -158,3 +158,21 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-15
 - Decision: Prompt assets will follow canonical ID patterns and target filesystem conventions: family base prompts belong under `prompts/agents/<family_id>/system.txt`, workflow-step prompts belong under `prompts/workflows/<workflow_id>/<step_id_snake_case>.txt`, and the loader resolves explicit `relative_path` overrides first so existing legacy prompt files remain valid during migration.
 - Rationale: The runtime prompt layer needs stable naming and storage rules so new prompt assets can be added consistently without requiring an immediate rewrite of every existing prompt file. Supporting explicit-path compatibility keeps the current MVP prompt set working while we gradually migrate toward the cleaner canonical layout.
+
+## ADR-027: Client-facing advisory agents must analyze explicit client briefs before recommending services
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: Client-facing advisory families such as `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent` must accept a bounded client brief that includes a problem statement plus relevant client context/history, constraints, and desired outcomes, and they must generate recommendations from that brief rather than from generic static packaging alone.
+- Rationale: Advisory value depends on interpreting the client's real situation, not only exposing a reusable internal offer catalog. A typed client-brief contract preserves Track A/Track B isolation while allowing specialist agents to deliver credible consulting, counseling, and AI strategy outputs grounded in the engagement context.
+
+## ADR-028: Client-facing advisory agents should behave like consulting agents, not only analyzers
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: Client-facing advisory agents should frame the active consulting mission, recommend the best-fit initial service, and detect bounded upsell or follow-on opportunities that can responsibly grow the client account, while staying grounded in the same client brief and tenant boundaries.
+- Rationale: A consulting company grows by solving the current mission well and by noticing adjacent opportunities that are genuinely relevant to the client. Making this posture explicit in the agent contract helps the platform support real consulting behavior instead of stopping at one-off problem analysis.
+
+## ADR-029: Specialist consulting analysis should use the shared LLM runtime with governed fallback
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: Specialist consulting agents such as `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent` should perform their primary reasoning through the shared prompt/model layer and `ModelGateway`, while deterministic logic remains as a fallback for resilience, output-shape recovery, and governance guardrails.
+- Rationale: High-value consulting, counseling, and client-facing deliverables depend on LLM reasoning capacity and cannot be reduced to static keyword heuristics alone. Keeping that reasoning inside the governed prompt/model layer preserves routing visibility, prompt controls, output schemas, and future auditability.

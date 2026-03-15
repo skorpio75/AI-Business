@@ -1,16 +1,37 @@
+from app.core.prompt_loader import PromptLoader
+from app.core.settings import Settings
 from app.models.agent_contract import AgentContract
-from app.models.schemas import ChiefAIPanelResponse, ChiefAIScopeSignal
+from app.models.schemas import ChiefAIAnalysisResponse, ChiefAIPanelResponse, ChiefAIScopeSignal
 from app.models.specialist_contracts import (
     ChiefAIDigitalStrategyOutput,
+    ChiefAIDigitalStrategyInput,
+    ContextSignal,
     DeliveryBlueprintPhase,
     MaturityDimension,
+    MissionAssessment,
     OpportunityMapItem,
+    RecommendedService,
+    UpsellOpportunity,
 )
+from app.services.model_gateway import ModelGateway
 
 
 class ChiefAIPanelService:
+    def __init__(self, model_gateway: ModelGateway | None = None) -> None:
+        self.model_gateway = model_gateway or ModelGateway(settings=Settings())
+        self.prompt_loader = PromptLoader()
+
     def build_panel(self, *, agent: AgentContract) -> ChiefAIPanelResponse:
         strategy_output = ChiefAIDigitalStrategyOutput(
+            mission_assessment=MissionAssessment(
+                mission_id="internal-ai-panel-posture",
+                consulting_motion="mixed",
+                title="Internal AI strategy operating posture",
+                summary="The Chief AI panel summarizes offer design, productization, and delivery-shaping opportunities.",
+                client_need="Internal visibility over AI advisory packaging and strategic direction.",
+                success_definition="Operators can turn AI strategy thinking into clearer consulting offers and delivery motions.",
+                why_now="This panel is still an internal advisory surface rather than a client mission output.",
+            ),
             opportunity_map=[
                 OpportunityMapItem(
                     opportunity_id="opp-agent-ops",
@@ -182,3 +203,662 @@ class ChiefAIPanelService:
             maturity_model=strategy_output.maturity_model,
             approval_required=strategy_output.approval_required,
         )
+
+    def analyze_client_context(
+        self,
+        *,
+        agent: AgentContract,
+        payload: ChiefAIDigitalStrategyInput,
+    ) -> ChiefAIAnalysisResponse:
+        combined_text = self._combine_text(payload)
+        fallback_output = self._build_fallback_output(payload, combined_text)
+        prompt = self.prompt_loader.render_composition(
+            "specialist-advisory.chief-ai-analyze",
+            template_context={
+                "engagement_name": payload.engagement_name,
+                "problem_statement": payload.problem_statement,
+                "business_context": payload.business_context,
+                "client_context": payload.client_context or "none",
+                "engagement_history": self._format_list(payload.engagement_history),
+                "process_areas": self._format_list(payload.process_areas),
+                "data_assets": self._format_list(payload.data_assets),
+                "current_stack": self._format_list(payload.current_stack),
+                "delivery_constraints": self._format_list(payload.delivery_constraints),
+                "desired_outcomes": self._format_list(payload.desired_outcomes),
+            },
+            injected_context={
+                "approval_policy": (
+                    "Advisory output only. No delivery commitment, spend commitment, or client promise is final "
+                    "without explicit CEO review and approval."
+                ),
+                "autonomy_policy": (
+                    "Use LLM reasoning for consulting judgment, but stay within bounded AI advisory guidance. "
+                    "Do not invent capabilities, approvals, budgets, or implementation facts."
+                ),
+                "tool_profile": "specialist-advisory profile; client brief interpretation only in this endpoint.",
+                "state_summary": (
+                    "Client-scoped advisory instance. Track A and Track B context must stay isolated. "
+                    "Use only the supplied brief plus injected runtime policy."
+                ),
+                "output_schema": (
+                    '{"executive_summary":"string","mission_assessment":{"mission_id":"string","consulting_motion":"problem_solving|opportunity_discovery|account_growth|mixed","title":"string","summary":"string","client_need":"string","success_definition":"string","why_now":"string"},'
+                    '"context_signals":[{"signal_id":"string","category":"problem|history|constraint|readiness|risk|opportunity","title":"string","summary":"string","implication":"string"}],'
+                    '"recommended_services":[{"service_id":"string","name":"string","summary":"string","fit_reason":"string","suggested_outcomes":["string"],"delivery_mode":"client_delivery|client_facing_service","priority":"now|next|later"}],'
+                    '"upsell_opportunities":[{"opportunity_id":"string","title":"string","summary":"string","rationale":"string","suggested_service":"string","expansion_trigger":"string","priority":"now|next|later"}],'
+                    '"opportunity_map":[{"opportunity_id":"string","title":"string","problem_statement":"string","expected_value":"string","priority":"now|next|later","dependencies":["string"]}],'
+                    '"delivery_blueprint":[{"phase_id":"string","title":"string","objectives":["string"],"deliverables":["string"],"risks":["string"]}],'
+                    '"maturity_model":[{"dimension":"string","current_level":"ad_hoc|emerging|repeatable|managed|optimized","target_level":"ad_hoc|emerging|repeatable|managed|optimized","gap_summary":"string","next_actions":["string"]}],"approval_required":true}'
+                ),
+            },
+        )
+        generation = self.model_gateway.generate_structured_json(
+            prompt=prompt,
+            fallback_payload=fallback_output.model_dump(),
+        )
+        try:
+            strategy_output = ChiefAIDigitalStrategyOutput.model_validate(generation.content)
+        except Exception:
+            strategy_output = fallback_output
+
+        return ChiefAIAnalysisResponse(
+            agent_id=agent.agent_id,
+            display_name=agent.display_name,
+            role_summary=agent.role_summary,
+            primary_track=agent.deployment.primary_track,
+            operating_modes=agent.operating_modes,
+            tool_profile_by_mode=agent.tool_profile_by_mode,
+            provider_used=generation.provider_used,
+            model_used=generation.model_used,
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
+            executive_summary=strategy_output.executive_summary,
+            mission_assessment=strategy_output.mission_assessment,
+            context_signals=strategy_output.context_signals,
+            recommended_services=strategy_output.recommended_services,
+            upsell_opportunities=strategy_output.upsell_opportunities,
+            opportunity_map=strategy_output.opportunity_map,
+            delivery_blueprint=strategy_output.delivery_blueprint,
+            maturity_model=strategy_output.maturity_model,
+            approval_required=strategy_output.approval_required,
+        )
+
+    def _build_fallback_output(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> ChiefAIDigitalStrategyOutput:
+        return ChiefAIDigitalStrategyOutput(
+            mission_assessment=self._build_mission_assessment(payload, combined_text),
+            context_signals=self._build_context_signals(payload, combined_text),
+            recommended_services=self._build_recommended_services(payload, combined_text),
+            upsell_opportunities=self._build_upsell_opportunities(payload, combined_text),
+            opportunity_map=self._build_opportunity_map(payload, combined_text),
+            delivery_blueprint=self._build_delivery_blueprint(payload, combined_text),
+            maturity_model=self._build_maturity_model(payload, combined_text),
+            executive_summary=(
+                f"{payload.engagement_name} should be handled like a consulting account: solve the active AI mission, "
+                "ground the recommendation in real context and history, and identify adjacent AI or data opportunities "
+                "that can expand the relationship responsibly."
+            ),
+            approval_required=True,
+        )
+
+    def _combine_text(self, payload: ChiefAIDigitalStrategyInput) -> str:
+        return " ".join(
+            [
+                payload.problem_statement,
+                payload.business_context,
+                payload.client_context,
+                " ".join(payload.engagement_history),
+                " ".join(payload.process_areas),
+                " ".join(payload.data_assets),
+                " ".join(payload.current_stack),
+                " ".join(payload.delivery_constraints),
+                " ".join(payload.desired_outcomes),
+            ]
+        ).lower()
+
+    def _build_context_signals(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> list[ContextSignal]:
+        signals = [
+            ContextSignal(
+                signal_id="client-problem",
+                category="problem",
+                title="Problem statement should drive AI scope",
+                summary=payload.problem_statement,
+                implication=(
+                    "The AI strategy should stay anchored to the business problem and avoid generic tool-led recommendations."
+                ),
+            )
+        ]
+
+        if payload.engagement_history:
+            signals.append(
+                ContextSignal(
+                    signal_id="engagement-history",
+                    category="history",
+                    title="Client history matters for advisory fit",
+                    summary=" | ".join(payload.engagement_history[:3]),
+                    implication=(
+                        "Past attempts, constraints, or stakeholder feedback should shape the recommendation."
+                    ),
+                )
+            )
+
+        if payload.delivery_constraints:
+            signals.append(
+                ContextSignal(
+                    signal_id="delivery-constraints",
+                    category="constraint",
+                    title="Delivery constraints limit the first AI move",
+                    summary=", ".join(payload.delivery_constraints[:4]),
+                    implication=(
+                        "The first service should be sized to fit governance, budget, timing, and change capacity."
+                    ),
+                )
+            )
+
+        if self._contains_any(
+            combined_text,
+            "manual",
+            "repetitive",
+            "copy",
+            "email",
+            "intake",
+            "triage",
+            "backlog",
+        ):
+            signals.append(
+                ContextSignal(
+                    signal_id="workflow-friction",
+                    category="opportunity",
+                    title="Manual workflow friction is a strong AI candidate",
+                    summary=(
+                        "The brief highlights repetitive work, which is usually a better early AI target than a broad transformation program."
+                    ),
+                    implication=(
+                        "Recommend a bounded workflow pilot with clear operator review and success metrics."
+                    ),
+                )
+            )
+
+        if self._contains_any(
+            combined_text,
+            "document",
+            "knowledge",
+            "search",
+            "support",
+            "policy",
+            "faq",
+        ):
+            signals.append(
+                ContextSignal(
+                    signal_id="knowledge-gap",
+                    category="opportunity",
+                    title="Knowledge access appears to be a reusable use-case",
+                    summary=(
+                        "The client context points to people losing time finding or interpreting information."
+                    ),
+                    implication=(
+                        "A knowledge assistant or document-operations service may be a higher-confidence offer than a custom model build."
+                    ),
+                )
+            )
+
+        if self._contains_any(
+            combined_text,
+            "governance",
+            "compliance",
+            "security",
+            "approval",
+            "privacy",
+            "risk",
+        ):
+            signals.append(
+                ContextSignal(
+                    signal_id="governance-readiness",
+                    category="risk",
+                    title="AI governance needs to be part of the offer",
+                    summary=(
+                        "The client context includes explicit risk, approval, or compliance signals."
+                    ),
+                    implication=(
+                        "Pair AI opportunity work with policy, review, and operating-boundary guidance."
+                    ),
+                )
+            )
+
+        return signals[:5]
+
+    def _build_mission_assessment(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> MissionAssessment:
+        consulting_motion = "problem_solving"
+        if self._contains_any(
+            combined_text,
+            "portfolio",
+            "roadmap",
+            "opportunity",
+            "growth",
+            "scale",
+            "productize",
+        ):
+            consulting_motion = "mixed"
+
+        return MissionAssessment(
+            mission_id="chief-ai-client-mission",
+            consulting_motion=consulting_motion,
+            title=f"AI consulting mission for {payload.engagement_name}",
+            summary=(
+                "Frame the immediate AI or digital problem like a consultant on the account, then connect it "
+                "to the strongest next service and a few high-fit expansion paths."
+            ),
+            client_need=payload.problem_statement,
+            success_definition=(
+                "The client gets a practical AI mission, a realistic first engagement, and a shortlist of "
+                "follow-on opportunities that make commercial sense."
+            ),
+            why_now=(
+                "The brief already contains enough business and delivery context to recommend both a first move "
+                "and adjacent consulting opportunities."
+            ),
+        )
+
+    def _build_recommended_services(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> list[RecommendedService]:
+        recommendations: list[RecommendedService] = [
+            RecommendedService(
+                service_id="ai-opportunity-assessment",
+                name="AI Opportunity Assessment",
+                summary="Translate the problem statement, process context, and delivery constraints into a ranked AI use-case portfolio.",
+                fit_reason=(
+                    "This is the safest first move when a client needs advisory direction rather than an immediate build."
+                ),
+                suggested_outcomes=[
+                    "prioritized use-case map",
+                    "business case hypotheses",
+                    "pilot recommendation",
+                ],
+                delivery_mode="client_facing_service",
+                priority="now",
+            )
+        ]
+
+        if self._contains_any(
+            combined_text,
+            "document",
+            "knowledge",
+            "search",
+            "support",
+            "faq",
+            "policy",
+        ):
+            recommendations.append(
+                RecommendedService(
+                    service_id="knowledge-assistant-pilot",
+                    name="Knowledge Assistant Pilot",
+                    summary="Design a grounded assistant for internal documents, support knowledge, or policy retrieval.",
+                    fit_reason=(
+                        "The problem statement suggests information friction that is a strong fit for retrieval-backed assistance."
+                    ),
+                    suggested_outcomes=[
+                        "use-case scope",
+                        "retrieval and guardrail design",
+                        "pilot evaluation plan",
+                    ],
+                    delivery_mode="client_delivery",
+                    priority="now",
+                )
+            )
+
+        if self._contains_any(
+            combined_text,
+            "manual",
+            "repetitive",
+            "email",
+            "intake",
+            "triage",
+            "workflow",
+            "backlog",
+        ):
+            recommendations.append(
+                RecommendedService(
+                    service_id="workflow-automation-pilot",
+                    name="AI Workflow Automation Pilot",
+                    summary="Pilot a bounded workflow copilot or agent around a repetitive business process with human review.",
+                    fit_reason=(
+                        "Manual process friction is one of the clearest early wins for practical AI consulting work."
+                    ),
+                    suggested_outcomes=[
+                        "pilot workflow design",
+                        "operator approval points",
+                        "success and rollback metrics",
+                    ],
+                    delivery_mode="client_delivery",
+                    priority="now",
+                )
+            )
+
+        if len(payload.data_assets) < 2 or self._contains_any(
+            combined_text,
+            "fragmented",
+            "quality",
+            "spreadsheet",
+            "silo",
+            "missing data",
+            "inconsistent",
+        ):
+            recommendations.append(
+                RecommendedService(
+                    service_id="data-readiness-sprint",
+                    name="Data Readiness Sprint",
+                    summary="Assess data availability, ownership, and quality before committing to a heavier AI roadmap.",
+                    fit_reason=(
+                        "The available context suggests data readiness could limit value unless addressed early."
+                    ),
+                    suggested_outcomes=[
+                        "data asset inventory",
+                        "readiness risks",
+                        "minimum viable data plan",
+                    ],
+                    delivery_mode="client_facing_service",
+                    priority="next",
+                )
+            )
+
+        if self._contains_any(
+            combined_text,
+            "governance",
+            "compliance",
+            "security",
+            "approval",
+            "privacy",
+            "risk",
+        ):
+            recommendations.append(
+                RecommendedService(
+                    service_id="ai-governance-setup",
+                    name="AI Governance and Adoption Setup",
+                    summary="Define review boundaries, usage policy, and operating controls for the proposed AI services.",
+                    fit_reason=(
+                        "The client context already signals that risk and adoption controls will shape what can be deployed."
+                    ),
+                    suggested_outcomes=[
+                        "governance starter pack",
+                        "human review policy",
+                        "risk and escalation model",
+                    ],
+                    delivery_mode="client_facing_service",
+                    priority="next",
+                )
+            )
+
+        return recommendations[:5]
+
+    def _build_upsell_opportunities(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> list[UpsellOpportunity]:
+        opportunities: list[UpsellOpportunity] = []
+
+        if self._contains_any(combined_text, "document", "knowledge", "policy", "support", "faq", "search"):
+            opportunities.append(
+                UpsellOpportunity(
+                    opportunity_id="expand-knowledge-ops",
+                    title="Extend the mission into knowledge operations and grounded assistants",
+                    summary="The current problem may open a broader document and knowledge-services engagement.",
+                    rationale=(
+                        "Information friction often leads naturally from one pilot into retrieval, document operations, "
+                        "and support-enablement work."
+                    ),
+                    suggested_service="Knowledge Assistant Pilot",
+                    expansion_trigger="The client already struggles with knowledge access or policy interpretation.",
+                    priority="now",
+                )
+            )
+
+        if self._contains_any(combined_text, "manual", "workflow", "triage", "email", "intake", "repetitive"):
+            opportunities.append(
+                UpsellOpportunity(
+                    opportunity_id="expand-workflow-suite",
+                    title="Grow from one AI pilot into a broader workflow automation roadmap",
+                    summary="A single manual-process pilot can often expand into a portfolio of supervised automations.",
+                    rationale=(
+                        "Clients rarely have only one repetitive workflow, so a successful pilot can become a larger consulting program."
+                    ),
+                    suggested_service="AI Workflow Automation Pilot",
+                    expansion_trigger="The brief already shows recurring process friction beyond a single task.",
+                    priority="now",
+                )
+            )
+
+        if len(payload.data_assets) < 2 or self._contains_any(combined_text, "quality", "fragmented", "silo", "spreadsheet"):
+            opportunities.append(
+                UpsellOpportunity(
+                    opportunity_id="expand-data-foundation",
+                    title="Add a follow-on data foundation engagement",
+                    summary="Weak data readiness creates a natural next consulting motion after the first AI assessment.",
+                    rationale=(
+                        "Many AI missions stall on data quality, ownership, or structure, which creates demand for a practical data-readiness sprint."
+                    ),
+                    suggested_service="Data Readiness Sprint",
+                    expansion_trigger="The brief shows limited or inconsistent data foundations.",
+                    priority="next",
+                )
+            )
+
+        if self._contains_any(combined_text, "governance", "compliance", "security", "approval", "privacy", "risk"):
+            opportunities.append(
+                UpsellOpportunity(
+                    opportunity_id="expand-ai-governance",
+                    title="Turn the pilot into a wider AI governance and adoption program",
+                    summary="Risk and control concerns create room for a broader governance and enablement engagement.",
+                    rationale=(
+                        "Clients often need policy, operating guardrails, and adoption support once AI use cases start gaining traction."
+                    ),
+                    suggested_service="AI Governance and Adoption Setup",
+                    expansion_trigger="The current mission already includes review, compliance, or risk signals.",
+                    priority="next",
+                )
+            )
+
+        return opportunities[:4]
+
+    def _build_opportunity_map(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> list[OpportunityMapItem]:
+        opportunities = [
+            OpportunityMapItem(
+                opportunity_id="opp-primary",
+                title=f"Address {payload.engagement_name}'s core problem with a bounded AI advisory brief",
+                problem_statement=payload.problem_statement,
+                expected_value="Turns a broad AI conversation into a specific shortlist of realistic interventions.",
+                priority="now",
+                dependencies=["stakeholder alignment", "success criteria"],
+            )
+        ]
+
+        if self._contains_any(combined_text, "document", "knowledge", "support", "faq", "policy"):
+            opportunities.append(
+                OpportunityMapItem(
+                    opportunity_id="opp-knowledge",
+                    title="Improve knowledge access and document response quality",
+                    problem_statement=(
+                        "Teams appear to be losing time finding or reusing information across documents or support knowledge."
+                    ),
+                    expected_value="Reduces search friction while keeping answers grounded in approved sources.",
+                    priority="now",
+                    dependencies=["content inventory", "retrieval guardrails"],
+                )
+            )
+
+        if self._contains_any(combined_text, "manual", "repetitive", "triage", "intake", "email", "workflow"):
+            opportunities.append(
+                OpportunityMapItem(
+                    opportunity_id="opp-automation",
+                    title="Automate high-volume manual workflow steps with approval gates",
+                    problem_statement=(
+                        "The client context suggests repetitive process load that could be reduced with a supervised workflow copilot."
+                    ),
+                    expected_value="Creates measurable time savings without removing human control from sensitive decisions.",
+                    priority="next",
+                    dependencies=["workflow mapping", "operator review points"],
+                )
+            )
+
+        if len(payload.data_assets) < 2 or self._contains_any(combined_text, "quality", "fragmented", "silo", "spreadsheet"):
+            opportunities.append(
+                OpportunityMapItem(
+                    opportunity_id="opp-data-foundation",
+                    title="Strengthen the data foundation before broader AI rollout",
+                    problem_statement=(
+                        "AI value may be capped by weak data availability, ownership, or consistency."
+                    ),
+                    expected_value="Prevents low-trust pilots and gives the client a credible path to scale later.",
+                    priority="next",
+                    dependencies=["data ownership", "minimum dataset definition"],
+                )
+            )
+
+        return opportunities[:3]
+
+    def _build_delivery_blueprint(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> list[DeliveryBlueprintPhase]:
+        phase_one_deliverables = [
+            "problem framing pack",
+            "use-case shortlist",
+            "constraints and guardrails",
+        ]
+        if payload.engagement_history:
+            phase_one_deliverables.append("history-informed lessons learned")
+
+        foundation_objectives = [
+            "Confirm data, tooling, and review boundaries before implementation",
+            "Define evaluation criteria and operator ownership",
+        ]
+        if self._contains_any(combined_text, "governance", "compliance", "security", "privacy", "approval"):
+            foundation_objectives.append("Document approval, policy, and evidence expectations early")
+
+        return [
+            DeliveryBlueprintPhase(
+                phase_id="phase-discovery",
+                title="Client context and use-case framing",
+                objectives=[
+                    "Turn the problem statement and history into a small set of decision-ready use cases",
+                    "Separate attractive ideas from feasible first moves",
+                ],
+                deliverables=phase_one_deliverables,
+                risks=["Discovery can become too broad if the initial pilot boundary is not enforced."],
+            ),
+            DeliveryBlueprintPhase(
+                phase_id="phase-foundation",
+                title="Data, controls, and pilot design",
+                objectives=foundation_objectives,
+                deliverables=[
+                    "data and tool readiness view",
+                    "pilot architecture",
+                    "governance and review setup",
+                ],
+                risks=["Weak controls or weak data can both undermine confidence in the pilot."],
+            ),
+            DeliveryBlueprintPhase(
+                phase_id="phase-pilot",
+                title="Bounded pilot and adoption decision",
+                objectives=[
+                    "Launch one supervised AI workflow or assistant tied to the stated problem",
+                    "Measure whether the pilot deserves rollout, redesign, or stop",
+                ],
+                deliverables=[
+                    "pilot implementation slice",
+                    "operator playbook",
+                    "scale, iterate, or stop recommendation",
+                ],
+                risks=["A pilot without clear success criteria can create false confidence."],
+            ),
+        ]
+
+    def _build_maturity_model(
+        self,
+        payload: ChiefAIDigitalStrategyInput,
+        combined_text: str,
+    ) -> list[MaturityDimension]:
+        data_level = "repeatable" if len(payload.data_assets) >= 2 else "emerging"
+        governance_level = (
+            "emerging"
+            if self._contains_any(combined_text, "governance", "compliance", "security", "approval", "privacy", "risk")
+            else "repeatable"
+        )
+        process_level = "repeatable" if len(payload.process_areas) >= 2 else "emerging"
+
+        return [
+            MaturityDimension(
+                dimension="Use-case shaping",
+                current_level="repeatable",
+                target_level="managed",
+                gap_summary=(
+                    "The client has enough context to define practical AI use cases, but still needs prioritization discipline."
+                ),
+                next_actions=[
+                    "Rank use cases by feasibility and business value",
+                    "Lock the first pilot to one measurable workflow",
+                ],
+            ),
+            MaturityDimension(
+                dimension="Data readiness",
+                current_level=data_level,
+                target_level="managed",
+                gap_summary=(
+                    "Data readiness will need explicit attention before the client can scale beyond a narrow pilot."
+                ),
+                next_actions=[
+                    "Clarify data ownership and availability",
+                    "Define the minimum viable dataset for the first pilot",
+                ],
+            ),
+            MaturityDimension(
+                dimension="Governance and adoption",
+                current_level=governance_level,
+                target_level="managed",
+                gap_summary=(
+                    "Human review, policy, and adoption routines should be designed alongside the AI service, not after it."
+                ),
+                next_actions=[
+                    "Set approval and escalation boundaries",
+                    "Define operator training and review expectations",
+                ],
+            ),
+            MaturityDimension(
+                dimension="Process instrumentation",
+                current_level=process_level,
+                target_level="managed",
+                gap_summary=(
+                    "The best AI pilots depend on a clear understanding of the target workflow and how success will be measured."
+                ),
+                next_actions=[
+                    "Map the target process baseline",
+                    "Instrument time, quality, or throughput before the pilot starts",
+                ],
+            ),
+        ]
+
+    def _contains_any(self, text: str, *keywords: str) -> bool:
+        return any(keyword in text for keyword in keywords)
+
+    def _format_list(self, items: list[str]) -> str:
+        if not items:
+            return "- none"
+        return "\n".join(f"- {item}" for item in items)

@@ -49,6 +49,24 @@ assets:
     status: implemented
     relative_path: proposal/proposal_generation_prompt.txt
     description: Generate a baseline proposal draft from the current opportunity context
+  - asset_id: cto-cio-advisory.family.base
+    asset_kind: family_base
+    status: planned
+    description: Durable consulting behavior for the CTO/CIO advisory family
+  - asset_id: cto-cio-advisory.workflow.analyze-client-context
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: specialists/cto_cio_analysis_prompt.txt
+    description: Analyze a client technology consulting brief and return structured advisory JSON
+  - asset_id: chief-ai-digital-strategy.family.base
+    asset_kind: family_base
+    status: planned
+    description: Durable consulting behavior for the Chief AI / Digital Strategy family
+  - asset_id: chief-ai-digital-strategy.workflow.analyze-client-context
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: specialists/chief_ai_analysis_prompt.txt
+    description: Analyze a client AI consulting brief and return structured advisory JSON
 
 compositions:
   - composition_id: email-operations.classify-email
@@ -139,3 +157,78 @@ compositions:
         source: state
         required: false
         description: Summarize relevant opportunity-state assumptions if available
+  - composition_id: specialist-advisory.cto-cio-analyze
+    workflow_id: specialist-advisory
+    step_id: cto-cio-analyze
+    agent_family_id: cto-cio-advisory
+    base_prompt_asset_id: cto-cio-advisory.family.base
+    step_prompt_asset_id: cto-cio-advisory.workflow.analyze-client-context
+    template_fields:
+      - engagement_name
+      - problem_statement
+      - business_goal
+      - client_context
+      - engagement_history
+      - current_stack
+      - constraints
+      - desired_outcomes
+      - internal_platform_needs
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Clarify that the output is advisory only and cannot commit the company or client
+      - key: autonomy_policy
+        source: policy
+        required: true
+        description: Describe the bounded consulting posture and governance guardrails
+      - key: tool_profile
+        source: tools
+        required: true
+        description: Describe the bounded tools and context available to the specialist
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the required JSON structure for the advisory response
+      - key: state_summary
+        source: state
+        required: false
+        description: Summarize any relevant client, opportunity, or delivery-state assumptions
+  - composition_id: specialist-advisory.chief-ai-analyze
+    workflow_id: specialist-advisory
+    step_id: chief-ai-analyze
+    agent_family_id: chief-ai-digital-strategy
+    base_prompt_asset_id: chief-ai-digital-strategy.family.base
+    step_prompt_asset_id: chief-ai-digital-strategy.workflow.analyze-client-context
+    template_fields:
+      - engagement_name
+      - problem_statement
+      - business_context
+      - client_context
+      - engagement_history
+      - process_areas
+      - data_assets
+      - current_stack
+      - delivery_constraints
+      - desired_outcomes
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Clarify that the output is advisory only and cannot commit delivery or spend
+      - key: autonomy_policy
+        source: policy
+        required: true
+        description: Describe the bounded AI consulting posture and governance guardrails
+      - key: tool_profile
+        source: tools
+        required: true
+        description: Describe the bounded tools and contextual sources available to the specialist
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the required JSON structure for the advisory response
+      - key: state_summary
+        source: state
+        required: false
+        description: Summarize any relevant account, opportunity, or delivery-state assumptions

@@ -91,6 +91,12 @@ External sessions may cache local context, but canonical context remains in this
 ### Rule 6
 External connectors and runtimes map their capabilities to normalized platform tool IDs and must not bypass the platform's approval, autonomy, or state rules.
 
+### Rule 7
+Client-facing advisory recommendations must be generated from a bounded client brief handled in this platform, even when external channels or tools supply part of the context.
+
+### Rule 8
+External systems may help gather account context, but consulting mission framing and upsell opportunity detection must remain platform-side so growth logic stays auditable and tenant-scoped.
+
 ## OpenClaw Interaction Pattern
 
 ### Pattern A: Event Ingress
@@ -137,7 +143,7 @@ Examples:
 1. external message/task enters via OpenClaw or another connector
 2. event is normalized and sent to FastAPI
 3. workflow runs in this platform
-4. memory/context is assembled from shared workspace and knowledge layer
+4. memory/context is assembled from shared workspace, client brief inputs, and knowledge layer
 5. approval is requested if needed
 6. once approved, execution can be delegated back to OpenClaw or another tool connector
 7. resulting state is written back here
@@ -177,6 +183,8 @@ The current backend supports the following provider capabilities:
 - Google Calendar event fetch
 - Microsoft Graph mailbox fetch
 - Microsoft Graph calendar fetch
+
+These integrations may enrich a client advisory brief, but the normalized problem statement, client context/history, mission assessment, recommended services, and upsell opportunities remain platform-side contracts.
 
 ### Approval-bound execution
 - Microsoft Graph reply send for approved Outlook-originated email workflows

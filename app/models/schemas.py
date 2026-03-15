@@ -5,7 +5,22 @@ from pydantic import ConfigDict
 from pydantic import BaseModel, Field
 from pydantic import field_validator
 
-from app.models.specialist_contracts import ArchitectureAdvice, ImprovementBacklogItem, StrategyOption
+from app.models.specialist_contracts import (
+    ArchitectureAdvice,
+    CloseChecklistItem,
+    ContextSignal,
+    DeliveryBlueprintPhase,
+    FinancialScenario,
+    ImprovementBacklogItem,
+    MaturityDimension,
+    MissionAssessment,
+    OpportunityMapItem,
+    ReconciliationException,
+    ReconciliationRule,
+    RecommendedService,
+    StrategyOption,
+    UpsellOpportunity,
+)
 
 DecisionType = Literal["approve", "reject", "edit"]
 ApprovalStatus = Literal["pending", "approved", "rejected", "edited"]
@@ -206,6 +221,27 @@ class CTOCIOPanelResponse(BaseModel):
     approval_required: bool = True
 
 
+class CTOCIOAnalysisResponse(BaseModel):
+    agent_id: str
+    display_name: str
+    role_summary: str
+    primary_track: Literal["track_a_internal", "track_b_client"]
+    operating_modes: list[str] = Field(default_factory=list)
+    tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
+    analysis_summary: str
+    mission_assessment: MissionAssessment
+    context_signals: list[ContextSignal] = Field(default_factory=list)
+    recommended_services: list[RecommendedService] = Field(default_factory=list)
+    upsell_opportunities: list[UpsellOpportunity] = Field(default_factory=list)
+    strategy_options: list[StrategyOption] = Field(default_factory=list)
+    architecture_advice: ArchitectureAdvice
+    approval_required: bool = True
+
+
 class FinancePanelAgentSummary(BaseModel):
     agent_id: str
     display_name: str
@@ -247,6 +283,28 @@ class ChiefAIPanelResponse(BaseModel):
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
     executive_summary: str
     scope_signals: list[ChiefAIScopeSignal] = Field(default_factory=list)
+    opportunity_map: list[OpportunityMapItem] = Field(default_factory=list)
+    delivery_blueprint: list[DeliveryBlueprintPhase] = Field(default_factory=list)
+    maturity_model: list[MaturityDimension] = Field(default_factory=list)
+    approval_required: bool = True
+
+
+class ChiefAIAnalysisResponse(BaseModel):
+    agent_id: str
+    display_name: str
+    role_summary: str
+    primary_track: Literal["track_a_internal", "track_b_client"]
+    operating_modes: list[str] = Field(default_factory=list)
+    tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
+    executive_summary: str
+    mission_assessment: MissionAssessment
+    context_signals: list[ContextSignal] = Field(default_factory=list)
+    recommended_services: list[RecommendedService] = Field(default_factory=list)
+    upsell_opportunities: list[UpsellOpportunity] = Field(default_factory=list)
     opportunity_map: list[OpportunityMapItem] = Field(default_factory=list)
     delivery_blueprint: list[DeliveryBlueprintPhase] = Field(default_factory=list)
     maturity_model: list[MaturityDimension] = Field(default_factory=list)

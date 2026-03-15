@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 4 - Track B Client Template MVP`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: begin Track B by creating the client deployment template pack
+- Immediate goal: continue Track B by creating the client deployment template pack after landing the first client-context advisory analysis baseline
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -25,6 +25,9 @@
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 
 ## Recently Finished
+- [x] `P4-T01C` Route CTO/CIO and Chief AI specialist analysis through the governed prompt/model layer with deterministic fallback guardrails
+- [x] `P4-T01B` Extend CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity detection
+- [x] `P4-T01A` Add typed CTO/CIO and Chief AI advisory-analysis endpoints so client-facing agents can assess a problem statement, context/history, and recommend relevant services
 - [x] `P3-T14` Add a typed Chief AI / Digital Strategy endpoint and mission-control panel for AI opportunity portfolio, delivery blueprinting, and maturity guidance
 - [x] `P3-T13` Add a typed finance cockpit endpoint and mission-control panel for accounting exceptions, close-readiness review, and CFO scenario cards
 - [x] `P3-T12` Add a typed CTO/CIO specialist advisory endpoint and mission-control panel for customer scope insight, architecture guidance, strategy options, and internal improvement priorities

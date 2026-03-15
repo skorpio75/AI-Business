@@ -24,7 +24,9 @@ from app.models.connectors import ConnectorBootstrapStatusResponse, PersonalAssi
 from app.models.schemas import (
     ApprovalDecisionRequest,
     ApprovalItem,
+    ChiefAIAnalysisResponse,
     ChiefAIPanelResponse,
+    CTOCIOAnalysisResponse,
     CTOCIOPanelResponse,
     DashboardSummaryResponse,
     EmailWorkflowRequest,
@@ -35,6 +37,7 @@ from app.models.schemas import (
     ProposalGenerationRequest,
     ProposalGenerationResponse,
 )
+from app.models.specialist_contracts import ChiefAIDigitalStrategyInput, CTOCIOCounselInput
 from app.services.dashboard_summary import DashboardSummaryService
 from app.services.agent_registry import AgentRegistryService
 from app.services.chief_ai_panel import ChiefAIPanelService
@@ -60,9 +63,9 @@ agent_registry = AgentRegistryService()
 knowledge_qna = KnowledgeQnAService(retrieval_service=PgVectorRetrievalService(), model_gateway=gateway)
 proposal_workflow = ProposalWorkflowService(model_gateway=gateway)
 dashboard_summary = DashboardSummaryService()
-cto_cio_panel = CTOCIOPanelService()
+cto_cio_panel = CTOCIOPanelService(model_gateway=gateway)
 finance_panel = FinancePanelService()
-chief_ai_panel = ChiefAIPanelService()
+chief_ai_panel = ChiefAIPanelService(model_gateway=gateway)
 
 
 def get_runtime_settings() -> Settings:
@@ -162,6 +165,14 @@ def get_cto_cio_panel() -> CTOCIOPanelResponse:
     return cto_cio_panel.build_panel(agent=agent)
 
 
+@app.post("/specialists/cto-cio/analyze", response_model=CTOCIOAnalysisResponse)
+def analyze_cto_cio_client_context(payload: CTOCIOCounselInput) -> CTOCIOAnalysisResponse:
+    agent = agent_registry.get_agent("cto-cio-agent")
+    if agent is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    return cto_cio_panel.analyze_client_context(agent=agent, payload=payload)
+
+
 @app.get("/specialists/finance/panel", response_model=FinancePanelResponse)
 def get_finance_panel() -> FinancePanelResponse:
     accountant_agent = agent_registry.get_agent("accountant-agent")
@@ -182,6 +193,16 @@ def get_chief_ai_panel() -> ChiefAIPanelResponse:
     if agent is None:
         raise HTTPException(status_code=404, detail="agent_not_found")
     return chief_ai_panel.build_panel(agent=agent)
+
+
+@app.post("/specialists/chief-ai-digital-strategy/analyze", response_model=ChiefAIAnalysisResponse)
+def analyze_chief_ai_client_context(
+    payload: ChiefAIDigitalStrategyInput,
+) -> ChiefAIAnalysisResponse:
+    agent = agent_registry.get_agent("chief-ai-digital-strategy-agent")
+    if agent is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    return chief_ai_panel.analyze_client_context(agent=agent, payload=payload)
 
 
 @app.get("/personal-assistant/context", response_model=PersonalAssistantContext)

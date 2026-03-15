@@ -593,7 +593,7 @@
     @apply cursor-not-allowed;
   }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 960px) {
     .app-main,
     .content-grid,
     .stats-grid,
@@ -632,6 +632,12 @@
 
     .panel-header--spread {
       @apply grid-cols-1;
+    }
+  }
+
+  @media (min-width: 961px) {
+    .app-main {
+      @apply grid-cols-[minmax(250px,290px)_minmax(0,1fr)];
     }
   }
 

@@ -346,6 +346,9 @@ The following agents are canonical first-class pod agents that complement the ex
 
 ### CTO/CIO Agent
 - advise on client technology strategy based on scope and context
+- analyze explicit client problem statements, client context, and engagement history before recommending services or architecture paths
+- act like a consulting-company advisor embedded with the client for the duration of a mission
+- identify adjacent consulting opportunities that could responsibly expand the account once the current mission is understood
 - provide architecture and delivery counsel for proposals and execution
 - continuously assess and improve internal platform architecture, reliability, and tooling
 - identify technical debt, optimization opportunities, and modernization priorities
@@ -353,6 +356,9 @@ The following agents are canonical first-class pod agents that complement the ex
 
 ### Chief AI / Digital Strategy Agent
 - advise clients on AI, digitalization, AI engineering, and data engineering opportunities
+- analyze explicit client problem statements, client context, process history, and delivery constraints before recommending AI services or strategy
+- act like an AI consulting advisor embedded with the client around a concrete mission, use case, or problem statement
+- identify adjacent AI, data, automation, or governance opportunities that can grow the account after the initial mission is framed
 - translate customer scope into practical AI/data roadmaps and delivery plans
 - provide implementation guidance for AI products, automations, and data platforms
 - track AI capability maturity and prioritize continuous improvement actions
@@ -414,6 +420,17 @@ The following families are strong candidates for replicated client-delivery or c
 - Document Agent
 
 These are reused as separate instances per client, not shared Track A agents.
+
+For advisory families such as `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent`, the client-scoped instance should ingest a bounded client brief that includes:
+- problem statement
+- client context and relevant history
+- constraints, goals, and known delivery conditions
+
+Those agents should analyze that brief before recommending services, roadmaps, or implementation paths.
+They should also:
+- frame the active consulting mission clearly
+- recommend the best-fit initial service path
+- surface bounded upsell or follow-on opportunities that could grow the account responsibly
 
 ## Approval Principle
 No sensitive external action is sent automatically in MVP. CEO approval is required before execution for:

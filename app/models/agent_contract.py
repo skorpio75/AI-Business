@@ -142,7 +142,10 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
             agent_id="cto-cio-agent",
             display_name="CTO/CIO Agent",
             domain="platform",
-            role_summary="Produces strategy options, architecture advice, and internal improvement backlog items.",
+            role_summary=(
+                "Acts like a client-facing technology consultant: analyzes the active mission, client context, "
+                "and history to produce strategy options, architecture advice, service recommendations, and account-growth opportunities."
+            ),
             approval_class="ceo_required",
             deployment=AgentDeploymentPolicy(
                 primary_track="track_a_internal",
@@ -178,8 +181,22 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
                 )
             ],
             tools=["knowledge-base", "roadmap", "architecture-docs"],
-            inputs=["client scope", "platform telemetry", "architecture state"],
-            outputs=["strategy options", "architecture advice", "improvement backlog", "risk assessment"],
+            inputs=[
+                "problem statement",
+                "client context/history",
+                "current stack",
+                "constraints",
+                "architecture state",
+            ],
+            outputs=[
+                "mission assessment",
+                "context assessment",
+                "service recommendations",
+                "upsell opportunities",
+                "strategy options",
+                "architecture advice",
+                "risk assessment",
+            ],
             constraints=["no direct production changes", "CEO approval for roadmap commitments"],
         ),
         AgentContract(
@@ -254,7 +271,10 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
             agent_id="chief-ai-digital-strategy-agent",
             display_name="Chief AI / Digital Strategy Agent",
             domain="platform",
-            role_summary="Builds AI opportunity maps, delivery blueprints, and maturity improvement plans.",
+            role_summary=(
+                "Acts like a client-facing AI consultant: analyzes client missions, context, and history to build "
+                "AI opportunity maps, delivery blueprints, maturity guidance, service recommendations, and account-growth opportunities."
+            ),
             approval_class="ceo_required",
             deployment=AgentDeploymentPolicy(
                 primary_track="track_a_internal",
@@ -290,8 +310,23 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
                 )
             ],
             tools=["knowledge-base", "delivery-roadmap", "architecture-docs", "workspace"],
-            inputs=["customer scope", "process context", "data landscape", "delivery constraints"],
-            outputs=["opportunity map", "AI/data blueprint", "maturity assessment", "delivery roadmap"],
+            inputs=[
+                "problem statement",
+                "client context/history",
+                "process context",
+                "data landscape",
+                "delivery constraints",
+            ],
+            outputs=[
+                "mission assessment",
+                "context assessment",
+                "service recommendations",
+                "upsell opportunities",
+                "opportunity map",
+                "AI/data blueprint",
+                "maturity assessment",
+                "delivery roadmap",
+            ],
             constraints=[
                 "no client-facing commitment without CEO approval",
                 "replicate for Track 2 later instead of sharing Track 1 runtime state",
@@ -493,7 +528,7 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
             agent_id="consulting-support-agent",
             display_name="Consulting Support Agent",
             domain="delivery",
-            role_summary="Prepares research-backed draft recommendations for consulting engagements.",
+            role_summary="Supports consulting engagements with research-backed recommendations, mission framing, and account-growth hypotheses.",
             approval_class="bounded",
             tools=["knowledge-base", "research", "workspace"],
             inputs=["customer scope", "internal context", "external research"],

@@ -23,7 +23,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
-| Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
+| Phase 4 | Track B client template MVP | IN_PROGRESS | dpizz | TBD | 3/9 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
@@ -116,6 +116,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Phase 4 - Track B Client Template MVP
 - [ ] P4-T01: Create client deployment template pack
+- [x] P4-T01A: Add typed specialist client-context analysis endpoints so client-facing advisory agents can assess a problem statement, context/history, and recommend relevant services
+- [x] P4-T01B: Extend client-facing advisory agents with consulting-style mission framing and upsell opportunity detection so they can help grow client accounts
+- [x] P4-T01C: Route specialist advisory analysis through the governed prompt/model layer so consulting agents use LLM reasoning with deterministic fallback guardrails
 - [ ] P4-T02: Finalize `config/client-template/client.yaml`
 - [ ] P4-T03: Build seed script for client initialization
 - [ ] P4-T04: Isolate storage/credentials per client instance
@@ -243,6 +246,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Expanded docs to define full IT freelancer operating model: corporate agents + service delivery agents.
 
 ### 2026-03-15
+- Completed `P4-T01C` by routing CTO/CIO and Chief AI specialist analysis through the shared prompt/model layer so consulting reasoning can use LLM capacity while retaining deterministic fallback, output schemas, and approval/governance guardrails.
+- Completed `P4-T01B` by extending CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity outputs so client-facing agents can solve a mission and discover adjacent growth paths for the account.
+- Completed `P4-T01A` by adding typed CTO/CIO and Chief AI advisory-analysis contracts and API endpoints that assess client problem statements, context/history, and recommend relevant services.
 - Added prompt-layer target architecture guidance: prompts are planned as a dedicated runtime layer with family-level base prompts plus workflow-step prompts rather than being embedded directly into the business agent catalog.
 - Completed `P2-T15` by aligning the runtime agent registry with the pod model, family/mode identity, and specialist-overlay mapping, and mirrored the same metadata into `config/base/agents.yaml`.
 - Completed `H-T03` / `P0-T19` for the current markdown spec set by aligning existing agent and workflow specs with pod ownership, operating modes, state objects, emitted events, approval gates, and cross-agent handoff roles.

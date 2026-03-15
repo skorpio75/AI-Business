@@ -58,11 +58,13 @@ That means:
 - existing prompt files like `prompts/email/email_operations_prompt.txt` remain valid
 - new prompt assets should prefer the canonical `agents/` and `workflows/` layout
 - we do not need to rewrite every existing prompt file immediately to adopt the convention
+- specialist consulting analysis prompts may also use explicit `relative_path` mappings while the advisory prompt set is expanded incrementally
 
 ## Authoring Guidance
 - Put durable family behavior in a family base prompt.
 - Put task-specific instructions in workflow-step prompts.
 - Keep output shape, approval boundaries, tool limits, and state context injected at runtime where possible.
+- For consulting specialists, use the prompt for reasoning and synthesis while keeping governance, output schemas, and approval boundaries injected at runtime.
 - Avoid one giant static prompt per agent family.
 
 ## Current State

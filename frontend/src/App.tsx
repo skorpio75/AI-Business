@@ -136,7 +136,7 @@ const VIEW_GROUPS: Array<{
   },
 ];
 
-const NAV_COMPACT_BREAKPOINT = 1080;
+const NAV_COMPACT_BREAKPOINT = 960;
 
 export default function App() {
   const [activeView, setActiveView] = useState<ViewKey>("workflow-monitor");
@@ -156,7 +156,7 @@ export default function App() {
     const mediaQuery = window.matchMedia(`(max-width: ${NAV_COMPACT_BREAKPOINT}px)`);
     const syncLayout = (matches: boolean) => {
       setIsCompactNav(matches);
-      setIsNavOpen((current) => (matches ? current : true));
+      setIsNavOpen(matches ? false : true);
     };
 
     syncLayout(mediaQuery.matches);

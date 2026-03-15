@@ -34,6 +34,15 @@ class TextGenerationResult:
     cloud_llm_invoked: bool = False
 
 
+@dataclass
+class StructuredGenerationResult:
+    content: dict
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
+
+
 class ModelGateway:
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -404,4 +413,91 @@ class ModelGateway:
             model_used="rules-v1",
             local_llm_invoked=local_llm_invoked,
             cloud_llm_invoked=cloud_llm_invoked,
+        )
+
+    def generate_structured_json(
+        self,
+        *,
+        prompt: str,
+        fallback_payload: dict,
+    ) -> StructuredGenerationResult:
+        local_structured, local_llm_invoked = self._call_local_ollama_structured_json(prompt=prompt)
+        if local_structured is not None:
+            local_structured.local_llm_invoked = local_llm_invoked or local_structured.local_llm_invoked
+            return local_structured
+
+        local_text, local_text_invoked = self._call_local_ollama_text(prompt=prompt)
+        local_llm_invoked = local_llm_invoked or local_text_invoked
+        if local_text is not None:
+            parsed = self._parse_json_object(local_text.content)
+            if parsed is not None:
+                return StructuredGenerationResult(
+                    content=parsed,
+                    provider_used=local_text.provider_used,
+                    model_used=local_text.model_used,
+                    local_llm_invoked=local_llm_invoked or local_text.local_llm_invoked,
+                    cloud_llm_invoked=local_text.cloud_llm_invoked,
+                )
+
+        cloud_llm_invoked = False
+        if not self.settings.force_local_only and self.settings.openrouter_api_key:
+            cloud_text, cloud_llm_invoked = self._call_text_model(
+                provider="cloud",
+                model=f"openrouter/{self.settings.cloud_model}",
+                prompt=prompt,
+            )
+            if cloud_text is not None:
+                parsed = self._parse_json_object(cloud_text.content)
+                if parsed is not None:
+                    return StructuredGenerationResult(
+                        content=parsed,
+                        provider_used=cloud_text.provider_used,
+                        model_used=cloud_text.model_used,
+                        local_llm_invoked=local_llm_invoked,
+                        cloud_llm_invoked=cloud_llm_invoked or cloud_text.cloud_llm_invoked,
+                    )
+
+        return StructuredGenerationResult(
+            content=fallback_payload,
+            provider_used="fallback-rule",
+            model_used="rules-v1",
+            local_llm_invoked=local_llm_invoked,
+            cloud_llm_invoked=cloud_llm_invoked,
+        )
+
+    def _call_local_ollama_structured_json(
+        self,
+        *,
+        prompt: str,
+    ) -> tuple[Optional[StructuredGenerationResult], bool]:
+        model_name = self._resolve_local_model_name()
+        if not model_name:
+            return None, False
+
+        payload = self._ollama_request(
+            path="/api/generate",
+            payload={
+                "model": model_name,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.2},
+            },
+        )
+        if not payload:
+            return None, True
+
+        content = str(payload.get("response") or "").strip()
+        parsed = self._parse_json_object(content)
+        if parsed is None:
+            return None, True
+
+        return (
+            StructuredGenerationResult(
+                content=parsed,
+                provider_used="local",
+                model_used=f"ollama/{model_name}",
+                local_llm_invoked=True,
+            ),
+            True,
         )

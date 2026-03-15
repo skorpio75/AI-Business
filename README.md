@@ -9,7 +9,7 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
 ## Current Status
-The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, and dedicated CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels.
+The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, dedicated CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels, and typed consulting-style advisory-analysis endpoints that now run through the governed prompt/model layer for client-specific specialist counsel.
 
 ## Principles
 - open source first
@@ -160,12 +160,21 @@ This script starts Docker, initializes the database, creates `frontend\.env` fro
 - `GET /healthz`
 - `GET /connectors/bootstrap-status`
 - `GET /specialists/cto-cio/panel`
+- `POST /specialists/cto-cio/analyze`
 - `GET /specialists/finance/panel`
 - `GET /specialists/chief-ai-digital-strategy/panel`
+- `POST /specialists/chief-ai-digital-strategy/analyze`
 - `POST /workflows/email-operations/run`
 - `GET /workflows/runs`
 - `GET /approvals/pending`
 - `POST /approvals/{approval_id}/decision`
+
+## Specialist Advisory Analysis
+Client-facing advisory specialists can now analyze a bounded client brief instead of only returning generic panel summaries.
+
+- `POST /specialists/cto-cio/analyze` accepts a problem statement, client context/history, current stack, constraints, and desired outcomes, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, strategy options, and architecture advice.
+- `POST /specialists/chief-ai-digital-strategy/analyze` accepts a problem statement, business/client context, history, process areas, data assets, and delivery constraints, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, an opportunity map, a phased blueprint, and maturity guidance.
+- both specialist analysis endpoints now run through the shared prompt/model layer and return provider/model routing metadata, while deterministic fallback remains in place for resilience and governance-safe output recovery
 
 ## Current Control Layers
 - normalized events, approval classes, and autonomy classes are defined in backend contracts/config
@@ -258,6 +267,8 @@ That endpoint returns connector health plus the current normalized `inbox_messag
 - CTO/CIO panel: packages technology strategy options, architecture advice, and internal platform improvements into one specialist advisory view.
 - Finance cockpit: packages accounting exceptions, close readiness, and CFO scenario cards into one finance review surface.
 - Chief AI / Digital Strategy: packages AI opportunity maps, delivery blueprinting, and maturity signals into one strategy surface.
+
+The advisory panels remain useful operator summaries, while the specialist analysis endpoints are the path for client-specific consulting output based on a problem statement and engagement context/history. Those outputs now also help the consulting company grow by surfacing adjacent, relevant follow-on opportunities for the same client.
 
 ## Git Hygiene
 - Local secrets, virtual environments, caches, and local database files are intentionally excluded via `.gitignore`.

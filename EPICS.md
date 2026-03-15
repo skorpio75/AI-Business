@@ -108,6 +108,9 @@ A reproducible isolated client platform can be deployed quickly.
 - deployment can be cloned
 - seed scripts prepare first instance
 - workflows run with client-specific context
+- client-facing advisory agents can analyze a client problem statement, context, and history before recommending services
+- client-facing advisory agents can frame the active consulting mission and detect bounded upsell opportunities that help grow the account
+- client-facing advisory agents use governed LLM reasoning for consulting analysis, with deterministic fallback reserved for resilience and guardrails
 
 ## Epic 7 - Observability
 - Status: `NOT_STARTED`
@@ -207,6 +210,8 @@ Workflow and agent execution is described through normalized state, event, tool,
 - family-level base prompts and workflow-step prompts are planned as separate runtime concerns
 - prompt composition and context-injection contracts are defined in backend/config
 - prompt naming, storage, and loader fallback rules are defined
+- specialist advisory contracts can carry client briefs, context signals, and service recommendations
+- specialist advisory contracts can also carry consulting mission assessments and upsell opportunities
 
 ## Epic 13 - Business Scaling Maturity Model
 - Status: `NOT_STARTED`

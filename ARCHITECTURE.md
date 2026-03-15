@@ -47,6 +47,9 @@ Infrastructure
 ### Interfaces
 - React operator console using `shadcn/ui` as the default component system for mission control surfaces
 - FastAPI endpoints
+- typed specialist advisory-analysis endpoints for client problem/context assessment
+- consulting-oriented specialist analysis outputs that frame the active mission and adjacent account-growth opportunities
+- LLM-backed specialist reasoning through the shared prompt/model layer, with deterministic fallback and schema guardrails
 
 ### Workflows
 - LangGraph orchestration
@@ -119,6 +122,9 @@ Infrastructure
 - Approved Outlook replies can execute through Microsoft Graph after approval is recorded in this platform.
 - Mission Control exposes explicit routing visibility for local model, cloud route, fallback-rule execution, and whether the local LLM was invoked.
 - Mission Control now includes CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels backed by typed API summaries.
+- CTO/CIO and Chief AI specialist APIs now also accept bounded client briefs so advisory instances can analyze problem statements, context/history, and recommend relevant services.
+- Those specialist analysis contracts now also frame the client mission and surface bounded upsell opportunities for consulting-led account growth.
+- CTO/CIO and Chief AI specialist analysis now runs through the shared model gateway and prompt layer, while deterministic logic remains as a governance-friendly fallback path.
 - Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google and Microsoft connector credentials.
 
 ## 6. Architectural Rule
@@ -154,6 +160,9 @@ The handoff integration adds an explicit formal operating layer to the architect
 - autonomy classes that bound what agent instances may do
 - a modular prompt model that separates family-level base prompts from workflow-step prompts
 - typed prompt-layer contracts for prompt assets, composition rules, and injected operating context
+- typed specialist advisory-analysis contracts for client briefs, context signals, and service recommendations
+- consulting-oriented specialist contracts for mission framing and account-growth opportunity discovery
+- specialist analysis responses now include provider/model routing metadata for traceability
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
 

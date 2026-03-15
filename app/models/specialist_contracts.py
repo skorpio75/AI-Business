@@ -8,6 +8,47 @@ ImpactLevel = Literal["low", "medium", "high"]
 EffortBand = Literal["small", "medium", "large"]
 DecisionHorizon = Literal["30_days", "90_days", "12_months"]
 MaturityLevel = Literal["ad_hoc", "emerging", "repeatable", "managed", "optimized"]
+ContextSignalCategory = Literal["problem", "history", "constraint", "readiness", "risk", "opportunity"]
+ServiceDeliveryMode = Literal["client_delivery", "client_facing_service"]
+ConsultingMotion = Literal["problem_solving", "opportunity_discovery", "account_growth", "mixed"]
+
+
+class ContextSignal(BaseModel):
+    signal_id: str
+    category: ContextSignalCategory
+    title: str
+    summary: str
+    implication: str
+
+
+class RecommendedService(BaseModel):
+    service_id: str
+    name: str
+    summary: str
+    fit_reason: str
+    suggested_outcomes: list[str] = Field(default_factory=list)
+    delivery_mode: ServiceDeliveryMode = "client_facing_service"
+    priority: PriorityBand
+
+
+class MissionAssessment(BaseModel):
+    mission_id: str
+    consulting_motion: ConsultingMotion
+    title: str
+    summary: str
+    client_need: str
+    success_definition: str
+    why_now: str
+
+
+class UpsellOpportunity(BaseModel):
+    opportunity_id: str
+    title: str
+    summary: str
+    rationale: str
+    suggested_service: str
+    expansion_trigger: str
+    priority: PriorityBand
 
 
 class StrategyOption(BaseModel):
@@ -39,13 +80,22 @@ class ImprovementBacklogItem(BaseModel):
 
 class CTOCIOCounselInput(BaseModel):
     engagement_name: str
+    problem_statement: str
     business_goal: str
+    client_context: str = ""
+    engagement_history: list[str] = Field(default_factory=list)
     current_stack: list[str] = Field(default_factory=list)
     constraints: list[str] = Field(default_factory=list)
+    desired_outcomes: list[str] = Field(default_factory=list)
     internal_platform_needs: list[str] = Field(default_factory=list)
 
 
 class CTOCIOCounselOutput(BaseModel):
+    analysis_summary: str
+    mission_assessment: MissionAssessment
+    context_signals: list[ContextSignal] = Field(default_factory=list)
+    recommended_services: list[RecommendedService] = Field(default_factory=list)
+    upsell_opportunities: list[UpsellOpportunity] = Field(default_factory=list)
     strategy_options: list[StrategyOption] = Field(default_factory=list)
     architecture_advice: ArchitectureAdvice
     internal_improvement_backlog: list[ImprovementBacklogItem] = Field(default_factory=list)
@@ -140,13 +190,22 @@ class MaturityDimension(BaseModel):
 
 class ChiefAIDigitalStrategyInput(BaseModel):
     engagement_name: str
+    problem_statement: str
     business_context: str
+    client_context: str = ""
+    engagement_history: list[str] = Field(default_factory=list)
     process_areas: list[str] = Field(default_factory=list)
     data_assets: list[str] = Field(default_factory=list)
+    current_stack: list[str] = Field(default_factory=list)
     delivery_constraints: list[str] = Field(default_factory=list)
+    desired_outcomes: list[str] = Field(default_factory=list)
 
 
 class ChiefAIDigitalStrategyOutput(BaseModel):
+    mission_assessment: MissionAssessment
+    context_signals: list[ContextSignal] = Field(default_factory=list)
+    recommended_services: list[RecommendedService] = Field(default_factory=list)
+    upsell_opportunities: list[UpsellOpportunity] = Field(default_factory=list)
     opportunity_map: list[OpportunityMapItem] = Field(default_factory=list)
     delivery_blueprint: list[DeliveryBlueprintPhase] = Field(default_factory=list)
     maturity_model: list[MaturityDimension] = Field(default_factory=list)

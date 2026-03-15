@@ -245,6 +245,10 @@ export type CTOCIOPanel = {
   primary_track: "track_a_internal" | "track_b_client";
   operating_modes: string[];
   tool_profile_by_mode: Record<string, string>;
+  provider_used: string;
+  model_used: string;
+  local_llm_invoked: boolean;
+  cloud_llm_invoked: boolean;
   scope_insights: CTOCIOScopeInsight[];
   strategy_options: StrategyOption[];
   architecture_advice: ArchitectureAdvice;
@@ -347,6 +351,10 @@ export type ChiefAIPanel = {
   primary_track: "track_a_internal" | "track_b_client";
   operating_modes: string[];
   tool_profile_by_mode: Record<string, string>;
+  provider_used: string;
+  model_used: string;
+  local_llm_invoked: boolean;
+  cloud_llm_invoked: boolean;
   executive_summary: string;
   scope_signals: ChiefAIScopeSignal[];
   opportunity_map: OpportunityMapItem[];

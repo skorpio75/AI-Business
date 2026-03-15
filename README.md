@@ -9,7 +9,7 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
 ## Current Status
-The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, dedicated CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels, and typed consulting-style advisory-analysis endpoints that now run through the governed prompt/model layer for client-specific specialist counsel.
+The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, dedicated CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels, and typed consulting-style advisory-analysis endpoints that now run through the governed prompt/model layer for both internal specialist counsel and client-specific consulting work.
 
 ## Principles
 - open source first
@@ -19,6 +19,23 @@ The committed codebase is still backend-led. It includes the FastAPI API, workfl
 - one human approval layer for sensitive actions
 - reusable templates for agents and workflows
 - minimal MVP, scalable architecture later
+
+## Governed Agentic Company Principle
+This platform is intended to support a strongly agentic company, but not an ungoverned one.
+
+- LLM capacity should be used as much as possible for reasoning, counseling, consulting, synthesis, drafting, and deliverable preparation.
+- Governance remains mandatory around that reasoning through workflows, approval policy, tool boundaries, output schemas, tenancy isolation, routing visibility, and auditability.
+- The target model is not rule-only automation and not unconstrained autonomy. It is LLM-first reasoning inside explicit business guardrails.
+- Agents may become more autonomous over time, but only through governed runtime promotion, never by bypassing policy or human approval for sensitive actions.
+
+## Operating Modes
+The platform currently distinguishes three practical operating modes:
+
+- Internal counseling: internal agents help run the company itself. They use LLM-backed reasoning for strategy, counseling, synthesis, and internal decision support, but remain inside workflow, approval, tool, and audit guardrails.
+- Client-facing consulting: client-scoped agents act like consultants on a bounded engagement. They analyze a client brief, frame the mission, recommend relevant services, and surface responsible growth opportunities, but they do so as isolated client instances rather than shared internal agents.
+- Future multi-agent runtime: richer multi-agent collaboration is a roadmap direction, not the current control model. As it arrives, it will remain workflow-first, policy-bound, observable, and approval-safe rather than becoming an unconstrained peer-agent mesh.
+
+In short: internal and client-facing agents already use the same governed LLM-first reasoning model, but full multi-agent company behavior is still being introduced in phased, controlled steps.
 
 ## Main Tech Components
 - FastAPI
@@ -175,6 +192,7 @@ Client-facing advisory specialists can now analyze a bounded client brief instea
 - `POST /specialists/cto-cio/analyze` accepts a problem statement, client context/history, current stack, constraints, and desired outcomes, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, strategy options, and architecture advice.
 - `POST /specialists/chief-ai-digital-strategy/analyze` accepts a problem statement, business/client context, history, process areas, data assets, and delivery constraints, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, an opportunity map, a phased blueprint, and maturity guidance.
 - both specialist analysis endpoints now run through the shared prompt/model layer and return provider/model routing metadata, while deterministic fallback remains in place for resilience and governance-safe output recovery
+- the internal CTO/CIO and Chief AI specialist panels also run through the same governed prompt/model layer and now surface provider/model routing metadata in Mission Control
 
 ## Current Control Layers
 - normalized events, approval classes, and autonomy classes are defined in backend contracts/config

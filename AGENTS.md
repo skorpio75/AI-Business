@@ -12,6 +12,14 @@ This document lists the canonical agents used to run an IT freelancer company wi
 - `ROADMAP.md` is the implementation status source of truth. `TODO.md` is the short execution view derived from it.
 - At minimum, review `ROADMAP.md`, `TODO.md`, `ARCHITECTURE.md`, `EPICS.md`, `INTEGRATIONS.md`, and `DECISIONS.md` for drift whenever a material change is made.
 
+## Governed Agentic Company Principle
+This company may become highly agentic, but it must remain governed.
+
+- Agents should use LLM capacity heavily for reasoning, internal counseling, client-facing consulting, synthesis, drafting, and deliverable support.
+- Governance is not optional around that reasoning: workflows, approval policy, tool permissions, autonomy class, state boundaries, tenant isolation, and auditability still apply.
+- The target operating model is not deterministic-only control and not free-form autonomous behavior. It is LLM-centered agent capability inside explicit business guardrails.
+- Growth in autonomy must happen through governed runtime design, step boundaries, and approval-safe promotion rather than by letting agents act outside policy.
+
 ## Agent Model
 The platform models reusable capability through:
 

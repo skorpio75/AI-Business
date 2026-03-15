@@ -67,6 +67,17 @@ class SpecialistAdvisoryAnalysisTests(unittest.TestCase):
         self.assertIn("history", signal_categories)
         self.assertIn("constraint", signal_categories)
 
+    def test_cto_cio_panel_uses_governed_model_route_metadata(self) -> None:
+        agent = self.registry.get_agent("cto-cio-agent")
+        self.assertIsNotNone(agent)
+
+        response = self.cto_service.build_panel(agent=agent)
+
+        self.assertEqual(response.provider_used, "fallback-rule")
+        self.assertEqual(response.model_used, "rules-test")
+        self.assertGreater(len(response.scope_insights), 0)
+        self.assertGreater(len(response.strategy_options), 0)
+
     def test_chief_ai_analysis_recommends_knowledge_and_workflow_services(self) -> None:
         agent = self.registry.get_agent("chief-ai-digital-strategy-agent")
         self.assertIsNotNone(agent)
@@ -112,6 +123,17 @@ class SpecialistAdvisoryAnalysisTests(unittest.TestCase):
         self.assertIn("opp-knowledge", opportunity_ids)
         self.assertIn("opp-automation", opportunity_ids)
         self.assertEqual(len(response.delivery_blueprint), 3)
+
+    def test_chief_ai_panel_uses_governed_model_route_metadata(self) -> None:
+        agent = self.registry.get_agent("chief-ai-digital-strategy-agent")
+        self.assertIsNotNone(agent)
+
+        response = self.chief_ai_service.build_panel(agent=agent)
+
+        self.assertEqual(response.provider_used, "fallback-rule")
+        self.assertEqual(response.model_used, "rules-test")
+        self.assertGreater(len(response.scope_signals), 0)
+        self.assertGreater(len(response.opportunity_map), 0)
 
 
 if __name__ == "__main__":

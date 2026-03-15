@@ -171,8 +171,8 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Decision: Client-facing advisory agents should frame the active consulting mission, recommend the best-fit initial service, and detect bounded upsell or follow-on opportunities that can responsibly grow the client account, while staying grounded in the same client brief and tenant boundaries.
 - Rationale: A consulting company grows by solving the current mission well and by noticing adjacent opportunities that are genuinely relevant to the client. Making this posture explicit in the agent contract helps the platform support real consulting behavior instead of stopping at one-off problem analysis.
 
-## ADR-029: Specialist consulting analysis should use the shared LLM runtime with governed fallback
+## ADR-029: Specialist consulting and counseling should use the shared LLM runtime with governed fallback
 - Status: Accepted
 - Date: 2026-03-15
-- Decision: Specialist consulting agents such as `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent` should perform their primary reasoning through the shared prompt/model layer and `ModelGateway`, while deterministic logic remains as a fallback for resilience, output-shape recovery, and governance guardrails.
-- Rationale: High-value consulting, counseling, and client-facing deliverables depend on LLM reasoning capacity and cannot be reduced to static keyword heuristics alone. Keeping that reasoning inside the governed prompt/model layer preserves routing visibility, prompt controls, output schemas, and future auditability.
+- Decision: Specialist consulting and counseling surfaces such as the `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent` should perform their primary reasoning through the shared prompt/model layer and `ModelGateway`, while deterministic logic remains as a fallback for resilience, output-shape recovery, and governance guardrails.
+- Rationale: High-value consulting, internal counseling, and client-facing deliverables depend on LLM reasoning capacity and cannot be reduced to static keyword heuristics alone. Keeping that reasoning inside the governed prompt/model layer preserves routing visibility, prompt controls, output schemas, and future auditability.

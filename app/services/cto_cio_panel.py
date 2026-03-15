@@ -22,6 +22,65 @@ class CTOCIOPanelService:
         self.prompt_loader = PromptLoader()
 
     def build_panel(self, *, agent: AgentContract) -> CTOCIOPanelResponse:
+        fallback_response = self._build_fallback_panel(agent)
+        prompt = self.prompt_loader.render_composition(
+            "specialist-advisory.cto-cio-panel",
+            template_context={
+                "display_name": agent.display_name,
+                "role_summary": agent.role_summary,
+                "operating_modes": self._format_list(agent.operating_modes),
+                "platform_context": self._panel_platform_context(),
+            },
+            injected_context={
+                "approval_policy": (
+                    "Internal advisory output only. This panel does not bypass approval policy or authorize delivery commitments."
+                ),
+                "tool_profile": "specialist-advisory profile with internal platform and roadmap context only.",
+                "state_summary": (
+                    "Current internal state includes workflow-first orchestration, prompt-layer contracts, "
+                    "typed specialist panels, client advisory endpoints, and pending multi-agent runtime evolution."
+                ),
+                "output_schema": (
+                    '{"scope_insights":[{"insight_id":"string","title":"string","summary":"string","focus_area":"customer_scope|architecture|internal_platform","tone":"neutral|success|warning|critical"}],'
+                    '"strategy_options":[{"option_id":"string","title":"string","summary":"string","benefits":["string"],"tradeoffs":["string"],"recommended_when":"string"}],'
+                    '"architecture_advice":{"current_state":"string","target_state":"string","key_constraints":["string"],"proposed_changes":["string"],"risks":["string"]},'
+                    '"internal_improvement_backlog":[{"item_id":"string","title":"string","rationale":"string","priority":"now|next|later","impact":"low|medium|high","effort":"small|medium|large","owner_hint":"string"}],"approval_required":true}'
+                ),
+            },
+        )
+        generation = self.model_gateway.generate_structured_json(
+            prompt=prompt,
+            fallback_payload={
+                "scope_insights": [item.model_dump() for item in fallback_response.scope_insights],
+                "strategy_options": [item.model_dump() for item in fallback_response.strategy_options],
+                "architecture_advice": fallback_response.architecture_advice.model_dump(),
+                "internal_improvement_backlog": [
+                    item.model_dump() for item in fallback_response.internal_improvement_backlog
+                ],
+                "approval_required": fallback_response.approval_required,
+            },
+        )
+
+        try:
+            return CTOCIOPanelResponse.model_validate(
+                {
+                    "agent_id": agent.agent_id,
+                    "display_name": agent.display_name,
+                    "role_summary": agent.role_summary,
+                    "primary_track": agent.deployment.primary_track,
+                    "operating_modes": agent.operating_modes,
+                    "tool_profile_by_mode": agent.tool_profile_by_mode,
+                    "provider_used": generation.provider_used,
+                    "model_used": generation.model_used,
+                    "local_llm_invoked": generation.local_llm_invoked,
+                    "cloud_llm_invoked": generation.cloud_llm_invoked,
+                    **generation.content,
+                }
+            )
+        except Exception:
+            return fallback_response
+
+    def _build_fallback_panel(self, agent: AgentContract) -> CTOCIOPanelResponse:
         scope_insights = [
             CTOCIOScopeInsight(
                 insight_id="scope-signal-delivery",
@@ -188,6 +247,10 @@ class CTOCIOPanelService:
             primary_track=agent.deployment.primary_track,
             operating_modes=agent.operating_modes,
             tool_profile_by_mode=agent.tool_profile_by_mode,
+            provider_used="fallback-rule",
+            model_used="rules-v1",
+            local_llm_invoked=False,
+            cloud_llm_invoked=False,
             scope_insights=scope_insights,
             strategy_options=counsel.strategy_options,
             architecture_advice=counsel.architecture_advice,
@@ -747,3 +810,11 @@ class CTOCIOPanelService:
         if not items:
             return "- none"
         return "\n".join(f"- {item}" for item in items)
+
+    def _panel_platform_context(self) -> str:
+        return (
+            "The platform is workflow-first and approval-bound. Mission Control exposes specialist panels for CTO/CIO, "
+            "finance, and Chief AI. Prompt-layer contracts, tool profiles, autonomy classes, and client-facing advisory "
+            "analysis endpoints now exist. The next challenge is to convert this capability into stronger internal "
+            "counsel, operator trust, and repeatable consulting offers without outrunning observability or governance."
+        )

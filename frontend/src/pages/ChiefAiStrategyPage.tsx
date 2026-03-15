@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
 import { StatusPill } from "../components/StatusPill";
 import { apiClient } from "../lib/api";
 import type { ChiefAIPanel, DeliveryBlueprintPhase, MaturityDimension, OpportunityMapItem } from "../types";
@@ -128,6 +129,16 @@ export function ChiefAiStrategyPage({ refreshToken }: ChiefAiStrategyPageProps) 
               <div className="callout callout--soft">
                 <p className="eyebrow">Operating modes</p>
                 <strong>{panel.operating_modes.map((mode) => mode.replaceAll("_", " ")).join(", ")}</strong>
+              </div>
+
+              <div className="callout callout--soft">
+                <p className="eyebrow">Model routing</p>
+                <ModelRouteIndicator
+                  providerUsed={panel.provider_used}
+                  modelUsed={panel.model_used}
+                  localLlmInvoked={panel.local_llm_invoked}
+                  cloudLlmInvoked={panel.cloud_llm_invoked}
+                />
               </div>
 
               {Object.keys(panel.tool_profile_by_mode).length > 0 ? (

@@ -25,6 +25,7 @@
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 
 ## Recently Finished
+- [x] `P4-T01D` Route internal CTO/CIO and Chief AI specialist panels through the governed prompt/model layer and surface routing metadata
 - [x] `P4-T01C` Route CTO/CIO and Chief AI specialist analysis through the governed prompt/model layer with deterministic fallback guardrails
 - [x] `P4-T01B` Extend CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity detection
 - [x] `P4-T01A` Add typed CTO/CIO and Chief AI advisory-analysis endpoints so client-facing agents can assess a problem statement, context/history, and recommend relevant services

@@ -58,6 +58,11 @@ assets:
     status: implemented
     relative_path: specialists/cto_cio_analysis_prompt.txt
     description: Analyze a client technology consulting brief and return structured advisory JSON
+  - asset_id: cto-cio-advisory.workflow.build-panel
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: specialists/cto_cio_panel_prompt.txt
+    description: Build the internal CTO/CIO specialist panel summary as structured JSON
   - asset_id: chief-ai-digital-strategy.family.base
     asset_kind: family_base
     status: planned
@@ -67,6 +72,11 @@ assets:
     status: implemented
     relative_path: specialists/chief_ai_analysis_prompt.txt
     description: Analyze a client AI consulting brief and return structured advisory JSON
+  - asset_id: chief-ai-digital-strategy.workflow.build-panel
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: specialists/chief_ai_panel_prompt.txt
+    description: Build the internal Chief AI / Digital Strategy panel summary as structured JSON
 
 compositions:
   - composition_id: email-operations.classify-email
@@ -194,6 +204,34 @@ compositions:
         source: state
         required: false
         description: Summarize any relevant client, opportunity, or delivery-state assumptions
+  - composition_id: specialist-advisory.cto-cio-panel
+    workflow_id: specialist-advisory
+    step_id: cto-cio-panel
+    agent_family_id: cto-cio-advisory
+    base_prompt_asset_id: cto-cio-advisory.family.base
+    step_prompt_asset_id: cto-cio-advisory.workflow.build-panel
+    template_fields:
+      - display_name
+      - role_summary
+      - operating_modes
+      - platform_context
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Clarify that the panel is advisory only and not an approval bypass
+      - key: tool_profile
+        source: tools
+        required: true
+        description: Describe the bounded tools and runtime context available to the specialist
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the required JSON structure for the panel response
+      - key: state_summary
+        source: state
+        required: true
+        description: Summarize the current internal platform state the panel should reason over
   - composition_id: specialist-advisory.chief-ai-analyze
     workflow_id: specialist-advisory
     step_id: chief-ai-analyze
@@ -232,3 +270,31 @@ compositions:
         source: state
         required: false
         description: Summarize any relevant account, opportunity, or delivery-state assumptions
+  - composition_id: specialist-advisory.chief-ai-panel
+    workflow_id: specialist-advisory
+    step_id: chief-ai-panel
+    agent_family_id: chief-ai-digital-strategy
+    base_prompt_asset_id: chief-ai-digital-strategy.family.base
+    step_prompt_asset_id: chief-ai-digital-strategy.workflow.build-panel
+    template_fields:
+      - display_name
+      - role_summary
+      - operating_modes
+      - platform_context
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Clarify that the panel is advisory only and not an approval bypass
+      - key: tool_profile
+        source: tools
+        required: true
+        description: Describe the bounded tools and runtime context available to the specialist
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the required JSON structure for the panel response
+      - key: state_summary
+        source: state
+        required: true
+        description: Summarize the current internal platform state the panel should reason over

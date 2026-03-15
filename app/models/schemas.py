@@ -214,6 +214,10 @@ class CTOCIOPanelResponse(BaseModel):
     primary_track: Literal["track_a_internal", "track_b_client"]
     operating_modes: list[str] = Field(default_factory=list)
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
     scope_insights: list[CTOCIOScopeInsight] = Field(default_factory=list)
     strategy_options: list[StrategyOption] = Field(default_factory=list)
     architecture_advice: ArchitectureAdvice
@@ -281,6 +285,10 @@ class ChiefAIPanelResponse(BaseModel):
     primary_track: Literal["track_a_internal", "track_b_client"]
     operating_modes: list[str] = Field(default_factory=list)
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool = False
+    cloud_llm_invoked: bool = False
     executive_summary: str
     scope_signals: list[ChiefAIScopeSignal] = Field(default_factory=list)
     opportunity_map: list[OpportunityMapItem] = Field(default_factory=list)

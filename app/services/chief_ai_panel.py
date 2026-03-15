@@ -22,6 +22,65 @@ class ChiefAIPanelService:
         self.prompt_loader = PromptLoader()
 
     def build_panel(self, *, agent: AgentContract) -> ChiefAIPanelResponse:
+        fallback_response = self._build_fallback_panel(agent)
+        prompt = self.prompt_loader.render_composition(
+            "specialist-advisory.chief-ai-panel",
+            template_context={
+                "display_name": agent.display_name,
+                "role_summary": agent.role_summary,
+                "operating_modes": self._format_list(agent.operating_modes),
+                "platform_context": self._panel_platform_context(),
+            },
+            injected_context={
+                "approval_policy": (
+                    "Internal advisory output only. This panel does not bypass approval policy or authorize delivery commitments."
+                ),
+                "tool_profile": "specialist-advisory profile with internal platform and roadmap context only.",
+                "state_summary": (
+                    "Current internal state includes workflow-first orchestration, typed advisory endpoints, "
+                    "prompt-layer contracts, client consulting paths, and a need to turn internal AI capability into "
+                    "repeatable offers and governed delivery motions."
+                ),
+                "output_schema": (
+                    '{"executive_summary":"string","scope_signals":[{"signal_id":"string","title":"string","summary":"string","focus_area":"offer_design|delivery_controls|commercialization","tone":"neutral|success|warning|critical"}],'
+                    '"opportunity_map":[{"opportunity_id":"string","title":"string","problem_statement":"string","expected_value":"string","priority":"now|next|later","dependencies":["string"]}],'
+                    '"delivery_blueprint":[{"phase_id":"string","title":"string","objectives":["string"],"deliverables":["string"],"risks":["string"]}],'
+                    '"maturity_model":[{"dimension":"string","current_level":"ad_hoc|emerging|repeatable|managed|optimized","target_level":"ad_hoc|emerging|repeatable|managed|optimized","gap_summary":"string","next_actions":["string"]}],"approval_required":true}'
+                ),
+            },
+        )
+        generation = self.model_gateway.generate_structured_json(
+            prompt=prompt,
+            fallback_payload={
+                "executive_summary": fallback_response.executive_summary,
+                "scope_signals": [item.model_dump() for item in fallback_response.scope_signals],
+                "opportunity_map": [item.model_dump() for item in fallback_response.opportunity_map],
+                "delivery_blueprint": [item.model_dump() for item in fallback_response.delivery_blueprint],
+                "maturity_model": [item.model_dump() for item in fallback_response.maturity_model],
+                "approval_required": fallback_response.approval_required,
+            },
+        )
+
+        try:
+            return ChiefAIPanelResponse.model_validate(
+                {
+                    "agent_id": agent.agent_id,
+                    "display_name": agent.display_name,
+                    "role_summary": agent.role_summary,
+                    "primary_track": agent.deployment.primary_track,
+                    "operating_modes": agent.operating_modes,
+                    "tool_profile_by_mode": agent.tool_profile_by_mode,
+                    "provider_used": generation.provider_used,
+                    "model_used": generation.model_used,
+                    "local_llm_invoked": generation.local_llm_invoked,
+                    "cloud_llm_invoked": generation.cloud_llm_invoked,
+                    **generation.content,
+                }
+            )
+        except Exception:
+            return fallback_response
+
+    def _build_fallback_panel(self, agent: AgentContract) -> ChiefAIPanelResponse:
         strategy_output = ChiefAIDigitalStrategyOutput(
             mission_assessment=MissionAssessment(
                 mission_id="internal-ai-panel-posture",
@@ -196,6 +255,10 @@ class ChiefAIPanelService:
             primary_track=agent.deployment.primary_track,
             operating_modes=agent.operating_modes,
             tool_profile_by_mode=agent.tool_profile_by_mode,
+            provider_used="fallback-rule",
+            model_used="rules-v1",
+            local_llm_invoked=False,
+            cloud_llm_invoked=False,
             executive_summary=strategy_output.executive_summary,
             scope_signals=scope_signals,
             opportunity_map=strategy_output.opportunity_map,
@@ -862,3 +925,11 @@ class ChiefAIPanelService:
         if not items:
             return "- none"
         return "\n".join(f"- {item}" for item in items)
+
+    def _panel_platform_context(self) -> str:
+        return (
+            "The platform now supports workflow-first operations, prompt-layer contracts, client-facing advisory analysis, "
+            "and reusable specialist families. The current internal AI strategy question is how to turn those capabilities "
+            "into repeatable AI consulting offers, stronger delivery guidance, and visible maturity signals without "
+            "compromising governance or overextending productization."
+        )

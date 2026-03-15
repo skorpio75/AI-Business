@@ -14,12 +14,22 @@ class ProposalWorkflowService:
         workflow_id = str(uuid4())
         desired_outcomes = payload.desired_outcomes or ["Clarify project goals", "Define a first delivery slice"]
         constraints = payload.constraints or ["Budget and delivery assumptions still need confirmation"]
-        prompt = self.prompt_loader.render(
-            "proposal/proposal_generation_prompt.txt",
-            client_name=payload.client_name,
-            opportunity_summary=payload.opportunity_summary,
-            desired_outcomes="\n".join(f"- {item}" for item in desired_outcomes),
-            constraints="\n".join(f"- {item}" for item in constraints),
+        prompt = self.prompt_loader.render_composition(
+            "proposal-generation.generate-draft",
+            template_context={
+                "client_name": payload.client_name,
+                "opportunity_summary": payload.opportunity_summary,
+                "desired_outcomes": "\n".join(f"- {item}" for item in desired_outcomes),
+                "constraints": "\n".join(f"- {item}" for item in constraints),
+            },
+            injected_context={
+                "approval_policy": (
+                    "Draft only. Pricing, scope commitment, and client delivery promises require CEO review."
+                ),
+                "output_schema": (
+                    "proposal draft with executive summary, delivery shape, assumptions, and next steps"
+                ),
+            },
         )
         fallback_draft = self._fallback_draft(payload, desired_outcomes, constraints)
         generation = self.model_gateway.generate_text(

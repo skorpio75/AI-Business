@@ -1,0 +1,123 @@
+assets:
+  - asset_id: email.family.base
+    asset_kind: family_base
+    status: planned
+    description: Durable email-agent behavior instructions shared across email workflow steps
+  - asset_id: email.workflow.classify-email
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: email/email_operations_prompt.txt
+    description: Classify inbound email and return the structured response payload
+  - asset_id: email.workflow.draft-reply
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: email/email_draft_prompt.txt
+    description: Draft a bounded reply body for the current email workflow step
+  - asset_id: knowledge.family.base
+    asset_kind: family_base
+    status: planned
+    description: Durable grounded-answer behavior for the knowledge family
+  - asset_id: knowledge.workflow.answer-question
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: knowledge/knowledge_qna_prompt.txt
+    description: Answer a knowledge question using retrieved evidence only
+  - asset_id: proposal-sow.family.base
+    asset_kind: family_base
+    status: planned
+    description: Durable proposal-drafting behavior for the proposal/SOW family
+  - asset_id: proposal-sow.workflow.generate-draft
+    asset_kind: workflow_step
+    status: implemented
+    relative_path: proposal/proposal_generation_prompt.txt
+    description: Generate a baseline proposal draft from the current opportunity context
+
+compositions:
+  - composition_id: email-operations.classify-email
+    workflow_id: email-operations
+    step_id: classify-email
+    agent_family_id: email
+    base_prompt_asset_id: email.family.base
+    step_prompt_asset_id: email.workflow.classify-email
+    template_fields:
+      - sender
+      - subject
+      - body
+      - thread_context
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Explain outbound-review rules for the current email workflow
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the required structured output shape for the classification step
+      - key: tool_profile
+        source: tools
+        required: false
+        description: Describe the bounded email tools available to the step
+  - composition_id: email-operations.draft-reply
+    workflow_id: email-operations
+    step_id: draft-reply
+    agent_family_id: email
+    base_prompt_asset_id: email.family.base
+    step_prompt_asset_id: email.workflow.draft-reply
+    template_fields:
+      - subject
+      - body
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Explain approval boundaries for the outbound reply draft
+      - key: autonomy_policy
+        source: policy
+        required: false
+        description: Clarify any additional bounded-autonomy notes for the draft step
+  - composition_id: knowledge-qna.answer-question
+    workflow_id: knowledge-qna
+    step_id: answer-question
+    agent_family_id: knowledge
+    base_prompt_asset_id: knowledge.family.base
+    step_prompt_asset_id: knowledge.workflow.answer-question
+    template_fields:
+      - question
+      - context
+    context_injection:
+      - key: memory_context
+        source: memory
+        required: true
+        description: Clarify that only retrieved internal knowledge may ground the answer
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the expected grounded-answer output format
+      - key: tool_profile
+        source: tools
+        required: false
+        description: Describe bounded retrieval and memory-search permissions
+  - composition_id: proposal-generation.generate-draft
+    workflow_id: proposal-generation
+    step_id: generate-draft
+    agent_family_id: proposal-sow
+    base_prompt_asset_id: proposal-sow.family.base
+    step_prompt_asset_id: proposal-sow.workflow.generate-draft
+    template_fields:
+      - client_name
+      - opportunity_summary
+      - desired_outcomes
+      - constraints
+    context_injection:
+      - key: approval_policy
+        source: policy
+        required: true
+        description: Clarify that proposal text is draft-only until reviewed and approved
+      - key: output_schema
+        source: schema
+        required: true
+        description: Describe the expected proposal-draft structure for the workflow step
+      - key: state_summary
+        source: state
+        required: false
+        description: Summarize relevant opportunity-state assumptions if available

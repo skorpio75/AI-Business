@@ -45,10 +45,17 @@ class KnowledgeQnAService:
             f"Source: {item.title} ({item.source_path})\nSnippet: {item.snippet}" for item in citations
         )
         fallback_answer = self._fallback_answer(payload.question, citations)
-        prompt = self.prompt_loader.render(
-            "knowledge/knowledge_qna_prompt.txt",
-            question=payload.question,
-            context=context,
+        prompt = self.prompt_loader.render_composition(
+            "knowledge-qna.answer-question",
+            template_context={
+                "question": payload.question,
+                "context": context,
+            },
+            injected_context={
+                "memory_context": "Use only retrieved internal document evidence as grounding context.",
+                "output_schema": "plain_text_answer_with_supporting_grounding",
+                "tool_profile": "memory.search + docs.read only; no unstated external sources",
+            },
         )
         generation = self.model_gateway.generate_text(
             prompt=prompt,

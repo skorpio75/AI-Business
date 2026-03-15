@@ -121,6 +121,7 @@ export type AgentContract = {
   role_summary: string;
   approval_class: "none" | "bounded" | "ceo_required";
   autonomy_class: "assistant" | "supervised_executor" | "bounded_autonomous" | "approval_gated";
+  tool_profile_by_mode?: Record<string, string>;
   deployment: AgentDeploymentPolicy;
   capabilities: AgentCapability[];
   kpis: AgentKpi[];

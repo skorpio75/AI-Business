@@ -56,6 +56,7 @@ Infrastructure
 - workflow-step prompts
 - runtime prompt/template loader
 - context injection for state, tool profile, approvals, tenant, and output schema
+- typed prompt composition contracts and config bindings
 
 ### Agent Modules
 - Python modules
@@ -147,8 +148,10 @@ The handoff integration adds an explicit formal operating layer to the architect
 - canonical state objects for opportunity, project, run, and approval state
 - explicit ownership and persistence mapping for opportunity, project, run, and approval state in backend contracts/config
 - normalized tool taxonomy and permissions
+- reusable tool-permission profiles bound by agent family and operating mode
 - autonomy classes that bound what agent instances may do
 - a modular prompt model that separates family-level base prompts from workflow-step prompts
+- typed prompt-layer contracts for prompt assets, composition rules, and injected operating context
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
 
@@ -159,6 +162,7 @@ Prompting is a first-class runtime layer in the target architecture, but it is n
 - family-level base prompts define durable behavioral instructions for an agent family
 - workflow-step prompts define task-specific instructions for a bounded execution step
 - runtime execution composes base prompt, step prompt, and injected operating context rather than relying on one giant static agent prompt
+- backend prompt contracts live in `app/models/prompt_layer.py`, mirrored in `config/base/prompt_layer.yaml`, and rendered through the composable loader in `app/core/prompt_loader.py`
 - prompt expansion should be phased after state contracts, tool boundaries, approvals, and workflow choreography are stable enough to support safe reuse and evaluation
 
 ## 10. Multi-Agent Evolution Principle
@@ -198,7 +202,7 @@ The target architecture should evolve toward a managed prompt layer with:
 - prompt versioning and change tracking
 - evaluation and rollback rules for prompt regressions
 
-This prompt layer is planned as part of the runtime architecture, but broad prompt authoring is not required before the current contract and workflow-alignment work is complete.
+This prompt layer is now modeled in runtime contracts/config, but broad prompt authoring is still not required before the current contract and workflow-alignment work is complete.
 
 ## 12. Production Readiness Control Areas
 The following control areas are required for production readiness and extend the current MVP architecture:

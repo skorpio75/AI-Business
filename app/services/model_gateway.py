@@ -297,19 +297,32 @@ class ModelGateway:
         thread_context: Optional[str],
         risk_level: str,
     ) -> GenerationResult:
-        prompt = self.prompt_loader.render(
-            "email/email_operations_prompt.txt",
-            sender=sender,
-            subject=subject,
-            body=body,
-            thread_context=thread_context or "none",
+        prompt = self.prompt_loader.render_composition(
+            "email-operations.classify-email",
+            template_context={
+                "sender": sender,
+                "subject": subject,
+                "body": body,
+                "thread_context": thread_context or "none",
+            },
+            injected_context={
+                "approval_policy": "External send remains approval-gated for MVP email operations.",
+                "output_schema": "JSON object with intent, confidence, and draft_reply",
+                "tool_profile": "email.read + memory.search + approval.request",
+            },
         )
-        draft_prompt = self.prompt_loader.render(
-            "email/email_draft_prompt.txt",
-            sender=sender,
-            subject=subject,
-            body=body,
-            thread_context=thread_context or "none",
+        draft_prompt = self.prompt_loader.render_composition(
+            "email-operations.draft-reply",
+            template_context={
+                "subject": subject,
+                "body": body,
+            },
+            injected_context={
+                "approval_policy": "Reply draft only. No outbound send without recorded approval.",
+                "autonomy_policy": (
+                    f"Risk level is {risk_level}. Keep the draft bounded and avoid unsupported commitments."
+                ),
+            },
         )
 
         local_result, local_structured_invoked = self._call_local_ollama_structured(prompt=prompt)

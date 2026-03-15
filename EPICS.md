@@ -93,7 +93,6 @@ The internal business can run key workflows with one human approver.
 - approved Outlook replies can execute through Microsoft Graph after approval
 
 ### Current remaining scope
-- OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
 - CTO/CIO, finance, and Chief AI / Digital Strategy panels
 
 ## Epic 6 - Track B Client Template MVP
@@ -173,6 +172,7 @@ The repository has a formal operating model for pods, workflows, state, events, 
 - platform objects are defined consistently
 - family/mode/instance reuse model is documented
 - prompt-layer target model is documented separately from the business agent catalog
+- prompt-layer runtime contracts are defined without requiring broad prompt authoring
 - roadmap and governance docs reference the same model
 
 ## Epic 11 - Pod Model and Agent Taxonomy
@@ -207,6 +207,7 @@ Workflow and agent execution is described through normalized state, event, tool,
 - normalized tool IDs and permission profiles are defined
 - autonomy classes and approval implications are defined
 - family-level base prompts and workflow-step prompts are planned as separate runtime concerns
+- prompt composition and context-injection contracts are defined in backend/config
 
 ## Epic 13 - Business Scaling Maturity Model
 - Status: `NOT_STARTED`

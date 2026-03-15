@@ -21,7 +21,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 |---|---|---|---|---|---|
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 17/22 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
-| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 17/20 tasks done |
+| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 19/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 18/20 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
@@ -88,8 +88,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P2-T15: Align agent registry and base contracts with pod model, family/mode/instance identity, and specialist overlay mapping
 - [x] P2-T16: Define normalized event names, approval classes, and autonomy classes in backend contracts/config
 - [x] P2-T17: Define state ownership and persistence mapping for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
-- [ ] P2-T18: Define normalized tool permission profiles by agent family and operating mode
-- [ ] P2-T19: Define the runtime prompt-layer model: family base prompts, workflow-step prompts, and context-injection rules
+- [x] P2-T18: Define normalized tool permission profiles by agent family and operating mode
+- [x] P2-T19: Define the runtime prompt-layer model: family base prompts, workflow-step prompts, and context-injection rules
 - [ ] P2-T20: Define prompt asset naming, storage, and loading conventions without requiring full prompt authoring for every documented agent
 
 ### Phase 3 - Track A Internal MVP Workflows (React UI)
@@ -249,6 +249,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P2-T16` by adding a shared backend control-plane contract for normalized events, approval classes, and autonomy classes, and by enriching workflow config with trigger, emitted-event, approval, and autonomy metadata.
 - Completed `P3-T16` by adding shared provider bootstrap and secret-management plumbing for Google and Microsoft connectors, including refresh-token lifecycle support, bootstrap-status diagnostics, and Google local-loopback OAuth onboarding.
 - Completed `P2-T17` by adding typed backend ownership and persistence contracts for `opportunity_state`, `project_state`, `run_state`, and `approval_state`, and mirrored the same mapping into `config/base/state_registry.yaml`.
+- Completed `P2-T18` by adding normalized tool-permission profile contracts and config bindings by agent family and operating mode, and surfaced tool-profile metadata in the agent activity UI.
+- Completed `P2-T19` by adding typed prompt-layer contracts and config bindings for family-base assets, workflow-step assets, and runtime context injection, and wired the implemented email, knowledge, and proposal prompt flows through the composable prompt loader.
 - Added Personal Assistant scope (inbox + calendar triage + prioritized daily list) to agent/workflow model.
 - Added CTO/CIO agent scope for customer technology counsel and internal continuous platform improvement.
 - Added Accountant and CFO scopes for operational accounting and strategic finance decision support.
@@ -309,4 +311,4 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a medium-suitability tier for families that are valuable in bounded collaboration, exception handling, or synthesis chains but may remain workflow-stage-oriented or rules-based longer.
 
 ## Next Action
-Complete `P2-T18` for tool-permission profile mapping, then resume the remaining Phase 3 UI panels.
+Complete `P2-T20` for prompt asset naming/storage/loading conventions, then resume the remaining Phase 3 UI panels.

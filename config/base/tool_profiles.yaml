@@ -1,0 +1,397 @@
+tool_profiles:
+  profiles:
+    - id: email-internal
+      allowed_tools: [email.read, email.draft, memory.search, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [email.send_external]
+      notes: Email drafting and approval preparation for internal operator workflows.
+
+    - id: personal-assistant-internal
+      allowed_tools: [email.read, calendar.read, memory.search, state.read, reporting.generate, audit.log]
+      approval_gated_tools: [calendar.write, email.send_external]
+      notes: Read-heavy daily coordination profile for the CEO assistant.
+
+    - id: growth-intake
+      allowed_tools: [email.read, crm.read, crm.write, contacts.read, state.read, state.write, audit.log]
+      approval_gated_tools: [crm.write]
+      notes: Lead capture and CRM structuring for growth intake.
+
+    - id: growth-research
+      allowed_tools: [crm.read, contacts.read, research.web_search, memory.search, state.read, audit.log]
+      notes: Research and enrichment profile without outbound action rights.
+
+    - id: growth-qualification
+      allowed_tools: [crm.read, crm.write, pricing.read_rules, state.read, state.write, audit.log]
+      approval_gated_tools: [crm.write]
+      notes: Qualification profile for fit scoring and next-step routing.
+
+    - id: growth-outreach
+      allowed_tools: [email.read, email.draft, crm.read, crm.write, contacts.read, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [email.send_external, crm.write]
+      notes: Outreach drafting profile with approval-gated outbound commitments.
+
+    - id: growth-proposal
+      allowed_tools: [proposals.read_template, pricing.read_rules, pricing.run_estimate, docs.read, docs.write, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Proposal and SOW preparation profile with pricing and document-authoring access.
+
+    - id: delivery-governance-internal
+      allowed_tools: [pm.read, pm.write, tasks.read, tasks.write, docs.read, docs.write, finance.read, reporting.generate, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [pm.write, docs.write]
+      notes: Internal PMO profile with delivery governance and company-level finance visibility.
+
+    - id: delivery-governance-client
+      allowed_tools: [pm.read, pm.write, tasks.read, tasks.write, docs.read, docs.write, reporting.generate, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [pm.write, docs.write]
+      notes: Client-delivery PMO profile without company finance visibility.
+
+    - id: delivery-coordination
+      allowed_tools: [pm.read, tasks.read, tasks.write, docs.read, docs.write, calendar.read, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [tasks.write, docs.write, calendar.write]
+      notes: Execution-follow-up profile for delivery coordination and checkpoints.
+
+    - id: delivery-analysis
+      allowed_tools: [meetings.ingest_transcript, docs.read, docs.write, pm.read, state.read, state.write, memory.search, approval.request, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Requirements and architecture analysis profile for delivery specialists.
+
+    - id: delivery-build
+      allowed_tools: [repo.read, repo.write, docs.read, docs.write, code.run_sandbox, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [repo.write, workflow.deploy_nonprod]
+      notes: Implementation profile for build and automation work with approval-gated writes and deployments.
+
+    - id: delivery-qa
+      allowed_tools: [docs.read, pm.read, tasks.read, repo.read, reporting.generate, state.read, approval.request, audit.log]
+      notes: Validation and release-readiness profile for QA and quality review roles.
+
+    - id: delivery-documentation
+      allowed_tools: [docs.read, docs.write, pm.read, tasks.read, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Documentation and handover packaging profile for delivery teams.
+
+    - id: ops-finance
+      allowed_tools: [finance.read, finance.write_draft, invoices.generate_draft, payments.read, reporting.generate, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [finance.write_draft, invoices.generate_draft]
+      notes: Internal finance operations profile for billing, forecasting, and receivables support.
+
+    - id: ops-vendor-admin
+      allowed_tools: [vendors.read, vendors.write, finance.read, hr.read, hr.write_limited, docs.read, docs.write, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [vendors.write, hr.write_limited, docs.write]
+      notes: Internal vendor, procurement, admin, and HR operations profile.
+
+    - id: ops-reporting-internal
+      allowed_tools: [crm.read, pm.read, finance.read, reporting.generate, memory.search, state.read, audit.log]
+      notes: Internal company reporting profile across growth, delivery, and finance inputs.
+
+    - id: ops-reporting-client
+      allowed_tools: [pm.read, reporting.generate, memory.search, state.read, audit.log]
+      notes: Client reporting profile constrained to delivery-side context.
+
+    - id: executive-briefing
+      allowed_tools: [reporting.generate, memory.search, state.read, audit.log]
+      notes: Executive synthesis profile for briefing and leadership visibility.
+
+    - id: executive-strategy
+      allowed_tools: [crm.read, pm.read, finance.read, reporting.generate, research.web_search, memory.search, state.read, approval.request, audit.log]
+      notes: Strategy and opportunity profile across growth, delivery, and financial context.
+
+    - id: executive-risk
+      allowed_tools: [pm.read, finance.read, reporting.generate, state.read, approval.request, audit.log]
+      notes: Risk detection and escalation profile across workflow, delivery, and finance signals.
+
+    - id: mission-control
+      allowed_tools: [state.read, approval.request, reporting.generate, audit.log]
+      notes: Supervision profile for run visibility, escalations, and approval backlog monitoring.
+
+    - id: specialist-accounting
+      allowed_tools: [finance.read, finance.write_draft, payments.read, reporting.generate, state.read, approval.request, audit.log]
+      approval_gated_tools: [finance.write_draft]
+      notes: Accounting and reconciliation profile for internal specialist overlays.
+
+    - id: specialist-finance
+      allowed_tools: [finance.read, payments.read, reporting.generate, memory.search, state.read, approval.request, audit.log]
+      notes: Finance analysis profile for CFO and finance specialist roles.
+
+    - id: specialist-reporting-internal
+      allowed_tools: [crm.read, pm.read, finance.read, reporting.generate, memory.search, state.read, audit.log]
+      notes: Internal reporting specialist profile.
+
+    - id: specialist-reporting-client
+      allowed_tools: [pm.read, reporting.generate, memory.search, state.read, audit.log]
+      notes: Client-facing reporting specialist profile with delivery-only scope.
+
+    - id: specialist-compliance
+      allowed_tools: [docs.read, calendar.read, state.read, approval.request, audit.log]
+      notes: Compliance and contract-monitoring profile for internal obligations and deadlines.
+
+    - id: specialist-knowledge-internal
+      allowed_tools: [docs.read, memory.search, state.read, audit.log]
+      notes: Internal knowledge retrieval profile.
+
+    - id: specialist-knowledge-client
+      allowed_tools: [docs.read, memory.search, state.read, audit.log]
+      notes: Client-delivery knowledge retrieval profile over isolated client corpora.
+
+    - id: specialist-knowledge-service
+      allowed_tools: [docs.read, memory.search, state.read, approval.request, audit.log]
+      notes: Client-facing knowledge-assistant profile with bounded service outputs.
+
+    - id: specialist-document-internal
+      allowed_tools: [docs.read, docs.write, state.read, state.write, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Internal document processing profile.
+
+    - id: specialist-document-client
+      allowed_tools: [docs.read, docs.write, state.read, state.write, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Client document processing profile with isolated tenant boundaries.
+
+    - id: specialist-document-service
+      allowed_tools: [docs.read, docs.write, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Client-facing document operations profile for bounded service execution.
+
+    - id: specialist-advisory
+      allowed_tools: [docs.read, repo.read, reporting.generate, research.web_search, memory.search, state.read, approval.request, audit.log]
+      notes: Advisory specialist profile for CTO/CIO, Chief AI, and consulting-support roles.
+
+    - id: specialist-delivery
+      allowed_tools: [pm.read, tasks.read, docs.read, docs.write, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [docs.write]
+      notes: Delivery specialist overlay profile for generic delivery coordination wrappers.
+
+    - id: specialist-quality
+      allowed_tools: [docs.read, pm.read, tasks.read, reporting.generate, state.read, approval.request, audit.log]
+      notes: Quality-management gating profile for specialist overlay roles.
+
+    - id: specialist-testing
+      allowed_tools: [docs.read, repo.read, reporting.generate, state.read, approval.request, audit.log]
+      notes: Testing and QA specialist profile for evidence review and release readiness.
+
+    - id: ops-runbook
+      allowed_tools: [docs.read, docs.write, repo.read, state.read, state.write, approval.request, audit.log]
+      approval_gated_tools: [workflow.deploy_nonprod, docs.write]
+      notes: Runbook and operational hygiene profile for internal ops support.
+
+  bindings:
+    - family_id: email
+      operating_mode: internal_operating
+      profile_id: email-internal
+    - family_id: personal-assistant
+      operating_mode: internal_operating
+      profile_id: personal-assistant-internal
+    - family_id: lead-intake
+      operating_mode: internal_operating
+      profile_id: growth-intake
+    - family_id: lead-intake
+      operating_mode: client_delivery
+      profile_id: growth-intake
+    - family_id: account-research
+      operating_mode: internal_operating
+      profile_id: growth-research
+    - family_id: account-research
+      operating_mode: client_delivery
+      profile_id: growth-research
+    - family_id: qualification
+      operating_mode: internal_operating
+      profile_id: growth-qualification
+    - family_id: qualification
+      operating_mode: client_delivery
+      profile_id: growth-qualification
+    - family_id: outreach-draft
+      operating_mode: internal_operating
+      profile_id: growth-outreach
+    - family_id: outreach-draft
+      operating_mode: client_delivery
+      profile_id: growth-outreach
+    - family_id: proposal-sow
+      operating_mode: internal_operating
+      profile_id: growth-proposal
+    - family_id: proposal-sow
+      operating_mode: client_delivery
+      profile_id: growth-proposal
+    - family_id: crm-hygiene
+      operating_mode: internal_operating
+      profile_id: growth-qualification
+    - family_id: crm-hygiene
+      operating_mode: client_delivery
+      profile_id: growth-qualification
+    - family_id: pmo-project-control
+      operating_mode: internal_operating
+      profile_id: delivery-governance-internal
+    - family_id: pmo-project-control
+      operating_mode: client_delivery
+      profile_id: delivery-governance-client
+    - family_id: pmo-project-control
+      operating_mode: client_facing_service
+      profile_id: delivery-governance-client
+    - family_id: project-management-delivery-coordination
+      operating_mode: internal_operating
+      profile_id: delivery-coordination
+    - family_id: project-management-delivery-coordination
+      operating_mode: client_delivery
+      profile_id: delivery-coordination
+    - family_id: project-management-delivery-coordination
+      operating_mode: client_facing_service
+      profile_id: delivery-coordination
+    - family_id: ba-requirements
+      operating_mode: internal_operating
+      profile_id: delivery-analysis
+    - family_id: ba-requirements
+      operating_mode: client_delivery
+      profile_id: delivery-analysis
+    - family_id: architect
+      operating_mode: internal_operating
+      profile_id: delivery-analysis
+    - family_id: architect
+      operating_mode: client_delivery
+      profile_id: delivery-analysis
+    - family_id: build-automation
+      operating_mode: internal_operating
+      profile_id: delivery-build
+    - family_id: build-automation
+      operating_mode: client_delivery
+      profile_id: delivery-build
+    - family_id: qa-review
+      operating_mode: internal_operating
+      profile_id: delivery-qa
+    - family_id: qa-review
+      operating_mode: client_delivery
+      profile_id: delivery-qa
+    - family_id: documentation
+      operating_mode: internal_operating
+      profile_id: delivery-documentation
+    - family_id: documentation
+      operating_mode: client_delivery
+      profile_id: delivery-documentation
+    - family_id: finance-ops
+      operating_mode: internal_operating
+      profile_id: ops-finance
+    - family_id: invoice-receivables
+      operating_mode: internal_operating
+      profile_id: ops-finance
+    - family_id: vendor-procurement
+      operating_mode: internal_operating
+      profile_id: ops-vendor-admin
+    - family_id: admin-hr-ops
+      operating_mode: internal_operating
+      profile_id: ops-vendor-admin
+    - family_id: company-reporting
+      operating_mode: internal_operating
+      profile_id: ops-reporting-internal
+    - family_id: company-reporting
+      operating_mode: client_delivery
+      profile_id: ops-reporting-client
+    - family_id: ceo-briefing
+      operating_mode: internal_operating
+      profile_id: executive-briefing
+    - family_id: strategy-opportunity
+      operating_mode: internal_operating
+      profile_id: executive-strategy
+    - family_id: strategy-opportunity
+      operating_mode: client_facing_service
+      profile_id: executive-strategy
+    - family_id: risk-watchdog
+      operating_mode: internal_operating
+      profile_id: executive-risk
+    - family_id: risk-watchdog
+      operating_mode: client_delivery
+      profile_id: executive-risk
+    - family_id: mission-control
+      operating_mode: internal_operating
+      profile_id: mission-control
+    - family_id: mission-control
+      operating_mode: client_delivery
+      profile_id: mission-control
+    - family_id: accountant
+      operating_mode: internal_operating
+      profile_id: specialist-accounting
+    - family_id: cfo
+      operating_mode: internal_operating
+      profile_id: specialist-finance
+    - family_id: finance
+      operating_mode: internal_operating
+      profile_id: specialist-finance
+    - family_id: reporting
+      operating_mode: internal_operating
+      profile_id: specialist-reporting-internal
+    - family_id: reporting
+      operating_mode: client_delivery
+      profile_id: specialist-reporting-client
+    - family_id: reporting
+      operating_mode: client_facing_service
+      profile_id: specialist-reporting-client
+    - family_id: compliance-contract
+      operating_mode: internal_operating
+      profile_id: specialist-compliance
+    - family_id: knowledge
+      operating_mode: internal_operating
+      profile_id: specialist-knowledge-internal
+    - family_id: knowledge
+      operating_mode: client_delivery
+      profile_id: specialist-knowledge-client
+    - family_id: knowledge
+      operating_mode: client_facing_service
+      profile_id: specialist-knowledge-service
+    - family_id: document
+      operating_mode: internal_operating
+      profile_id: specialist-document-internal
+    - family_id: document
+      operating_mode: client_delivery
+      profile_id: specialist-document-client
+    - family_id: document
+      operating_mode: client_facing_service
+      profile_id: specialist-document-service
+    - family_id: cto-cio-advisory
+      operating_mode: internal_operating
+      profile_id: specialist-advisory
+    - family_id: cto-cio-advisory
+      operating_mode: client_delivery
+      profile_id: specialist-advisory
+    - family_id: cto-cio-advisory
+      operating_mode: client_facing_service
+      profile_id: specialist-advisory
+    - family_id: chief-ai-digital-strategy
+      operating_mode: internal_operating
+      profile_id: specialist-advisory
+    - family_id: chief-ai-digital-strategy
+      operating_mode: client_delivery
+      profile_id: specialist-advisory
+    - family_id: chief-ai-digital-strategy
+      operating_mode: client_facing_service
+      profile_id: specialist-advisory
+    - family_id: consulting-support
+      operating_mode: internal_operating
+      profile_id: specialist-advisory
+    - family_id: consulting-support
+      operating_mode: client_delivery
+      profile_id: specialist-advisory
+    - family_id: consulting-support
+      operating_mode: client_facing_service
+      profile_id: specialist-advisory
+    - family_id: delivery
+      operating_mode: internal_operating
+      profile_id: specialist-delivery
+    - family_id: delivery
+      operating_mode: client_delivery
+      profile_id: specialist-delivery
+    - family_id: quality-management
+      operating_mode: internal_operating
+      profile_id: specialist-quality
+    - family_id: quality-management
+      operating_mode: client_delivery
+      profile_id: specialist-quality
+    - family_id: testing-qa
+      operating_mode: internal_operating
+      profile_id: specialist-testing
+    - family_id: testing-qa
+      operating_mode: client_delivery
+      profile_id: specialist-testing
+    - family_id: billing
+      operating_mode: internal_operating
+      profile_id: ops-finance
+    - family_id: procurement
+      operating_mode: internal_operating
+      profile_id: ops-vendor-admin
+    - family_id: ops-runbook
+      operating_mode: internal_operating
+      profile_id: ops-runbook

@@ -4,6 +4,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 from app.models.control_plane import ApprovalClass, AutonomyClass
+from app.models.tool_profiles import TOOL_PROFILE_BINDING_MAP
 
 AgentDomain = Literal["corporate", "delivery", "platform"]
 AgentStatus = Literal["idle", "running", "waiting", "blocked", "disabled"]
@@ -58,6 +59,7 @@ class AgentContract(BaseModel):
     role_summary: str
     approval_class: ApprovalClass
     autonomy_class: AutonomyClass = "assistant"
+    tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
     deployment: AgentDeploymentPolicy = Field(default_factory=AgentDeploymentPolicy)
     capabilities: list[AgentCapability] = Field(default_factory=list)
     kpis: list[AgentKPI] = Field(default_factory=list)
@@ -1197,3 +1199,11 @@ for agent in DEFAULT_AGENT_REGISTRY.agents:
     autonomy_class = AGENT_AUTONOMY_BY_ID.get(agent.agent_id)
     if autonomy_class is not None:
         agent.autonomy_class = autonomy_class
+    if agent.family_id:
+        tool_profile_by_mode: dict[str, str] = {}
+        for operating_mode in agent.operating_modes:
+            profile_id = TOOL_PROFILE_BINDING_MAP.get((agent.family_id, operating_mode))
+            if profile_id:
+                tool_profile_by_mode[operating_mode] = profile_id
+        if tool_profile_by_mode:
+            agent.tool_profile_by_mode = tool_profile_by_mode

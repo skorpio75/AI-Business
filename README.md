@@ -163,6 +163,12 @@ This script starts Docker, initializes the database, creates `frontend\.env` fro
 - `GET /approvals/pending`
 - `POST /approvals/{approval_id}/decision`
 
+## Current Control Layers
+- normalized events, approval classes, and autonomy classes are defined in backend contracts/config
+- state ownership and persistence mapping is defined for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
+- normalized tool permission profiles are bound by agent family and operating mode
+- runtime prompt composition contracts now define family-base prompt assets, workflow-step prompt assets, and injected operating context rules
+
 ## Inbox and Calendar Connectors
 The personal assistant backend can now fetch real inbox and calendar data when configured.
 

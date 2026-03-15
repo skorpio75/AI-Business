@@ -81,6 +81,19 @@ Example:
 - internal `PMO / Project Control Agent` may use `finance.read` and portfolio-level `pm.write`
 - client-delivery `PMO / Project Control Agent` may use `pm.write`, `tasks.write`, and `docs.write`, but not company-level finance tools
 
+## Backend Contract Mapping
+The backend contract and config layers now mirror this model in:
+
+- `app/models/tool_profiles.py` for typed normalized tool IDs, permission profiles, and family/mode bindings
+- `config/base/tool_profiles.yaml` for config-level profile and binding definitions
+- `app/models/agent_contract.py` for per-agent `tool_profile_by_mode` metadata derived from the family/mode binding map
+
+## Current Profile Pattern
+- Tool permissions are defined as reusable profiles rather than duplicated directly on every agent instance.
+- Bindings map `family_id + operating_mode -> tool_profile_id`.
+- Approval-gated tools are explicit inside each profile.
+- Existing `tools` lists on agents remain descriptive, while `tool_profile_by_mode` now carries the normalized permission mapping.
+
 ## Deny-by-Default Rule
 - New tools are denied by default until assigned to a profile or workflow.
 - External connectors map to normalized tool IDs rather than bypassing policy.

@@ -113,6 +113,17 @@ export function AgentActivityPage({ refreshToken }: AgentActivityPageProps) {
               </div>
             ) : null}
 
+            {agent.tool_profile_by_mode && Object.keys(agent.tool_profile_by_mode).length > 0 ? (
+              <div className="callout callout--soft">
+                <p className="eyebrow">Tool profiles</p>
+                <strong>
+                  {Object.entries(agent.tool_profile_by_mode)
+                    .map(([mode, profileId]) => `${mode.replaceAll("_", " ")} -> ${profileId}`)
+                    .join(" | ")}
+                </strong>
+              </div>
+            ) : null}
+
             {agent.deployment.replication_notes ? (
               <div className="callout callout--soft">
                 <p className="eyebrow">Deployment note</p>

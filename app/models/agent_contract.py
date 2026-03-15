@@ -12,6 +12,14 @@ ReplicationMode = Literal["none", "replicate_later"]
 AgentPod = Literal["growth", "delivery", "ops", "executive", "specialist_overlay"]
 OperatingMode = Literal["internal_operating", "client_delivery", "client_facing_service"]
 
+INTERNAL_ONLY_MODES = ["internal_operating"]
+INTERNAL_AND_CLIENT_MODES = ["internal_operating", "client_delivery"]
+INTERNAL_CLIENT_SERVICE_MODES = [
+    "internal_operating",
+    "client_delivery",
+    "client_facing_service",
+]
+
 
 class AgentCapability(BaseModel):
     id: str
@@ -525,3 +533,618 @@ DEFAULT_AGENT_REGISTRY = AgentRegistry(
         ),
     ]
 )
+
+AGENT_METADATA_OVERRIDES: dict[str, dict[str, object]] = {
+    "email-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "email",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "personal-assistant-agent": {
+        "pod": "executive",
+        "family_id": "personal-assistant",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "cto-cio-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "cto-cio-advisory",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+    },
+    "accountant-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "accountant",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "cfo-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "cfo",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "chief-ai-digital-strategy-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "chief-ai-digital-strategy",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+    },
+    "billing-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "billing",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "finance-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "finance",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "procurement-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "procurement",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "reporting-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "reporting",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+        "deployment": AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Internal reporting remains Track 1-owned. Client reporting support should run as a "
+                "separate replicated instance with isolated tenant, delivery, and audit context."
+            ),
+        ),
+    },
+    "compliance-contract-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "compliance-contract",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+    "document-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "document",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+        "deployment": AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Document processing patterns may be reused for client work, but each client deployment "
+                "must use a separate document-processing instance and isolated document store."
+            ),
+        ),
+    },
+    "knowledge-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "knowledge",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+        "deployment": AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Knowledge retrieval may be reused for client delivery or client-facing services only "
+                "through separate client-scoped instances with isolated retrieval stores."
+            ),
+        ),
+    },
+    "pmo-project-control-agent": {
+        "pod": "delivery",
+        "family_id": "pmo-project-control",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+    },
+    "project-management-agent": {
+        "pod": "delivery",
+        "family_id": "project-management-delivery-coordination",
+        "operating_modes": INTERNAL_CLIENT_SERVICE_MODES,
+    },
+    "delivery-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "delivery",
+        "operating_modes": INTERNAL_AND_CLIENT_MODES,
+    },
+    "quality-management-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "quality-management",
+        "operating_modes": INTERNAL_AND_CLIENT_MODES,
+    },
+    "consulting-support-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "consulting-support",
+        "operating_modes": INTERNAL_AND_CLIENT_MODES,
+    },
+    "documentation-agent": {
+        "pod": "delivery",
+        "family_id": "documentation",
+        "operating_modes": INTERNAL_AND_CLIENT_MODES,
+        "deployment": AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Documentation capability may be reused in client delivery, but each engagement must "
+                "use its own scoped documentation instance and artifact boundary."
+            ),
+        ),
+    },
+    "testing-qa-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "testing-qa",
+        "operating_modes": INTERNAL_AND_CLIENT_MODES,
+    },
+    "ops-agent": {
+        "pod": "specialist_overlay",
+        "family_id": "ops-runbook",
+        "operating_modes": INTERNAL_ONLY_MODES,
+    },
+}
+
+ADDITIONAL_AGENT_CONTRACTS = [
+    AgentContract(
+        agent_id="lead-intake-agent",
+        display_name="Lead Intake Agent",
+        domain="corporate",
+        pod="growth",
+        family_id="lead-intake",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Ingests inbound lead signals, structures opportunity records, and starts the growth workflow.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="lead-capture",
+                name="Lead Capture",
+                description="Convert inbound lead signals into structured opportunity records.",
+            ),
+            AgentCapability(
+                id="signal-extraction",
+                name="Signal Extraction",
+                description="Extract company, contact, urgency, and probable need signals from inbound requests.",
+            ),
+        ],
+        tools=["mailbox", "forms", "crm", "workspace"],
+        inputs=["lead email", "web form", "manual intake"],
+        outputs=["opportunity card", "missing-info list", "confidence score"],
+        constraints=["no autonomous external commitment", "unclear lead data should be flagged for review"],
+    ),
+    AgentContract(
+        agent_id="account-research-agent",
+        display_name="Account Research Agent",
+        domain="corporate",
+        pod="growth",
+        family_id="account-research",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Enriches opportunities with account, market, and historical context before qualification or proposal work.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="account-enrichment",
+                name="Account Enrichment",
+                description="Build a concise account brief from external and internal context.",
+            )
+        ],
+        tools=["research", "crm", "knowledge-base", "workspace"],
+        inputs=["opportunity card", "company name", "prior interactions"],
+        outputs=["account brief", "opportunity hypotheses", "research notes"],
+        constraints=["research only; no autonomous outbound contact"],
+    ),
+    AgentContract(
+        agent_id="qualification-agent",
+        display_name="Qualification Agent",
+        domain="corporate",
+        pod="growth",
+        family_id="qualification",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Scores fit, identifies commercial red flags, and recommends the next growth path.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="fit-scoring",
+                name="Fit Scoring",
+                description="Score leads against service fit, urgency, and likely value.",
+            )
+        ],
+        tools=["crm", "service-catalog", "pricing-rules", "workspace"],
+        inputs=["opportunity card", "account brief", "service catalog"],
+        outputs=["qualification outcome", "red flags", "next-step recommendation"],
+        constraints=["routing recommendations remain reviewable by the CEO"],
+    ),
+    AgentContract(
+        agent_id="outreach-draft-agent",
+        display_name="Outreach Draft Agent",
+        domain="corporate",
+        pod="growth",
+        family_id="outreach-draft",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Drafts first responses and bounded follow-up messaging after qualification or stale-opportunity review.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="outreach-drafting",
+                name="Outreach Drafting",
+                description="Prepare personalized follow-up, discovery, and meeting request drafts.",
+            )
+        ],
+        tools=["mailbox", "crm", "templates", "workspace"],
+        inputs=["qualified opportunity", "account brief", "prior correspondence"],
+        outputs=["reply draft", "follow-up sequence", "meeting-request draft"],
+        constraints=["draft only by default", "sending remains approval-gated"],
+    ),
+    AgentContract(
+        agent_id="proposal-sow-agent",
+        display_name="Proposal / SOW Agent",
+        domain="corporate",
+        pod="growth",
+        family_id="proposal-sow",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Turns discovery and pricing context into proposal, scope, and SOW drafts.",
+        approval_class="ceo_required",
+        deployment=AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Proposal patterns may be reused in client-delivery or partner contexts only through "
+                "separate scoped instances with isolated opportunity and pricing state."
+            ),
+        ),
+        capabilities=[
+            AgentCapability(
+                id="scope-drafting",
+                name="Scope Drafting",
+                description="Draft scope, assumptions, and exclusions from discovery context.",
+            ),
+            AgentCapability(
+                id="sow-generation",
+                name="SOW Generation",
+                description="Prepare proposal and SOW drafts with explicit next steps and assumptions.",
+            ),
+        ],
+        tools=["proposal-templates", "pricing-rules", "service-catalog", "workspace"],
+        inputs=["discovery notes", "account brief", "pricing context", "desired outcomes"],
+        outputs=["proposal draft", "sow draft", "effort estimate", "assumption list"],
+        constraints=["pricing and external commitment require CEO approval"],
+    ),
+    AgentContract(
+        agent_id="crm-hygiene-agent",
+        display_name="CRM Hygiene Agent",
+        domain="corporate",
+        pod="growth",
+        family_id="crm-hygiene",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Keeps pipeline records current, complete, and deduplicated so growth workflows stay trustworthy.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="crm-maintenance",
+                name="CRM Maintenance",
+                description="Detect stale, incomplete, or duplicated CRM records and correct them.",
+            )
+        ],
+        tools=["crm", "mailbox", "calendar", "workspace"],
+        inputs=["crm records", "email metadata", "meeting activity"],
+        outputs=["updated record", "stale-lead alert", "missing-data reminder"],
+        constraints=["no stage progression without sufficient source evidence"],
+    ),
+    AgentContract(
+        agent_id="ba-requirements-agent",
+        display_name="BA / Requirements Agent",
+        domain="delivery",
+        pod="delivery",
+        family_id="ba-requirements",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Turns workshops, notes, and documents into structured requirements, acceptance criteria, and process understanding.",
+        approval_class="bounded",
+        deployment=AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Requirements work may be reused for client delivery, but each project needs a separate "
+                "requirements instance with isolated engagement context."
+            ),
+        ),
+        capabilities=[
+            AgentCapability(
+                id="requirements-structuring",
+                name="Requirements Structuring",
+                description="Organize raw needs into epics, stories, and acceptance criteria.",
+            )
+        ],
+        tools=["transcripts", "document-store", "templates", "workspace"],
+        inputs=["workshop notes", "client documents", "scope changes"],
+        outputs=["requirements pack", "acceptance criteria", "open questions"],
+        constraints=["surface ambiguity instead of inventing requirements"],
+    ),
+    AgentContract(
+        agent_id="architect-agent",
+        display_name="Architect Agent",
+        domain="delivery",
+        pod="delivery",
+        family_id="architect",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Defines solution structure, options, and implementation design from requirements and delivery constraints.",
+        approval_class="bounded",
+        deployment=AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Architecture work may be reused for client delivery or advisory services only through "
+                "separate scoped instances with isolated project and tenant context."
+            ),
+        ),
+        capabilities=[
+            AgentCapability(
+                id="solution-design",
+                name="Solution Design",
+                description="Produce target architecture, option comparisons, and dependency mapping.",
+            )
+        ],
+        tools=["architecture-docs", "diagrams", "standards-library", "workspace"],
+        inputs=["requirements pack", "environment constraints", "existing-system context"],
+        outputs=["architecture note", "option analysis", "dependency map", "risk note"],
+        constraints=["major design choices require review before commitment"],
+    ),
+    AgentContract(
+        agent_id="build-automation-agent",
+        display_name="Build / Automation Agent",
+        domain="delivery",
+        pod="delivery",
+        family_id="build-automation",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Implements code, scripts, automations, and configuration assets from approved design and work packages.",
+        approval_class="bounded",
+        deployment=AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Implementation work may be reused across internal and client delivery, but each runtime "
+                "must stay isolated by tenant, repository, secrets, and project state."
+            ),
+        ),
+        capabilities=[
+            AgentCapability(
+                id="automation-implementation",
+                name="Automation Implementation",
+                description="Create automation artifacts, connectors, and technical delivery assets.",
+            )
+        ],
+        tools=["repository", "code-runtime", "workflow-engine", "workspace"],
+        inputs=["approved work package", "architecture note", "requirements pack"],
+        outputs=["code artifact", "automation asset", "implementation note"],
+        constraints=["deployment remains separately gated", "production-impacting actions require approval"],
+    ),
+    AgentContract(
+        agent_id="qa-review-agent",
+        display_name="QA / Review Agent",
+        domain="delivery",
+        pod="delivery",
+        family_id="qa-review",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Validates completeness, traceability, and release-readiness before milestone close or release.",
+        approval_class="bounded",
+        deployment=AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "QA review may be reused for client delivery, but each engagement requires a separate "
+                "review instance tied to that project's evidence and approval boundary."
+            ),
+        ),
+        capabilities=[
+            AgentCapability(
+                id="deliverable-review",
+                name="Deliverable Review",
+                description="Check deliverables against requirements, design, and quality expectations.",
+            )
+        ],
+        tools=["quality-gates", "requirements", "design-docs", "workspace"],
+        inputs=["release candidate", "requirements pack", "test evidence"],
+        outputs=["review findings", "pass-fail summary", "remediation tasks"],
+        constraints=["cannot independently approve commercial or legal commitments"],
+    ),
+    AgentContract(
+        agent_id="finance-ops-agent",
+        display_name="Finance Ops Agent",
+        domain="corporate",
+        pod="ops",
+        family_id="finance-ops",
+        operating_modes=INTERNAL_ONLY_MODES,
+        role_summary="Runs internal finance control, margin analysis, and forecast-versus-actual review for company operations.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="margin-monitoring",
+                name="Margin Monitoring",
+                description="Track project margin drift, missing billable items, and finance-control exceptions.",
+            )
+        ],
+        tools=["accounting-ledger", "crm", "reporting", "workspace"],
+        inputs=["timesheets", "project plans", "invoices", "pricing context"],
+        outputs=["margin report", "forecast update", "pricing sanity check"],
+        constraints=["analysis only; no autonomous financial commitment"],
+    ),
+    AgentContract(
+        agent_id="invoice-receivables-agent",
+        display_name="Invoice / Receivables Agent",
+        domain="corporate",
+        pod="ops",
+        family_id="invoice-receivables",
+        operating_modes=INTERNAL_ONLY_MODES,
+        role_summary="Prepares invoice packets, tracks receivables aging, and drafts payment follow-up actions.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="receivables-tracking",
+                name="Receivables Tracking",
+                description="Monitor overdue invoices and prepare payment reminder actions.",
+            )
+        ],
+        tools=["accounting-ledger", "mailbox", "contracts", "workspace"],
+        inputs=["billing milestones", "invoice records", "payment status"],
+        outputs=["invoice packet", "aging report", "reminder draft"],
+        constraints=["release of invoices or reminders remains policy-bound"],
+    ),
+    AgentContract(
+        agent_id="vendor-procurement-agent",
+        display_name="Vendor / Procurement Agent",
+        domain="corporate",
+        pod="ops",
+        family_id="vendor-procurement",
+        operating_modes=INTERNAL_ONLY_MODES,
+        role_summary="Tracks vendors, renewals, procurement requests, and supporting approval data for internal operations.",
+        approval_class="ceo_required",
+        capabilities=[
+            AgentCapability(
+                id="vendor-control",
+                name="Vendor Control",
+                description="Track procurement requests, renewals, and supplier comparison notes.",
+            )
+        ],
+        tools=["supplier-records", "budget-tracker", "contracts", "workspace"],
+        inputs=["procurement request", "vendor profile", "budget context"],
+        outputs=["vendor summary", "renewal alert", "approval packet"],
+        constraints=["no external vendor commitment without approval"],
+    ),
+    AgentContract(
+        agent_id="admin-hr-ops-agent",
+        display_name="Admin / HR Ops Agent",
+        domain="corporate",
+        pod="ops",
+        family_id="admin-hr-ops",
+        operating_modes=INTERNAL_ONLY_MODES,
+        role_summary="Supports bounded admin, onboarding, access, and people-ops workflows as the company scales.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="admin-task-packs",
+                name="Admin Task Packs",
+                description="Prepare onboarding, offboarding, and access-control task packs.",
+            )
+        ],
+        tools=["directory", "task-system", "templates", "workspace"],
+        inputs=["person-event", "role change", "access request"],
+        outputs=["onboarding pack", "admin checklist", "access reminder"],
+        constraints=["sensitive identity changes remain approval-bound"],
+    ),
+    AgentContract(
+        agent_id="company-reporting-agent",
+        display_name="Company Reporting Agent",
+        domain="corporate",
+        pod="ops",
+        family_id="company-reporting",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Consolidates company KPIs across growth, delivery, finance, and receivables into management reporting packs.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="company-kpi-reporting",
+                name="Company KPI Reporting",
+                description="Build company-level dashboards and recurring executive KPI packs.",
+            )
+        ],
+        tools=["reporting", "crm", "dashboard", "workspace"],
+        inputs=["pipeline metrics", "delivery health", "receivables data", "finance signals"],
+        outputs=["executive dashboard", "weekly pack", "risk summary"],
+        constraints=["external distribution remains approval-bound"],
+    ),
+    AgentContract(
+        agent_id="ceo-briefing-agent",
+        display_name="CEO Briefing Agent",
+        domain="platform",
+        pod="executive",
+        family_id="ceo-briefing",
+        operating_modes=INTERNAL_ONLY_MODES,
+        role_summary="Synthesizes what matters now across pods into a concise executive brief for the CEO.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="executive-synthesis",
+                name="Executive Synthesis",
+                description="Merge signals across growth, delivery, and ops into a concise leadership brief.",
+            )
+        ],
+        tools=["dashboard", "workspace", "reporting", "run-state"],
+        inputs=["growth summary", "delivery summary", "ops summary", "risk alerts"],
+        outputs=["executive brief", "decision queue", "priority list"],
+        constraints=["briefing only; no autonomous decisions"],
+    ),
+    AgentContract(
+        agent_id="strategy-opportunity-agent",
+        display_name="Strategy / Opportunity Agent",
+        domain="platform",
+        pod="executive",
+        family_id="strategy-opportunity",
+        operating_modes=["internal_operating", "client_facing_service"],
+        role_summary="Looks for productization, repeatability, and strategic growth opportunities across the business.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="strategic-pattern-detection",
+                name="Strategic Pattern Detection",
+                description="Identify repeatable offers, productization patterns, and growth bets.",
+            )
+        ],
+        tools=["roadmap", "reporting", "workspace", "knowledge-base"],
+        inputs=["deal history", "margin data", "delivery patterns", "market notes"],
+        outputs=["opportunity memo", "productization ideas", "strategy recommendation"],
+        constraints=["recommendation only; no autonomous strategic commitment"],
+    ),
+    AgentContract(
+        agent_id="risk-watchdog-agent",
+        display_name="Risk / Watchdog Agent",
+        domain="platform",
+        pod="executive",
+        family_id="risk-watchdog",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Detects, summarizes, and escalates operational, delivery, commercial, or runtime risks across pods.",
+        approval_class="bounded",
+        capabilities=[
+            AgentCapability(
+                id="risk-detection",
+                name="Risk Detection",
+                description="Monitor for slippage, missing approvals, weak documentation, and anomalous signals.",
+            )
+        ],
+        tools=["reporting", "workspace", "run-state", "approval-state"],
+        inputs=["delivery signals", "finance signals", "approval queue", "workflow logs"],
+        outputs=["risk alert", "escalation recommendation", "risk-register entry"],
+        constraints=["alerts only; never executes punitive or irreversible action"],
+    ),
+    AgentContract(
+        agent_id="mission-control-agent",
+        display_name="Mission Control Agent",
+        domain="platform",
+        pod="executive",
+        family_id="mission-control",
+        operating_modes=INTERNAL_AND_CLIENT_MODES,
+        role_summary="Supervises runs, approvals, escalations, and runtime visibility across the operating model.",
+        approval_class="bounded",
+        deployment=AgentDeploymentPolicy(
+            primary_track="track_a_internal",
+            replication_mode="replicate_later",
+            replication_notes=(
+                "Mission Control may supervise Track 1 and later Track 2 environments, but client "
+                "supervision must run as a separate tenant-scoped supervisor instance."
+            ),
+        ),
+        capabilities=[
+            AgentCapability(
+                id="run-supervision",
+                name="Run Supervision",
+                description="Track workflow status, approval bottlenecks, and escalations across pods.",
+            )
+        ],
+        tools=["workflow-engine", "dashboard", "approval-state", "run-state"],
+        inputs=["workflow run status", "approval queue", "exception events"],
+        outputs=["mission-control view", "escalation list", "approval backlog"],
+        constraints=["operational supervision only; subordinate to workflow and approval policy"],
+    ),
+]
+
+for agent in DEFAULT_AGENT_REGISTRY.agents:
+    override = AGENT_METADATA_OVERRIDES.get(agent.agent_id)
+    if override is None:
+        continue
+    agent.pod = override.get("pod", agent.pod)
+    agent.family_id = override.get("family_id", agent.family_id)
+    agent.operating_modes = list(override.get("operating_modes", agent.operating_modes))
+    if "deployment" in override:
+        agent.deployment = override["deployment"]  # type: ignore[assignment]
+
+existing_agent_ids = {agent.agent_id for agent in DEFAULT_AGENT_REGISTRY.agents}
+for agent in ADDITIONAL_AGENT_CONTRACTS:
+    if agent.agent_id not in existing_agent_ids:
+        DEFAULT_AGENT_REGISTRY.agents.append(agent)

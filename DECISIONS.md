@@ -128,3 +128,27 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-14
 - Decision: `PMO / Project Control Agent` is the governance, control-tower, steering, and portfolio-visibility role, while `Project Management / Delivery Coordination Agent` is the execution-follow-up role that keeps plans, tasks, checkpoints, and next actions moving.
 - Rationale: The delivery model needs a stable distinction between governance oversight and day-to-day execution coordination, especially when the same firm operates both internal missions and client-delivery engagements.
+
+## ADR-022: Multi-agent runtime evolution remains workflow-first and phased
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: The platform may evolve toward multi-agent pod runtimes, but the immediate path remains workflow-first. Runtime agents should first gain explicit step identity, handoff payloads, shared state contracts, execution logs, and step-level approval metadata before richer multi-agent routing is introduced.
+- Rationale: The current architecture already has workflows, registry, approvals, and state foundations. A phased approach captures the value of multi-agent execution without prematurely adding autonomous peer orchestration, hidden complexity, or weakly observable routing behavior.
+
+## ADR-023: A2A handoff is structured and workflow-mediated
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: The platform may use orchestrator/supervisor agents and specialized agents, but any agent-to-agent interaction must be structured through workflow-mediated handoffs, shared-state contracts, standardized payloads, and approval-policy enforcement.
+- Rationale: This preserves the benefits of multi-agent specialization while avoiding an uncontrolled peer-agent mesh that would conflict with the workflow-first, approval-bound architecture.
+
+## ADR-024: Reusable agent families may support billable client delivery through isolated instances
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: Agent families such as PMO, BA, Architect, Build, QA, Documentation, Knowledge, Reporting, Document, CTO/CIO, and Chief AI / Digital Strategy may be used both for internal company operations and for billable client delivery work, but only through separate client-scoped instances with isolated state, memory, tools, approvals, and audit history.
+- Rationale: The business model depends on reusing proven agent capability across internal operations and client engagements without violating tenant boundaries or mixing Track 1 operating context with Track 2/client-delivery execution. This supports a commercial model where the firm bills for service outcomes produced with agent assistance rather than exposing or sharing internal runtime agents.
+
+## ADR-025: Prompting is a dedicated runtime layer separate from the agent catalog
+- Status: Accepted
+- Date: 2026-03-15
+- Decision: The target operating model will include a dedicated prompt layer composed of family-level base prompts plus workflow-step prompts, with runtime context injection for state, tools, approvals, tenant, and output schema. `AGENTS.md` remains the operating catalog for roles and boundaries rather than the primary location for prompt text.
+- Rationale: Modular prompt composition is safer and more reusable than embedding one large prompt per agent in the business catalog. This approach fits the workflow-first architecture, reduces duplication across steps, and allows prompt authoring, versioning, evaluation, and rollback to evolve as a controlled runtime concern after contracts and workflow boundaries are stable.

@@ -8,6 +8,8 @@ Interfaces
   ->
 Workflows
   ->
+Prompt Layer
+  ->
 Agent Modules
   ->
 Tools and Actions
@@ -48,6 +50,12 @@ Infrastructure
 
 ### Workflows
 - LangGraph orchestration
+
+### Prompt Layer
+- family-level base prompts
+- workflow-step prompts
+- runtime prompt/template loader
+- context injection for state, tool profile, approvals, tenant, and output schema
 
 ### Agent Modules
 - Python modules
@@ -139,10 +147,59 @@ The handoff integration adds an explicit formal operating layer to the architect
 - canonical state objects for opportunity, project, run, and approval state
 - normalized tool taxonomy and permissions
 - autonomy classes that bound what agent instances may do
+- a modular prompt model that separates family-level base prompts from workflow-step prompts
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
 
-## 10. Production Readiness Control Areas
+### Prompt Architecture Principle
+Prompting is a first-class runtime layer in the target architecture, but it is not the same thing as the business agent catalog.
+
+- `AGENTS.md` defines operating roles and runtime boundaries
+- family-level base prompts define durable behavioral instructions for an agent family
+- workflow-step prompts define task-specific instructions for a bounded execution step
+- runtime execution composes base prompt, step prompt, and injected operating context rather than relying on one giant static agent prompt
+- prompt expansion should be phased after state contracts, tool boundaries, approvals, and workflow choreography are stable enough to support safe reuse and evaluation
+
+## 10. Multi-Agent Evolution Principle
+The platform may evolve into richer multi-agent pod runtimes, but only under these constraints:
+
+- workflows remain the top-level control model
+- agents execute bounded steps rather than forming an autonomous peer mesh
+- per-step `agent_id`, handoff payloads, shared state contracts, and approval-policy metadata exist before deeper dynamic routing is introduced
+- Growth is the best first true multi-agent pod because it has a clear `opportunity_state` and natural bounded handoffs
+- Delivery becomes the flagship multi-agent runtime only after the foundational execution contracts and observability controls are in place
+- Executive and finance synthesis agents should depend on signals produced by mature Growth and Delivery runtimes rather than being promoted prematurely
+
+### Orchestrator and Supervisor Model
+The intended multi-agent runtime supports:
+
+- workflows as the primary orchestrator
+- specialized agents as bounded executors
+- optional supervisor/orchestrator agents such as `Mission Control Agent` or later pod-specific supervisors
+
+The architecture does not target unconstrained peer-agent autonomy. Supervisor behavior must remain observable, policy-bound, and subordinate to workflow control.
+
+### A2A Protocol Model
+The architecture may support agent-to-agent handoff, but only as structured A2A:
+
+- one workflow step hands off to another bounded agent step
+- the handoff carries standardized payload and shared-state references
+- the receiving agent acts inside declared tool, autonomy, and approval constraints
+
+In other words, A2A is workflow-mediated and contract-driven, not an open peer network.
+
+## 11. Prompt Governance Intent
+The target architecture should evolve toward a managed prompt layer with:
+
+- family-level base prompt assets
+- workflow-step prompt assets
+- runtime composition rules for state, tools, approvals, tenant, and schema context
+- prompt versioning and change tracking
+- evaluation and rollback rules for prompt regressions
+
+This prompt layer is planned as part of the runtime architecture, but broad prompt authoring is not required before the current contract and workflow-alignment work is complete.
+
+## 12. Production Readiness Control Areas
 The following control areas are required for production readiness and extend the current MVP architecture:
 
 - authentication, secrets, and token lifecycle
@@ -157,7 +214,7 @@ The following control areas are required for production readiness and extend the
 - data lifecycle management
 - deployment packaging and implementation runbooks
 
-## 11. Production Control Intent
+## 13. Production Control Intent
 ### Authorization
 The MVP single-approver model will evolve toward role-based permissions, delegated authority, approval classes, and workflow-specific policy enforcement.
 

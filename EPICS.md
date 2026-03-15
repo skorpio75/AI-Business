@@ -161,7 +161,7 @@ Controlled delivery pipeline with agent support for repetitive engineering work.
 ## Epic 10 - Platform Operating Meta-Model
 - Status: `IN_PROGRESS`
 ### Outcome
-The repository has a formal operating model for pods, workflows, state, events, tools, and approvals.
+The repository has a formal operating model for pods, workflows, state, events, tools, approvals, and prompt composition boundaries.
 
 ### Main tech components
 - Markdown
@@ -172,6 +172,7 @@ The repository has a formal operating model for pods, workflows, state, events, 
 - meta-model docs exist
 - platform objects are defined consistently
 - family/mode/instance reuse model is documented
+- prompt-layer target model is documented separately from the business agent catalog
 - roadmap and governance docs reference the same model
 
 ## Epic 11 - Pod Model and Agent Taxonomy
@@ -192,7 +193,7 @@ The platform distinguishes pod-native agents, specialist overlays, and reusable 
 ## Epic 12 - State, Event, Tool, and Autonomy Control Layer
 - Status: `IN_PROGRESS`
 ### Outcome
-Workflow and agent execution is described through normalized state, event, tool, and autonomy contracts.
+Workflow and agent execution is described through normalized state, event, tool, autonomy, and prompt-composition contracts.
 
 ### Main tech components
 - Markdown
@@ -205,6 +206,7 @@ Workflow and agent execution is described through normalized state, event, tool,
 - event families and trigger patterns are defined
 - normalized tool IDs and permission profiles are defined
 - autonomy classes and approval implications are defined
+- family-level base prompts and workflow-step prompts are planned as separate runtime concerns
 
 ## Epic 13 - Business Scaling Maturity Model
 - Status: `NOT_STARTED`

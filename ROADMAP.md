@@ -10,7 +10,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - `DONE`
 
 ## Current Snapshot
-- Updated: 2026-03-14
+- Updated: 2026-03-15
 - Overall Status: `IN_PROGRESS`
 - Active Phase: `Phase 3 - Track A Internal MVP Workflows`
 - Active Cross-Cutting Stream: `AI-Business IDE handoff integration`
@@ -21,11 +21,11 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 |---|---|---|---|---|---|
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 16/22 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
-| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 14/18 tasks done |
+| Phase 2 | Workflow + knowledge foundation | IN_PROGRESS | dpizz | TBD | 15/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 17/20 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
-| Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/9 tasks done |
+| Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
 - [x] Create repository folder skeleton
@@ -85,10 +85,12 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P2-T12: Define CTO/CIO counsel contract (strategy options, architecture advice, internal improvement backlog)
 - [x] P2-T13: Define Accountant/CFO contracts (reconciliation rules, close process, scenario planning outputs)
 - [x] P2-T14: Define Chief AI/Digital Strategy contract (AI opportunity map, AI/data delivery blueprint, maturity model)
-- [ ] P2-T15: Align agent registry and base contracts with pod model, family/mode/instance identity, and specialist overlay mapping
+- [x] P2-T15: Align agent registry and base contracts with pod model, family/mode/instance identity, and specialist overlay mapping
 - [ ] P2-T16: Define normalized event names, approval classes, and autonomy classes in backend contracts/config
 - [ ] P2-T17: Define state ownership and persistence mapping for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
 - [ ] P2-T18: Define normalized tool permission profiles by agent family and operating mode
+- [ ] P2-T19: Define the runtime prompt-layer model: family base prompts, workflow-step prompts, and context-injection rules
+- [ ] P2-T20: Define prompt asset naming, storage, and loading conventions without requiring full prompt authoring for every documented agent
 
 ### Phase 3 - Track A Internal MVP Workflows (React UI)
 - [x] P3-T01: Scaffold React mission-control app (`app/ui` or `frontend`)
@@ -144,12 +146,27 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] P6-T07: Define agent-assisted release checklist
 - [ ] P6-T08: Introduce role-based policy model and delegated authority beyond the MVP single-approver model
 - [ ] P6-T09: Define workflow- and agent-class-specific model/prompt governance controls
+- [ ] P6-T10: Add managed prompt versioning, evaluation, and rollback process for family and workflow-step prompts
 
 ### Cross-Cutting Stream - AI-Business IDE Handoff Integration
 - [x] H-T01: Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
 - [x] H-T02: Update governance docs to adopt the 4-pod model, reusable family/mode/instance agent model, and normalized event/state/tool/autonomy language
 - [ ] H-T03: Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
 - [ ] H-T04: Reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work
+
+### Backlog - Multi-Agent Runtime Evolution
+- [ ] M-T01: Keep multi-agent runtime evolution workflow-first; do not introduce autonomous peer-agent orchestration as the MVP control model
+- [ ] M-T02: Add per-step `agent_id` assignment and persistence for workflow execution steps
+- [ ] M-T03: Add step-level agent execution logs, shared state read/write metadata, and standardized handoff payloads
+- [ ] M-T04: Define explicit approval policy metadata per workflow step
+- [ ] M-T05: Promote `Email Agent`, `Knowledge Agent`, and `Mission Control Agent` to bounded runtime agents inside workflow execution without changing approval-first controls
+- [ ] M-T06: Build Growth as the first true multi-agent pod over `opportunity_state`, with bounded routing between intake, research, qualification, outreach, and proposal paths
+- [ ] M-T07: Let `Mission Control Agent` supervise the first Growth pod runtime before adding a dedicated pod supervisor
+- [ ] M-T08: Build Delivery as the flagship multi-agent runtime, with PMO governance, delivery coordination, BA, architect, build, QA, and documentation handoffs
+- [ ] M-T09: Add executive and finance synthesis agents only after Growth and Delivery produce sufficiently rich operational signals
+- [ ] M-T10: Replicate advisory and delivery-support runtime agents into Track B only after the Track A runtime model, approval policy, and state isolation are stable
+- [ ] M-T11: Maintain a multi-agent suitability matrix and use it to prioritize runtime splitting order rather than promoting all documented agents equally
+- [ ] M-T12: Treat the current high-suitability set as the primary candidate pool for Growth, Delivery, Executive synthesis, and advisory runtime promotion when foundational controls are ready
 
 ### Backlog - Model Routing
 - [ ] B-T01: Define multi-provider routing rules for cloud model usage via LiteLLM (task type, risk, cost, latency, fallback order, local-only policy)
@@ -224,6 +241,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added pgvector extension migration and switched Postgres defaults to port 5433 to avoid local DB conflicts.
 - Completed Postgres validation end-to-end (`healthz`, run workflow, list pending approvals, approval decision) on port 5433.
 - Expanded docs to define full IT freelancer operating model: corporate agents + service delivery agents.
+
+### 2026-03-15
+- Added prompt-layer target architecture guidance: prompts are planned as a dedicated runtime layer with family-level base prompts plus workflow-step prompts rather than being embedded directly into the business agent catalog.
+- Completed `P2-T15` by aligning the runtime agent registry with the pod model, family/mode identity, and specialist-overlay mapping, and mirrored the same metadata into `config/base/agents.yaml`.
 - Added Personal Assistant scope (inbox + calendar triage + prioritized daily list) to agent/workflow model.
 - Added CTO/CIO agent scope for customer technology counsel and internal continuous platform improvement.
 - Added Accountant and CFO scopes for operational accounting and strategic finance decision support.
@@ -275,6 +296,13 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Extended governance docs to reflect the 4-pod operating model, normalized event/state/tool/autonomy language, and Mission Control as an operating supervisor.
 - Clarified that `PMO / Project Control Agent` is the governance/control-tower role, while `Project Management / Delivery Coordination Agent` is the day-to-day execution coordination role.
 - Carried the PMO split into runtime-facing layers by adding distinct agent contracts, config entries, and frontend metadata fields for pod, family, and operating modes.
+
+### 2026-03-15
+- Evaluated a phased multi-agent runtime proposal against the current workflow-first architecture and accepted it as a bounded roadmap direction rather than an immediate architecture rewrite.
+- Added a dedicated multi-agent runtime evolution backlog with explicit guardrails: workflow-first control, per-step agent identity, handoff payloads, step-level logs, and approval-policy metadata before richer pod-level runtime behavior.
+- Confirmed Growth is the best first true multi-agent pod and Delivery remains the flagship multi-agent runtime after the foundational execution-contract and observability work is in place.
+- Added a multi-agent suitability matrix to guide runtime-splitting priority, with a high-suitability set covering Growth specialists, Delivery specialists, Mission Control, Risk, executive synthesis, and selected finance/advisory families.
+- Added a medium-suitability tier for families that are valuable in bounded collaboration, exception handling, or synthesis chains but may remain workflow-stage-oriented or rules-based longer.
 
 ## Next Action
 Complete the remaining handoff-alignment doc tasks and contract mapping work, then continue `P3-T16` for provider bootstrap, secret handling, and refresh-token lifecycle.

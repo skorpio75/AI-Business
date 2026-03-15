@@ -1,25 +1,201 @@
 agents:
   - id: email-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: email
+    operating_modes: [internal_operating]
   - id: personal-assistant-agent
     enabled: true
+    pod: executive
+    family_id: personal-assistant
+    operating_modes: [internal_operating]
+  - id: lead-intake-agent
+    enabled: true
+    pod: growth
+    family_id: lead-intake
+    operating_modes: [internal_operating, client_delivery]
+  - id: account-research-agent
+    enabled: true
+    pod: growth
+    family_id: account-research
+    operating_modes: [internal_operating, client_delivery]
+  - id: qualification-agent
+    enabled: true
+    pod: growth
+    family_id: qualification
+    operating_modes: [internal_operating, client_delivery]
+  - id: outreach-draft-agent
+    enabled: true
+    pod: growth
+    family_id: outreach-draft
+    operating_modes: [internal_operating, client_delivery]
+  - id: proposal-sow-agent
+    enabled: true
+    pod: growth
+    family_id: proposal-sow
+    operating_modes: [internal_operating, client_delivery]
+  - id: crm-hygiene-agent
+    enabled: true
+    pod: growth
+    family_id: crm-hygiene
+    operating_modes: [internal_operating, client_delivery]
   - id: pmo-project-control-agent
     enabled: true
+    pod: delivery
+    family_id: pmo-project-control
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
   - id: project-management-agent
     enabled: true
+    pod: delivery
+    family_id: project-management-delivery-coordination
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
+  - id: ba-requirements-agent
+    enabled: true
+    pod: delivery
+    family_id: ba-requirements
+    operating_modes: [internal_operating, client_delivery]
+  - id: architect-agent
+    enabled: true
+    pod: delivery
+    family_id: architect
+    operating_modes: [internal_operating, client_delivery]
+  - id: build-automation-agent
+    enabled: true
+    pod: delivery
+    family_id: build-automation
+    operating_modes: [internal_operating, client_delivery]
+  - id: qa-review-agent
+    enabled: true
+    pod: delivery
+    family_id: qa-review
+    operating_modes: [internal_operating, client_delivery]
+  - id: documentation-agent
+    enabled: true
+    pod: delivery
+    family_id: documentation
+    operating_modes: [internal_operating, client_delivery]
+  - id: finance-ops-agent
+    enabled: true
+    pod: ops
+    family_id: finance-ops
+    operating_modes: [internal_operating]
+  - id: invoice-receivables-agent
+    enabled: true
+    pod: ops
+    family_id: invoice-receivables
+    operating_modes: [internal_operating]
+  - id: vendor-procurement-agent
+    enabled: true
+    pod: ops
+    family_id: vendor-procurement
+    operating_modes: [internal_operating]
+  - id: admin-hr-ops-agent
+    enabled: true
+    pod: ops
+    family_id: admin-hr-ops
+    operating_modes: [internal_operating]
+  - id: company-reporting-agent
+    enabled: true
+    pod: ops
+    family_id: company-reporting
+    operating_modes: [internal_operating, client_delivery]
+  - id: ceo-briefing-agent
+    enabled: true
+    pod: executive
+    family_id: ceo-briefing
+    operating_modes: [internal_operating]
+  - id: strategy-opportunity-agent
+    enabled: true
+    pod: executive
+    family_id: strategy-opportunity
+    operating_modes: [internal_operating, client_facing_service]
+  - id: risk-watchdog-agent
+    enabled: true
+    pod: executive
+    family_id: risk-watchdog
+    operating_modes: [internal_operating, client_delivery]
+  - id: mission-control-agent
+    enabled: true
+    pod: executive
+    family_id: mission-control
+    operating_modes: [internal_operating, client_delivery]
   - id: accountant-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: accountant
+    operating_modes: [internal_operating]
   - id: cfo-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: cfo
+    operating_modes: [internal_operating]
   - id: cto-cio-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: cto-cio-advisory
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
   - id: chief-ai-digital-strategy-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: chief-ai-digital-strategy
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
+  - id: billing-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: billing
+    operating_modes: [internal_operating]
+  - id: finance-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: finance
+    operating_modes: [internal_operating]
+  - id: procurement-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: procurement
+    operating_modes: [internal_operating]
   - id: knowledge-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: knowledge
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
   - id: document-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: document
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
   - id: reporting-agent
     enabled: true
+    pod: specialist_overlay
+    family_id: reporting
+    operating_modes: [internal_operating, client_delivery, client_facing_service]
+  - id: compliance-contract-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: compliance-contract
+    operating_modes: [internal_operating]
+  - id: delivery-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: delivery
+    operating_modes: [internal_operating, client_delivery]
+  - id: quality-management-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: quality-management
+    operating_modes: [internal_operating, client_delivery]
+  - id: consulting-support-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: consulting-support
+    operating_modes: [internal_operating, client_delivery]
+  - id: testing-qa-agent
+    enabled: true
+    pod: specialist_overlay
+    family_id: testing-qa
+    operating_modes: [internal_operating, client_delivery]
   - id: ops-agent
     enabled: false
+    pod: specialist_overlay
+    family_id: ops-runbook
+    operating_modes: [internal_operating]

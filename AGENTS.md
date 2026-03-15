@@ -26,6 +26,31 @@ Example:
 - `Internal PMO Agent` is a Track A instance
 - `Client PMO Agent - Acme` is a separate Track B instance
 
+## Prompt Model
+`AGENTS.md` is the operating catalog for agent families and runtime boundaries, not the primary home of agent prompts.
+
+- This document defines role, scope, pod, mode, autonomy, state ownership, tool boundary, and approval expectations.
+- Base prompts for agent families should live in a separate runtime prompt layer.
+- Workflow or step prompts should also live separately so a single family can be reused across multiple bounded tasks without one oversized static prompt.
+- Runtime execution should combine:
+  - family-level base prompt
+  - workflow-step prompt
+  - injected state, tool, approval, tenant, and output-schema context
+- Prompt authoring is part of the target operating model, but full prompt expansion should follow contract, state, and workflow-boundary stabilization.
+
+## Commercial Reuse Policy
+Reusable agent families may support both internal company operations and billable client delivery work, but only through separate scoped instances.
+
+- Internal agents help run the company itself, such as pipeline control, delivery capacity monitoring, margin visibility, internal reporting, and operational follow-up.
+- Client-delivery agents help produce engagement outputs that may be billed as part of a service, such as project plans, RAID logs, status reports, steering packs, architecture notes, requirements packs, QA findings, or handover documentation.
+- The commercial unit is the service outcome produced with agent assistance, not the sharing of an internal agent with a client.
+- A client-delivery instance must remain isolated by `tenant`, `project_state`, memory, tool permissions, approval policy, and audit trail.
+- The same family may later appear in a `client_facing_service` mode, but that is still a separate client-scoped runtime instance, not a shared Track 1 internal agent.
+
+Example:
+- `Internal PMO Agent` monitors your company portfolio, capacity, deadlines, and margin pressure.
+- `Client PMO Agent - Acme ERP Rollout` produces billable delivery artifacts for that engagement, such as project plans, status packs, RAID updates, and follow-up actions.
+
 ## Pod Model
 The canonical operating model uses four pods:
 
@@ -35,6 +60,92 @@ The canonical operating model uses four pods:
 - `Executive`
 
 Existing specialist roles remain valid and can overlay pod workflows.
+
+## Multi-Agent Structure
+The intended multi-agent structure is:
+
+- a workflow orchestrator layer that remains the top-level control model
+- specialized agents that execute bounded reasoning or action steps
+- optional supervisor/orchestrator agents for pod-level oversight where justified
+- structured agent-to-agent handoffs mediated by workflows, shared state, and approval policy
+
+This is not a free-form peer-agent mesh. Agents do not discover, negotiate, or commit work arbitrarily outside workflow boundaries.
+
+### Orchestrator Layer
+- The workflow layer is the primary orchestrator today.
+- `Mission Control Agent` is the clearest supervisor/orchestrator agent and may supervise pod-level runtime behavior later.
+- Dedicated pod supervisors such as a future `Growth Supervisor` are optional and should only be introduced when they add operational value beyond workflow control.
+
+### Specialized Agents
+- Specialized agents perform bounded tasks with distinct reasoning modes, tool profiles, and state responsibilities.
+- Examples include PMO, delivery coordination, BA, architect, build, QA, documentation, lead intake, research, qualification, and proposal.
+
+### Structured A2A
+Agent-to-agent handoff is allowed only in a structured form:
+
+- explicit `agent_id`
+- workflow step boundary
+- standardized handoff payload
+- shared-state read/write contract
+- approval-policy enforcement when required
+
+This means A2A is workflow-mediated, not autonomous peer networking.
+
+## Multi-Agent Suitability Matrix
+The following families are currently assessed as high-suitability candidates for bounded multi-agent runtime use. This matrix is an implementation prioritization aid, not a mandate to promote every listed family immediately.
+
+| Agent / Family | Suitability | Why |
+|---|---:|---|
+| `Lead Intake Agent` | High | Starts structured opportunity flow and feeds downstream research, qualification, and proposal work. |
+| `Account Research Agent` | High | Specialist enrichment role before qualification and proposal. |
+| `Qualification Agent` | High | Decision point that routes toward outreach, proposal, or discard. |
+| `Outreach Draft Agent` | High | Natural downstream specialist after qualification. |
+| `Proposal / SOW Agent` | High | Depends on prior enrichment and often needs pricing and review handoffs. |
+| `PMO / Project Control Agent` | High | Control-tower role across project state, milestones, RAID, and escalations. |
+| `Project Management / Delivery Coordination Agent` | High | Converts plans into active follow-ups and checkpoints. |
+| `BA / Requirements Agent` | High | Upstream specialist feeding architect, build, and test roles. |
+| `Architect Agent` | High | Distinct reasoning mode between requirements and implementation. |
+| `Build / Automation Agent` | High | Execution specialist after design. |
+| `QA / Review Agent` | High | Independent validation role after build. |
+| `Documentation Agent` | High | End-of-chain packaging and handover specialist. |
+| `Mission Control Agent` | High | Natural supervisor, escalation, and visibility orchestrator. |
+| `Risk / Watchdog Agent` | High | Cross-agent monitoring and escalation role. |
+| `CEO Briefing Agent` | High | Cross-pod synthesis agent. |
+| `Strategy / Opportunity Agent` | High | Synthesizes outputs from growth, delivery, and finance. |
+| `Accountant Agent` | High | Reconciliation and exception handling often need upstream and downstream handoffs. |
+| `CFO Agent` | High | Scenario synthesis over multiple internal signals. |
+| `CTO/CIO Agent` | High | Cross-domain strategist drawing from knowledge, architecture, delivery, and roadmap context. |
+| `Chief AI / Digital Strategy Agent` | High | Advisory synthesis across business, process, data, and AI dimensions. |
+
+### Medium Suitability Set
+
+| Agent / Family | Suitability | Why |
+|---|---:|---|
+| `CRM Hygiene Agent` | Medium | Often deterministic, but can be part of Growth pod cleanup and validation. |
+| `Finance Ops Agent` | Medium | Good in the Ops pod, but much can remain rules-based. |
+| `Invoice / Receivables Agent` | Medium | Useful with exception, review, and escalation loops. |
+| `Vendor / Procurement Agent` | Medium | Strong when combined with budget, policy, and approval agents. |
+| `Admin / HR Ops Agent` | Medium | Useful for bounded operational workflows, less for autonomous collaboration. |
+| `Company Reporting Agent` | Medium | Often more of a synthesizer than a full collaborator. |
+| `Billing Agent` | Medium | Stronger when disputes, approvals, and accounting checks exist. |
+| `Finance Agent` | Medium | Better as a feeder into CFO and reporting than a standalone swarm participant. |
+| `Procurement Agent` | Medium | Strong as an approval and policy-routing specialist. |
+| `Reporting Agent` | Medium | Often a terminal summarizer fed by other agents. |
+| `Compliance / Contract Agent` | Medium | Strong when linked with deadline, risk, and review chains. |
+| `Document Agent` | Medium | Good in extraction to validation to routing chains. |
+| `Knowledge Agent` | Medium | Very useful as a shared specialist, but often service-style rather than autonomous peer behavior. |
+| `Delivery Agent` | Medium | Works as a coordinator wrapper, but overlaps with PM and PMO roles. |
+| `Quality Management Agent` | Medium | Strong gating role, though often a fixed step rather than a dynamic agent. |
+| `Consulting Support Agent` | Medium | Good feeder agent for advisory chains. |
+| `Testing / QA Agent` | Medium | Useful in build, validation, and release chains, but can remain a fixed stage. |
+| `Personal Assistant Agent` | Medium | Good candidate for internal sub-agents later across inbox, calendar, prioritization, and drafting. |
+
+### How To Use This Matrix
+- High suitability means the family is a strong candidate for later bounded multi-agent runtime behavior.
+- Medium suitability means the family is a good candidate where collaboration or exception handling adds value, but it may remain workflow-stage-oriented or rules-based for longer.
+- High suitability does not override the workflow-first rule.
+- Promotion to runtime should still follow the phased path in `ROADMAP.md`: step identity, handoff payloads, shared-state contracts, execution logs, and approval metadata first.
+- The matrix helps decide runtime-splitting order when multiple families are documented but not yet represented in registry/config/backend contracts.
 
 ## First-Class Pod Agents
 The following agents are canonical first-class pod agents that complement the existing specialist catalog.

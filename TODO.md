@@ -19,16 +19,17 @@
 
 ## Next
 - [ ] `H-T03` Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
-- [ ] `P2-T15` Align agent registry and base contracts with pod model and family/mode/instance identity
 - [ ] `P3-T16` Add OAuth/bootstrap and secret handling for Gmail, Google Calendar, and Microsoft Graph
 
 ## Soon After
 - [ ] `P2-T16` Define normalized event names, approval classes, autonomy classes, and tool permission profiles in backend contracts/config
+- [ ] `P2-T19` Define the runtime prompt-layer model and context-injection rules
 - [ ] `P3-T12` Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 
 ## Recently Finished
+- [x] `P2-T15` Align the runtime agent registry and base config with the pod model, family/mode/instance identity, and specialist-overlay mapping
 - [x] Carry the PMO split into runtime-facing registry/config/contracts and surface pod/family/mode metadata in the agent activity view
 - [x] Clarify the distinction between PMO governance/control and project-management execution coordination
 - [x] `P3-T01A` Adopt `shadcn/ui` + Tailwind foundation and migrate shared mission-control UI primitives
@@ -38,4 +39,8 @@
 - [ ] Keep `ROADMAP.md` as the full source of truth
 - [ ] Keep `TODO.md` short and execution-oriented
 - [ ] Keep Track A internal instances and Track B client instances isolated even when they share an agent family
+- [ ] Keep multi-agent runtime evolution workflow-first; avoid autonomous peer-agent complexity before step identity, handoff payloads, and execution logs are stable
+- [ ] Treat the prompt layer as part of the target runtime architecture, but defer large-scale prompt authoring until contracts, state, and workflow boundaries are stable
+- [ ] Use the high-suitability multi-agent matrix to prioritize runtime splitting instead of promoting all documented families at once
+- [ ] Treat the medium-suitability set as bounded collaboration candidates, not immediate runtime-splitting priorities
 - [ ] Avoid adding UI logic before API/contracts are stable enough to consume

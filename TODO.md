@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 3 - Track A Internal MVP Workflows`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: resume the remaining Phase 3 UI panels, starting with the CTO/CIO panel
+- Immediate goal: resume the remaining Phase 3 UI panels, starting with the finance cockpit
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,13 +18,13 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P3-T12` Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
+- [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 
 ## Soon After
-- [ ] `P3-T13` Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 
 ## Recently Finished
+- [x] `P3-T12` Add a typed CTO/CIO specialist advisory endpoint and mission-control panel for customer scope insight, architecture guidance, strategy options, and internal improvement priorities
 - [x] `P2-T20` Define canonical prompt asset naming, storage, and loading conventions with legacy explicit-path compatibility
 - [x] `P2-T19` Add prompt-layer contracts/config for family-base assets, workflow-step assets, and runtime context injection, and wire the implemented prompt-backed services through the composable prompt loader
 - [x] `P2-T18` Add normalized tool-permission profile contracts and config bindings by agent family/operating mode, and surface tool-profile metadata in the agent activity view

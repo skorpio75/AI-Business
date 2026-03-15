@@ -118,6 +118,7 @@ Infrastructure
 - Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are available for live inbox/calendar context.
 - Approved Outlook replies can execute through Microsoft Graph after approval is recorded in this platform.
 - Mission Control exposes explicit routing visibility for local model, cloud route, fallback-rule execution, and whether the local LLM was invoked.
+- Mission Control now includes a dedicated CTO/CIO specialist advisory panel backed by a typed API summary.
 - Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google and Microsoft connector credentials.
 
 ## 6. Architectural Rule

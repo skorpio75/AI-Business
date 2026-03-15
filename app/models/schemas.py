@@ -5,6 +5,8 @@ from pydantic import ConfigDict
 from pydantic import BaseModel, Field
 from pydantic import field_validator
 
+from app.models.specialist_contracts import ArchitectureAdvice, ImprovementBacklogItem, StrategyOption
+
 DecisionType = Literal["approve", "reject", "edit"]
 ApprovalStatus = Literal["pending", "approved", "rejected", "edited"]
 WorkflowRunStatus = Literal["pending_approval", "completed"]
@@ -180,3 +182,25 @@ class PersonalAssistantBriefResponse(BaseModel):
 class DashboardSummaryResponse(BaseModel):
     kpis: list[DashboardKpi] = Field(default_factory=list)
     personal_assistant: PersonalAssistantBriefResponse
+
+
+class CTOCIOScopeInsight(BaseModel):
+    insight_id: str
+    title: str
+    summary: str
+    focus_area: Literal["customer_scope", "architecture", "internal_platform"]
+    tone: KpiTone = "neutral"
+
+
+class CTOCIOPanelResponse(BaseModel):
+    agent_id: str
+    display_name: str
+    role_summary: str
+    primary_track: Literal["track_a_internal", "track_b_client"]
+    operating_modes: list[str] = Field(default_factory=list)
+    tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    scope_insights: list[CTOCIOScopeInsight] = Field(default_factory=list)
+    strategy_options: list[StrategyOption] = Field(default_factory=list)
+    architecture_advice: ArchitectureAdvice
+    internal_improvement_backlog: list[ImprovementBacklogItem] = Field(default_factory=list)
+    approval_required: bool = True

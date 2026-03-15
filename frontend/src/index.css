@@ -296,6 +296,10 @@
     @apply xl:grid-cols-[minmax(0,1.45fr)_minmax(300px,380px)_minmax(280px,340px)];
   }
 
+  .dashboard-grid--advisory {
+    @apply xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,420px)_minmax(320px,420px)];
+  }
+
   .kpi-grid {
     @apply gap-4 xl:grid-cols-4;
   }

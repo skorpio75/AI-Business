@@ -203,11 +203,61 @@ export type DashboardSummary = {
   personal_assistant: PersonalAssistantBrief;
 };
 
+export type CTOCIOScopeInsight = {
+  insight_id: string;
+  title: string;
+  summary: string;
+  focus_area: "customer_scope" | "architecture" | "internal_platform";
+  tone: "neutral" | "success" | "warning" | "critical";
+};
+
+export type StrategyOption = {
+  option_id: string;
+  title: string;
+  summary: string;
+  benefits: string[];
+  tradeoffs: string[];
+  recommended_when: string;
+};
+
+export type ArchitectureAdvice = {
+  current_state: string;
+  target_state: string;
+  key_constraints: string[];
+  proposed_changes: string[];
+  risks: string[];
+};
+
+export type ImprovementBacklogItem = {
+  item_id: string;
+  title: string;
+  rationale: string;
+  priority: "now" | "next" | "later";
+  impact: "low" | "medium" | "high";
+  effort: "small" | "medium" | "large";
+  owner_hint?: string | null;
+};
+
+export type CTOCIOPanel = {
+  agent_id: string;
+  display_name: string;
+  role_summary: string;
+  primary_track: "track_a_internal" | "track_b_client";
+  operating_modes: string[];
+  tool_profile_by_mode: Record<string, string>;
+  scope_insights: CTOCIOScopeInsight[];
+  strategy_options: StrategyOption[];
+  architecture_advice: ArchitectureAdvice;
+  internal_improvement_backlog: ImprovementBacklogItem[];
+  approval_required: boolean;
+};
+
 export type ViewKey =
   | "workflow-monitor"
   | "approval-queue"
   | "agent-activity"
   | "agents-org"
+  | "cto-cio"
   | "inbox-calendar"
   | "email-operations"
   | "knowledge-qna"

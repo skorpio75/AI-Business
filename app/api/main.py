@@ -24,6 +24,7 @@ from app.models.connectors import ConnectorBootstrapStatusResponse, PersonalAssi
 from app.models.schemas import (
     ApprovalDecisionRequest,
     ApprovalItem,
+    CTOCIOPanelResponse,
     DashboardSummaryResponse,
     EmailWorkflowRequest,
     EmailWorkflowResponse,
@@ -34,6 +35,7 @@ from app.models.schemas import (
 )
 from app.services.dashboard_summary import DashboardSummaryService
 from app.services.agent_registry import AgentRegistryService
+from app.services.cto_cio_panel import CTOCIOPanelService
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import ModelGateway
@@ -54,6 +56,7 @@ agent_registry = AgentRegistryService()
 knowledge_qna = KnowledgeQnAService(retrieval_service=PgVectorRetrievalService(), model_gateway=gateway)
 proposal_workflow = ProposalWorkflowService(model_gateway=gateway)
 dashboard_summary = DashboardSummaryService()
+cto_cio_panel = CTOCIOPanelService()
 
 
 def get_runtime_settings() -> Settings:
@@ -143,6 +146,14 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> DashboardSummaryResp
         workflow_runs_count=len(workflow_runs),
         personal_context=assistant_context,
     )
+
+
+@app.get("/specialists/cto-cio/panel", response_model=CTOCIOPanelResponse)
+def get_cto_cio_panel() -> CTOCIOPanelResponse:
+    agent = agent_registry.get_agent("cto-cio-agent")
+    if agent is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    return cto_cio_panel.build_panel(agent=agent)
 
 
 @app.get("/personal-assistant/context", response_model=PersonalAssistantContext)

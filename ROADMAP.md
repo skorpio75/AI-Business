@@ -22,7 +22,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 0 | Documentation and repo skeleton | IN_PROGRESS | dpizz | TBD | 17/22 tasks done |
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
-| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 18/20 tasks done |
+| Phase 3 | Track A internal MVP workflows (React UI) | IN_PROGRESS | dpizz | TBD | 19/20 tasks done |
 | Phase 4 | Track B client template MVP | NOT_STARTED | dpizz | TBD | 0/6 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
@@ -104,7 +104,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P3-T09: Add Agents org view with avatars/status for corporate + delivery agents
 - [x] P3-T10: Add KPI widgets (billing, cashflow, delivery health, quality gate status)
 - [x] P3-T11: Add personal assistant panel (today priorities, schedule conflicts, quick actions)
-- [ ] P3-T12: Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
+- [x] P3-T12: Add CTO/CIO panel (customer scope insights, strategy options, internal tech improvement queue)
 - [ ] P3-T13: Add finance cockpit panels (accounting exceptions, close status, CFO scenario cards)
 - [ ] P3-T14: Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 - [x] P3-T15: Replace null-only inbox/calendar placeholders with provider-backed fetch connectors (Gmail, Google Calendar, Microsoft Graph)
@@ -252,6 +252,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P2-T18` by adding normalized tool-permission profile contracts and config bindings by agent family and operating mode, and surfaced tool-profile metadata in the agent activity UI.
 - Completed `P2-T19` by adding typed prompt-layer contracts and config bindings for family-base assets, workflow-step assets, and runtime context injection, and wired the implemented email, knowledge, and proposal prompt flows through the composable prompt loader.
 - Completed `P2-T20` by formalizing canonical prompt asset naming, storage, and loader resolution conventions, including explicit legacy-path compatibility so current prompt files remain valid during migration.
+- Completed `P3-T12` by adding a typed CTO/CIO specialist advisory endpoint and mission-control panel for customer scope insight, architecture guidance, strategy options, and internal improvement priorities.
 - Added Personal Assistant scope (inbox + calendar triage + prioritized daily list) to agent/workflow model.
 - Added CTO/CIO agent scope for customer technology counsel and internal continuous platform improvement.
 - Added Accountant and CFO scopes for operational accounting and strategic finance decision support.
@@ -312,4 +313,4 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a medium-suitability tier for families that are valuable in bounded collaboration, exception handling, or synthesis chains but may remain workflow-stage-oriented or rules-based longer.
 
 ## Next Action
-Resume the remaining Phase 3 UI panels, starting with `P3-T12` for the CTO/CIO panel.
+Resume the remaining Phase 3 UI panels, starting with `P3-T13` for the finance cockpit.

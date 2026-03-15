@@ -1,6 +1,7 @@
 import type {
   AgentContract,
   ApprovalItem,
+  CTOCIOPanel,
   DashboardSummary,
   KnowledgeQueryResponse,
   PersonalAssistantContext,
@@ -48,6 +49,10 @@ export const apiClient = {
 
   getDashboardSummary(): Promise<DashboardSummary> {
     return getJson<DashboardSummary>("/dashboard/summary");
+  },
+
+  getCtoCioPanel(): Promise<CTOCIOPanel> {
+    return getJson<CTOCIOPanel>("/specialists/cto-cio/panel");
   },
 
   getPersonalAssistantContext(params?: {

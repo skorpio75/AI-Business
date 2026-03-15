@@ -21,6 +21,7 @@ import { InboxCalendarPage } from "./pages/InboxCalendarPage";
 import { KnowledgeQnaPage } from "./pages/KnowledgeQnaPage";
 import { ProposalGenerationPage } from "./pages/ProposalGenerationPage";
 import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
+import { CtoCioPage } from "./pages/CtoCioPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
 import type { ViewKey } from "./types";
 
@@ -90,6 +91,12 @@ const VIEW_GROUPS: Array<{
         id: "proposal-generation",
         label: "Proposal Drafts",
         description: "Create a baseline consulting proposal from opportunity context.",
+        icon: Sparkles,
+      },
+      {
+        id: "cto-cio",
+        label: "CTO/CIO",
+        description: "Review architecture guidance, strategy options, and internal tech priorities.",
         icon: Sparkles,
       },
     ],
@@ -272,6 +279,7 @@ export default function App() {
           ) : null}
           {activeView === "knowledge-qna" ? <KnowledgeQnaPage /> : null}
           {activeView === "proposal-generation" ? <ProposalGenerationPage /> : null}
+          {activeView === "cto-cio" ? <CtoCioPage refreshToken={refreshToken} /> : null}
         </div>
       </main>
     </div>

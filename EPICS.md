@@ -93,7 +93,7 @@ The internal business can run key workflows with one human approver.
 - approved Outlook replies can execute through Microsoft Graph after approval
 
 ### Current remaining scope
-- CTO/CIO, finance, and Chief AI / Digital Strategy panels
+- finance and Chief AI / Digital Strategy panels
 
 ## Epic 6 - Track B Client Template MVP
 - Status: `NOT_STARTED`

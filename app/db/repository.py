@@ -57,7 +57,24 @@ def insert_approval(db: Session, item: ApprovalItem) -> None:
 
 def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
     rows = db.execute(select(WorkflowRunORM)).scalars().all()
-    return [EmailWorkflowResponse.model_validate(row) for row in rows]
+    snapshots = {
+        snapshot.workflow_id: snapshot
+        for snapshot in db.execute(select(WorkflowStateSnapshotORM)).scalars().all()
+    }
+    results: list[EmailWorkflowResponse] = []
+    for row in rows:
+        response = EmailWorkflowResponse.model_validate(row)
+        snapshot = snapshots.get(row.workflow_id)
+        outputs = snapshot.state_json.get("outputs") if snapshot and isinstance(snapshot.state_json, dict) else None
+        if isinstance(outputs, dict):
+            response = response.model_copy(
+                update={
+                    "llm_diagnostic_code": outputs.get("llm_diagnostic_code"),
+                    "llm_diagnostic_detail": outputs.get("llm_diagnostic_detail"),
+                }
+            )
+        results.append(response)
+    return results
 
 
 def list_pending_approvals(db: Session) -> list[ApprovalItem]:

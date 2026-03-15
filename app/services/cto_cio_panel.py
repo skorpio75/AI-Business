@@ -74,11 +74,23 @@ class CTOCIOPanelService:
                     "model_used": generation.model_used,
                     "local_llm_invoked": generation.local_llm_invoked,
                     "cloud_llm_invoked": generation.cloud_llm_invoked,
+                    "llm_diagnostic_code": generation.llm_diagnostic_code,
+                    "llm_diagnostic_detail": generation.llm_diagnostic_detail,
                     **generation.content,
                 }
             )
         except Exception:
-            return fallback_response
+            return fallback_response.model_copy(
+                update=self._fallback_generation_metadata(
+                    generation.provider_used,
+                    generation.model_used,
+                    generation.local_llm_invoked,
+                    generation.cloud_llm_invoked,
+                    generation.llm_diagnostic_code,
+                    generation.llm_diagnostic_detail,
+                    "The structured CTO/CIO panel response did not match the expected schema, so the rule-based panel was returned.",
+                )
+            )
 
     def _build_fallback_panel(self, agent: AgentContract) -> CTOCIOPanelResponse:
         scope_insights = [
@@ -251,6 +263,8 @@ class CTOCIOPanelService:
             model_used="rules-v1",
             local_llm_invoked=False,
             cloud_llm_invoked=False,
+            llm_diagnostic_code=None,
+            llm_diagnostic_detail=None,
             scope_insights=scope_insights,
             strategy_options=counsel.strategy_options,
             architecture_advice=counsel.architecture_advice,
@@ -307,10 +321,24 @@ class CTOCIOPanelService:
             prompt=prompt,
             fallback_payload=fallback_counsel.model_dump(),
         )
+        response_provider_used = generation.provider_used
+        response_model_used = generation.model_used
+        response_diagnostic_code = generation.llm_diagnostic_code
+        response_diagnostic_detail = generation.llm_diagnostic_detail
         try:
             counsel = CTOCIOCounselOutput.model_validate(generation.content)
         except Exception:
             counsel = fallback_counsel
+            response_provider_used = "fallback-rule"
+            response_model_used = "rules-v1"
+            response_diagnostic_code = self._combine_diagnostic_code(
+                generation.llm_diagnostic_code,
+                "structured_response_validation_failed",
+            )
+            response_diagnostic_detail = self._combine_diagnostic_detail(
+                generation.llm_diagnostic_detail,
+                "The structured CTO/CIO analysis response did not match the expected schema, so the rule-based advisory output was returned.",
+            )
 
         return CTOCIOAnalysisResponse(
             agent_id=agent.agent_id,
@@ -319,10 +347,12 @@ class CTOCIOPanelService:
             primary_track=agent.deployment.primary_track,
             operating_modes=agent.operating_modes,
             tool_profile_by_mode=agent.tool_profile_by_mode,
-            provider_used=generation.provider_used,
-            model_used=generation.model_used,
+            provider_used=response_provider_used,
+            model_used=response_model_used,
             local_llm_invoked=generation.local_llm_invoked,
             cloud_llm_invoked=generation.cloud_llm_invoked,
+            llm_diagnostic_code=response_diagnostic_code,
+            llm_diagnostic_detail=response_diagnostic_detail,
             analysis_summary=counsel.analysis_summary,
             mission_assessment=counsel.mission_assessment,
             context_signals=counsel.context_signals,
@@ -805,6 +835,55 @@ class CTOCIOPanelService:
 
     def _contains_any(self, text: str, *keywords: str) -> bool:
         return any(keyword in text for keyword in keywords)
+
+    def _combine_diagnostic_code(self, *codes: str | None) -> str | None:
+        unique_codes = []
+        for code in codes:
+            if code and code not in unique_codes:
+                unique_codes.append(code)
+        if not unique_codes:
+            return None
+        if len(unique_codes) == 1:
+            return unique_codes[0]
+        return "multiple_llm_failures"
+
+    def _combine_diagnostic_detail(self, *details: str | None) -> str | None:
+        unique_details = []
+        for detail in details:
+            if detail and detail not in unique_details:
+                unique_details.append(detail)
+        if not unique_details:
+            return None
+        return " ".join(unique_details)
+
+    def _fallback_generation_metadata(
+        self,
+        provider_used: str,
+        model_used: str,
+        local_llm_invoked: bool,
+        cloud_llm_invoked: bool,
+        llm_diagnostic_code: str | None,
+        llm_diagnostic_detail: str | None,
+        validation_detail: str,
+    ) -> dict[str, str | bool | None]:
+        attempted_path = None
+        if provider_used != "fallback-rule":
+            attempted_path = f"Attempted model path before fallback: {provider_used} / {model_used}."
+        return {
+            "provider_used": "fallback-rule",
+            "model_used": "rules-v1",
+            "local_llm_invoked": local_llm_invoked,
+            "cloud_llm_invoked": cloud_llm_invoked,
+            "llm_diagnostic_code": self._combine_diagnostic_code(
+                llm_diagnostic_code,
+                "structured_response_validation_failed",
+            ),
+            "llm_diagnostic_detail": self._combine_diagnostic_detail(
+                llm_diagnostic_detail,
+                validation_detail,
+                attempted_path,
+            ),
+        }
 
     def _format_list(self, items: list[str]) -> str:
         if not items:

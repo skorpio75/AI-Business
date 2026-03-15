@@ -23,6 +23,8 @@ class GenerationResult:
     escalation_reason: Optional[str] = None
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
 
 
 @dataclass
@@ -32,6 +34,8 @@ class TextGenerationResult:
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
 
 
 @dataclass
@@ -41,6 +45,8 @@ class StructuredGenerationResult:
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
 
 
 class ModelGateway:
@@ -77,11 +83,42 @@ class ModelGateway:
             model_used="rules-v1",
         )
 
+    def _clean_exception_message(self, exc: Exception) -> str:
+        message = " ".join(str(exc).split())
+        if message:
+            return message[:240]
+        return exc.__class__.__name__
+
+    def _select_diagnostic_code(self, *codes: Optional[str]) -> Optional[str]:
+        unique_codes = []
+        for code in codes:
+            if code and code not in unique_codes:
+                unique_codes.append(code)
+        if not unique_codes:
+            return None
+        if len(unique_codes) == 1:
+            return unique_codes[0]
+        return "multiple_llm_failures"
+
+    def _join_diagnostic_details(self, *details: Optional[str]) -> Optional[str]:
+        unique_details = []
+        for detail in details:
+            if detail and detail not in unique_details:
+                unique_details.append(detail)
+        if not unique_details:
+            return None
+        return " ".join(unique_details)
+
     def _call_model(
         self, *, provider: str, model: str, prompt: str
-    ) -> tuple[Optional[GenerationResult], bool]:
+    ) -> tuple[Optional[GenerationResult], bool, Optional[str], Optional[str]]:
         if completion is None:
-            return None, False
+            return (
+                None,
+                False,
+                "litellm_unavailable",
+                "LiteLLM is not available in this environment, so provider-backed model calls could not run.",
+            )
 
         kwargs = {
             "model": model,
@@ -112,11 +149,24 @@ class ModelGateway:
                     cloud_llm_invoked=provider == "cloud",
                 ),
                 True,
+                None,
+                None,
             )
-        except Exception:
-            return None, True
+        except Exception as exc:
+            provider_label = "cloud" if provider == "cloud" else provider
+            return (
+                None,
+                True,
+                f"{provider_label}_llm_request_failed",
+                f"{provider_label.capitalize()} model request failed: {self._clean_exception_message(exc)}.",
+            )
 
-    def _ollama_request(self, *, path: str, payload: Optional[dict] = None) -> Optional[dict]:
+    def _ollama_request(
+        self,
+        *,
+        path: str,
+        payload: Optional[dict] = None,
+    ) -> tuple[Optional[dict], Optional[str], Optional[str]]:
         body = None
         headers = {}
         method = "GET"
@@ -133,9 +183,31 @@ class ModelGateway:
         )
         try:
             with urllib_request.urlopen(req, timeout=self.model_timeout_seconds) as response:
-                return json.loads(response.read().decode("utf-8"))
-        except (urllib_error.URLError, TimeoutError, json.JSONDecodeError, OSError):
-            return None
+                return json.loads(response.read().decode("utf-8")), None, None
+        except urllib_error.URLError as exc:
+            return (
+                None,
+                "local_ollama_unreachable",
+                f"Could not reach Ollama at {self.settings.ollama_base_url.rstrip('/')}{path}: {self._clean_exception_message(exc)}.",
+            )
+        except TimeoutError as exc:
+            return (
+                None,
+                "local_ollama_timeout",
+                f"Ollama timed out while serving {path}: {self._clean_exception_message(exc)}.",
+            )
+        except json.JSONDecodeError:
+            return (
+                None,
+                "local_ollama_invalid_response",
+                f"Ollama returned a non-JSON response for {path}.",
+            )
+        except OSError as exc:
+            return (
+                None,
+                "local_ollama_request_failed",
+                f"Ollama request for {path} failed: {self._clean_exception_message(exc)}.",
+            )
 
     def _parse_json_object(self, content: str) -> Optional[dict]:
         try:
@@ -152,10 +224,10 @@ class ModelGateway:
                     return None
             return None
 
-    def _list_local_ollama_models(self) -> list[str]:
-        payload = self._ollama_request(path="/api/tags")
+    def _list_local_ollama_models(self) -> tuple[list[str], Optional[str], Optional[str]]:
+        payload, diagnostic_code, diagnostic_detail = self._ollama_request(path="/api/tags")
         if not payload:
-            return []
+            return [], diagnostic_code, diagnostic_detail
 
         models: list[str] = []
         for item in payload.get("models", []):
@@ -164,19 +236,25 @@ class ModelGateway:
             name = str(item.get("name") or item.get("model") or "").strip()
             if name:
                 models.append(name)
-        return models
+        return models, None, None
 
-    def _resolve_local_model_name(self) -> Optional[str]:
+    def _resolve_local_model_name(self) -> tuple[Optional[str], Optional[str], Optional[str]]:
         if self._resolved_local_model:
-            return self._resolved_local_model
+            return self._resolved_local_model, None, None
 
-        available = self._list_local_ollama_models()
+        available, diagnostic_code, diagnostic_detail = self._list_local_ollama_models()
+        if diagnostic_code:
+            return None, diagnostic_code, diagnostic_detail
         if not available:
-            return None
+            return (
+                None,
+                "local_model_unavailable",
+                "Ollama is reachable, but no local models are installed for the configured gateway.",
+            )
 
         if self.settings.local_model in available:
             self._resolved_local_model = self.settings.local_model
-            return self._resolved_local_model
+            return self._resolved_local_model, None, None
 
         preferred = [
             "qwen2.5:1.5b",
@@ -186,19 +264,19 @@ class ModelGateway:
         for name in preferred:
             if name in available:
                 self._resolved_local_model = name
-                return self._resolved_local_model
+                return self._resolved_local_model, None, None
 
         self._resolved_local_model = available[0]
-        return self._resolved_local_model
+        return self._resolved_local_model, None, None
 
     def _call_local_ollama_structured(
         self, *, prompt: str
-    ) -> tuple[Optional[GenerationResult], bool]:
-        model_name = self._resolve_local_model_name()
+    ) -> tuple[Optional[GenerationResult], bool, Optional[str], Optional[str]]:
+        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name()
         if not model_name:
-            return None, False
+            return None, False, diagnostic_code, diagnostic_detail
 
-        payload = self._ollama_request(
+        payload, request_code, request_detail = self._ollama_request(
             path="/api/generate",
             payload={
                 "model": model_name,
@@ -209,30 +287,53 @@ class ModelGateway:
             },
         )
         if not payload:
-            return None, True
+            return None, True, request_code, request_detail
 
         content = str(payload.get("response") or "").strip()
         parsed = self._parse_json_object(content)
         if not parsed:
-            return None, True
+            return (
+                None,
+                True,
+                "local_llm_invalid_json",
+                f"Local model ollama/{model_name} returned content that could not be parsed as structured JSON.",
+            )
+        try:
+            intent = str(parsed["intent"])
+            confidence = float(parsed["confidence"])
+            draft_reply = str(parsed["draft_reply"])
+        except (KeyError, TypeError, ValueError):
+            return (
+                None,
+                True,
+                "local_llm_invalid_schema",
+                f"Local model ollama/{model_name} returned JSON, but it did not include the expected email drafting fields.",
+            )
 
         return (
             GenerationResult(
-                intent=str(parsed["intent"]),
-                confidence=float(parsed["confidence"]),
-                draft_reply=str(parsed["draft_reply"]),
+                intent=intent,
+                confidence=confidence,
+                draft_reply=draft_reply,
                 provider_used="local",
                 model_used=f"ollama/{model_name}",
                 local_llm_invoked=True,
             ),
             True,
+            None,
+            None,
         )
 
     def _call_text_model(
         self, *, provider: str, model: str, prompt: str
-    ) -> tuple[Optional[TextGenerationResult], bool]:
+    ) -> tuple[Optional[TextGenerationResult], bool, Optional[str], Optional[str]]:
         if completion is None:
-            return None, False
+            return (
+                None,
+                False,
+                "litellm_unavailable",
+                "LiteLLM is not available in this environment, so provider-backed text generation could not run.",
+            )
 
         kwargs = {
             "model": model,
@@ -260,18 +361,26 @@ class ModelGateway:
                     cloud_llm_invoked=provider == "cloud",
                 ),
                 True,
+                None,
+                None,
             )
-        except Exception:
-            return None, True
+        except Exception as exc:
+            provider_label = "cloud" if provider == "cloud" else provider
+            return (
+                None,
+                True,
+                f"{provider_label}_llm_request_failed",
+                f"{provider_label.capitalize()} text generation failed: {self._clean_exception_message(exc)}.",
+            )
 
     def _call_local_ollama_text(
         self, *, prompt: str
-    ) -> tuple[Optional[TextGenerationResult], bool]:
-        model_name = self._resolve_local_model_name()
+    ) -> tuple[Optional[TextGenerationResult], bool, Optional[str], Optional[str]]:
+        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name()
         if not model_name:
-            return None, False
+            return None, False, diagnostic_code, diagnostic_detail
 
-        payload = self._ollama_request(
+        payload, request_code, request_detail = self._ollama_request(
             path="/api/generate",
             payload={
                 "model": model_name,
@@ -281,11 +390,16 @@ class ModelGateway:
             },
         )
         if not payload:
-            return None, True
+            return None, True, request_code, request_detail
 
         content = str(payload.get("response") or "").strip()
         if not content:
-            return None, True
+            return (
+                None,
+                True,
+                "local_llm_empty_response",
+                f"Local model ollama/{model_name} returned an empty text response.",
+            )
 
         return (
             TextGenerationResult(
@@ -295,6 +409,8 @@ class ModelGateway:
                 local_llm_invoked=True,
             ),
             True,
+            None,
+            None,
         )
 
     def draft_email(
@@ -334,10 +450,14 @@ class ModelGateway:
             },
         )
 
-        local_result, local_structured_invoked = self._call_local_ollama_structured(prompt=prompt)
+        local_result, local_structured_invoked, local_structured_code, local_structured_detail = (
+            self._call_local_ollama_structured(prompt=prompt)
+        )
         local_llm_invoked = local_structured_invoked
         if local_result is None:
-            local_text, local_text_invoked = self._call_local_ollama_text(prompt=draft_prompt)
+            local_text, local_text_invoked, local_text_code, local_text_detail = self._call_local_ollama_text(
+                prompt=draft_prompt
+            )
             local_llm_invoked = local_llm_invoked or local_text_invoked
             if local_text is not None:
                 intent, confidence = self._heuristic_classification(subject, body)
@@ -349,10 +469,27 @@ class ModelGateway:
                     model_used=local_text.model_used,
                     local_llm_invoked=local_llm_invoked,
                     cloud_llm_invoked=local_text.cloud_llm_invoked,
+                    llm_diagnostic_code=local_structured_code,
+                    llm_diagnostic_detail=self._join_diagnostic_details(
+                        local_structured_detail,
+                        "Structured email classification failed, so the gateway reused local plain-text output for the draft.",
+                    ),
                 )
+        else:
+            local_text_code = None
+            local_text_detail = None
         if local_result is None:
             fallback_result = self._heuristic_fallback(subject, body)
             fallback_result.local_llm_invoked = local_llm_invoked
+            fallback_result.llm_diagnostic_code = self._select_diagnostic_code(
+                local_structured_code,
+                local_text_code,
+            )
+            fallback_result.llm_diagnostic_detail = self._join_diagnostic_details(
+                local_structured_detail,
+                local_text_detail,
+                "Rule-based fallback was used because local email drafting did not produce a usable result.",
+            )
             return fallback_result
 
         needs_cloud = (
@@ -371,9 +508,17 @@ class ModelGateway:
         if not self.settings.openrouter_api_key:
             local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             local_result.escalation_reason = "cloud_unconfigured_used_local"
+            local_result.llm_diagnostic_code = self._select_diagnostic_code(
+                local_result.llm_diagnostic_code,
+                "cloud_unconfigured",
+            )
+            local_result.llm_diagnostic_detail = self._join_diagnostic_details(
+                local_result.llm_diagnostic_detail,
+                "Cloud escalation was skipped because OPENROUTER_API_KEY is not configured.",
+            )
             return local_result
 
-        cloud_result, cloud_llm_invoked = self._call_model(
+        cloud_result, cloud_llm_invoked, cloud_code, cloud_detail = self._call_model(
             provider="cloud",
             model=f"openrouter/{self.settings.cloud_model}",
             prompt=prompt,
@@ -382,22 +527,35 @@ class ModelGateway:
             local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             local_result.cloud_llm_invoked = cloud_llm_invoked
             local_result.escalation_reason = "cloud_unavailable_used_local"
+            local_result.llm_diagnostic_code = self._select_diagnostic_code(
+                local_result.llm_diagnostic_code,
+                cloud_code,
+            )
+            local_result.llm_diagnostic_detail = self._join_diagnostic_details(
+                local_result.llm_diagnostic_detail,
+                cloud_detail,
+                "The workflow kept the local draft because cloud escalation did not produce a usable result.",
+            )
             return local_result
 
         cloud_result.local_llm_invoked = local_llm_invoked
         cloud_result.cloud_llm_invoked = cloud_llm_invoked or cloud_result.cloud_llm_invoked
         cloud_result.escalation_reason = "routed_to_cloud"
+        cloud_result.llm_diagnostic_code = local_result.llm_diagnostic_code
+        cloud_result.llm_diagnostic_detail = local_result.llm_diagnostic_detail
         return cloud_result
 
     def generate_text(self, *, prompt: str, fallback_content: str) -> TextGenerationResult:
-        local_result, local_llm_invoked = self._call_local_ollama_text(prompt=prompt)
+        local_result, local_llm_invoked, local_code, local_detail = self._call_local_ollama_text(prompt=prompt)
         if local_result is not None:
             local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             return local_result
 
         cloud_llm_invoked = False
+        cloud_code = None
+        cloud_detail = None
         if not self.settings.force_local_only and self.settings.openrouter_api_key:
-            cloud_result, cloud_llm_invoked = self._call_text_model(
+            cloud_result, cloud_llm_invoked, cloud_code, cloud_detail = self._call_text_model(
                 provider="cloud",
                 model=f"openrouter/{self.settings.cloud_model}",
                 prompt=prompt,
@@ -405,7 +563,18 @@ class ModelGateway:
             if cloud_result is not None:
                 cloud_result.local_llm_invoked = local_llm_invoked
                 cloud_result.cloud_llm_invoked = cloud_llm_invoked or cloud_result.cloud_llm_invoked
+                cloud_result.llm_diagnostic_code = local_code
+                cloud_result.llm_diagnostic_detail = self._join_diagnostic_details(
+                    local_detail,
+                    "Cloud text generation produced the final output after the local path failed.",
+                )
                 return cloud_result
+        elif self.settings.force_local_only:
+            cloud_code = "force_local_only_enabled"
+            cloud_detail = "Cloud fallback was skipped because force_local_only is enabled."
+        else:
+            cloud_code = "cloud_unconfigured"
+            cloud_detail = "Cloud fallback was skipped because OPENROUTER_API_KEY is not configured."
 
         return TextGenerationResult(
             content=fallback_content,
@@ -413,6 +582,12 @@ class ModelGateway:
             model_used="rules-v1",
             local_llm_invoked=local_llm_invoked,
             cloud_llm_invoked=cloud_llm_invoked,
+            llm_diagnostic_code=self._select_diagnostic_code(local_code, cloud_code),
+            llm_diagnostic_detail=self._join_diagnostic_details(
+                local_detail,
+                cloud_detail,
+                "Rule-based fallback content was returned because no LLM path produced a usable result.",
+            ),
         )
 
     def generate_structured_json(
@@ -421,12 +596,16 @@ class ModelGateway:
         prompt: str,
         fallback_payload: dict,
     ) -> StructuredGenerationResult:
-        local_structured, local_llm_invoked = self._call_local_ollama_structured_json(prompt=prompt)
+        local_structured, local_llm_invoked, local_structured_code, local_structured_detail = (
+            self._call_local_ollama_structured_json(prompt=prompt)
+        )
         if local_structured is not None:
             local_structured.local_llm_invoked = local_llm_invoked or local_structured.local_llm_invoked
             return local_structured
 
-        local_text, local_text_invoked = self._call_local_ollama_text(prompt=prompt)
+        local_text, local_text_invoked, local_text_code, local_text_detail = self._call_local_ollama_text(
+            prompt=prompt
+        )
         local_llm_invoked = local_llm_invoked or local_text_invoked
         if local_text is not None:
             parsed = self._parse_json_object(local_text.content)
@@ -437,11 +616,22 @@ class ModelGateway:
                     model_used=local_text.model_used,
                     local_llm_invoked=local_llm_invoked or local_text.local_llm_invoked,
                     cloud_llm_invoked=local_text.cloud_llm_invoked,
+                    llm_diagnostic_code=local_structured_code,
+                    llm_diagnostic_detail=self._join_diagnostic_details(
+                        local_structured_detail,
+                        "Structured JSON mode failed, but the gateway recovered by parsing the local text response.",
+                    ),
                 )
+            local_text_code = "local_llm_invalid_json"
+            local_text_detail = (
+                f"Local model {local_text.model_used} returned text, but it was not valid JSON for a structured response."
+            )
 
         cloud_llm_invoked = False
+        cloud_code = None
+        cloud_detail = None
         if not self.settings.force_local_only and self.settings.openrouter_api_key:
-            cloud_text, cloud_llm_invoked = self._call_text_model(
+            cloud_text, cloud_llm_invoked, cloud_code, cloud_detail = self._call_text_model(
                 provider="cloud",
                 model=f"openrouter/{self.settings.cloud_model}",
                 prompt=prompt,
@@ -455,7 +645,26 @@ class ModelGateway:
                         model_used=cloud_text.model_used,
                         local_llm_invoked=local_llm_invoked,
                         cloud_llm_invoked=cloud_llm_invoked or cloud_text.cloud_llm_invoked,
+                        llm_diagnostic_code=self._select_diagnostic_code(
+                            local_structured_code,
+                            local_text_code,
+                        ),
+                        llm_diagnostic_detail=self._join_diagnostic_details(
+                            local_structured_detail,
+                            local_text_detail,
+                            "Cloud model produced the final structured output after local attempts failed.",
+                        ),
                     )
+                cloud_code = "cloud_llm_invalid_json"
+                cloud_detail = (
+                    f"Cloud model {cloud_text.model_used} returned text, but it was not valid JSON for a structured response."
+                )
+        elif self.settings.force_local_only:
+            cloud_code = "force_local_only_enabled"
+            cloud_detail = "Cloud fallback was skipped because force_local_only is enabled."
+        else:
+            cloud_code = "cloud_unconfigured"
+            cloud_detail = "Cloud fallback was skipped because OPENROUTER_API_KEY is not configured."
 
         return StructuredGenerationResult(
             content=fallback_payload,
@@ -463,18 +672,29 @@ class ModelGateway:
             model_used="rules-v1",
             local_llm_invoked=local_llm_invoked,
             cloud_llm_invoked=cloud_llm_invoked,
+            llm_diagnostic_code=self._select_diagnostic_code(
+                local_structured_code,
+                local_text_code,
+                cloud_code,
+            ),
+            llm_diagnostic_detail=self._join_diagnostic_details(
+                local_structured_detail,
+                local_text_detail,
+                cloud_detail,
+                "Rule-based structured fallback was returned because no LLM path produced valid JSON.",
+            ),
         )
 
     def _call_local_ollama_structured_json(
         self,
         *,
         prompt: str,
-    ) -> tuple[Optional[StructuredGenerationResult], bool]:
-        model_name = self._resolve_local_model_name()
+    ) -> tuple[Optional[StructuredGenerationResult], bool, Optional[str], Optional[str]]:
+        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name()
         if not model_name:
-            return None, False
+            return None, False, diagnostic_code, diagnostic_detail
 
-        payload = self._ollama_request(
+        payload, request_code, request_detail = self._ollama_request(
             path="/api/generate",
             payload={
                 "model": model_name,
@@ -485,12 +705,17 @@ class ModelGateway:
             },
         )
         if not payload:
-            return None, True
+            return None, True, request_code, request_detail
 
         content = str(payload.get("response") or "").strip()
         parsed = self._parse_json_object(content)
         if parsed is None:
-            return None, True
+            return (
+                None,
+                True,
+                "local_llm_invalid_json",
+                f"Local model ollama/{model_name} returned content that was not valid JSON for structured output.",
+            )
 
         return (
             StructuredGenerationResult(
@@ -500,4 +725,6 @@ class ModelGateway:
                 local_llm_invoked=True,
             ),
             True,
+            None,
+            None,
         )

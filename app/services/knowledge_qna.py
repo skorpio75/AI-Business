@@ -39,6 +39,10 @@ class KnowledgeQnAService:
                 model_used="rules-v1",
                 local_llm_invoked=False,
                 cloud_llm_invoked=False,
+                llm_diagnostic_code="knowledge_context_missing",
+                llm_diagnostic_detail=(
+                    "No grounded citations were available for this question, so the service returned the built-in non-LLM fallback answer."
+                ),
             )
 
         context = "\n\n".join(
@@ -70,6 +74,8 @@ class KnowledgeQnAService:
             model_used=generation.model_used,
             local_llm_invoked=generation.local_llm_invoked,
             cloud_llm_invoked=generation.cloud_llm_invoked,
+            llm_diagnostic_code=generation.llm_diagnostic_code,
+            llm_diagnostic_detail=generation.llm_diagnostic_detail,
         )
 
     def _fallback_answer(

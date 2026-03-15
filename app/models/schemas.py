@@ -49,6 +49,8 @@ class EmailDraftResult(BaseModel):
     escalation_reason: Optional[str] = None
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
 
 
 class EmailWorkflowResponse(BaseModel):
@@ -65,6 +67,8 @@ class EmailWorkflowResponse(BaseModel):
     escalation_reason: Optional[str] = None
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
     approval_status: ApprovalStatus = "pending"
     send_status: SendStatus = "not_applicable"
     sent_at: Optional[datetime] = None
@@ -134,6 +138,8 @@ class KnowledgeQueryResponse(BaseModel):
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
 
 
 class ProposalGenerationRequest(BaseModel):
@@ -154,6 +160,8 @@ class ProposalGenerationResponse(BaseModel):
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
 
 
 KpiTone = Literal["neutral", "success", "warning", "critical"]
@@ -218,6 +226,8 @@ class CTOCIOPanelResponse(BaseModel):
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
     scope_insights: list[CTOCIOScopeInsight] = Field(default_factory=list)
     strategy_options: list[StrategyOption] = Field(default_factory=list)
     architecture_advice: ArchitectureAdvice
@@ -236,6 +246,8 @@ class CTOCIOAnalysisResponse(BaseModel):
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
     analysis_summary: str
     mission_assessment: MissionAssessment
     context_signals: list[ContextSignal] = Field(default_factory=list)
@@ -289,6 +301,8 @@ class ChiefAIPanelResponse(BaseModel):
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
     executive_summary: str
     scope_signals: list[ChiefAIScopeSignal] = Field(default_factory=list)
     opportunity_map: list[OpportunityMapItem] = Field(default_factory=list)
@@ -308,6 +322,8 @@ class ChiefAIAnalysisResponse(BaseModel):
     model_used: str
     local_llm_invoked: bool = False
     cloud_llm_invoked: bool = False
+    llm_diagnostic_code: Optional[str] = None
+    llm_diagnostic_detail: Optional[str] = None
     executive_summary: str
     mission_assessment: MissionAssessment
     context_signals: list[ContextSignal] = Field(default_factory=list)

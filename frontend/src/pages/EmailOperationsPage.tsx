@@ -134,6 +134,8 @@ export function EmailOperationsPage({ onCreated }: EmailOperationsPageProps) {
                 modelUsed={result.model_used}
                 localLlmInvoked={result.local_llm_invoked}
                 cloudLlmInvoked={result.cloud_llm_invoked}
+                llmDiagnosticCode={result.llm_diagnostic_code}
+                llmDiagnosticDetail={result.llm_diagnostic_detail}
               />
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>

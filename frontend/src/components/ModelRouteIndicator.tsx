@@ -5,6 +5,8 @@ type ModelRouteIndicatorProps = {
   modelUsed: string;
   localLlmInvoked: boolean;
   cloudLlmInvoked: boolean;
+  llmDiagnosticCode?: string | null;
+  llmDiagnosticDetail?: string | null;
   compact?: boolean;
 };
 
@@ -64,6 +66,8 @@ export function ModelRouteIndicator({
   modelUsed,
   localLlmInvoked,
   cloudLlmInvoked,
+  llmDiagnosticCode,
+  llmDiagnosticDetail,
   compact = false,
 }: ModelRouteIndicatorProps) {
   return (
@@ -83,6 +87,10 @@ export function ModelRouteIndicator({
         <div className="routing-indicator__copy">
           <p className="muted-note">{routingSummary(providerUsed, localLlmInvoked, cloudLlmInvoked)}</p>
           <p className="muted-note">Model path: {modelUsed}</p>
+          {llmDiagnosticDetail ? <p className="muted-note">Why: {llmDiagnosticDetail}</p> : null}
+          {!llmDiagnosticDetail && llmDiagnosticCode ? (
+            <p className="muted-note">Diagnostic: {llmDiagnosticCode}</p>
+          ) : null}
         </div>
       ) : null}
     </div>

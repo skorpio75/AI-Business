@@ -146,6 +146,8 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                   modelUsed={run.model_used}
                   localLlmInvoked={run.local_llm_invoked}
                   cloudLlmInvoked={run.cloud_llm_invoked}
+                  llmDiagnosticCode={run.llm_diagnostic_code}
+                  llmDiagnosticDetail={run.llm_diagnostic_detail}
                   compact
                 />
                 <div className="list-card__meta">
@@ -207,6 +209,8 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 modelUsed={selectedRun.model_used}
                 localLlmInvoked={selectedRun.local_llm_invoked}
                 cloudLlmInvoked={selectedRun.cloud_llm_invoked}
+                llmDiagnosticCode={selectedRun.llm_diagnostic_code}
+                llmDiagnosticDetail={selectedRun.llm_diagnostic_detail}
               />
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>

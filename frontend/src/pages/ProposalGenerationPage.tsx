@@ -120,6 +120,8 @@ export function ProposalGenerationPage() {
                 modelUsed={result.model_used}
                 localLlmInvoked={result.local_llm_invoked}
                 cloudLlmInvoked={result.cloud_llm_invoked}
+                llmDiagnosticCode={result.llm_diagnostic_code}
+                llmDiagnosticDetail={result.llm_diagnostic_detail}
               />
               <div className="callout callout--soft">
                 <p className="eyebrow">Executive summary</p>

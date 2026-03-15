@@ -9,6 +9,8 @@ export type WorkflowRun = {
   model_used: string;
   local_llm_invoked: boolean;
   cloud_llm_invoked: boolean;
+  llm_diagnostic_code?: string | null;
+  llm_diagnostic_detail?: string | null;
   escalation_reason?: string | null;
   approval_status: "pending" | "approved" | "rejected" | "edited";
   send_status: "pending" | "sent" | "not_applicable";
@@ -148,6 +150,8 @@ export type KnowledgeQueryResponse = {
   model_used: string;
   local_llm_invoked: boolean;
   cloud_llm_invoked: boolean;
+  llm_diagnostic_code?: string | null;
+  llm_diagnostic_detail?: string | null;
 };
 
 export type ProposalGenerationResponse = {
@@ -161,6 +165,8 @@ export type ProposalGenerationResponse = {
   model_used: string;
   local_llm_invoked: boolean;
   cloud_llm_invoked: boolean;
+  llm_diagnostic_code?: string | null;
+  llm_diagnostic_detail?: string | null;
 };
 
 export type DashboardKpi = {
@@ -249,6 +255,8 @@ export type CTOCIOPanel = {
   model_used: string;
   local_llm_invoked: boolean;
   cloud_llm_invoked: boolean;
+  llm_diagnostic_code?: string | null;
+  llm_diagnostic_detail?: string | null;
   scope_insights: CTOCIOScopeInsight[];
   strategy_options: StrategyOption[];
   architecture_advice: ArchitectureAdvice;
@@ -355,6 +363,8 @@ export type ChiefAIPanel = {
   model_used: string;
   local_llm_invoked: boolean;
   cloud_llm_invoked: boolean;
+  llm_diagnostic_code?: string | null;
+  llm_diagnostic_detail?: string | null;
   executive_summary: string;
   scope_signals: ChiefAIScopeSignal[];
   opportunity_map: OpportunityMapItem[];

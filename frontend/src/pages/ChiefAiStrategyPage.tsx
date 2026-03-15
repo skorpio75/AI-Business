@@ -138,6 +138,8 @@ export function ChiefAiStrategyPage({ refreshToken }: ChiefAiStrategyPageProps) 
                   modelUsed={panel.model_used}
                   localLlmInvoked={panel.local_llm_invoked}
                   cloudLlmInvoked={panel.cloud_llm_invoked}
+                  llmDiagnosticCode={panel.llm_diagnostic_code}
+                  llmDiagnosticDetail={panel.llm_diagnostic_detail}
                 />
               </div>
 

@@ -145,6 +145,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - pod ownership for Growth, Delivery, Ops, and Executive work
 - normalized events and triggers for workflow start and stage progression
 - canonical state objects for opportunity, project, run, and approval state
+- explicit ownership and persistence mapping for opportunity, project, run, and approval state in backend contracts/config
 - normalized tool taxonomy and permissions
 - autonomy classes that bound what agent instances may do
 - a modular prompt model that separates family-level base prompts from workflow-step prompts

@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 3 - Track A Internal MVP Workflows`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: return to state ownership and tool-permission profile mapping, then resume the remaining Phase 3 UI panels
+- Immediate goal: complete tool-permission profile mapping, then resume the remaining Phase 3 UI panels
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,6 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P2-T17` Define state ownership and persistence mapping for `opportunity_state`, `project_state`, `run_state`, and `approval_state`
 - [ ] `P2-T18` Define normalized tool permission profiles by agent family and operating mode
 
 ## Soon After
@@ -28,6 +27,7 @@
 - [ ] `P3-T14` Add Chief AI/Digital Strategy panel (opportunity portfolio, AI/data roadmap, delivery guidance cards)
 
 ## Recently Finished
+- [x] `P2-T17` Add typed backend ownership and persistence contracts for `opportunity_state`, `project_state`, `run_state`, and `approval_state`, and mirror the same mapping into base config
 - [x] `P3-T16` Add provider bootstrap, secret handling, refresh-token lifecycle support, and bootstrap-status diagnostics for Google and Microsoft inbox/calendar connectors
 - [x] `P2-T16` Add backend control-plane contracts for normalized event names, approval classes, and autonomy classes, and enrich workflow config with trigger/emitted-event/control metadata
 - [x] `H-T03` Align the current markdown agent/workflow spec set with pod ownership, operating modes, state objects, emitted events, approval gates, and cross-agent handoff roles

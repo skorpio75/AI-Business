@@ -1,0 +1,97 @@
+state_registry:
+  ownership:
+    - state_id: opportunity_state
+      primary_owner: growth_pod
+      steward: Lead Intake Agent
+      typical_writers:
+        - Lead Intake Agent
+        - Account Research Agent
+        - Qualification Agent
+        - Proposal / SOW Agent
+      consuming_workflows:
+        - proposal-generation
+        - growth qualification
+        - account research
+
+    - state_id: project_state
+      primary_owner: delivery_pod
+      steward: PMO / Project Control Agent
+      typical_writers:
+        - PMO / Project Control Agent
+        - Project Management / Delivery Coordination Agent
+        - BA / Requirements Agent
+        - Architect Agent
+        - Build / Automation Agent
+        - QA / Review Agent
+        - Documentation Agent
+      consuming_workflows:
+        - project-management
+        - quality-testing-gate
+        - documentation-handover
+
+    - state_id: run_state
+      primary_owner: workflow_orchestration_layer
+      steward: Mission Control Agent
+      typical_writers:
+        - LangGraph workflow runner
+        - workflow services
+        - approval resolution path
+      consuming_workflows:
+        - email-operations
+        - knowledge-qna
+        - proposal-generation
+        - project-management
+
+    - state_id: approval_state
+      primary_owner: policy_and_approval_layer
+      steward: CEO approval control
+      typical_writers:
+        - approval queue
+        - workflow approval steps
+        - approval decision API
+      consuming_workflows:
+        - email-operations
+        - billing-operations
+        - procurement-po
+        - documentation-handover
+
+  persistence:
+    - state_id: opportunity_state
+      persistence_status: planned
+      canonical_store_kind: postgres_entity_table
+      serialization_kind: structured_columns
+      physical_target: future opportunity_state table or shared-workspace entity store
+      repository_functions: []
+      notes: Opportunity ownership is defined, but the current MVP does not yet persist a canonical opportunity entity in the backend.
+
+    - state_id: project_state
+      persistence_status: planned
+      canonical_store_kind: postgres_entity_table
+      serialization_kind: structured_columns
+      physical_target: future project_state table or shared-workspace entity store
+      repository_functions: []
+      notes: Project ownership is defined, but the current MVP does not yet persist a canonical project entity in the backend.
+
+    - state_id: run_state
+      persistence_status: active
+      canonical_store_kind: json_snapshot
+      serialization_kind: hybrid_projection
+      physical_target: workflow_state_snapshots.state_json plus workflow_runs operational projection
+      repository_functions:
+        - upsert_workflow_state
+        - resolve_workflow_state
+        - insert_workflow_run
+        - update_workflow_run_resolution
+      notes: Run state is persisted today through workflow snapshots and a workflow-runs projection used by Mission Control surfaces.
+
+    - state_id: approval_state
+      persistence_status: active
+      canonical_store_kind: policy_record
+      serialization_kind: structured_columns
+      physical_target: approvals table
+      repository_functions:
+        - insert_approval
+        - upsert_approval
+        - get_approval
+        - list_pending_approvals
+      notes: Approval state is persisted today as first-class approval records, with workflow-state snapshots carrying approval outcome echoes for run visibility.

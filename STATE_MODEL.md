@@ -128,3 +128,41 @@ Define the canonical operating state objects that workflows, agents, approvals, 
 - Delivery pod primarily owns `project_state`
 - workflow orchestration owns `run_state`
 - policy and approval controls own `approval_state`
+
+## Backend Contract Mapping
+The backend contract layer mirrors this model in:
+
+- `app/models/operating_state.py` for typed ownership and persistence contracts
+- `config/base/state_registry.yaml` for config-level ownership and persistence mapping
+
+## Persistence Mapping Summary
+
+### `opportunity_state`
+- Persistence status: `planned`
+- Intended canonical store: future PostgreSQL entity table or shared-workspace entity store
+- Current reality: not yet persisted as a first-class backend entity
+
+### `project_state`
+- Persistence status: `planned`
+- Intended canonical store: future PostgreSQL entity table or shared-workspace entity store
+- Current reality: not yet persisted as a first-class backend entity
+
+### `run_state`
+- Persistence status: `active`
+- Canonical store today: `workflow_state_snapshots.state_json`
+- Supporting projection: `workflow_runs`
+- Current repository paths:
+  - `upsert_workflow_state`
+  - `resolve_workflow_state`
+  - `insert_workflow_run`
+  - `update_workflow_run_resolution`
+
+### `approval_state`
+- Persistence status: `active`
+- Canonical store today: `approvals`
+- Supporting echo into workflow visibility: approval outcomes are copied into workflow snapshot outputs for run visibility
+- Current repository paths:
+  - `insert_approval`
+  - `upsert_approval`
+  - `get_approval`
+  - `list_pending_approvals`

@@ -15,6 +15,23 @@ Each workflow should increasingly specify:
 
 ## Cross-Agent Handoff Templates
 
+### Lead Signal to Opportunity Intake
+- Start event: `lead.signal.detected` or operator manual entry
+- Pod owner: `Growth`
+- State objects: `opportunity_state`, `run_state`
+- Handoff:
+  1. Lead Intake Agent receives a raw commercial signal
+  2. normalize source metadata into a lead candidate
+  3. deduplicate against known contacts, clients, and open opportunities
+  4. either materialize automatically or route review
+  5. if materialized, create or update `opportunity_state`
+  6. emit `lead.received` for the downstream opportunity workflow
+- Emitted events:
+  - `lead.candidate.created`
+  - `lead.review.requested` when the signal is ambiguous or incomplete
+  - `lead.materialized`
+  - `lead.received`
+
 ### Opportunity to Proposal
 - Start event: `lead.received`
 - Pod owner: `Growth`
@@ -34,6 +51,24 @@ Each workflow should increasingly specify:
   - `proposal.requested`
   - `proposal.submitted`
   - `approval.pending` when approval is required
+
+### Signed Scope to Mission Startup
+- Start event: `contract.signed`
+- Pod owner: `Growth` plus `Executive` and later `Delivery`
+- State objects: `opportunity_state`, `run_state`, `approval_state`
+- Handoff:
+  1. confirm signed scope, contract terms, and mission statement
+  2. prepare a `dispatch_candidate_plan`
+  3. review candidate consultant roster, deliverables, assumptions, and budget implications
+  4. CEO approval on the dispatch plan
+  5. materialize an `approved_consultant_roster`
+  6. create the mission startup package for Track B
+  7. emit `mission.approved`
+- Emitted events:
+  - `dispatch.plan.proposed`
+  - `dispatch.plan.approved`
+  - `mission.approved`
+  - `project.created`
 
 ### Delivery Flow
 - Start event: `deal.won`
@@ -57,6 +92,37 @@ Each workflow should increasingly specify:
   - `build.completed`
   - `qa.passed` or `qa.failed`
   - `milestone.completed`
+
+### Milestone Acceptance to Billing
+- Start event: `milestone.completed`
+- Pod owner: `Delivery` plus `Ops`
+- State objects: `project_state`, `run_state`, `approval_state`
+- Handoff:
+  1. delivery agents assemble milestone evidence
+  2. client acceptance is requested and recorded
+  3. on acceptance, emit `milestone.accepted`
+  4. Track A billing agents apply the approved `billing_plan`
+  5. generate invoice package and route release approval
+  6. issue invoice and track receivables
+- Emitted events:
+  - `milestone.acceptance.requested`
+  - `milestone.accepted`
+  - `invoice.triggered`
+  - `invoice.drafted`
+  - `invoice.released`
+
+### Mission Closeout
+- Start event: final deliverable acceptance or closeout trigger
+- Pod owner: `Delivery` plus `Ops` plus `Executive`
+- State objects: `project_state`, `run_state`, `approval_state`
+- Handoff:
+  1. validate final deliverables, approvals, and remaining billing state
+  2. collect lessons learned and closeout notes
+  3. archive mission outputs and deactivate consultant roster
+  4. emit final closeout event
+- Emitted events:
+  - `mission.closeout.requested`
+  - `mission.closed`
 
 ## Core MVP Workflows
 ### Workflow 1 - Email Operations

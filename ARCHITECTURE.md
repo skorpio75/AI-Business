@@ -82,6 +82,8 @@ Infrastructure
 ### State and Events
 - normalized event families and workflow triggers
 - canonical operating state objects
+- pre-opportunity lead-signal normalization and materialization into `opportunity_state`
+- commercial-to-delivery handoff through approved dispatch planning, consultant roster activation, milestone acceptance, and billing control
 - run and approval state for Mission Control visibility
 - audit objects and append-oriented trace events for execution, approvals, tools, and routing
 
@@ -162,6 +164,7 @@ The workflow controls the process. AI is used only inside selected steps.
 - Mission Control is both the operator UI surface and the operating supervisor layer for visibility, escalation, approval routing, and audit.
 - Client-facing consulting and delivery agents should be instantiated per client, engagement, and mission rather than treated as one shared consultant identity.
 - Track A Mission Control should evolve into a portfolio cockpit that can view clients, engagements, missions, dispatched consultant-agent counts, run status, approvals, and risk across isolated client runtimes.
+- Track A should remain the control plane for proposal, SOW, contract, dispatch planning, billing, receivables, and mission closeout, while Track B remains the tenant-scoped delivery plane.
 
 ## 8. Memory Model
 - Working memory: active workflow state and approval checkpoints.
@@ -187,6 +190,8 @@ The handoff integration adds an explicit formal operating layer to the architect
 - `AUDIT_MODEL.md` now defines the canonical `agent_run` and `audit_event` objects, audit event families, and linkage rules across runs, approvals, tools, autonomy, and observability traces
 - `docs/hybrid-rag-review-architecture.md` now defines hybrid retrieval source classes, evidence-lane separation, mission context-pack intent, and the bounded review/gate agent pattern for multi-agent workflows
 - `docs/agent-instance-portfolio-model.md` now defines how reusable families become client-scoped mission instances and how Track A can aggregate portfolio visibility without violating tenant isolation
+- `docs/lead-intake-materialization-model.md` now defines supported lead source classes, automatic-vs-review materialization rules, and the event path from raw signal to canonical `lead.received`
+- `docs/consulting-engagement-lifecycle-model.md` now defines the signed-scope to mission-start handoff, dispatch candidate plan, approved consultant roster, milestone billing triggers, and mission closeout pattern
 - operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
@@ -304,4 +309,5 @@ See [PODS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PODS.md) for pod owners
 See [AUDIT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUDIT_MODEL.md) for the audit and execution-trace model that links workflows, agents, approvals, tools, routing, and outbound actions.
 See [hybrid-rag-review-architecture.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/hybrid-rag-review-architecture.md) for the target hybrid retrieval and bounded review/gate-agent design.
 See [agent-instance-portfolio-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/agent-instance-portfolio-model.md) for the client-scoped consultant-instance model and Track A portfolio cockpit design.
+See [consulting-engagement-lifecycle-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/consulting-engagement-lifecycle-model.md) for the end-to-end consulting flow from lead spotting through dispatch, delivery, milestone billing, and closeout.
 See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

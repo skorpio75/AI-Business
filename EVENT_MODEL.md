@@ -21,6 +21,10 @@ Define the normalized event families and trigger patterns used across workflows,
 - `payload_ref_or_inline`
 
 ## Sales Events
+- `lead.signal.detected`
+- `lead.candidate.created`
+- `lead.review.requested`
+- `lead.materialized`
 - `lead.received`
 - `lead.enriched`
 - `lead.qualified`
@@ -29,6 +33,10 @@ Define the normalized event families and trigger patterns used across workflows,
 - `proposal.submitted`
 - `deal.won`
 - `deal.lost`
+- `contract.signed`
+- `dispatch.plan.proposed`
+- `dispatch.plan.approved`
+- `mission.approved`
 
 ## Delivery Events
 - `project.created`
@@ -41,7 +49,11 @@ Define the normalized event families and trigger patterns used across workflows,
 - `qa.failed`
 - `qa.passed`
 - `milestone.completed`
+- `milestone.acceptance.requested`
+- `milestone.accepted`
 - `project.risk.detected`
+- `mission.closeout.requested`
+- `mission.closed`
 
 ## Operations Events
 - `invoice.triggered`

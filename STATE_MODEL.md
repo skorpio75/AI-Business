@@ -138,6 +138,7 @@ For later client-portfolio control:
 - `client`, `engagement`, and `mission` should be treated as first-class operating objects
 - client-facing `agent_instance` assignment should bind to those objects
 - Track A Mission Control should consume summarized portfolio telemetry rather than sharing tenant-local `project_state` directly
+- later commercial-to-delivery control should also formalize `dispatch_candidate_plan`, `approved_consultant_roster`, `billing_plan`, and milestone-acceptance or closeout state
 
 ## Backend Contract Mapping
 The backend contract layer mirrors this model in:

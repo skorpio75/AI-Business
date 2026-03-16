@@ -47,6 +47,9 @@ Infrastructure
 - `Client`: isolated business entity with its own state, storage, credentials, and runtime instances
 - `Engagement`: commercial container for a body of client work, such as a project, assessment, or advisory retainer
 - `Mission`: bounded objective or workstream inside an engagement
+- `DispatchCandidatePlan`: proposed consultant swarm, tool boundary, and delivery assumptions for a mission before approval
+- `ApprovedConsultantRoster`: approved mission-bound consultant lineup that becomes eligible for runtime instantiation
+- `BillingPlan`: approved commercial billing method and trigger rules for a mission or engagement
 - `Opportunity`: pre-sale entity representing lead, qualification, and proposal context
 - `Project`: post-sale entity representing scoped work, milestones, risks, and outcomes
 - `Policy`: rule constraining actions, approvals, autonomy, and tool use

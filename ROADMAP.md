@@ -201,6 +201,21 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T49: Build a Track A portfolio summary feed that aggregates bounded client-runtime telemetry without sharing tenant-local mutable state
 - [ ] B-T50: Add a Mission Control portfolio dashboard for clients, engagements, missions, dispatched consultant-agent counts, active runs, approvals, and risk
 
+### Backlog - Growth Intake and Materialization
+- [ ] B-T51: Define source adapters and normalization contracts for `manual_entry`, `inbound_email`, `website_form`, `calendar_booking`, `meeting_note`, `referral`, `partner_channel`, `crm_import`, `document_intake`, `chat_message`, and `web_research`
+- [ ] B-T52: Add lead-candidate dedupe and materialization rules that decide create, merge, review, or discard before emitting canonical `lead.received`
+- [ ] B-T53: Add an operator review queue for ambiguous or low-confidence lead candidates
+- [ ] B-T54: Link qualified opportunities, signed scope, and mission approval into the later agent-dispatch-plan flow for Track B mission startup
+
+### Backlog - Commercial Engagement Lifecycle
+- [ ] B-T55: Define the `dispatch_candidate_plan` contract so proposal and SOW work can propose the consultant swarm before mission startup
+- [ ] B-T56: Define the `approved_consultant_roster` contract and link it to Track B mission-bound agent instantiation plus Mission Control visibility
+- [ ] B-T57: Define `billing_plan` contracts for fixed-fee, milestone, retainer, time-and-materials, and mixed billing methods
+- [ ] B-T58: Build the Track A signed-scope to mission-start workflow that approves dispatch, activates the roster, and starts tenant delivery planning
+- [ ] B-T59: Build milestone-acceptance tracking and client-approved invoice triggering from Track B delivery evidence into Track A billing
+- [ ] B-T60: Build receivables follow-up and exception routing against the approved billing plan
+- [ ] B-T61: Define and implement a mission-closeout workflow covering final acceptance, billing completion, lessons learned, roster deactivation, and archive state
+
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
 - [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar
@@ -378,6 +393,10 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added `AUDIT_MODEL.md` as the canonical audit contract for `agent_run`, `audit_event`, audit event families, and linkage rules across workflow runs, approvals, tool IDs, autonomy classes, routing, and external traces.
 - Added `docs/agent-instance-portfolio-model.md` to formalize mission-bound client consultant instances plus the Track A portfolio cockpit pattern, and confirmed the model is compatible with the current architecture and `AI-Business_IDE_Handoff.md`.
 - Added roadmap coverage for a future agent-instance registry, mission and engagement linkage in audit surfaces, a Track A portfolio summary feed, and a Mission Control portfolio dashboard over dispatched consultant agents.
+- Added `docs/lead-intake-materialization-model.md` to define lead source classes, signal-to-candidate normalization, automatic-vs-review materialization rules, and the event path from raw commercial signal to canonical `lead.received`.
+- Added roadmap coverage for lead-source adapters, dedupe and materialization rules, an operator lead-candidate review queue, and linkage from qualified opportunity into later mission dispatch planning.
+- Added `docs/consulting-engagement-lifecycle-model.md` to define the real consulting flow from signed scope through dispatch candidate planning, approved consultant roster activation, delivery startup, milestone billing, and mission closeout.
+- Added roadmap coverage for dispatch candidate planning, approved consultant rosters, billing plans, signed-scope to mission-start workflow, milestone acceptance to billing triggers, receivables follow-up, and mission closeout.
 
 ## Next Action
 Start `P5-T08` to add `agent_runs` persistence for per-agent execution history against the new audit model.

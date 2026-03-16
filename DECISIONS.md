@@ -296,3 +296,21 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Track A Mission Control should evolve into a portfolio cockpit that can show clients, engagements, missions, dispatched consultant-agent counts, active runs, approvals, and risk across the client portfolio, but it must do so through bounded telemetry or summary feeds from isolated client runtimes rather than by centralizing client-local mutable state in one shared control plane.
 - Rationale: The CEO needs a genuine fleet view over consultant-agent deployment and health. But the core architecture and Track B isolation rules would be weakened if Track A became the writeable source of truth for all client delivery state. Summary-based portfolio visibility preserves both executive oversight and tenant isolation.
+
+## ADR-050: Lead spotting and materialization happen in Track A before normal Growth workflows begin
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The platform should distinguish raw `lead_signal` inputs from materialized leads. Supported source classes may include manual entry, inbound email, website forms, calendar bookings, referrals, CRM imports, document intake, chat, and researched account signals. Automatic lead creation is allowed only when source identity, account or contact context, and a consulting need are sufficiently clear; otherwise the signal should become a reviewable candidate rather than silently entering the active pipeline.
+- Rationale: The current Growth flow already assumes `lead.received`, but real commercial intake starts earlier and is often noisy. A governed Track A materialization layer keeps the sales process realistic, preserves auditability, supports automation for non-manual sources, and prevents low-quality external signals from polluting `opportunity_state`.
+
+## ADR-051: Signed scope must produce an approved dispatch plan before mission startup
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: A signed contract or accepted SOW should not activate client delivery directly. The platform should first produce a `dispatch_candidate_plan` that proposes the consultant swarm, deliverables, assumptions, tool boundaries, and budget implications for the mission. CEO approval of that plan should materialize an `approved_consultant_roster`, which then becomes the basis for Track B mission-bound instance activation and Mission Control portfolio visibility.
+- Rationale: Real consulting delivery normally includes a staffing and startup decision between commercial agreement and execution. Making that step explicit improves scope control, budgeting, delivery readiness, and visibility over which consultant agents are actually dispatched to each client mission.
+
+## ADR-052: Milestone billing remains an internal Track A control driven by client-approved delivery evidence
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Track B delivery instances may prepare milestone evidence and acceptance packets, but invoice triggering, release, receivables follow-up, and closeout billing control remain internal Track A responsibilities governed by an approved `billing_plan`. Billing should begin from client-approved milestone acceptance or other approved billing conditions rather than from internal delivery completion alone.
+- Rationale: This preserves the commercial reality of consulting work: delivery evidence is client-scoped, but billing authority and cash collection remain internal firm responsibilities. Separating milestone completion from client acceptance and invoice release improves auditability and avoids accidental billing drift.

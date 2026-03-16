@@ -78,6 +78,13 @@ It should be able to show:
 
 This should feel like a CEO viewing a swarm of consultant-agents deployed across the portfolio, while still respecting client isolation.
 
+## Dispatch Approval Link
+The portfolio model assumes a staffing or swarm-approval step before client delivery starts.
+
+- proposal and SOW work should be able to produce a `dispatch_candidate_plan`
+- approval of that plan should create an `approved_consultant_roster`
+- that approved roster should be what Track B shows as `agents dispatched` for the client mission
+
 ## Isolation Rule for Portfolio Visibility
 Track A portfolio visibility must not rely on shared mutable business state across clients.
 

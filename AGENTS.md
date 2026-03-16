@@ -75,6 +75,13 @@ Example:
 - `Internal PMO Agent` monitors your company portfolio, capacity, deadlines, and margin pressure.
 - `Client PMO Agent - Acme ERP Rollout` produces billable delivery artifacts for that engagement, such as project plans, status packs, RAID updates, and follow-up actions.
 
+## Commercial-to-Delivery Lifecycle
+The target real-world consulting lifecycle should remain split across internal and client-delivery responsibilities.
+
+- Track A internal agents own lead intake, qualification, proposal, SOW, contract progression, dispatch planning, billing, receivables, and closeout governance
+- Track B client-scoped agents own mission execution, delivery evidence, milestone readiness, and deliverable production inside the tenant boundary
+- signed scope should not activate delivery directly; it should first produce an approved consultant roster from a dispatch candidate plan
+
 ## Pod Model
 The canonical operating model uses four pods:
 
@@ -186,7 +193,7 @@ The following agents are canonical first-class pod agents that complement the ex
 
 ### Growth Pod
 #### Lead Intake Agent
-- Purpose: ingest inbound lead signals and create structured opportunity records
+- Purpose: spot commercial signals across supported source classes, normalize them, and create structured opportunity records when materialization is justified
 - Pod: `Growth`
 - Modes: `internal_operating`, later `client_delivery` where relevant
 - Autonomy class: `supervised_executor`
@@ -245,6 +252,7 @@ The following agents are canonical first-class pod agents that complement the ex
 - State ownership: execution-follow-up and checkpoint-readiness fields in `project_state`
 - Replication rule: internal and client-delivery coordination instances are separate even when they share the same family
 - Operating distinction: unlike PMO, this role is execution-oriented and turns plans, meeting notes, and milestone decisions into active tasks, reminders, and next checkpoints
+- Mission-start role: after roster activation, this role should translate approved SOW deliverables into the active project plan, work packages, and checkpoint cadence
 
 #### BA / Requirements Agent
 - Purpose: turn workshops and documents into structured requirements
@@ -347,7 +355,7 @@ The following agents are canonical first-class pod agents that complement the ex
 - draft quick replies and meeting prep notes
 
 ### Billing Agent
-- generate invoices from approved timesheets/deliverables
+- generate invoices from approved milestones, timesheets, or deliverables under the mission billing plan
 - track payment status and reminders
 - escalate overdue receivables
 

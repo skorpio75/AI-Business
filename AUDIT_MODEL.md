@@ -212,7 +212,7 @@ The audit model should join cleanly with the existing control models.
 - likely joins: `workflow_runs`, `approvals`, later `agent_runs`
 
 ## Mission Control Intent
-Mission Control should eventually expose audit views that let an operator inspect:
+Mission Control should expose audit views that let an operator inspect:
 - source event and trigger path
 - workflow and step progression
 - agent execution history
@@ -229,8 +229,9 @@ Current reality:
 - `agent_runs` now persist bounded execution history for the current workflow and specialist-analysis seams
 - approvals already provide partial decision traceability
 - `audit_events` now persist append-oriented workflow-step, model-route, tool-call, approval, and outbound-action history for the current implemented seams
+- aggregated API inspection endpoints now expose workflow, approval, and agent trace bundles over those persisted audit records
 - Langfuse already provides optional workflow/model traces
-- Mission Control audit inspection and dedicated trace endpoints remain roadmap work
+- richer Mission Control audit presentation remains roadmap work
 
 ## Related Docs
 - `STATE_MODEL.md`

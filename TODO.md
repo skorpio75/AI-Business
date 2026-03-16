@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: expose audit and trace endpoints for workflow, agent, approval, and event inspection
+- Immediate goal: align audit and trace payloads with normalized events, tool IDs, autonomy classes, and approval classes
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P5-T10` Expose audit/trace endpoints for workflow, agent, and approval inspection
+- [ ] `P5-T11` Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels

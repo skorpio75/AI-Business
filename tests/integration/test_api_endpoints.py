@@ -278,6 +278,71 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertTrue(any(item.tool_id == "email.send_external" for item in audit_events))
         self.assertTrue(any(item.approval_id == approval_id for item in audit_events))
 
+    def test_workflow_trace_endpoint_returns_run_approval_and_event_bundle(self) -> None:
+        run_response = self.client.post(
+            "/workflows/email-operations/run",
+            json=email_workflow_payload(),
+        )
+
+        self.assertEqual(run_response.status_code, 200)
+        workflow_id = run_response.json()["workflow_id"]
+
+        trace_response = self.client.get(f"/audit/workflows/{workflow_id}")
+
+        self.assertEqual(trace_response.status_code, 200)
+        payload = trace_response.json()
+        self.assertEqual(payload["workflow_id"], workflow_id)
+        self.assertEqual(payload["workflow_run"]["workflow_id"], workflow_id)
+        self.assertEqual(payload["approval"]["workflow_id"], workflow_id)
+        self.assertGreaterEqual(len(payload["agent_runs"]), 1)
+        self.assertGreaterEqual(len(payload["audit_events"]), 1)
+
+    def test_approval_trace_endpoint_returns_decision_timeline(self) -> None:
+        run_response = self.client.post(
+            "/workflows/email-operations/run",
+            json=email_workflow_payload(
+                source_message_id="msg-approve",
+                source_thread_id="thread-approve",
+            ),
+        )
+        approval_id = run_response.json()["approval_id"]
+        inbox_connector = RecordingInboxConnector()
+        self.patch_api_attr(
+            "build_personal_assistant_context_service",
+            lambda current_settings: StubPersonalAssistantContextService(inbox_connector),
+        )
+        decide_response = self.client.post(
+            f"/approvals/{approval_id}/decision",
+            json=approval_decision_payload(),
+        )
+
+        self.assertEqual(decide_response.status_code, 200)
+
+        trace_response = self.client.get(f"/audit/approvals/{approval_id}")
+
+        self.assertEqual(trace_response.status_code, 200)
+        payload = trace_response.json()
+        self.assertEqual(payload["approval_id"], approval_id)
+        self.assertEqual(payload["approval"]["status"], "approved")
+        self.assertTrue(any(item["event_name"] == "approval.decided" for item in payload["audit_events"]))
+
+    def test_agent_trace_endpoint_returns_runs_and_events_for_one_agent(self) -> None:
+        response = self.client.post(
+            "/specialists/cto-cio/analyze",
+            json=cto_cio_analysis_payload(),
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        trace_response = self.client.get("/audit/agents/cto-cio-agent?limit=5")
+
+        self.assertEqual(trace_response.status_code, 200)
+        payload = trace_response.json()
+        self.assertEqual(payload["agent"]["agent_id"], "cto-cio-agent")
+        self.assertGreaterEqual(len(payload["agent_runs"]), 1)
+        self.assertGreaterEqual(len(payload["audit_events"]), 1)
+        self.assertTrue(all(item["agent_id"] == "cto-cio-agent" for item in payload["agent_runs"]))
+
     def test_connector_bootstrap_status_endpoint_returns_normalized_response(self) -> None:
         expected = connector_bootstrap_status_response()
         self.patch_api_attr("describe_provider_bootstrap", lambda settings: expected)

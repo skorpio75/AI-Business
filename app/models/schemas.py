@@ -5,6 +5,8 @@ from pydantic import ConfigDict
 from pydantic import BaseModel, Field
 from pydantic import field_validator
 
+from app.models.agent_contract import AgentContract
+from app.models.audit import AgentRunRecord, AuditEventRecord
 from app.models.specialist_contracts import (
     ArchitectureAdvice,
     CloseChecklistItem,
@@ -162,6 +164,28 @@ class ProposalGenerationResponse(BaseModel):
     cloud_llm_invoked: bool = False
     llm_diagnostic_code: Optional[str] = None
     llm_diagnostic_detail: Optional[str] = None
+
+
+class WorkflowTraceResponse(BaseModel):
+    workflow_id: str
+    workflow_run: Optional[EmailWorkflowResponse] = None
+    approval: Optional[ApprovalItem] = None
+    agent_runs: list[AgentRunRecord] = Field(default_factory=list)
+    audit_events: list[AuditEventRecord] = Field(default_factory=list)
+
+
+class ApprovalTraceResponse(BaseModel):
+    approval_id: str
+    approval: ApprovalItem
+    workflow_run: Optional[EmailWorkflowResponse] = None
+    agent_runs: list[AgentRunRecord] = Field(default_factory=list)
+    audit_events: list[AuditEventRecord] = Field(default_factory=list)
+
+
+class AgentTraceResponse(BaseModel):
+    agent: AgentContract
+    agent_runs: list[AgentRunRecord] = Field(default_factory=list)
+    audit_events: list[AuditEventRecord] = Field(default_factory=list)
 
 
 KpiTone = Literal["neutral", "success", "warning", "critical"]

@@ -11,7 +11,12 @@ from app.connectors.http import ConnectorHttpError
 from app.core.settings import Settings, build_settings, ensure_runtime_directories, get_settings
 from app.knowledge.pgvector_store import PgVectorRetrievalService
 from app.db.repository import (
+    get_approval_by_workflow_id,
     get_approval,
+    get_workflow_run,
+    list_agent_runs,
+    list_agent_runs_for_agent,
+    list_audit_events,
     list_pending_approvals,
     list_workflow_runs,
     resolve_workflow_state,
@@ -22,8 +27,10 @@ from app.db.session import get_db
 from app.models.agent_contract import AgentContract
 from app.models.connectors import ConnectorBootstrapStatusResponse, PersonalAssistantContext
 from app.models.schemas import (
+    AgentTraceResponse,
     ApprovalDecisionRequest,
     ApprovalItem,
+    ApprovalTraceResponse,
     ChiefAIAnalysisResponse,
     ChiefAIPanelResponse,
     CTOCIOAnalysisResponse,
@@ -36,6 +43,7 @@ from app.models.schemas import (
     KnowledgeQueryResponse,
     ProposalGenerationRequest,
     ProposalGenerationResponse,
+    WorkflowTraceResponse,
 )
 from app.models.specialist_contracts import ChiefAIDigitalStrategyInput, CTOCIOCounselInput
 from app.services.dashboard_summary import DashboardSummaryService
@@ -253,6 +261,61 @@ def run_proposal_generation(
 @app.get("/workflows/runs")
 def list_workflow_runs_endpoint(db: Session = Depends(get_db)) -> list[EmailWorkflowResponse]:
     return list_workflow_runs(db)
+
+
+@app.get("/audit/workflows/{workflow_id}", response_model=WorkflowTraceResponse)
+def get_workflow_trace(workflow_id: str, db: Session = Depends(get_db)) -> WorkflowTraceResponse:
+    workflow_run = get_workflow_run(db, workflow_id)
+    approval = get_approval_by_workflow_id(db, workflow_id)
+    agent_runs = list_agent_runs(db, workflow_id=workflow_id)
+    audit_events = list_audit_events(db, workflow_id=workflow_id)
+    if workflow_run is None and approval is None and not agent_runs and not audit_events:
+        raise HTTPException(status_code=404, detail="workflow_trace_not_found")
+    return WorkflowTraceResponse(
+        workflow_id=workflow_id,
+        workflow_run=workflow_run,
+        approval=approval,
+        agent_runs=agent_runs,
+        audit_events=audit_events,
+    )
+
+
+@app.get("/audit/approvals/{approval_id}", response_model=ApprovalTraceResponse)
+def get_approval_trace(approval_id: str, db: Session = Depends(get_db)) -> ApprovalTraceResponse:
+    approval = get_approval(db, approval_id)
+    if approval is None:
+        raise HTTPException(status_code=404, detail="approval_not_found")
+    workflow_run = get_workflow_run(db, approval.workflow_id)
+    agent_runs = list_agent_runs(db, workflow_id=approval.workflow_id)
+    audit_events = list_audit_events(db, approval_id=approval_id)
+    return ApprovalTraceResponse(
+        approval_id=approval_id,
+        approval=approval,
+        workflow_run=workflow_run,
+        agent_runs=agent_runs,
+        audit_events=audit_events,
+    )
+
+
+@app.get("/audit/agents/{agent_id}", response_model=AgentTraceResponse)
+def get_agent_trace(
+    agent_id: str,
+    limit: int = Query(default=20, ge=1, le=100),
+    db: Session = Depends(get_db),
+) -> AgentTraceResponse:
+    agent = agent_registry.get_agent(agent_id)
+    if agent is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    agent_runs = list_agent_runs_for_agent(db, agent_id=agent_id, limit=limit)
+    audit_events = list_audit_events(
+        db,
+        agent_run_ids=[item.agent_run_id for item in agent_runs],
+    )
+    return AgentTraceResponse(
+        agent=agent,
+        agent_runs=agent_runs,
+        audit_events=audit_events,
+    )
 
 
 @app.get("/approvals/pending")

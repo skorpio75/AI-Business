@@ -83,6 +83,11 @@ The platform now also persists bounded `agent_runs` execution history in its own
 
 Append-oriented `audit_events` now complement that summary layer with step, routing, tool, approval, and outbound-action history for the current implemented seams.
 
+The API now also exposes aggregated inspection endpoints for those records:
+- `GET /audit/workflows/{workflow_id}`
+- `GET /audit/approvals/{approval_id}`
+- `GET /audit/agents/{agent_id}`
+
 ### Seed A Client Instance
 Generate a tenant-specific client contract and runtime env file from the Track B template:
 

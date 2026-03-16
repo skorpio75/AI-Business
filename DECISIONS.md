@@ -338,3 +338,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The platform should persist append-oriented `audit_events` next, linked to `agent_runs` where possible, and use them for normalized workflow-step outcomes, model-route choices, tool-call history, approval lifecycle events, and outbound email-send actions across the current implemented seams.
 - Rationale: `agent_runs` answer which bounded execution happened, but they do not provide the timeline needed to inspect approval handling, step transitions, or connector actions. A dedicated `audit_events` table preserves those details in one normalized event stream without overloading the summary role of `agent_runs`.
+
+## ADR-057: Audit inspection should expose aggregated workflow, approval, and agent trace views before richer Mission Control UI work
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The first read surface for auditability should be a small set of aggregated API endpoints that return bundled workflow, approval, and agent traces over persisted `workflow_runs`, approvals, `agent_runs`, and `audit_events` rather than exposing only low-level raw-table endpoints.
+- Rationale: Operators and the later UI need coherent inspection shapes immediately, but the Mission Control presentation work still comes later. Aggregated trace endpoints make the audit layer usable now while keeping room for stricter normalization and richer frontend views in subsequent tasks.

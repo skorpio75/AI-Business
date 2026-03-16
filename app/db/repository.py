@@ -153,17 +153,49 @@ def list_agent_runs(db: Session, *, workflow_id: str | None = None) -> list[Agen
     return [AgentRunRecord.model_validate(row) for row in rows]
 
 
+def get_workflow_run(db: Session, workflow_id: str) -> EmailWorkflowResponse | None:
+    row = db.get(WorkflowRunORM, workflow_id)
+    if row is None:
+        return None
+    return EmailWorkflowResponse.model_validate(row)
+
+
+def get_approval_by_workflow_id(db: Session, workflow_id: str) -> ApprovalItem | None:
+    row = db.execute(select(ApprovalORM).where(ApprovalORM.workflow_id == workflow_id)).scalars().first()
+    if row is None:
+        return None
+    return ApprovalItem.model_validate(row)
+
+
+def list_agent_runs_for_agent(
+    db: Session,
+    *,
+    agent_id: str,
+    limit: int | None = None,
+) -> list[AgentRunRecord]:
+    query = select(AgentRunORM).where(AgentRunORM.agent_id == agent_id).order_by(AgentRunORM.started_at.desc())
+    if limit is not None:
+        query = query.limit(limit)
+    rows = db.execute(query).scalars().all()
+    return [AgentRunRecord.model_validate(row) for row in rows]
+
+
 def list_audit_events(
     db: Session,
     *,
     workflow_id: str | None = None,
     approval_id: str | None = None,
+    agent_run_ids: list[str] | None = None,
 ) -> list[AuditEventRecord]:
     query = select(AuditEventORM).order_by(AuditEventORM.occurred_at, AuditEventORM.audit_event_id)
     if workflow_id is not None:
         query = query.where(AuditEventORM.workflow_id == workflow_id)
     if approval_id is not None:
         query = query.where(AuditEventORM.approval_id == approval_id)
+    if agent_run_ids is not None:
+        if not agent_run_ids:
+            return []
+        query = query.where(AuditEventORM.agent_run_id.in_(agent_run_ids))
     rows = db.execute(query).scalars().all()
     return [AuditEventRecord.model_validate(row) for row in rows]
 

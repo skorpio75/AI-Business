@@ -24,7 +24,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
-| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 9/12 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 10/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -136,7 +136,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P5-T07: Define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability
 - [x] P5-T08: Add `agent_runs` persistence for per-agent execution history
 - [x] P5-T09: Add `audit_events` persistence for step-level actions, tool usage, and approval events
-- [ ] P5-T10: Expose audit/trace endpoints for workflow, agent, and approval inspection
+- [x] P5-T10: Expose audit/trace endpoints for workflow, agent, and approval inspection
 - [ ] P5-T11: Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
 - [ ] P5-T12: Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
 
@@ -410,6 +410,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added `docs/internal-vs-client-agent-usage-model.md` to make the Track A vs Track B agent-mode split explicit, including when to use `internal_operating`, `client_delivery`, and `client_facing_service` across the consulting lifecycle.
 - Completed `P5-T08` by adding a first-class `agent_runs` table, repository helpers, and persisted execution history for the current email, knowledge, proposal, and specialist-advisory seams, including tenant or track metadata plus workflow linkage where available.
 - Completed `P5-T09` by adding append-oriented `audit_events` persistence plus runtime emission for workflow-step completion or failure, model-route selection, memory-search tool usage, approval request or decision paths, and outbound email-send actions.
+- Completed `P5-T10` by exposing aggregated trace endpoints for workflow, approval, and agent inspection so Mission Control and operators can query bundled `workflow_run`, approval, `agent_runs`, and `audit_events` views without reconstructing audit state client-side.
 
 ## Next Action
-Start `P5-T10` to expose audit and trace endpoints for workflow, agent, approval, and event inspection.
+Start `P5-T11` to align audit and trace payloads more strictly with normalized events, tool IDs, autonomy classes, and approval classes.

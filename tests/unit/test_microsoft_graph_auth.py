@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 from app.core.settings import Settings
 from app.services.microsoft_graph_auth import outlook_connectors_enabled, persist_tokens, refresh_access_token
+from tests.sample_data import track_b_runtime_paths, track_b_settings_kwargs
 
 
 class MicrosoftGraphAuthTests(unittest.TestCase):
@@ -18,24 +19,21 @@ class MicrosoftGraphAuthTests(unittest.TestCase):
     def test_persist_tokens_writes_access_and_refresh_tokens(self) -> None:
         root = Path(__file__).resolve().parents[2]
         tenant = f"client-a-test-{uuid.uuid4().hex[:8]}"
-        env_path = root / "config" / "clients" / f"{tenant}.env"
-        secret_path = root / "secrets" / tenant / "microsoft-graph.json"
-        data_root = root / "data" / "clients" / tenant
-        prompt_root = root / "prompts" / "clients" / tenant
+        paths = track_b_runtime_paths(root, tenant)
+        env_path = paths["env_path"]
+        secret_path = paths["microsoft_secret_path"]
+        data_root = paths["data_root"]
+        prompt_root = paths["prompt_root"]
         try:
             env_path.parent.mkdir(parents=True, exist_ok=True)
             env_path.write_text("MICROSOFT_GRAPH_ACCESS_TOKEN=\nMICROSOFT_GRAPH_REFRESH_TOKEN=\n", encoding="utf-8")
             settings = Settings(
                 _env_file=None,
-                primary_track="track_b_client",
-                tenant_id=tenant,
-                runtime_env_file=str(env_path),
-                client_documents_dir=str(data_root / "documents"),
-                client_logs_dir=str(data_root / "logs"),
-                client_exports_dir=str(data_root / "exports"),
-                client_vector_dir=str(data_root / "vector"),
-                client_prompt_override_dir=str(prompt_root),
-                microsoft_graph_secrets_path=str(secret_path),
+                **track_b_settings_kwargs(
+                    root,
+                    tenant,
+                    google_secrets_path=None,
+                ),
             )
 
             persist_tokens(
@@ -59,28 +57,25 @@ class MicrosoftGraphAuthTests(unittest.TestCase):
     def test_refresh_access_token_persists_rotated_tokens(self) -> None:
         root = Path(__file__).resolve().parents[2]
         tenant = f"client-a-test-{uuid.uuid4().hex[:8]}"
-        env_path = root / "config" / "clients" / f"{tenant}.env"
-        secret_path = root / "secrets" / tenant / "microsoft-graph.json"
-        data_root = root / "data" / "clients" / tenant
-        prompt_root = root / "prompts" / "clients" / tenant
+        paths = track_b_runtime_paths(root, tenant)
+        env_path = paths["env_path"]
+        secret_path = paths["microsoft_secret_path"]
+        data_root = paths["data_root"]
+        prompt_root = paths["prompt_root"]
         try:
             env_path.parent.mkdir(parents=True, exist_ok=True)
             env_path.write_text("MICROSOFT_GRAPH_ACCESS_TOKEN=\nMICROSOFT_GRAPH_REFRESH_TOKEN=refresh-123\n", encoding="utf-8")
             settings = Settings(
                 _env_file=None,
-                primary_track="track_b_client",
-                tenant_id=tenant,
-                runtime_env_file=str(env_path),
+                **track_b_settings_kwargs(
+                    root,
+                    tenant,
+                    google_secrets_path=None,
+                ),
                 outlook_tenant_id="tenant-id",
                 outlook_client_id="client-id",
                 outlook_graph_scopes="offline_access https://graph.microsoft.com/Mail.Read",
                 microsoft_graph_refresh_token="refresh-123",
-                client_documents_dir=str(data_root / "documents"),
-                client_logs_dir=str(data_root / "logs"),
-                client_exports_dir=str(data_root / "exports"),
-                client_vector_dir=str(data_root / "vector"),
-                client_prompt_override_dir=str(prompt_root),
-                microsoft_graph_secrets_path=str(secret_path),
             )
 
             with patch(

@@ -9,6 +9,23 @@ Baseline tools:
 - pytest
 - httpx
 
+Operator-facing test commands now live in `README.md` under `Test Execution`.
+
+## Shared Sample Data
+The suite now has a lightweight shared sample-data layer in `tests/sample_data.py`.
+
+Use the shared builders when a test needs:
+- email workflow payloads or `EmailWorkflowRequest` objects
+- approval decision payloads
+- knowledge-query or proposal-generation request bodies
+- normalized connector bootstrap-status responses
+- Track B runtime path and settings kwargs for tenant-scoped tests
+
+Current convention:
+- keep stable, repeated payload shapes in `tests/sample_data.py`
+- keep one-off values close to the test that needs them
+- prefer small builder functions over a large global fixture registry while the suite is still evolving
+
 ## Unit Test Base Structure
 The unit test suite now has a small shared base layer in `tests/unit/base.py`.
 
@@ -58,3 +75,4 @@ Current convention:
 - keep branch-heavy workflow behavior in `tests/workflow/`
 - reuse `UnitTestCase` for service-level routing branches
 - reuse `ApiIntegrationTestCase` for approval branches that should be exercised through HTTP endpoints
+- source repeated request and decision payloads from `tests/sample_data.py` where possible

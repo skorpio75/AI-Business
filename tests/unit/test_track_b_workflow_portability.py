@@ -7,10 +7,11 @@ from app.core.settings import ROOT
 from app.db.models import ApprovalORM, WorkflowRunORM, WorkflowStateSnapshotORM
 from app.knowledge.ingestion import DocumentIngestionService
 from app.knowledge.retrieval import KeywordRetrievalService
-from app.models.schemas import EmailWorkflowRequest, KnowledgeQueryRequest
+from app.models.schemas import KnowledgeQueryRequest
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import GenerationResult, TextGenerationResult
+from tests.sample_data import email_workflow_request
 from tests.unit.base import TrackBSeededClientTestCase
 
 
@@ -102,14 +103,10 @@ class TrackBWorkflowPortabilityTests(TrackBSeededClientTestCase):
             email_service = EmailWorkflowService(model_gateway=gateway)
             with self.sqlite_session() as db:
                 email_response = email_service.run(
-                    EmailWorkflowRequest(
-                        sender="client@example.com",
-                        subject="Need an update",
-                        body="Please confirm the next delivery checkpoint.",
+                    email_workflow_request(
                         source_account_id=settings.tenant_id,
                         source_message_id=f"msg-{settings.tenant_id}",
                         source_thread_id=f"thread-{settings.tenant_id}",
-                        source_provider="microsoft_graph",
                     ),
                     db=db,
                 )

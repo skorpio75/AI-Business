@@ -1,10 +1,10 @@
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
-from app.models.schemas import EmailWorkflowRequest
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import GenerationResult, ModelGateway, TextGenerationResult
 from app.services.proposal_workflow import ProposalWorkflowService
 from tests.integration.base import ApiIntegrationTestCase
+from tests.sample_data import approval_decision_payload, email_workflow_payload
 from tests.unit.base import UnitTestCase
 
 
@@ -197,21 +197,18 @@ class ApprovalWorkflowBranchTests(ApiIntegrationTestCase):
     def test_approval_reject_marks_workflow_completed_and_clears_pending_queue(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Need rejection",
-                "body": "Please reject this draft.",
-                "source_account_id": "client-account",
-                "source_message_id": "msg-reject",
-                "source_thread_id": "thread-reject",
-                "source_provider": "microsoft_graph",
-            },
+            json=email_workflow_payload(
+                subject="Need rejection",
+                body="Please reject this draft.",
+                source_message_id="msg-reject",
+                source_thread_id="thread-reject",
+            ),
         )
         approval_id = run_response.json()["approval_id"]
 
         decision_response = self.client.post(
             f"/approvals/{approval_id}/decision",
-            json={"decision": "reject", "note": "Do not send"},
+            json=approval_decision_payload("reject"),
         )
 
         self.assertEqual(decision_response.status_code, 200)
@@ -230,21 +227,18 @@ class ApprovalWorkflowBranchTests(ApiIntegrationTestCase):
     def test_approval_edit_requires_reply_body(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Need edit",
-                "body": "Please revise this draft.",
-                "source_account_id": "client-account",
-                "source_message_id": "msg-edit-missing",
-                "source_thread_id": "thread-edit-missing",
-                "source_provider": "microsoft_graph",
-            },
+            json=email_workflow_payload(
+                subject="Need edit",
+                body="Please revise this draft.",
+                source_message_id="msg-edit-missing",
+                source_thread_id="thread-edit-missing",
+            ),
         )
         approval_id = run_response.json()["approval_id"]
 
         decision_response = self.client.post(
             f"/approvals/{approval_id}/decision",
-            json={"decision": "edit", "note": "Revise it"},
+            json=approval_decision_payload("edit"),
         )
 
         self.assertEqual(decision_response.status_code, 400)
@@ -253,22 +247,23 @@ class ApprovalWorkflowBranchTests(ApiIntegrationTestCase):
     def test_approval_edit_keeps_item_pending_and_updates_draft(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Need edit branch",
-                "body": "Please revise this draft.",
-                "source_account_id": "client-account",
-                "source_message_id": "msg-edit",
-                "source_thread_id": "thread-edit",
-                "source_provider": "microsoft_graph",
-            },
+            json=email_workflow_payload(
+                subject="Need edit branch",
+                body="Please revise this draft.",
+                source_message_id="msg-edit",
+                source_thread_id="thread-edit",
+            ),
         )
         approval_id = run_response.json()["approval_id"]
         edited_reply = "Updated draft kept pending for approval."
 
         decision_response = self.client.post(
             f"/approvals/{approval_id}/decision",
-            json={"decision": "edit", "edited_reply": edited_reply, "note": "Reworded"},
+            json=approval_decision_payload(
+                "edit",
+                edited_reply=edited_reply,
+                note="Reworded",
+            ),
         )
 
         self.assertEqual(decision_response.status_code, 200)
@@ -288,11 +283,11 @@ class ApprovalWorkflowBranchTests(ApiIntegrationTestCase):
     def test_approval_approve_without_source_message_sets_not_applicable_send_status(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Approve without source",
-                "body": "There is no source message metadata on this item.",
-            },
+            json=email_workflow_payload(
+                include_source_metadata=False,
+                subject="Approve without source",
+                body="There is no source message metadata on this item.",
+            ),
         )
         approval_id = run_response.json()["approval_id"]
         assistant_context = StubPersonalAssistantContextService()
@@ -303,7 +298,10 @@ class ApprovalWorkflowBranchTests(ApiIntegrationTestCase):
 
         decision_response = self.client.post(
             f"/approvals/{approval_id}/decision",
-            json={"decision": "approve", "note": "Approved without outbound send"},
+            json=approval_decision_payload(
+                "approve",
+                note="Approved without outbound send",
+            ),
         )
 
         self.assertEqual(decision_response.status_code, 200)
@@ -349,11 +347,11 @@ class ApprovalWorkflowBranchTests(ApiIntegrationTestCase):
 
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Need escalated handling",
-                "body": "This should be routed to the cloud path.",
-            },
+            json=email_workflow_payload(
+                include_source_metadata=False,
+                subject="Need escalated handling",
+                body="This should be routed to the cloud path.",
+            ),
         )
 
         self.assertEqual(run_response.status_code, 200)

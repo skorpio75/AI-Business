@@ -140,6 +140,8 @@ Reliable automated tests for core modules and workflows.
 ### Acceptance criteria
 - unit tests run locally
 - a shared unit-test base structure exists for common settings, temp-dir, in-memory DB, and Track B seeded-client setup
+- a shared sample-data layer exists for repeated request payloads, connector responses, and Track B runtime settings in tests
+- `README.md` documents how to run the full suite plus the unit, integration, and workflow layers locally
 - integration tests cover the current FastAPI endpoints with an in-process client plus dependency overrides for DB and external dependencies
 - workflow tests cover the current approval and escalation branches for reusable workflow surfaces
 

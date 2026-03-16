@@ -1,9 +1,9 @@
 import unittest
 
-from app.models.schemas import EmailWorkflowRequest
 from app.services.email_workflow import EmailWorkflowService
 from app.services.model_gateway import GenerationResult, ModelGateway
 from app.services.observability import LangfuseObservabilityService
+from tests.sample_data import email_workflow_request
 from tests.unit.base import UnitTestCase
 
 
@@ -91,11 +91,7 @@ class LangfuseObservabilityTests(UnitTestCase):
 
         with self.sqlite_session() as db:
             response = service.run(
-                EmailWorkflowRequest(
-                    sender="client@example.com",
-                    subject="Need an update",
-                    body="Please confirm the next delivery checkpoint.",
-                ),
+                email_workflow_request(include_source_metadata=False),
                 db=db,
             )
 

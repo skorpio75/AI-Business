@@ -260,3 +260,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The workflow-test layer should cover approval decision branches through HTTP-level tests and escalation/routing branches through focused service-level tests, with these scenarios organized under `tests/workflow/`.
 - Rationale: Approval and escalation regressions are too workflow-specific to fit cleanly inside generic unit tests, but they do not always require a full external integration environment. A dedicated workflow-test layer keeps these branches visible and targeted, especially for `email-operations`, where routing, fallback, and approval outcomes all materially affect operator trust.
+
+## ADR-044: Repeated test payloads should use lightweight shared builders
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Repeated test request bodies, connector-status responses, and Track B runtime settings should be centralized in a lightweight builder module under `tests/sample_data.py` rather than duplicated inline across unit, integration, and workflow tests.
+- Rationale: By Phase 5, the suite had recurring email workflow payloads, approval decisions, connector bootstrap responses, and tenant-scoped settings shapes spread across multiple test layers. Small shared builders reduce drift and maintenance cost while preserving the repo's current lightweight `unittest` style without introducing a heavier fixture framework prematurely.

@@ -24,7 +24,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
-| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 4/12 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 6/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -131,8 +131,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P5-T02: Add unit test base structure
 - [x] P5-T03: Add API integration tests
 - [x] P5-T04: Add workflow branch tests (approval/escalation)
-- [ ] P5-T05: Add test fixtures and sample data
-- [ ] P5-T06: Add test execution instructions in `README.md`
+- [x] P5-T05: Add test fixtures and sample data
+- [x] P5-T06: Add test execution instructions in `README.md`
 - [ ] P5-T07: Define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability
 - [ ] P5-T08: Add `agent_runs` persistence for per-agent execution history
 - [ ] P5-T09: Add `audit_events` persistence for step-level actions, tool usage, and approval events
@@ -358,6 +358,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a lightweight shared unit-test base structure under `tests/unit/base.py`, with package markers plus helpers for repo-root access, settings construction, temporary directories, in-memory SQLite sessions, and Track B seeded-client lifecycle management, and refactored representative tests onto that base.
 - Added in-process FastAPI integration tests for health, workflow run/list, approval decision, knowledge Q&A, proposal generation, connector bootstrap status, and request validation, backed by an integration-test base that overrides DB sessions and patches startup or external-service seams as needed.
 - Added workflow branch tests under `tests/workflow/` for email-routing escalation branches (`cloud_unconfigured_used_local`, `cloud_unavailable_used_local`, `routed_to_cloud`) and approval decision branches (reject, edit validation, edit-pending, and approve-without-source behavior).
+- Added a shared test sample-data layer in `tests/sample_data.py` for reusable email, approval, knowledge, proposal, connector-status, and Track B runtime payload builders, and refactored representative unit, integration, and workflow tests onto those builders with contract coverage in `tests/unit/test_sample_data.py`.
+- Added explicit `README.md` test execution instructions for the full suite plus the unit, integration, and workflow layers, and locked those commands in with a README contract test.
 
 ## Next Action
-Start `P5-T05` to add shared test fixtures and sample data now that unit, API integration, and workflow-branch layers are all in place.
+Start `P5-T07` to define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability.

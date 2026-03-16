@@ -6,23 +6,12 @@ import uuid
 from pydantic import ValidationError
 
 from app.core.settings import ROOT, Settings, ensure_runtime_directories
+from tests.sample_data import track_b_runtime_paths, track_b_settings_kwargs
 
 
 class ClientRuntimeIsolationTests(unittest.TestCase):
     def test_track_b_settings_accept_tenant_scoped_paths(self) -> None:
-        settings = Settings(
-            _env_file=None,
-            primary_track="track_b_client",
-            tenant_id="acme",
-            runtime_env_file="config/clients/acme.env",
-            client_documents_dir="data/clients/acme/documents",
-            client_logs_dir="data/clients/acme/logs",
-            client_exports_dir="data/clients/acme/exports",
-            client_vector_dir="data/clients/acme/vector",
-            client_prompt_override_dir="prompts/clients/acme",
-            google_secrets_path="secrets/acme/google-oauth.json",
-            microsoft_graph_secrets_path="secrets/acme/microsoft-graph.json",
-        )
+        settings = Settings(_env_file=None, **track_b_settings_kwargs(ROOT, "acme"))
 
         self.assertEqual(settings.resolved_env_file, ROOT / "config" / "clients" / "acme.env")
         self.assertEqual(settings.resolved_client_documents_dir, ROOT / "data" / "clients" / "acme" / "documents")
@@ -35,39 +24,24 @@ class ClientRuntimeIsolationTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Settings(
                 _env_file=None,
-                primary_track="track_b_client",
-                tenant_id="acme",
-                runtime_env_file="config/clients/acme.env",
-                client_documents_dir="data/clients/acme/documents",
-                client_logs_dir="data/clients/acme/logs",
-                client_exports_dir="data/clients/acme/exports",
-                client_vector_dir="data/clients/acme/vector",
-                client_prompt_override_dir="prompts/clients/acme",
-                google_secrets_path="secrets/internal/google-oauth.json",
+                **track_b_settings_kwargs(
+                    ROOT,
+                    "acme",
+                    google_secrets_path="secrets/internal/google-oauth.json",
+                ),
             )
 
     def test_ensure_runtime_directories_creates_tenant_scoped_roots(self) -> None:
         tenant = f"acme-test-{uuid.uuid4().hex[:8]}"
-        env_path = ROOT / "config" / "clients" / f"{tenant}.env"
-        data_root = ROOT / "data" / "clients" / tenant
-        prompt_root = ROOT / "prompts" / "clients" / tenant
-        secret_root = ROOT / "secrets" / tenant
+        paths = track_b_runtime_paths(ROOT, tenant)
+        env_path = paths["env_path"]
+        data_root = paths["data_root"]
+        prompt_root = paths["prompt_root"]
+        secret_root = paths["secret_root"]
         try:
             env_path.parent.mkdir(parents=True, exist_ok=True)
             env_path.write_text("", encoding="utf-8")
-            settings = Settings(
-                _env_file=None,
-                primary_track="track_b_client",
-                tenant_id=tenant,
-                runtime_env_file=str(env_path),
-                client_documents_dir=str(data_root / "documents"),
-                client_logs_dir=str(data_root / "logs"),
-                client_exports_dir=str(data_root / "exports"),
-                client_vector_dir=str(data_root / "vector"),
-                client_prompt_override_dir=str(prompt_root),
-                google_secrets_path=str(secret_root / "google-oauth.json"),
-                microsoft_graph_secrets_path=str(secret_root / "microsoft-graph.json"),
-            )
+            settings = Settings(_env_file=None, **track_b_settings_kwargs(ROOT, tenant))
 
             ensure_runtime_directories(settings)
 

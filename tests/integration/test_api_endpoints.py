@@ -1,10 +1,16 @@
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
-from app.models.connectors import ConnectorBootstrapStatusResponse, ProviderBootstrapStatus
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import GenerationResult, TextGenerationResult
 from app.services.proposal_workflow import ProposalWorkflowService
 from tests.integration.base import ApiIntegrationTestCase
+from tests.sample_data import (
+    approval_decision_payload,
+    connector_bootstrap_status_response,
+    email_workflow_payload,
+    knowledge_query_payload,
+    proposal_generation_payload,
+)
 
 
 class StubWorkflowGateway:
@@ -80,15 +86,7 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
     def test_email_workflow_run_and_list_endpoints_round_trip(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Need an update",
-                "body": "Please confirm the next delivery checkpoint.",
-                "source_account_id": "client-account",
-                "source_message_id": "msg-001",
-                "source_thread_id": "thread-001",
-                "source_provider": "microsoft_graph",
-            },
+            json=email_workflow_payload(),
         )
 
         self.assertEqual(run_response.status_code, 200)
@@ -109,15 +107,12 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
     def test_approval_decision_approve_sends_reply_and_updates_state(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
-            json={
-                "sender": "client@example.com",
-                "subject": "Need approval",
-                "body": "Please send the approved follow-up.",
-                "source_account_id": "client-account",
-                "source_message_id": "msg-approve",
-                "source_thread_id": "thread-approve",
-                "source_provider": "microsoft_graph",
-            },
+            json=email_workflow_payload(
+                subject="Need approval",
+                body="Please send the approved follow-up.",
+                source_message_id="msg-approve",
+                source_thread_id="thread-approve",
+            ),
         )
         approval_id = run_response.json()["approval_id"]
         inbox_connector = RecordingInboxConnector()
@@ -128,7 +123,7 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
 
         decision_response = self.client.post(
             f"/approvals/{approval_id}/decision",
-            json={"decision": "approve", "note": "Looks good"},
+            json=approval_decision_payload(),
         )
 
         self.assertEqual(decision_response.status_code, 200)
@@ -147,7 +142,7 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
     def test_knowledge_qna_endpoint_returns_grounded_payload(self) -> None:
         response = self.client.post(
             "/knowledge/qna",
-            json={"question": "What workflow is supported?", "limit": 2},
+            json=knowledge_query_payload(),
         )
 
         self.assertEqual(response.status_code, 200)
@@ -159,12 +154,7 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
     def test_proposal_generation_endpoint_returns_draft(self) -> None:
         response = self.client.post(
             "/workflows/proposal-generation/run",
-            json={
-                "client_name": "Acme",
-                "opportunity_summary": "The client wants a first proposal draft.",
-                "desired_outcomes": ["Clarify scope"],
-                "constraints": ["Budget approval pending"],
-            },
+            json=proposal_generation_payload(),
         )
 
         self.assertEqual(response.status_code, 200)
@@ -174,23 +164,7 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertEqual(payload["proposal_draft"], "Generated content from integration stub.")
 
     def test_connector_bootstrap_status_endpoint_returns_normalized_response(self) -> None:
-        expected = ConnectorBootstrapStatusResponse(
-            providers=[
-                ProviderBootstrapStatus(
-                    provider_id="microsoft_graph",
-                    inbox_selected=True,
-                    calendar_selected=True,
-                    access_token_present=True,
-                    refresh_token_present=True,
-                    client_id_present=True,
-                    client_secret_present=False,
-                    secret_store_path="secrets/client-a/microsoft-graph.json",
-                    refresh_supported=True,
-                    status="ready",
-                    detail="Microsoft Graph is ready.",
-                )
-            ]
-        )
+        expected = connector_bootstrap_status_response()
         self.patch_api_attr("describe_provider_bootstrap", lambda settings: expected)
 
         response = self.client.get("/connectors/bootstrap-status")

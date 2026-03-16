@@ -205,6 +205,47 @@ powershell -ExecutionPolicy Bypass -File .\scripts\dev_start.ps1
 ```
 This script starts Docker, initializes the database, creates `frontend\.env` from `frontend\.env.example` if needed, installs frontend dependencies on first run, and opens separate backend/frontend PowerShell windows.
 
+## Test Execution
+The current automated test suite is organized into unit, integration, and workflow layers under `tests/`. The standard local entrypoint is `pytest` from the project venv.
+
+No Docker, provider bootstrap, or live external credentials are required for the current Phase 5 test suite. The integration tests run against the FastAPI app in-process with an in-memory SQLite database, and the workflow tests use the same lightweight local seams.
+
+Run the full automated suite:
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+Run one test layer at a time:
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests\unit
+.\.venv\Scripts\python.exe -m pytest -q tests\integration
+.\.venv\Scripts\python.exe -m pytest -q tests\workflow
+```
+
+Run the current Phase 5 testing foundation slices directly:
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests\unit\test_unit_test_base.py tests\unit\test_sample_data.py
+.\.venv\Scripts\python.exe -m pytest -q tests\integration\test_api_endpoints.py
+.\.venv\Scripts\python.exe -m pytest -q tests\workflow\test_email_workflow_branches.py
+```
+
+Run one specific test module while iterating:
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests\unit\test_langfuse_observability.py
+```
+
+Optional syntax check for changed test modules:
+```powershell
+.\.venv\Scripts\python.exe -m py_compile tests\sample_data.py tests\integration\test_api_endpoints.py tests\workflow\test_email_workflow_branches.py
+```
+
+Current shared testing helpers:
+- `tests/unit/base.py` for shared unit and Track B seeded-client setup
+- `tests/integration/base.py` for in-process FastAPI integration tests
+- `tests/sample_data.py` for repeated request payloads, approval decisions, connector responses, and Track B runtime settings
+
+For testing design conventions and when to use each layer, see [docs/testing-strategy.md](docs/testing-strategy.md).
+
 ## API Endpoints (Current)
 - `GET /healthz`
 - `GET /connectors/bootstrap-status`

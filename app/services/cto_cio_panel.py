@@ -30,104 +30,84 @@ class PanelSectionRoute:
 
 
 class CTOCIOPanelService:
+    PANEL_LOCAL_MODEL = "qwen2.5:1.5b-instruct-q4_K_M"
+
     def __init__(self, model_gateway: ModelGateway | None = None) -> None:
         self.model_gateway = model_gateway or ModelGateway(settings=Settings())
         self.prompt_loader = PromptLoader()
 
     def build_panel(self, *, agent: AgentContract) -> CTOCIOPanelResponse:
         fallback_response = self._build_fallback_panel(agent)
-        scope_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        scope_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="scope_insights",
-                section_focus=(
-                    "Return only the three strongest internal scope insights for customer scope, architecture, or internal platform focus areas."
-                ),
-                output_schema=(
-                    '{"scope_insights":[{"insight_id":"string","title":"string","summary":"string","focus_area":"customer_scope|architecture|internal_platform","tone":"neutral|success|warning|critical"}]}'
-                ),
+                section_focus="Return 1 or 2 scope insights with short titles and short summaries.",
+                line_format="insight_id||title||summary||focus_area||tone",
             ),
-            fallback_payload={
-                "scope_insights": [item.model_dump() for item in fallback_response.scope_insights],
-            },
+            fallback_content=self._serialize_scope_insights(fallback_response.scope_insights),
+            local_num_predict=90,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        strategy_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        strategy_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="strategy_options",
-                section_focus=(
-                    "Return only a small set of practical strategy options with benefits, tradeoffs, and recommended_when guidance."
-                ),
-                output_schema=(
-                    '{"strategy_options":[{"option_id":"string","title":"string","summary":"string","benefits":["string"],"tradeoffs":["string"],"recommended_when":"string"}]}'
-                ),
+                section_focus="Return 1 or 2 practical strategy options with compact benefits and tradeoffs.",
+                line_format="option_id||title||summary||benefit||tradeoff||recommended_when",
             ),
-            fallback_payload={
-                "strategy_options": [item.model_dump() for item in fallback_response.strategy_options],
-            },
+            fallback_content=self._serialize_strategy_options(fallback_response.strategy_options),
+            local_num_predict=120,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        architecture_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        architecture_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="architecture_advice",
-                section_focus=(
-                    "Return only the architecture advice section with current state, target state, key constraints, proposed changes, and risks."
-                ),
-                output_schema=(
-                    '{"architecture_advice":{"current_state":"string","target_state":"string","key_constraints":["string"],"proposed_changes":["string"],"risks":["string"]}}'
-                ),
+                section_focus="Return 1 compact architecture advice line with short fields.",
+                line_format="current_state||target_state||key_constraint||proposed_change||risk",
             ),
-            fallback_payload={
-                "architecture_advice": fallback_response.architecture_advice.model_dump(),
-            },
+            fallback_content=self._serialize_architecture_advice(fallback_response.architecture_advice),
+            local_num_predict=110,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        backlog_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        backlog_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="internal_improvement_backlog",
-                section_focus=(
-                    "Return only the internal improvement backlog with the most actionable platform priorities."
-                ),
-                output_schema=(
-                    '{"internal_improvement_backlog":[{"item_id":"string","title":"string","rationale":"string","priority":"now|next|later","impact":"low|medium|high","effort":"small|medium|large","owner_hint":"string"}]}'
-                ),
+                section_focus="Return 1 or 2 actionable backlog items with short rationale and owner hint.",
+                line_format="item_id||title||rationale||priority||impact||effort||owner_hint",
             ),
-            fallback_payload={
-                "internal_improvement_backlog": [
-                    item.model_dump() for item in fallback_response.internal_improvement_backlog
-                ],
-            },
+            fallback_content=self._serialize_backlog_items(fallback_response.internal_improvement_backlog),
+            local_num_predict=100,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        scope_insights, scope_route = self._resolve_panel_list_section(
+        scope_insights, scope_route = self._resolve_scope_insights_section(
             section_name="scope_insights",
-            key="scope_insights",
             generation=scope_generation,
             fallback_items=fallback_response.scope_insights,
-            validator=CTOCIOScopeInsight.model_validate,
             validation_detail="The scope insights section did not match the expected schema, so fallback insights were used.",
         )
-        strategy_options, strategy_route = self._resolve_panel_list_section(
+        strategy_options, strategy_route = self._resolve_strategy_options_section(
             section_name="strategy_options",
-            key="strategy_options",
             generation=strategy_generation,
             fallback_items=fallback_response.strategy_options,
-            validator=StrategyOption.model_validate,
             validation_detail="The strategy options section did not match the expected schema, so fallback options were used.",
         )
-        architecture_advice, architecture_route = self._resolve_panel_object_section(
+        architecture_advice, architecture_route = self._resolve_architecture_advice_section(
             section_name="architecture_advice",
-            key="architecture_advice",
             generation=architecture_generation,
             fallback_value=fallback_response.architecture_advice,
-            validator=ArchitectureAdvice.model_validate,
             validation_detail="The architecture advice section did not match the expected schema, so fallback advice was used.",
         )
-        backlog_items, backlog_route = self._resolve_panel_list_section(
+        backlog_items, backlog_route = self._resolve_backlog_section(
             section_name="internal_improvement_backlog",
-            key="internal_improvement_backlog",
             generation=backlog_generation,
             fallback_items=fallback_response.internal_improvement_backlog,
-            validator=ImprovementBacklogItem.model_validate,
             validation_detail="The internal improvement backlog section did not match the expected schema, so fallback backlog items were used.",
         )
         route_summary = self._summarize_panel_routes(
@@ -155,41 +135,289 @@ class CTOCIOPanelService:
             approval_required=fallback_response.approval_required,
         )
 
-    def _render_panel_section_prompt(
+    def _render_delimited_panel_prompt(
         self,
         *,
         agent: AgentContract,
         section_name: str,
         section_focus: str,
-        output_schema: str,
+        line_format: str,
     ) -> str:
-        prompt = self.prompt_loader.render_composition(
-            "specialist-advisory.cto-cio-panel",
-            template_context={
-                "display_name": agent.display_name,
-                "role_summary": agent.role_summary,
-                "operating_modes": self._format_list(agent.operating_modes),
-                "platform_context": self._panel_platform_context(),
-            },
-            injected_context={
-                "approval_policy": (
-                    "Internal advisory output only. This panel does not bypass approval policy or authorize delivery commitments."
-                ),
-                "tool_profile": "specialist-advisory profile with internal platform and roadmap context only.",
-                "state_summary": (
-                    "Current internal state includes workflow-first orchestration, prompt-layer contracts, "
-                    "typed specialist panels, client advisory endpoints, and pending multi-agent runtime evolution."
-                ),
-                "output_schema": output_schema,
-            },
-        )
+        section_rules = {
+            "scope_insights": "Use focus_area=customer_scope|architecture|internal_platform and tone=neutral|success|warning|critical.",
+            "internal_improvement_backlog": "Use priority=now|next|later, impact=low|medium|high, effort=small|medium|large.",
+        }
         return (
-            f"{prompt}\n\n"
-            f"For this call only, focus on the `{section_name}` section.\n"
-            f"{section_focus}\n"
-            f"Return JSON with exactly this top-level schema and no extra keys:\n{output_schema}\n"
-            "Do not include any commentary outside the JSON object."
+            "CTO/CIO panel. "
+            "Context: workflow-first orchestration, approval-bound specialist panels, productization pressure. "
+            f"{section_focus} "
+            f"Format: {line_format}. "
+            f"{section_rules.get(section_name, '')} "
+            f"Example: {self._section_example(section_name)} "
+            "Return only the line or lines."
         )
+
+    def _serialize_scope_insights(self, items: list[CTOCIOScopeInsight]) -> str:
+        return "\n".join(
+            f"{item.insight_id}||{item.title}||{item.summary}||{item.focus_area}||{item.tone}" for item in items
+        )
+
+    def _serialize_strategy_options(self, items: list[StrategyOption]) -> str:
+        return "\n".join(
+            "||".join(
+                [
+                    item.option_id,
+                    item.title,
+                    item.summary,
+                    ";".join(item.benefits[:2]),
+                    ";".join(item.tradeoffs[:2]),
+                    item.recommended_when,
+                ]
+            )
+            for item in items
+        )
+
+    def _serialize_backlog_items(self, items: list[ImprovementBacklogItem]) -> str:
+        return "\n".join(
+            "||".join(
+                [
+                    item.item_id,
+                    item.title,
+                    item.rationale,
+                    item.priority,
+                    item.impact,
+                    item.effort,
+                    item.owner_hint or "",
+                ]
+            )
+            for item in items
+        )
+
+    def _serialize_architecture_advice(self, item: ArchitectureAdvice) -> str:
+        return "||".join(
+            [
+                item.current_state,
+                item.target_state,
+                ";".join(item.key_constraints[:2]),
+                ";".join(item.proposed_changes[:2]),
+                ";".join(item.risks[:2]),
+            ]
+        )
+
+    def _section_example(self, section_name: str) -> str:
+        examples = {
+            "scope_insights": "insight_01||Panel reliability gap||Local runs still need faster responses||internal_platform||warning",
+            "strategy_options": "option_01||Stabilize local path||Trim prompts and reuse fast local model||more usable panels||less detail||When local reliability matters most",
+            "architecture_advice": "Heavy prompts time out||Compact local-first prompts||slow local inference||shorter prompts||partial outputs",
+            "internal_improvement_backlog": "item_01||Trim panel prompts||Reduce per-section context and output size||now||high||small||platform_owner",
+        }
+        return examples.get(section_name, "item_01||Short title||Short summary||neutral")
+
+    def _resolve_scope_insights_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_items: list[CTOCIOScopeInsight],
+        validation_detail: str,
+    ) -> tuple[list[CTOCIOScopeInsight], PanelSectionRoute]:
+        try:
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 5:
+                    raise ValueError("scope_insight_parts_invalid")
+                items.append(
+                    CTOCIOScopeInsight.model_validate(
+                        {
+                            "insight_id": parts[0],
+                            "title": parts[1],
+                            "summary": parts[2],
+                            "focus_area": self._normalize_cto_focus_area(parts[3]),
+                            "tone": self._normalize_tone(parts[4]),
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_strategy_options_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_items: list[StrategyOption],
+        validation_detail: str,
+    ) -> tuple[list[StrategyOption], PanelSectionRoute]:
+        try:
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 6:
+                    raise ValueError("strategy_option_parts_invalid")
+                items.append(
+                    StrategyOption.model_validate(
+                        {
+                            "option_id": parts[0],
+                            "title": parts[1],
+                            "summary": parts[2],
+                            "benefits": self._split_delimited_list(parts[3]),
+                            "tradeoffs": self._split_delimited_list(parts[4]),
+                            "recommended_when": parts[5],
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_backlog_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_items: list[ImprovementBacklogItem],
+        validation_detail: str,
+    ) -> tuple[list[ImprovementBacklogItem], PanelSectionRoute]:
+        try:
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 7:
+                    raise ValueError("backlog_parts_invalid")
+                items.append(
+                    ImprovementBacklogItem.model_validate(
+                        {
+                            "item_id": parts[0],
+                            "title": parts[1],
+                            "rationale": parts[2],
+                            "priority": self._normalize_priority(parts[3]),
+                            "impact": self._normalize_impact(parts[4]),
+                            "effort": self._normalize_effort(parts[5]),
+                            "owner_hint": parts[6] or None,
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_architecture_advice_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_value: ArchitectureAdvice,
+        validation_detail: str,
+    ) -> tuple[ArchitectureAdvice, PanelSectionRoute]:
+        try:
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 5:
+                    raise ValueError("architecture_parts_invalid")
+                return ArchitectureAdvice.model_validate(
+                    {
+                        "current_state": parts[0],
+                        "target_state": parts[1],
+                        "key_constraints": self._split_delimited_list(parts[2]),
+                        "proposed_changes": self._split_delimited_list(parts[3]),
+                        "risks": self._split_delimited_list(parts[4]),
+                    }
+                ), self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_value, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _clean_delimited_field(self, value: str) -> str:
+        return value.strip().strip('"').strip("'")
+
+    def _split_delimited_list(self, value: str) -> list[str]:
+        return [self._clean_delimited_field(item) for item in value.split(";") if self._clean_delimited_field(item)]
+
+    def _normalize_tone(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        mapping = {
+            "positive": "success",
+            "negative": "critical",
+            "informational": "neutral",
+            "info": "neutral",
+            "caution": "warning",
+        }
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"neutral", "success", "warning", "critical"} else "neutral"
+
+    def _normalize_cto_focus_area(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        if normalized in {"customer_scope", "architecture", "internal_platform"}:
+            return normalized
+        if "customer" in normalized or "scope" in normalized:
+            return "customer_scope"
+        if "architecture" in normalized or "system" in normalized or "integration" in normalized:
+            return "architecture"
+        return "internal_platform"
+
+    def _normalize_priority(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        mapping = {
+            "immediate": "now",
+            "current": "now",
+            "soon": "next",
+            "future": "later",
+            "long_term": "later",
+        }
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"now", "next", "later"} else "next"
+
+    def _normalize_impact(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        mapping = {"moderate": "medium"}
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"low", "medium", "high"} else "medium"
+
+    def _normalize_effort(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        mapping = {
+            "low": "small",
+            "high": "large",
+            "moderate": "medium",
+        }
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"small", "medium", "large"} else "medium"
 
     def _resolve_panel_list_section(
         self,

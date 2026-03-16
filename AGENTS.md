@@ -10,7 +10,8 @@ This document lists the canonical agents used to run an IT freelancer company wi
 - Track 1 internal agents own their own state and memory. If an agent pattern is reused for Track 2 client services, it must be replicated as a separate agent/instance, not shared.
 - When implementation, architecture, workflow scope, integrations, or priorities change, update all affected markdown governance files in the same work session to keep them aligned.
 - `ROADMAP.md` is the implementation status source of truth. `TODO.md` is the short execution view derived from it.
-- At minimum, review `ROADMAP.md`, `TODO.md`, `ARCHITECTURE.md`, `EPICS.md`, `INTEGRATIONS.md`, and `DECISIONS.md` for drift whenever a material change is made.
+- `AGENT_LLM_ROUTING_MATRIX.md` is the family-level planning reference for LLM execution posture by agent family.
+- At minimum, review `ROADMAP.md`, `TODO.md`, `AGENT_LLM_ROUTING_MATRIX.md`, `ARCHITECTURE.md`, `EPICS.md`, `INTEGRATIONS.md`, and `DECISIONS.md` for drift whenever a material change is made.
 
 ## Governed Agentic Company Principle
 This company may become highly agentic, but it must remain governed.
@@ -101,6 +102,8 @@ This means A2A is workflow-mediated, not autonomous peer networking.
 
 ## Multi-Agent Suitability Matrix
 The following families are currently assessed as high-suitability candidates for bounded multi-agent runtime use. This matrix is an implementation prioritization aid, not a mandate to promote every listed family immediately.
+
+LLM routing and direct-Ollama adoption are tracked separately in `AGENT_LLM_ROUTING_MATRIX.md`. Multi-agent suitability does not by itself determine whether a family should use compact direct-Ollama, richer governed `ModelGateway` reasoning, or deterministic/tool-first execution.
 
 | Agent / Family | Suitability | Why |
 |---|---:|---|

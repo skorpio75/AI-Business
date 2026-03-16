@@ -125,9 +125,11 @@ Infrastructure
 - CTO/CIO and Chief AI specialist APIs now also accept bounded client briefs so advisory instances can analyze problem statements, context/history, and recommend relevant services.
 - Those specialist analysis contracts now also frame the client mission and surface bounded upsell opportunities for consulting-led account growth.
 - CTO/CIO and Chief AI specialist analysis now runs through the shared model gateway and prompt layer, while deterministic logic remains as a governance-friendly fallback path.
-- The internal CTO/CIO and Chief AI specialist panels now also run through the shared model gateway, expose routing metadata in Mission Control, and are assembled from smaller section-level model calls to reduce local-model timeout pressure.
+- The internal CTO/CIO and Chief AI specialist panels now also run through the shared model gateway, expose routing metadata in Mission Control, and are assembled from smaller section-level model calls that use compact line-oriented prompts and a fast local-model override to reduce local-model timeout pressure.
 - Shared model timeout control is environment-configurable through `MODEL_TIMEOUT_SECONDS` so local and cloud routing can be tuned without code edits.
+- Agent-family routing posture is now documented separately in `AGENT_LLM_ROUTING_MATRIX.md` so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids are planned explicitly by family rather than assumed uniformly across the catalog.
 - Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google and Microsoft connector credentials.
+- Track B now has an initial deployment template pack in `config/client-template/` with a starter client config, client-scoped env template, compose overlay, and canonical storage/secret path map for cloned client instances.
 
 ## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.

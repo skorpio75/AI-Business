@@ -166,6 +166,7 @@ class ModelGateway:
         *,
         path: str,
         payload: Optional[dict] = None,
+        timeout_seconds: float | None = None,
     ) -> tuple[Optional[dict], Optional[str], Optional[str]]:
         body = None
         headers = {}
@@ -182,7 +183,7 @@ class ModelGateway:
             method=method,
         )
         try:
-            with urllib_request.urlopen(req, timeout=self.model_timeout_seconds) as response:
+            with urllib_request.urlopen(req, timeout=timeout_seconds or self.model_timeout_seconds) as response:
                 return json.loads(response.read().decode("utf-8")), None, None
         except urllib_error.URLError as exc:
             return (
@@ -238,7 +239,12 @@ class ModelGateway:
                 models.append(name)
         return models, None, None
 
-    def _resolve_local_model_name(self) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    def _resolve_local_model_name(
+        self,
+        preferred_model: str | None = None,
+    ) -> tuple[Optional[str], Optional[str], Optional[str]]:
+        if preferred_model:
+            return preferred_model, None, None
         if self._resolved_local_model:
             return self._resolved_local_model, None, None
 
@@ -374,11 +380,22 @@ class ModelGateway:
             )
 
     def _call_local_ollama_text(
-        self, *, prompt: str
+        self,
+        *,
+        prompt: str,
+        num_predict: int | None = None,
+        timeout_seconds: float | None = None,
+        local_model_override: str | None = None,
     ) -> tuple[Optional[TextGenerationResult], bool, Optional[str], Optional[str]]:
-        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name()
+        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name(
+            preferred_model=local_model_override
+        )
         if not model_name:
             return None, False, diagnostic_code, diagnostic_detail
+
+        options = {"temperature": 0.2}
+        if num_predict is not None:
+            options["num_predict"] = num_predict
 
         payload, request_code, request_detail = self._ollama_request(
             path="/api/generate",
@@ -386,8 +403,9 @@ class ModelGateway:
                 "model": model_name,
                 "prompt": prompt,
                 "stream": False,
-                "options": {"temperature": 0.2},
+                "options": options,
             },
+            timeout_seconds=timeout_seconds,
         )
         if not payload:
             return None, True, request_code, request_detail
@@ -545,8 +563,21 @@ class ModelGateway:
         cloud_result.llm_diagnostic_detail = local_result.llm_diagnostic_detail
         return cloud_result
 
-    def generate_text(self, *, prompt: str, fallback_content: str) -> TextGenerationResult:
-        local_result, local_llm_invoked, local_code, local_detail = self._call_local_ollama_text(prompt=prompt)
+    def generate_text(
+        self,
+        *,
+        prompt: str,
+        fallback_content: str,
+        local_num_predict: int | None = None,
+        local_timeout_seconds: float | None = None,
+        local_model_override: str | None = None,
+    ) -> TextGenerationResult:
+        local_result, local_llm_invoked, local_code, local_detail = self._call_local_ollama_text(
+            prompt=prompt,
+            num_predict=local_num_predict,
+            timeout_seconds=local_timeout_seconds,
+            local_model_override=local_model_override,
+        )
         if local_result is not None:
             local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
             return local_result
@@ -595,37 +626,52 @@ class ModelGateway:
         *,
         prompt: str,
         fallback_payload: dict,
+        allow_local_text_recovery: bool = True,
+        local_num_predict: int | None = None,
+        local_timeout_seconds: float | None = None,
+        local_model_override: str | None = None,
     ) -> StructuredGenerationResult:
         local_structured, local_llm_invoked, local_structured_code, local_structured_detail = (
-            self._call_local_ollama_structured_json(prompt=prompt)
+            self._call_local_ollama_structured_json(
+                prompt=prompt,
+                num_predict=local_num_predict,
+                timeout_seconds=local_timeout_seconds,
+                local_model_override=local_model_override,
+            )
         )
         if local_structured is not None:
             local_structured.local_llm_invoked = local_llm_invoked or local_structured.local_llm_invoked
             return local_structured
 
-        local_text, local_text_invoked, local_text_code, local_text_detail = self._call_local_ollama_text(
-            prompt=prompt
-        )
-        local_llm_invoked = local_llm_invoked or local_text_invoked
-        if local_text is not None:
-            parsed = self._parse_json_object(local_text.content)
-            if parsed is not None:
-                return StructuredGenerationResult(
-                    content=parsed,
-                    provider_used=local_text.provider_used,
-                    model_used=local_text.model_used,
-                    local_llm_invoked=local_llm_invoked or local_text.local_llm_invoked,
-                    cloud_llm_invoked=local_text.cloud_llm_invoked,
-                    llm_diagnostic_code=local_structured_code,
-                    llm_diagnostic_detail=self._join_diagnostic_details(
-                        local_structured_detail,
-                        "Structured JSON mode failed, but the gateway recovered by parsing the local text response.",
-                    ),
-                )
-            local_text_code = "local_llm_invalid_json"
-            local_text_detail = (
-                f"Local model {local_text.model_used} returned text, but it was not valid JSON for a structured response."
+        local_text_code = None
+        local_text_detail = None
+        if allow_local_text_recovery and local_structured_code != "local_ollama_timeout":
+            local_text, local_text_invoked, local_text_code, local_text_detail = self._call_local_ollama_text(
+                prompt=prompt,
+                num_predict=local_num_predict,
+                timeout_seconds=local_timeout_seconds,
+                local_model_override=local_model_override,
             )
+            local_llm_invoked = local_llm_invoked or local_text_invoked
+            if local_text is not None:
+                parsed = self._parse_json_object(local_text.content)
+                if parsed is not None:
+                    return StructuredGenerationResult(
+                        content=parsed,
+                        provider_used=local_text.provider_used,
+                        model_used=local_text.model_used,
+                        local_llm_invoked=local_llm_invoked or local_text.local_llm_invoked,
+                        cloud_llm_invoked=local_text.cloud_llm_invoked,
+                        llm_diagnostic_code=local_structured_code,
+                        llm_diagnostic_detail=self._join_diagnostic_details(
+                            local_structured_detail,
+                            "Structured JSON mode failed, but the gateway recovered by parsing the local text response.",
+                        ),
+                    )
+                local_text_code = "local_llm_invalid_json"
+                local_text_detail = (
+                    f"Local model {local_text.model_used} returned text, but it was not valid JSON for a structured response."
+                )
 
         cloud_llm_invoked = False
         cloud_code = None
@@ -689,10 +735,19 @@ class ModelGateway:
         self,
         *,
         prompt: str,
+        num_predict: int | None = None,
+        timeout_seconds: float | None = None,
+        local_model_override: str | None = None,
     ) -> tuple[Optional[StructuredGenerationResult], bool, Optional[str], Optional[str]]:
-        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name()
+        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name(
+            preferred_model=local_model_override
+        )
         if not model_name:
             return None, False, diagnostic_code, diagnostic_detail
+
+        options = {"temperature": 0.2}
+        if num_predict is not None:
+            options["num_predict"] = num_predict
 
         payload, request_code, request_detail = self._ollama_request(
             path="/api/generate",
@@ -701,8 +756,9 @@ class ModelGateway:
                 "prompt": prompt,
                 "stream": False,
                 "format": "json",
-                "options": {"temperature": 0.2},
+                "options": options,
             },
+            timeout_seconds=timeout_seconds,
         )
         if not payload:
             return None, True, request_code, request_detail

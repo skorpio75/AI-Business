@@ -93,7 +93,7 @@ The internal business can run key workflows with one human approver.
 - approved Outlook replies can execute through Microsoft Graph after approval
 
 ## Epic 6 - Track B Client Template MVP
-- Status: `NOT_STARTED`
+- Status: `IN_PROGRESS`
 ### Outcome
 A reproducible isolated client platform can be deployed quickly.
 
@@ -105,7 +105,7 @@ A reproducible isolated client platform can be deployed quickly.
 
 ### Acceptance criteria
 - client config pack exists
-- deployment can be cloned
+- deployment can be cloned from the template env + compose overlay
 - seed scripts prepare first instance
 - workflows run with client-specific context
 - client-facing advisory agents can analyze a client problem statement, context, and history before recommending services
@@ -212,6 +212,7 @@ Workflow and agent execution is described through normalized state, event, tool,
 - prompt naming, storage, and loader fallback rules are defined
 - specialist advisory contracts can carry client briefs, context signals, and service recommendations
 - specialist advisory contracts can also carry consulting mission assessments and upsell opportunities
+- agent-family LLM routing posture is documented so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic hybrids are planned explicitly by family
 
 ## Epic 13 - Business Scaling Maturity Model
 - Status: `NOT_STARTED`

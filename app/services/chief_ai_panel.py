@@ -30,107 +30,103 @@ class PanelSectionRoute:
 
 
 class ChiefAIPanelService:
+    PANEL_LOCAL_MODEL = "qwen2.5:1.5b-instruct-q4_K_M"
+
     def __init__(self, model_gateway: ModelGateway | None = None) -> None:
         self.model_gateway = model_gateway or ModelGateway(settings=Settings())
         self.prompt_loader = PromptLoader()
 
     def build_panel(self, *, agent: AgentContract) -> ChiefAIPanelResponse:
         fallback_response = self._build_fallback_panel(agent)
-        summary_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        summary_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="executive_summary",
-                section_focus="Return only a concise executive summary of the internal AI strategy posture.",
-                output_schema='{"executive_summary":"string"}',
+                section_focus="Return one concise executive summary under 18 words.",
+                line_format="executive_summary",
             ),
-            fallback_payload={"executive_summary": fallback_response.executive_summary},
+            fallback_content=fallback_response.executive_summary,
+            local_num_predict=45,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        signal_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        signal_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="scope_signals",
-                section_focus=(
-                    "Return only the most important internal AI strategy scope signals with clear focus areas and tones."
-                ),
-                output_schema=(
-                    '{"scope_signals":[{"signal_id":"string","title":"string","summary":"string","focus_area":"offer_design|delivery_controls|commercialization","tone":"neutral|success|warning|critical"}]}'
-                ),
+                section_focus="Return 1 or 2 AI strategy scope signals with short titles and summaries.",
+                line_format="signal_id||title||summary||focus_area",
             ),
-            fallback_payload={"scope_signals": [item.model_dump() for item in fallback_response.scope_signals]},
+            fallback_content=self._serialize_scope_signals(fallback_response.scope_signals),
+            local_num_predict=90,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        opportunity_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        opportunity_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="opportunity_map",
-                section_focus="Return only the AI opportunity map with the clearest internal offer and productization opportunities.",
-                output_schema=(
-                    '{"opportunity_map":[{"opportunity_id":"string","title":"string","problem_statement":"string","expected_value":"string","priority":"now|next|later","dependencies":["string"]}]}'
-                ),
+                section_focus="Return 1 or 2 opportunity items with short fields.",
+                line_format="opportunity_id||title||problem_statement||expected_value||priority||dependency",
             ),
-            fallback_payload={"opportunity_map": [item.model_dump() for item in fallback_response.opportunity_map]},
+            fallback_content=self._serialize_opportunity_map(fallback_response.opportunity_map),
+            local_num_predict=90,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        blueprint_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        blueprint_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="delivery_blueprint",
-                section_focus="Return only the phased delivery blueprint for how internal AI strategy should be operationalized.",
-                output_schema=(
-                    '{"delivery_blueprint":[{"phase_id":"string","title":"string","objectives":["string"],"deliverables":["string"],"risks":["string"]}]}'
-                ),
+                section_focus="Return 1 or 2 blueprint phases with short objectives, deliverables, and risks.",
+                line_format="phase_id||title||objective||deliverable||risk",
             ),
-            fallback_payload={
-                "delivery_blueprint": [item.model_dump() for item in fallback_response.delivery_blueprint]
-            },
+            fallback_content=self._serialize_delivery_blueprint(fallback_response.delivery_blueprint),
+            local_num_predict=110,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
-        maturity_generation = self.model_gateway.generate_structured_json(
-            prompt=self._render_panel_section_prompt(
+        maturity_generation = self.model_gateway.generate_text(
+            prompt=self._render_delimited_panel_prompt(
                 agent=agent,
                 section_name="maturity_model",
-                section_focus="Return only the maturity dimensions and next actions that matter most for internal AI strategy execution.",
-                output_schema=(
-                    '{"maturity_model":[{"dimension":"string","current_level":"ad_hoc|emerging|repeatable|managed|optimized","target_level":"ad_hoc|emerging|repeatable|managed|optimized","gap_summary":"string","next_actions":["string"]}]}'
-                ),
+                section_focus="Return 1 or 2 maturity dimensions with brief gap summary and actions.",
+                line_format="dimension||current_level||target_level||gap_summary||next_action",
             ),
-            fallback_payload={"maturity_model": [item.model_dump() for item in fallback_response.maturity_model]},
+            fallback_content=self._serialize_maturity_model(fallback_response.maturity_model),
+            local_num_predict=95,
+            local_timeout_seconds=15,
+            local_model_override=self.PANEL_LOCAL_MODEL,
         )
 
-        executive_summary, summary_route = self._resolve_panel_text_section(
+        executive_summary, summary_route = self._resolve_summary_section(
             section_name="executive_summary",
-            key="executive_summary",
             generation=summary_generation,
             fallback_value=fallback_response.executive_summary,
             validation_detail="The executive summary section did not match the expected schema, so the fallback summary was used.",
         )
-        scope_signals, signal_route = self._resolve_panel_list_section(
+        scope_signals, signal_route = self._resolve_scope_signals_section(
             section_name="scope_signals",
-            key="scope_signals",
             generation=signal_generation,
             fallback_items=fallback_response.scope_signals,
-            validator=ChiefAIScopeSignal.model_validate,
             validation_detail="The scope signals section did not match the expected schema, so fallback signals were used.",
         )
-        opportunity_map, opportunity_route = self._resolve_panel_list_section(
+        opportunity_map, opportunity_route = self._resolve_opportunity_map_section(
             section_name="opportunity_map",
-            key="opportunity_map",
             generation=opportunity_generation,
             fallback_items=fallback_response.opportunity_map,
-            validator=OpportunityMapItem.model_validate,
             validation_detail="The opportunity map section did not match the expected schema, so fallback opportunities were used.",
         )
-        delivery_blueprint, blueprint_route = self._resolve_panel_list_section(
+        delivery_blueprint, blueprint_route = self._resolve_delivery_blueprint_section(
             section_name="delivery_blueprint",
-            key="delivery_blueprint",
             generation=blueprint_generation,
             fallback_items=fallback_response.delivery_blueprint,
-            validator=DeliveryBlueprintPhase.model_validate,
             validation_detail="The delivery blueprint section did not match the expected schema, so the fallback blueprint was used.",
         )
-        maturity_model, maturity_route = self._resolve_panel_list_section(
+        maturity_model, maturity_route = self._resolve_maturity_model_section(
             section_name="maturity_model",
-            key="maturity_model",
             generation=maturity_generation,
             fallback_items=fallback_response.maturity_model,
-            validator=MaturityDimension.model_validate,
             validation_detail="The maturity model section did not match the expected schema, so the fallback maturity model was used.",
         )
         route_summary = self._summarize_panel_routes(
@@ -159,89 +155,322 @@ class ChiefAIPanelService:
             approval_required=fallback_response.approval_required,
         )
 
-    def _render_panel_section_prompt(
+    def _render_delimited_panel_prompt(
         self,
         *,
         agent: AgentContract,
         section_name: str,
         section_focus: str,
-        output_schema: str,
+        line_format: str,
     ) -> str:
-        prompt = self.prompt_loader.render_composition(
-            "specialist-advisory.chief-ai-panel",
-            template_context={
-                "display_name": agent.display_name,
-                "role_summary": agent.role_summary,
-                "operating_modes": self._format_list(agent.operating_modes),
-                "platform_context": self._panel_platform_context(),
-            },
-            injected_context={
-                "approval_policy": (
-                    "Internal advisory output only. This panel does not bypass approval policy or authorize delivery commitments."
-                ),
-                "tool_profile": "specialist-advisory profile with internal platform and roadmap context only.",
-                "state_summary": (
-                    "Current internal state includes workflow-first orchestration, typed advisory endpoints, "
-                    "prompt-layer contracts, client consulting paths, and a need to turn internal AI capability into "
-                    "repeatable offers and governed delivery motions."
-                ),
-                "output_schema": output_schema,
-            },
-        )
+        section_rules = {
+            "scope_signals": "Use focus_area=offer_design|delivery_controls|commercialization and tone=neutral|success|warning|critical.",
+            "opportunity_map": "Use priority=now|next|later.",
+            "maturity_model": "Use maturity levels ad_hoc|emerging|repeatable|managed|optimized.",
+        }
         return (
-            f"{prompt}\n\n"
-            f"For this call only, focus on the `{section_name}` section.\n"
-            f"{section_focus}\n"
-            f"Return JSON with exactly this top-level schema and no extra keys:\n{output_schema}\n"
-            "Do not include any commentary outside the JSON object."
+            "Chief AI panel. "
+            "Context: AI advisory packaging, delivery controls, commercialization pressure. "
+            f"{section_focus} "
+            f"Format: {line_format}. "
+            f"{section_rules.get(section_name, '')} "
+            f"Example: {self._section_example(section_name)} "
+            "Return only the line or lines."
         )
 
-    def _resolve_panel_text_section(
+    def _resolve_summary_section(
         self,
         *,
         section_name: str,
-        key: str,
         generation,
         fallback_value: str,
         validation_detail: str,
     ) -> tuple[str, PanelSectionRoute]:
-        value = generation.content.get(key) if isinstance(generation.content, dict) else None
-        if isinstance(value, str) and value.strip():
-            return value.strip(), self._route_from_generation(section_name=section_name, generation=generation)
+        if isinstance(generation.content, str) and generation.content.strip():
+            summary = self._clean_delimited_field(generation.content.strip().splitlines()[0])
+            if summary:
+                return summary, self._route_from_generation(section_name=section_name, generation=generation)
         return fallback_value, self._validation_fallback_route(
             section_name=section_name,
             generation=generation,
             validation_detail=validation_detail,
         )
 
-    def _resolve_panel_list_section(
+    def _serialize_scope_signals(self, items: list[ChiefAIScopeSignal]) -> str:
+        return "\n".join(
+            f"{item.signal_id}||{item.title}||{item.summary}||{item.focus_area}||{item.tone}" for item in items
+        )
+
+    def _serialize_opportunity_map(self, items: list[OpportunityMapItem]) -> str:
+        return "\n".join(
+            "||".join(
+                [
+                    item.opportunity_id,
+                    item.title,
+                    item.problem_statement,
+                    item.expected_value,
+                    item.priority,
+                    ";".join(item.dependencies[:2]),
+                ]
+            )
+            for item in items
+        )
+
+    def _serialize_delivery_blueprint(self, items: list[DeliveryBlueprintPhase]) -> str:
+        return "\n".join(
+            "||".join(
+                [
+                    item.phase_id,
+                    item.title,
+                    ";".join(item.objectives[:2]),
+                    ";".join(item.deliverables[:2]),
+                    ";".join(item.risks[:2]),
+                ]
+            )
+            for item in items
+        )
+
+    def _serialize_maturity_model(self, items: list[MaturityDimension]) -> str:
+        return "\n".join(
+            "||".join(
+                [
+                    item.dimension,
+                    item.current_level,
+                    item.target_level,
+                    item.gap_summary,
+                    ";".join(item.next_actions[:2]),
+                ]
+            )
+            for item in items
+        )
+
+    def _section_example(self, section_name: str) -> str:
+        examples = {
+            "executive_summary": "Advisory packaging is improving but still needs faster, trustable local outputs",
+            "scope_signals": "signal_01||Offer packaging gap||Capabilities are ahead of packaging||commercialization",
+            "opportunity_map": "opp_01||AI delivery offer||Packaging is still unclear||Clearer offer narrative||now||proposal_assets",
+            "delivery_blueprint": "phase_01||Discovery slice||map pain points||use-case shortlist||weak sponsorship",
+            "maturity_model": "Operating model||repeatable||managed||Controls exist but packaging lags||package offers",
+        }
+        return examples.get(section_name, "signal_01||Short title||Short summary||offer_design||neutral")
+
+    def _resolve_scope_signals_section(
         self,
         *,
         section_name: str,
-        key: str,
         generation,
-        fallback_items: list,
-        validator,
+        fallback_items: list[ChiefAIScopeSignal],
         validation_detail: str,
-    ) -> tuple[list, PanelSectionRoute]:
-        items = generation.content.get(key) if isinstance(generation.content, dict) else None
-        if not isinstance(items, list):
-            return fallback_items, self._validation_fallback_route(
-                section_name=section_name,
-                generation=generation,
-                validation_detail=validation_detail,
-            )
+    ) -> tuple[list[ChiefAIScopeSignal], PanelSectionRoute]:
         try:
-            return [validator(item) for item in items], self._route_from_generation(
-                section_name=section_name,
-                generation=generation,
-            )
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) not in {4, 5}:
+                    raise ValueError("scope_signal_parts_invalid")
+                focus_area = parts[3]
+                tone = "neutral"
+                if len(parts) == 5:
+                    tone = parts[4]
+                elif "|" in parts[3]:
+                    signal_parts = [self._clean_delimited_field(item) for item in parts[3].split("|") if self._clean_delimited_field(item)]
+                    if signal_parts:
+                        focus_area = signal_parts[-1]
+                items.append(
+                    ChiefAIScopeSignal.model_validate(
+                        {
+                            "signal_id": parts[0],
+                            "title": parts[1],
+                            "summary": parts[2],
+                            "focus_area": self._normalize_chief_focus_area(focus_area),
+                            "tone": self._normalize_tone(tone),
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
         except Exception:
-            return fallback_items, self._validation_fallback_route(
-                section_name=section_name,
-                generation=generation,
-                validation_detail=validation_detail,
-            )
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_opportunity_map_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_items: list[OpportunityMapItem],
+        validation_detail: str,
+    ) -> tuple[list[OpportunityMapItem], PanelSectionRoute]:
+        try:
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 6:
+                    raise ValueError("opportunity_parts_invalid")
+                items.append(
+                    OpportunityMapItem.model_validate(
+                        {
+                            "opportunity_id": parts[0],
+                            "title": parts[1],
+                            "problem_statement": parts[2],
+                            "expected_value": parts[3],
+                            "priority": self._normalize_priority(parts[4]),
+                            "dependencies": self._split_delimited_list(parts[5]),
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_delivery_blueprint_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_items: list[DeliveryBlueprintPhase],
+        validation_detail: str,
+    ) -> tuple[list[DeliveryBlueprintPhase], PanelSectionRoute]:
+        try:
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 5:
+                    raise ValueError("blueprint_parts_invalid")
+                items.append(
+                    DeliveryBlueprintPhase.model_validate(
+                        {
+                            "phase_id": parts[0],
+                            "title": parts[1],
+                            "objectives": self._split_delimited_list(parts[2]),
+                            "deliverables": self._split_delimited_list(parts[3]),
+                            "risks": self._split_delimited_list(parts[4]),
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_maturity_model_section(
+        self,
+        *,
+        section_name: str,
+        generation,
+        fallback_items: list[MaturityDimension],
+        validation_detail: str,
+    ) -> tuple[list[MaturityDimension], PanelSectionRoute]:
+        try:
+            items = []
+            for raw_line in generation.content.splitlines():
+                line = raw_line.strip()
+                if not line:
+                    continue
+                parts = [self._clean_delimited_field(part) for part in line.split("||")]
+                if len(parts) != 5:
+                    raise ValueError("maturity_parts_invalid")
+                items.append(
+                    MaturityDimension.model_validate(
+                        {
+                            "dimension": parts[0],
+                            "current_level": self._normalize_maturity_level(parts[1]),
+                            "target_level": self._normalize_maturity_level(parts[2]),
+                            "gap_summary": parts[3],
+                            "next_actions": self._split_delimited_list(parts[4]),
+                        }
+                    )
+                )
+            if items:
+                return items, self._route_from_generation(section_name=section_name, generation=generation)
+        except Exception:
+            pass
+        return fallback_items, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _clean_delimited_field(self, value: str) -> str:
+        return value.strip().strip('"').strip("'")
+
+    def _split_delimited_list(self, value: str) -> list[str]:
+        return [self._clean_delimited_field(item) for item in value.split(";") if self._clean_delimited_field(item)]
+
+    def _normalize_tone(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        mapping = {
+            "positive": "success",
+            "negative": "critical",
+            "informational": "neutral",
+            "info": "neutral",
+            "caution": "warning",
+        }
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"neutral", "success", "warning", "critical"} else "neutral"
+
+    def _normalize_chief_focus_area(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        if normalized in {"offer_design", "delivery_controls", "commercialization"}:
+            return normalized
+        if "offer" in normalized or "service" in normalized or "packag" in normalized:
+            return "offer_design"
+        if "control" in normalized or "govern" in normalized or "delivery" in normalized:
+            return "delivery_controls"
+        return "commercialization"
+
+    def _normalize_priority(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_")
+        mapping = {
+            "immediate": "now",
+            "current": "now",
+            "high": "now",
+            "soon": "next",
+            "medium": "next",
+            "future": "later",
+            "longer_term": "later",
+            "long_term": "later",
+            "low": "later",
+        }
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"now", "next", "later"} else "next"
+
+    def _normalize_maturity_level(self, value: str) -> str:
+        normalized = self._clean_delimited_field(value).lower().replace(" ", "_").replace("-", "_")
+        mapping = {
+            "adhoc": "ad_hoc",
+            "ad-hoc": "ad_hoc",
+            "early": "emerging",
+            "defined": "repeatable",
+            "advanced": "managed",
+            "leading": "optimized",
+        }
+        normalized = mapping.get(normalized, normalized)
+        return normalized if normalized in {"ad_hoc", "emerging", "repeatable", "managed", "optimized"} else "repeatable"
 
     def _route_from_generation(self, *, section_name: str, generation) -> PanelSectionRoute:
         return PanelSectionRoute(

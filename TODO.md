@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 4 - Track B Client Template MVP`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: continue Track B by creating the client deployment template pack after landing the first client-context advisory analysis baseline
+- Immediate goal: continue Track B by finalizing the client contract after landing the first deployment template pack
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,14 +18,19 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P4-T01` Create client deployment template pack
+- [ ] `P4-T02` Finalize `config/client-template/client.yaml`
 
 ## Soon After
-- [ ] `P4-T02` Finalize `config/client-template/client.yaml`
+- [ ] `P4-T03` Build seed script for client initialization
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
+- [ ] `B-T01A` Apply the compact direct-Ollama local-first pattern to Knowledge Q&A
+- [ ] `B-T01B` Apply the compact direct-Ollama local-first pattern to proposal drafting
+- [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
-- [x] Make the shared model timeout configurable via `.env` and split the heavy CTO/CIO and Chief AI internal panel generation into smaller section calls for local-first execution
+- [x] `P4-T01` Create the first Track B client deployment template pack with a pack README, client-scoped env template, compose overlay, and storage/secret path map
+- [x] `B-T01-INV` Create `AGENT_LLM_ROUTING_MATRIX.md` and expand direct-Ollama planning from a few endpoints into a broader family-level candidate inventory aligned with `AGENTS.md`
+- [x] Make the shared model timeout configurable via `.env`, split the heavy CTO/CIO and Chief AI internal panel generation into smaller section calls, and simplify those sections into compact local-first prompts that complete on the faster local Ollama model
 - [x] `P4-T01D` Route internal CTO/CIO and Chief AI specialist panels through the governed prompt/model layer and surface routing metadata
 - [x] `P4-T01C` Route CTO/CIO and Chief AI specialist analysis through the governed prompt/model layer with deterministic fallback guardrails
 - [x] `P4-T01B` Extend CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity detection
@@ -52,6 +57,8 @@
 - [ ] Keep Track A internal instances and Track B client instances isolated even when they share an agent family
 - [ ] Keep multi-agent runtime evolution workflow-first; avoid autonomous peer-agent complexity before step identity, handoff payloads, and execution logs are stable
 - [ ] Treat the prompt layer as part of the target runtime architecture, but defer large-scale prompt authoring until contracts, state, and workflow boundaries are stable
+- [ ] Reuse the compact direct-Ollama pattern selectively: best for bounded internal panels and short grounded outputs, not automatically for every richer client-facing reasoning surface
+- [ ] Expand direct-Ollama planning by agent family: Executive synthesis, Delivery authoring, Growth/commercial drafting, and client-facing service variants should all be evaluated explicitly, not only the currently implemented endpoints
 - [ ] Use the high-suitability multi-agent matrix to prioritize runtime splitting instead of promoting all documented families at once
 - [ ] Treat the medium-suitability set as bounded collaboration candidates, not immediate runtime-splitting priorities
 - [ ] Avoid adding UI logic before API/contracts are stable enough to consume

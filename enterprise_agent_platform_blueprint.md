@@ -2,15 +2,19 @@
 
 ## Current Implementation Note
 
-This blueprint describes the target platform shape. Current execution status and task sequencing live in `ROADMAP.md` and `TODO.md`.
+This blueprint describes the target platform shape. Current execution status and task sequencing live in `ROADMAP.md` and `TODO.md`, and governance/runtime truth lives in `AGENTS.md`, `AGENT_LLM_ROUTING_MATRIX.md`, `ARCHITECTURE.md`, and `DECISIONS.md`.
 
-As of 2026-03-13:
-- Phase 3 (`Track A Internal MVP Workflows`) is in progress.
+Treat this file as a reference blueprint, not the live implementation tracker.
+
+As of 2026-03-16:
+- Phase 3 (`Track A Internal MVP Workflows`) is complete.
+- Phase 4 (`Track B Client Template MVP`) is in progress.
 - Mission Control is implemented in `frontend/` as a React operator console using `shadcn/ui` + Tailwind.
-- Email operations, internal knowledge Q&A, and proposal generation are working end-to-end in the internal MVP.
-- Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are in place.
-- Approved Outlook replies can send through Microsoft Graph after platform approval.
-- The next integration focus is OAuth/bootstrap, refresh-token handling, and secret management for external providers (`P3-T16`).
+- Email operations, internal knowledge Q&A, proposal generation, specialist advisory panels, and client-context specialist analysis endpoints are implemented in the internal instance.
+- Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are in place, and approved Outlook replies can send through Microsoft Graph after platform approval.
+- The current model-routing reality is mixed: `ModelGateway` remains the shared runtime layer, LiteLLM remains the cloud/provider abstraction path, and some latency-sensitive local specialist-panel calls now use direct Ollama requests with compact prompts and explicit local-model overrides.
+- Agent-family routing posture is documented separately in `AGENT_LLM_ROUTING_MATRIX.md` so the direct-Ollama pattern is expanded selectively rather than assumed for every family.
+- For exact implementation truth, prefer `ROADMAP.md`, `TODO.md`, and the service code over this reference blueprint.
 
 ## 1. Objective
 
@@ -79,7 +83,8 @@ Constraints:
 - **shadcn/ui**
 - **Tailwind**
 - **LangGraph**
-- **LiteLLM**
+- **LiteLLM** for cloud/provider abstraction
+- **Ollama** for direct local-model execution where needed
 - **LlamaIndex**
 - **PostgreSQL**
 - **pgvector**
@@ -176,6 +181,7 @@ enterprise-agent-platform/
 |- EPICS.md
 |- ARCHITECTURE.md
 |- AGENTS.md
+|- AGENT_LLM_ROUTING_MATRIX.md
 |- WORKFLOWS.md
 |- DECISIONS.md
 |- TODO.md
@@ -283,6 +289,14 @@ Purpose:
 - responsibilities
 - inputs/outputs
 - approval rules
+
+### `AGENT_LLM_ROUTING_MATRIX.md`
+
+Purpose:
+
+- family-level LLM routing posture
+- compact direct-Ollama vs guarded local drafting vs richer governed gateway reasoning vs deterministic hybrids
+- rollout-wave planning for future adoption
 
 ### `WORKFLOWS.md`
 
@@ -533,7 +547,7 @@ Main tech components
 - FastAPI app
 - config loader
 - DB models
-- LiteLLM gateway
+- shared model gateway with LiteLLM-compatible cloud/provider routing
 - Docker Compose
 
 ### Phase 2 â€” Workflow + Knowledge
@@ -696,6 +710,7 @@ enterprise-agent-platform/
 â”œâ”€ EPICS.md
 â”œâ”€ ARCHITECTURE.md
 â”œâ”€ AGENTS.md
+â”œâ”€ AGENT_LLM_ROUTING_MATRIX.md
 â”œâ”€ WORKFLOWS.md
 â”œâ”€ DECISIONS.md
 â”œâ”€ TODO.md
@@ -1012,7 +1027,8 @@ Deploy the first working internal instance.
 - **React**
 - **FastAPI**
 - **LangGraph**
-- **LiteLLM**
+- **LiteLLM** for cloud/provider routing
+- **Ollama** for direct local execution on selected paths
 - **PostgreSQL**
 - **Langfuse**
 

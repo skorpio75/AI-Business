@@ -180,5 +180,17 @@ Architecture and implementation decisions with rationale and trade-offs.
 ## ADR-030: Heavy internal specialist panels should be section-assembled with configurable model timeouts
 - Status: Accepted
 - Date: 2026-03-16
-- Decision: The internal CTO/CIO and Chief AI specialist panels should assemble their responses from multiple smaller section-level prompt/model calls instead of one oversized structured generation, and the shared model timeout should be configurable through runtime settings and `.env`.
-- Rationale: Direct end-to-end panel generation can exceed local Ollama latency budgets for complex advisory outputs, especially on smaller local models. Splitting the work into narrower calls improves the chance of local completion while preserving governed fallback, and making the timeout configurable avoids hard-coding one latency budget for every environment.
+- Decision: The internal CTO/CIO and Chief AI specialist panels should assemble their responses from multiple smaller section-level prompt/model calls instead of one oversized structured generation, the shared model timeout should be configurable through runtime settings and `.env`, and the heavy internal panel sections should favor compact line-oriented prompts plus a fast local-model override over large structured JSON generations.
+- Rationale: Direct end-to-end panel generation can exceed local Ollama latency budgets for complex advisory outputs, especially on smaller local models. Splitting the work into narrower calls improves the chance of local completion while preserving governed fallback, making the timeout configurable avoids hard-coding one latency budget for every environment, and compact example-shaped prompts keep the local path reliable without reverting the panels to deterministic-only outputs.
+
+## ADR-031: Agent-family LLM routing should be governed by a separate routing matrix
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The platform should maintain a separate agent-family LLM routing matrix that distinguishes compact direct-Ollama local-first execution, compact local drafting with stronger guardrails, richer governed `ModelGateway` reasoning, and deterministic/tool-first hybrids. This routing posture should be planned by family and mode rather than assuming one LLM execution pattern fits every agent.
+- Rationale: The agent catalog includes internal panels, grounded knowledge services, operational control roles, client-delivery authoring roles, and richer client-facing consulting surfaces. Those families do not share the same latency, structure, risk, or review needs. A dedicated routing matrix keeps LLM adoption explicit, auditable, and aligned with governance without forcing all families into the same local or cloud pattern.
+
+## ADR-032: Track B bootstrap should start from a reusable client template pack
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The first Track B bootstrap layer should be represented as a reusable client template pack under `config/client-template/` that bundles a starter client config, a client-scoped environment template, a compose overlay, and a canonical storage/secret path map before later work adds fuller client contracts, seed automation, and enforced runtime isolation.
+- Rationale: Track B needs a concrete cloneable starting point before deeper bootstrap automation exists. Packaging these artifacts together creates an explicit handoff surface for later seeding and isolation work while preserving the architectural rule that Track A and Track B reuse the same codebase but not the same tenant, storage, or credential assumptions.

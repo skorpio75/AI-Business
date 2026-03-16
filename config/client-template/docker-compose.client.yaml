@@ -1,0 +1,15 @@
+services:
+  postgres:
+    container_name: ${CLIENT_SLUG:-client-template}-agent-platform-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-client_template_platform}
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agent}
+    ports:
+      - "${POSTGRES_PORT:-5440}:5432"
+    volumes:
+      - client_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  client_postgres_data:
+    name: ${CLIENT_SLUG:-client-template}_postgres_data

@@ -41,6 +41,7 @@ In short: internal and client-facing agents already use the same governed LLM-fi
 - FastAPI
 - LangGraph
 - LiteLLM
+- Ollama
 - LlamaIndex
 - PostgreSQL
 - pgvector
@@ -64,6 +65,11 @@ In short: internal and client-facing agents already use the same governed LLM-fi
 - reusable knowledge workflow
 - reusable document intake workflow
 
+## Track B Template Pack
+The first Track B deployment pack now lives in `config/client-template/`. It includes the starter `client.yaml`, a client-scoped `deployment.env.example`, a `docker-compose.client.yaml` overlay, and a `storage-map.yaml` placeholder for isolated documents, logs, exports, prompt overrides, and connector secrets.
+
+This pack makes the template clonable without changing the shared codebase while keeping later tasks separate for final client-contract design, seeding, runtime isolation hardening, workflow portability checks, and the bootstrap runbook.
+
 ## Repository Structure
 ```text
 enterprise-agent-platform/
@@ -72,6 +78,7 @@ enterprise-agent-platform/
 |- EPICS.md
 |- ARCHITECTURE.md
 |- AGENTS.md
+|- AGENT_LLM_ROUTING_MATRIX.md
 |- PROMPTS.md
 |- WORKFLOWS.md
 |- DECISIONS.md
@@ -99,6 +106,7 @@ Start with a small, serious foundation. Do not over-engineer the first version.
 ## Documentation Rule
 - Keep markdown governance files aligned as part of every material change.
 - `ROADMAP.md` is the status source of truth and `TODO.md` is the short execution view derived from it.
+- `AGENT_LLM_ROUTING_MATRIX.md` is the family-level planning map for compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/hybrid execution posture.
 - When architecture, integrations, workflow scope, or implementation status changes, update the affected markdown files in the same change.
 
 ## MVP Slice 1 (Working)
@@ -193,7 +201,7 @@ Client-facing advisory specialists can now analyze a bounded client brief instea
 - `POST /specialists/cto-cio/analyze` accepts a problem statement, client context/history, current stack, constraints, and desired outcomes, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, strategy options, and architecture advice.
 - `POST /specialists/chief-ai-digital-strategy/analyze` accepts a problem statement, business/client context, history, process areas, data assets, and delivery constraints, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, an opportunity map, a phased blueprint, and maturity guidance.
 - both specialist analysis endpoints now run through the shared prompt/model layer and return provider/model routing metadata, while deterministic fallback remains in place for resilience and governance-safe output recovery
-- the internal CTO/CIO and Chief AI specialist panels also run through the same governed prompt/model layer, now surface provider/model routing metadata in Mission Control, and are assembled from smaller section-level model calls to reduce local timeout pressure
+- the internal CTO/CIO and Chief AI specialist panels also run through the same governed prompt/model layer, now surface provider/model routing metadata in Mission Control, and are assembled from smaller section-level model calls that use compact example-shaped prompts plus a fast local-model override to keep Ollama viable on smaller machines
 
 ## Current Control Layers
 - normalized events, approval classes, and autonomy classes are defined in backend contracts/config

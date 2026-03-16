@@ -1,0 +1,15 @@
+storage:
+  tenant_id: client-template
+  track: track_b_client
+  directories:
+    documents_root: data/clients/client-template/documents
+    logs_root: data/clients/client-template/logs
+    exports_root: data/clients/client-template/exports
+    vector_root: data/clients/client-template/vector
+    prompt_override_root: prompts/clients/client-template
+  secrets:
+    google_oauth: secrets/client-template/google-oauth.json
+    microsoft_graph: secrets/client-template/microsoft-graph.json
+  notes:
+    - Template-only path map for the first Track B deployment pack.
+    - Runtime enforcement of isolated storage and credentials lands in P4-T04.

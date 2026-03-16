@@ -23,7 +23,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
-| Phase 4 | Track B client template MVP | IN_PROGRESS | dpizz | TBD | 4/10 tasks done |
+| Phase 4 | Track B client template MVP | IN_PROGRESS | dpizz | TBD | 5/10 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
@@ -115,7 +115,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P3-T20: Add explicit UI routing indicators for local model, cloud route, fallback-rule execution, and local LLM invocation status
 
 ### Phase 4 - Track B Client Template MVP
-- [ ] P4-T01: Create client deployment template pack
+- [x] P4-T01: Create client deployment template pack
 - [x] P4-T01A: Add typed specialist client-context analysis endpoints so client-facing advisory agents can assess a problem statement, context/history, and recommend relevant services
 - [x] P4-T01B: Extend client-facing advisory agents with consulting-style mission framing and upsell opportunity detection so they can help grow client accounts
 - [x] P4-T01C: Route specialist advisory analysis through the governed prompt/model layer so consulting agents use LLM reasoning with deterministic fallback guardrails
@@ -174,6 +174,17 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Backlog - Model Routing
 - [ ] B-T01: Define multi-provider routing rules for cloud model usage via LiteLLM (task type, risk, cost, latency, fallback order, local-only policy)
+- [x] B-T01-INV: Create the initial broader direct-Ollama local-first candidate inventory by agent family and capture it in `AGENT_LLM_ROUTING_MATRIX.md`
+- [ ] B-T01A: Apply the compact direct-Ollama local-first pattern to `KnowledgeQnAService`, using short grounded answer prompts and preserving citation-bound output
+- [ ] B-T01B: Apply the compact direct-Ollama local-first pattern to `ProposalWorkflowService`, likely by splitting long proposal drafting into smaller draft sections before assembly
+- [ ] B-T01C: Evaluate `EmailWorkflowService` for compact direct-Ollama local-first routing, with explicit guardrails for tone, approval safety, and outbound draft quality
+- [ ] B-T01D: Evaluate client-facing CTO/CIO and Chief AI analysis endpoints for section-assembled direct-Ollama local-first execution without losing richer consulting reasoning quality
+- [ ] B-T01E: Decide whether the finance/CFO panel should remain deterministic-only or gain an LLM-backed advisory mode before any direct-Ollama migration work is queued there
+- [ ] B-T01F: Extend the candidate pool to Executive and Ops synthesis families where outputs are internal-facing and bounded, especially `CEO Briefing Agent`, `Strategy / Opportunity Agent`, `Risk / Watchdog Agent`, `Company Reporting Agent`, `Finance Agent`, `Accountant Agent`, and `CFO Agent`
+- [ ] B-T01G: Extend the candidate pool to Delivery and client-delivery authoring families where work products are structured and can be section-assembled, especially `PMO / Project Control Agent`, `Project Management / Delivery Coordination Agent`, `BA / Requirements Agent`, `Architect Agent`, `Documentation Agent`, `QA / Review Agent`, `Testing/QA Agent`, `Delivery Agent`, and `Consulting Support Agent`
+- [ ] B-T01H: Extend the candidate pool to Growth and commercial drafting families where outputs are bounded but externally consequential, especially `Lead Intake Agent`, `Account Research Agent`, `Qualification Agent`, `Outreach Draft Agent`, `Proposal / SOW Agent`, `Billing Agent`, `Procurement Agent`, and `Compliance / Contract Agent`
+- [ ] B-T01I: Track `Document Agent`, `Knowledge Agent`, and later `Reporting Agent` client-facing-service variants as separate direct-Ollama candidates because Track A and Track B instances must not share runtime assumptions
+- [ ] B-T01J: Define rollout waves for the direct-Ollama pattern: Wave 1 bounded internal/grounded outputs; Wave 2 internal synthesis panels; Wave 3 delivery-authoring families; Wave 4 externally consequential or richer client-facing consulting surfaces
 
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
@@ -247,6 +258,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Expanded docs to define full IT freelancer operating model: corporate agents + service delivery agents.
 
 ### 2026-03-15
+- Completed `P4-T01` by creating the first Track B client deployment template pack under `config/client-template/`, including a pack README, a client-scoped environment template, a compose overlay, and a storage/secret path map that can be cloned for isolated client instances.
 - Completed `P4-T01D` by routing the internal CTO/CIO and Chief AI specialist panels through the shared prompt/model layer and surfacing provider/model routing metadata in Mission Control.
 - Completed `P4-T01C` by routing CTO/CIO and Chief AI specialist analysis through the shared prompt/model layer so consulting reasoning can use LLM capacity while retaining deterministic fallback, output schemas, and approval/governance guardrails.
 - Completed `P4-T01B` by extending CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity outputs so client-facing agents can solve a mission and discover adjacent growth paths for the account.
@@ -325,7 +337,11 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 ### 2026-03-16
 - Made the shared model timeout configurable through `MODEL_TIMEOUT_SECONDS` in runtime settings and `.env`.
 - Refactored the internal CTO/CIO and Chief AI specialist panels to assemble their outputs from smaller section-level prompt/model calls rather than one oversized panel generation request.
+- Simplified those internal panel prompts into compact line-oriented local calls and pinned them to the faster `qwen2.5:1.5b-instruct-q4_K_M` local model path so both panels now complete fully through Ollama in this environment.
 - Preserved routing and fallback visibility for the section-assembled panels by aggregating per-section model diagnostics back into one Mission Control response.
+- Reviewed the remaining LLM-backed services and queued the next direct-Ollama rollout candidates: Knowledge Q&A, proposal drafting, email drafting, and later the richer client-facing specialist analysis endpoints; finance/CFO remains a separate product-direction decision because it is still deterministic today.
+- Expanded that rollout planning from a service-level shortlist into a broader agent-family candidate inventory aligned with `AGENTS.md`, including Delivery, Executive, Growth, Ops, and client-facing service families that may later adopt the same compact local-first Ollama pattern.
+- Created `AGENT_LLM_ROUTING_MATRIX.md` as the family-level routing reference for compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids, and synced the main governance docs to reference it.
 
 ## Next Action
-Start `P4-T01` to create the client deployment template pack for Track B.
+Finalize `P4-T02` by expanding `config/client-template/client.yaml` into the fuller client contract used by the new Track B template pack.

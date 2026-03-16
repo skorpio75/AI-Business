@@ -27,6 +27,13 @@ Current implementation truth still lives in:
 - Prefer `DT-H` where business state changes, extraction, policy checks, or operational correctness matter more than narrative generation.
 - Track A and Track B variants are separate instances even when they share the same family. Routing posture may be similar, but runtime assumptions must not be shared implicitly.
 
+## Planned Agent Activity Label Mapping
+- `DO-C` should read in Mission Control as direct `Ollama` / compact local-first.
+- `DO-G` should read in Mission Control as direct `Ollama` with guarded drafting or approval-sensitive local-first behavior.
+- `GW-R` should read in Mission Control as governed `LiteLLM` / `ModelGateway` reasoning.
+- `DT-H` should read in Mission Control as descriptive/tool-first or deterministic hybrid execution.
+- Agent Activity should combine these route labels with registry metadata such as pod, family, mode, and autonomy so operators can read the agent's operating model in one place.
+
 ## Current Live Examples
 - `CTO/CIO Agent` internal panel: `DO-C`
 - `Chief AI / Digital Strategy Agent` internal panel: `DO-C`

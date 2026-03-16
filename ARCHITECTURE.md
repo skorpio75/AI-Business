@@ -50,6 +50,8 @@ Infrastructure
 - typed specialist advisory-analysis endpoints for client problem/context assessment
 - consulting-oriented specialist analysis outputs that frame the active mission and adjacent account-growth opportunities
 - LLM-backed specialist reasoning through the shared prompt/model layer, with deterministic fallback and schema guardrails
+- operator-facing agent views should expose governed operating-model metadata, including whether a surface is direct `Ollama`, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first
+- personal assistant operator views are planned to unify inbox, calendar, and Microsoft To Do context under one provider identity, with recommendation-to-task promotion remaining approval-bound before write-back
 
 ### Workflows
 - LangGraph orchestration
@@ -172,6 +174,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - typed specialist advisory-analysis contracts for client briefs, context signals, and service recommendations
 - consulting-oriented specialist contracts for mission framing and account-growth opportunity discovery
 - specialist analysis responses now include provider/model routing metadata for traceability
+- operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
 
@@ -245,7 +248,7 @@ The following control areas are required for production readiness and extend the
 The MVP single-approver model will evolve toward role-based permissions, delegated authority, approval classes, and workflow-specific policy enforcement.
 
 ### Audit and Traceability
-The platform must preserve trustworthy traces for workflow execution, approvals, model/provider choice, routing path, fallback mode, and outbound actions.
+The platform must preserve trustworthy traces for workflow execution, approvals, model/provider choice, routing path, fallback mode, assistant recommendation-to-task promotion, and outbound actions.
 
 ### Observability
 Production operation requires:

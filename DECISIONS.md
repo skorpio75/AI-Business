@@ -219,7 +219,19 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Decision: Track B portability acceptance should prove that implemented reusable workflows run across multiple seeded client instances under tenant-scoped runtime settings, while separately verifying that additional workflow-pack entries remain preserved in the seeded client contract and shared workflow registry until their service implementations land.
 - Rationale: This keeps portability claims honest. The platform should not imply full end-to-end portability for workflows that are only documented in the client pack today, but it should still protect the shared Track B contract so later implementations can plug into an already-stable workflow pack.
 
-## ADR-037: Track B bootstrap must be documented as an operator runbook centered on tenant env activation
+## ADR-037: Mission Control should expose governed agent operating-model metadata
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Agent Activity and similar operator-facing Mission Control views should describe each agent through governed metadata, including pod/family/mode context plus a readable runtime posture label such as direct `Ollama`, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first execution.
+- Rationale: Operator trust depends on seeing more than a friendly agent name. Surfacing the operating model directly in Mission Control makes routing posture legible, reduces UI copy drift from backend/runtime reality, and gives the CEO a faster way to understand what kind of agent behavior is being invoked.
+
+## ADR-038: Microsoft To Do task activation should reuse the same Graph tenant/client context and remain approval-bound
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: When the personal assistant expands from inbox/calendar into Microsoft To Do, it should use the same Microsoft Graph tenant, client ID, and operator account context as Outlook mail/calendar for that instance. Assistant recommendations may become candidate tasks, but task creation and approved priority assignment must remain explicit approval-bound writes with audit visibility.
+- Rationale: Reusing one Graph app boundary keeps provider identity and tenant scoping simple, avoids avoidable connector sprawl, and turns recommendations into actionable tasks without weakening the platform's approval-first governance model.
+
+## ADR-039: Track B bootstrap must be documented as an operator runbook centered on tenant env activation
 - Status: Accepted
 - Date: 2026-03-16
 - Decision: Track B should ship with a concrete bootstrap runbook that documents the exact seed, startup, connector-bootstrap, verification, and cleanup sequence, with explicit emphasis that `RUNTIME_ENV_FILE` must be set before any Python process starts for a client instance.

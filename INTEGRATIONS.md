@@ -97,6 +97,9 @@ Client-facing advisory recommendations must be generated from a bounded client b
 ### Rule 8
 External systems may help gather account context, but consulting mission framing and upsell opportunity detection must remain platform-side so growth logic stays auditable and tenant-scoped.
 
+### Rule 9
+For Microsoft 365 personal-assistant flows, mailbox, calendar, and Microsoft To Do integration should reuse the same tenant, client ID, and operator account context unless an explicit isolation exception is documented.
+
 ## OpenClaw Interaction Pattern
 
 ### Pattern A: Event Ingress
@@ -188,6 +191,12 @@ These integrations may enrich a client advisory brief, but the normalized proble
 
 ### Approval-bound execution
 - Microsoft Graph reply send for approved Outlook-originated email workflows
+- planned: Microsoft Graph Microsoft To Do task create/update for approved personal-assistant recommendation promotion and priority assignment
+
+### Planned same-tenant Microsoft To Do extension
+- `Inbox & Calendar` is planned to grow into an inbox, calendar, and task workspace when Microsoft 365 is the selected provider stack.
+- Microsoft To Do list/task reads and writes should reuse the same Microsoft Graph tenant ID, client ID, and operator account context already used for Outlook mail and calendar.
+- Assistant recommendations may become candidate tasks, but task creation and approved priority assignment must still flow through platform approval and audit controls before Microsoft To Do is updated.
 
 ### Bootstrap and secret handling
 - Microsoft Graph device-code bootstrap via `scripts/microsoft_graph_device_code.py`
@@ -203,3 +212,5 @@ These connectors are selected through environment settings. Write actions remain
 - secret storage and rotation strategy
 - connector-to-tool-ID mapping for normalized tool/audit contracts
 - richer connector diagnostics in Mission Control UI beyond the current API and health/status surfaces
+- Microsoft To Do list-selection, task-schema, and same-tenant recommendation-promotion contract design
+- approval and audit trace design for recommendation-to-task promotion and priority write-back

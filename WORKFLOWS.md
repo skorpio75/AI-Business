@@ -121,13 +121,18 @@ Start event:
 
 State objects:
 - `run_state`
+- `approval_state` when Microsoft To Do task promotion or other outbound action requires approval
 
-1. ingest inbox metadata and calendar events
-2. detect deadlines, blockers, and meeting conflicts
+Connector context:
+- when Microsoft 365 is active, inbox, calendar, and Microsoft To Do should share the same tenant, client ID, and operator account context
+
+1. ingest inbox metadata, calendar events, and optional Microsoft To Do context
+2. detect deadlines, blockers, meeting conflicts, and task gaps
 3. classify urgency/importance
-4. generate prioritized action list for the day
-5. draft suggested quick replies and prep notes
-6. route high-risk outbound actions to CEO approval
+4. generate prioritized action list and recommended next actions for the day
+5. prepare candidate Microsoft To Do items with suggested priority where recommendations should become tracked tasks
+6. route Microsoft To Do task creation/priority writes and other high-risk outbound actions to CEO approval
+7. create/update approved Microsoft To Do items and draft suggested quick replies and prep notes
 
 ## Corporate Function Workflows
 ### Workflow 6 - Billing and Collections

@@ -21,6 +21,9 @@
 - [ ] `P5-T01` Add Langfuse trace integration
 
 ## Soon After
+- [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
+- [ ] `B-T02A` Add a Microsoft To Do section to `Inbox & Calendar` using the same Microsoft Graph tenant/client context
+- [ ] `B-T02B` Route assistant recommendation-to-task promotion through priority approval before writing Microsoft To Do
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 - [ ] `B-T01A` Apply the compact direct-Ollama local-first pattern to Knowledge Q&A
 - [ ] `B-T01B` Apply the compact direct-Ollama local-first pattern to proposal drafting
@@ -63,6 +66,8 @@
 - [ ] Treat the prompt layer as part of the target runtime architecture, but defer large-scale prompt authoring until contracts, state, and workflow boundaries are stable
 - [ ] Reuse the compact direct-Ollama pattern selectively: best for bounded internal panels and short grounded outputs, not automatically for every richer client-facing reasoning surface
 - [ ] Expand direct-Ollama planning by agent family: Executive synthesis, Delivery authoring, Growth/commercial drafting, and client-facing service variants should all be evaluated explicitly, not only the currently implemented endpoints
+- [ ] Keep Microsoft Graph mail, calendar, and To Do scope aligned to the same tenant/client registration per instance unless an explicit isolation exception is documented
+- [ ] Treat assistant recommendation-to-task promotion as an approval-bound external write, even when it targets the operator's own Microsoft To Do
 - [ ] Use the high-suitability multi-agent matrix to prioritize runtime splitting instead of promoting all documented families at once
 - [ ] Treat the medium-suitability set as bounded collaboration candidates, not immediate runtime-splitting priorities
 - [ ] Avoid adding UI logic before API/contracts are stable enough to consume

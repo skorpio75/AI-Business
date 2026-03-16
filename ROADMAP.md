@@ -188,6 +188,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
+- [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar
+- [ ] B-T02B: Convert personal-assistant recommendations into candidate Microsoft To Do tasks and route task creation plus approved priority through CEO approval before write-back
+- [ ] B-T02C: Persist recommendation-to-task approval and audit metadata so Mission Control can trace which assistant recommendations became Microsoft To Do items
 
 ### Backlog - Authorization and Approval Policy
 - [ ] B-T03: Define generalized role-based access control model for operators, approvers, and tenant-level roles
@@ -223,6 +226,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T25: Add workflow search and filtering capabilities
 - [ ] B-T26: Surface connector state and failure reasons clearly in UI
 - [ ] B-T27: Extend UI routing indicators for local model, cloud route, and fallback execution paths
+- [ ] B-T27A: Enrich Agent Activity page descriptions with agent operating model metadata, including pod/family/mode context, execution posture, and whether the surface is direct-Ollama, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first
+- [ ] B-T27B: Bind Agent Activity runtime posture badges to governed registry/routing metadata so UI labels do not drift from `AGENT_LLM_ROUTING_MATRIX.md` and backend contracts
 
 ### Backlog - Data Lifecycle Management
 - [ ] B-T28: Define retention periods by data class
@@ -346,6 +351,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Expanded that rollout planning from a service-level shortlist into a broader agent-family candidate inventory aligned with `AGENTS.md`, including Delivery, Executive, Growth, Ops, and client-facing service families that may later adopt the same compact local-first Ollama pattern.
 - Created `AGENT_LLM_ROUTING_MATRIX.md` as the family-level routing reference for compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids, and synced the main governance docs to reference it.
 - Validated Track B workflow portability across seeded client instances by activating tenant-scoped runtime env files, running the reusable `knowledge-qna` and `email-operations` services under seeded client settings, and checking that `document-intake` and `reporting` remain preserved in the seeded Track B workflow pack contract.
+- Added roadmap coverage for richer Mission Control transparency on the Agent Activity page so agent descriptions can show operating model and runtime posture such as direct `Ollama`, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first execution.
+- Added roadmap coverage for extending `Inbox & Calendar` with Microsoft To Do under the same Microsoft Graph tenant/client boundary, including approval-gated promotion of assistant recommendations into prioritized tasks.
 - Documented the Track B bootstrap operator flow in `docs/track-b-bootstrap-runbook.md`, including tenant seeding, `RUNTIME_ENV_FILE` activation, database and API startup, Google and Microsoft connector bootstrap, verification, and cleanup guidance.
 
 ## Next Action

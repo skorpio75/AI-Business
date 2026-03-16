@@ -11,6 +11,7 @@ This document lists the canonical agents used to run an IT freelancer company wi
 - When implementation, architecture, workflow scope, integrations, or priorities change, update all affected markdown governance files in the same work session to keep them aligned.
 - `ROADMAP.md` is the implementation status source of truth. `TODO.md` is the short execution view derived from it.
 - `AGENT_LLM_ROUTING_MATRIX.md` is the family-level planning reference for LLM execution posture by agent family.
+- Mission Control UI should derive per-agent operating-model and routing-posture labels from governed metadata so operator descriptions stay consistent with runtime behavior.
 - At minimum, review `ROADMAP.md`, `TODO.md`, `AGENT_LLM_ROUTING_MATRIX.md`, `ARCHITECTURE.md`, `EPICS.md`, `INTEGRATIONS.md`, and `DECISIONS.md` for drift whenever a material change is made.
 
 ## Governed Agentic Company Principle
@@ -302,6 +303,7 @@ The following agents are canonical first-class pod agents that complement the ex
 
 #### Mission Control Agent
 - Purpose: supervise runs, approvals, escalations, and operating visibility
+- Operator visibility role: surface readable operating-model and execution-posture context for the agents shown in Mission Control
 - Pod: `Executive`
 - Modes: `internal_operating`, `client_delivery`
 - Autonomy class: `supervised_executor`
@@ -316,9 +318,10 @@ The following agents are canonical first-class pod agents that complement the ex
 - escalate low-confidence cases
 
 ### Personal Assistant Agent
-- read inbox and calendar events
+- read inbox, calendar, and task context within the same provider/account boundary when configured
 - detect commitments, deadlines, and conflicts
-- generate prioritized daily action list
+- generate prioritized daily action list and candidate follow-up tasks
+- turn approved recommendations into prioritized Microsoft To Do items when Microsoft 365 is the active provider stack
 - draft quick replies and meeting prep notes
 
 ### Billing Agent

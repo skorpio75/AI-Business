@@ -216,6 +216,8 @@ Workflow and agent execution is described through normalized state, event, tool,
 - specialist advisory contracts can carry client briefs, context signals, and service recommendations
 - specialist advisory contracts can also carry consulting mission assessments and upsell opportunities
 - agent-family LLM routing posture is documented so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic hybrids are planned explicitly by family
+- Mission Control can map governed routing posture into operator-facing agent operating-model labels without inventing a separate UI-only taxonomy
+- personal assistant task-activation flows define same-tenant Microsoft Graph To Do promotion with approval and audit boundaries
 
 ## Epic 13 - Business Scaling Maturity Model
 - Status: `NOT_STARTED`

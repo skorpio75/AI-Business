@@ -332,3 +332,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The platform should persist bounded `agent_runs` first, using a summary table linked to tenant, track, agent family, mode, workflow IDs where available, and provider or model metadata across the current workflow and specialist-advisory seams before introducing the more granular append-oriented `audit_events` layer.
 - Rationale: Existing traceability was split across workflow runs, snapshots, approvals, and optional Langfuse spans. Adding `agent_runs` first creates one durable execution-history backbone for Mission Control and later audit work without forcing the repo to define every step-level event and tool-action contract in the same slice.
+
+## ADR-056: `audit_events` should append normalized step, tool, approval, and outbound-action history onto `agent_runs`
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The platform should persist append-oriented `audit_events` next, linked to `agent_runs` where possible, and use them for normalized workflow-step outcomes, model-route choices, tool-call history, approval lifecycle events, and outbound email-send actions across the current implemented seams.
+- Rationale: `agent_runs` answer which bounded execution happened, but they do not provide the timeline needed to inspect approval handling, step transitions, or connector actions. A dedicated `audit_events` table preserves those details in one normalized event stream without overloading the summary role of `agent_runs`.

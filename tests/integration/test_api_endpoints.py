@@ -1,4 +1,4 @@
-from app.db.repository import list_agent_runs
+from app.db.repository import list_agent_runs, list_audit_events
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
 from app.services.chief_ai_panel import ChiefAIPanelService
 from app.services.cto_cio_panel import CTOCIOPanelService
@@ -241,6 +241,42 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertTrue(
             any(item.workflow_id == proposal_response.json()["workflow_id"] for item in agent_runs if item.agent_id == "proposal-sow-agent")
         )
+
+    def test_audit_events_capture_approval_and_tool_timeline(self) -> None:
+        run_response = self.client.post(
+            "/workflows/email-operations/run",
+            json=email_workflow_payload(
+                subject="Need approval",
+                body="Please send the approved follow-up.",
+                source_message_id="msg-approve",
+                source_thread_id="thread-approve",
+            ),
+        )
+        approval_id = run_response.json()["approval_id"]
+        workflow_id = run_response.json()["workflow_id"]
+        inbox_connector = RecordingInboxConnector()
+        self.patch_api_attr(
+            "build_personal_assistant_context_service",
+            lambda current_settings: StubPersonalAssistantContextService(inbox_connector),
+        )
+
+        decision_response = self.client.post(
+            f"/approvals/{approval_id}/decision",
+            json=approval_decision_payload(),
+        )
+
+        self.assertEqual(decision_response.status_code, 200)
+
+        with self._session_factory() as db:
+            audit_events = list_audit_events(db, workflow_id=workflow_id)
+
+        event_names = [item.event_name for item in audit_events]
+        self.assertIn("approval.requested", event_names)
+        self.assertIn("approval.decided", event_names)
+        self.assertIn("outbound.action.requested", event_names)
+        self.assertIn("tool.call.completed", event_names)
+        self.assertTrue(any(item.tool_id == "email.send_external" for item in audit_events))
+        self.assertTrue(any(item.approval_id == approval_id for item in audit_events))
 
     def test_connector_bootstrap_status_endpoint_returns_normalized_response(self) -> None:
         expected = connector_bootstrap_status_response()

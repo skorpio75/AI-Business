@@ -19,6 +19,7 @@ from app.models.specialist_contracts import (
     UpsellOpportunity,
 )
 from app.services.agent_run_logger import record_agent_run, subject_from_agent
+from app.services.audit_event_logger import actor, record_audit_event
 from app.services.model_gateway import ModelGateway
 
 
@@ -840,12 +841,39 @@ class ChiefAIPanelService:
             approval_required=strategy_output.approval_required,
         )
         if db is not None:
-            record_agent_run(
+            agent_run = record_agent_run(
                 db,
                 subject=subject_from_agent(agent, mode="client_facing_service"),
                 status="completed",
                 started_at=started_at,
                 ended_at=datetime.now(timezone.utc),
+                provider_used=response.provider_used,
+                model_used=response.model_used,
+            )
+            record_audit_event(
+                db,
+                event_name="model.route.selected",
+                entity_type="agent_run",
+                entity_id=agent_run.agent_run_id,
+                event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                status="completed",
+                agent_run_id=agent_run.agent_run_id,
+                approval_class=agent_run.approval_class,
+                autonomy_class=agent_run.autonomy_class,
+                provider_used=response.provider_used,
+                model_used=response.model_used,
+            )
+            record_audit_event(
+                db,
+                event_name="workflow.step.completed",
+                entity_type="workflow_step",
+                entity_id=f"{agent_run.agent_run_id}:analyze_client_brief",
+                event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                status="completed",
+                step_id="analyze_client_brief",
+                agent_run_id=agent_run.agent_run_id,
+                approval_class=agent_run.approval_class,
+                autonomy_class=agent_run.autonomy_class,
                 provider_used=response.provider_used,
                 model_used=response.model_used,
             )

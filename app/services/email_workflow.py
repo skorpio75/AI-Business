@@ -25,6 +25,7 @@ from app.orchestration.langgraph_runner import (
     WorkflowGraphState,
 )
 from app.services.agent_run_logger import record_agent_run, subject_from_identity
+from app.services.audit_event_logger import actor, record_audit_event
 from app.services.model_gateway import GenerationResult, ModelGateway
 from app.services.observability import NullObservabilityService
 
@@ -187,7 +188,7 @@ class EmailWorkflowService:
                 upsert_workflow_state(db, workflow_state)
                 insert_workflow_run(db, run)
                 insert_approval(db, approval)
-                record_agent_run(
+                agent_run = record_agent_run(
                     db,
                     subject=EMAIL_AGENT_SUBJECT,
                     status="completed",
@@ -200,6 +201,69 @@ class EmailWorkflowService:
                     provider_used=run.provider_used,
                     model_used=run.model_used,
                     confidence=run.confidence,
+                )
+                record_audit_event(
+                    db,
+                    event_name="workflow.step.completed",
+                    entity_type="workflow_step",
+                    entity_id=f"{workflow_id}:draft_email",
+                    event_actor=actor(actor_type="agent", actor_id=EMAIL_AGENT_SUBJECT.agent_id),
+                    status="completed",
+                    workflow_id=workflow_id,
+                    run_id=workflow_id,
+                    step_id="draft_email",
+                    agent_run_id=agent_run.agent_run_id,
+                    approval_class=EMAIL_AGENT_SUBJECT.approval_class,
+                    autonomy_class=EMAIL_AGENT_SUBJECT.autonomy_class,
+                    provider_used=run.provider_used,
+                    model_used=run.model_used,
+                    payload_ref_or_inline={"intent": run.intent, "confidence": run.confidence},
+                )
+                record_audit_event(
+                    db,
+                    event_name="model.route.selected",
+                    entity_type="agent_run",
+                    entity_id=agent_run.agent_run_id,
+                    event_actor=actor(actor_type="agent", actor_id=EMAIL_AGENT_SUBJECT.agent_id),
+                    status="completed",
+                    workflow_id=workflow_id,
+                    run_id=workflow_id,
+                    step_id="draft_email",
+                    agent_run_id=agent_run.agent_run_id,
+                    approval_class=EMAIL_AGENT_SUBJECT.approval_class,
+                    autonomy_class=EMAIL_AGENT_SUBJECT.autonomy_class,
+                    provider_used=run.provider_used,
+                    model_used=run.model_used,
+                    payload_ref_or_inline={"local_llm_invoked": run.local_llm_invoked, "cloud_llm_invoked": run.cloud_llm_invoked},
+                )
+                record_audit_event(
+                    db,
+                    event_name="workflow.step.completed",
+                    entity_type="workflow_step",
+                    entity_id=f"{workflow_id}:route_approval",
+                    event_actor=actor(actor_type="workflow_system", actor_id="email-workflow-service"),
+                    status="completed",
+                    workflow_id=workflow_id,
+                    run_id=workflow_id,
+                    step_id="route_approval",
+                    approval_id=approval_id,
+                    approval_class=EMAIL_AGENT_SUBJECT.approval_class,
+                    payload_ref_or_inline={"approval_status": "pending"},
+                )
+                record_audit_event(
+                    db,
+                    event_name="approval.requested",
+                    entity_type="approval",
+                    entity_id=approval_id,
+                    event_actor=actor(actor_type="workflow_system", actor_id="email-workflow-service"),
+                    status="pending",
+                    workflow_id=workflow_id,
+                    run_id=workflow_id,
+                    step_id="route_approval",
+                    approval_id=approval_id,
+                    approval_class=EMAIL_AGENT_SUBJECT.approval_class,
+                    tool_id="approval.request",
+                    payload_ref_or_inline={"sender": payload.sender, "subject": payload.subject},
                 )
                 db.commit()
                 observation.update(
@@ -215,7 +279,7 @@ class EmailWorkflowService:
         except Exception as exc:
             db.rollback()
             try:
-                record_agent_run(
+                agent_run = record_agent_run(
                     db,
                     subject=EMAIL_AGENT_SUBJECT,
                     status="failed",
@@ -225,6 +289,22 @@ class EmailWorkflowService:
                     run_id=workflow_id,
                     step_id="draft_email",
                     trigger_event_name="email.received",
+                    error_code=exc.__class__.__name__,
+                    error_detail=str(exc),
+                )
+                record_audit_event(
+                    db,
+                    event_name="workflow.step.failed",
+                    entity_type="workflow_step",
+                    entity_id=f"{workflow_id}:draft_email",
+                    event_actor=actor(actor_type="agent", actor_id=EMAIL_AGENT_SUBJECT.agent_id),
+                    status="failed",
+                    workflow_id=workflow_id,
+                    run_id=workflow_id,
+                    step_id="draft_email",
+                    agent_run_id=agent_run.agent_run_id,
+                    approval_class=EMAIL_AGENT_SUBJECT.approval_class,
+                    autonomy_class=EMAIL_AGENT_SUBJECT.autonomy_class,
                     error_code=exc.__class__.__name__,
                     error_detail=str(exc),
                 )

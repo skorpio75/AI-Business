@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.prompt_loader import PromptLoader
 from app.models.schemas import ProposalGenerationRequest, ProposalGenerationResponse
 from app.services.agent_run_logger import record_agent_run, subject_from_identity
+from app.services.audit_event_logger import actor, record_audit_event
 from app.services.model_gateway import ModelGateway
 from app.services.observability import NullObservabilityService
 
@@ -77,7 +78,7 @@ class ProposalWorkflowService:
                     llm_diagnostic_detail=generation.llm_diagnostic_detail,
                 )
                 if db is not None:
-                    record_agent_run(
+                    agent_run = record_agent_run(
                         db,
                         subject=PROPOSAL_AGENT_SUBJECT,
                         status="completed",
@@ -86,6 +87,37 @@ class ProposalWorkflowService:
                         workflow_id=workflow_id,
                         run_id=workflow_id,
                         trigger_event_name="proposal.requested",
+                        provider_used=response.provider_used,
+                        model_used=response.model_used,
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="model.route.selected",
+                        entity_type="agent_run",
+                        entity_id=agent_run.agent_run_id,
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="completed",
+                        workflow_id=workflow_id,
+                        run_id=workflow_id,
+                        agent_run_id=agent_run.agent_run_id,
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
+                        provider_used=response.provider_used,
+                        model_used=response.model_used,
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="workflow.step.completed",
+                        entity_type="workflow_step",
+                        entity_id=f"{workflow_id}:generate_proposal_draft",
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="completed",
+                        workflow_id=workflow_id,
+                        run_id=workflow_id,
+                        step_id="generate_proposal_draft",
+                        agent_run_id=agent_run.agent_run_id,
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
                         provider_used=response.provider_used,
                         model_used=response.model_used,
                     )
@@ -104,7 +136,7 @@ class ProposalWorkflowService:
             if db is not None:
                 db.rollback()
                 try:
-                    record_agent_run(
+                    agent_run = record_agent_run(
                         db,
                         subject=PROPOSAL_AGENT_SUBJECT,
                         status="failed",
@@ -113,6 +145,22 @@ class ProposalWorkflowService:
                         workflow_id=workflow_id,
                         run_id=workflow_id,
                         trigger_event_name="proposal.requested",
+                        error_code=exc.__class__.__name__,
+                        error_detail=str(exc),
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="workflow.step.failed",
+                        entity_type="workflow_step",
+                        entity_id=f"{workflow_id}:generate_proposal_draft",
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="failed",
+                        workflow_id=workflow_id,
+                        run_id=workflow_id,
+                        step_id="generate_proposal_draft",
+                        agent_run_id=agent_run.agent_run_id,
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
                         error_code=exc.__class__.__name__,
                         error_detail=str(exc),
                     )

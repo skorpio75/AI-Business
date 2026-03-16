@@ -10,6 +10,7 @@ from app.models.schemas import (
     KnowledgeQueryResponse,
 )
 from app.services.agent_run_logger import record_agent_run, subject_from_identity
+from app.services.audit_event_logger import actor, record_audit_event
 from app.services.model_gateway import ModelGateway
 from app.services.observability import NullObservabilityService
 
@@ -79,7 +80,7 @@ class KnowledgeQnAService:
                         ),
                     )
                     if db is not None:
-                        record_agent_run(
+                        agent_run = record_agent_run(
                             db,
                             subject=self._subject_for_current_track(),
                             status="completed",
@@ -89,6 +90,32 @@ class KnowledgeQnAService:
                             input_ref="knowledge_query_request",
                             provider_used=response.provider_used,
                             model_used=response.model_used,
+                        )
+                        record_audit_event(
+                            db,
+                            event_name="tool.call.completed",
+                            entity_type="tool_call",
+                            entity_id=f"{agent_run.agent_run_id}:memory.search",
+                            event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                            status="completed",
+                            agent_run_id=agent_run.agent_run_id,
+                            tool_id="memory.search",
+                            approval_class=agent_run.approval_class,
+                            autonomy_class=agent_run.autonomy_class,
+                            payload_ref_or_inline={"citation_count": 0},
+                        )
+                        record_audit_event(
+                            db,
+                            event_name="workflow.step.completed",
+                            entity_type="workflow_step",
+                            entity_id=f"{agent_run.agent_run_id}:answer_question",
+                            event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                            status="completed",
+                            agent_run_id=agent_run.agent_run_id,
+                            step_id="answer_question",
+                            approval_class=agent_run.approval_class,
+                            autonomy_class=agent_run.autonomy_class,
+                            payload_ref_or_inline={"grounded": False},
                         )
                         db.commit()
                     observation.update(
@@ -130,7 +157,7 @@ class KnowledgeQnAService:
                     llm_diagnostic_detail=generation.llm_diagnostic_detail,
                 )
                 if db is not None:
-                    record_agent_run(
+                    agent_run = record_agent_run(
                         db,
                         subject=self._subject_for_current_track(),
                         status="completed",
@@ -140,6 +167,47 @@ class KnowledgeQnAService:
                         input_ref="knowledge_query_request",
                         provider_used=response.provider_used,
                         model_used=response.model_used,
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="tool.call.completed",
+                        entity_type="tool_call",
+                        entity_id=f"{agent_run.agent_run_id}:memory.search",
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="completed",
+                        agent_run_id=agent_run.agent_run_id,
+                        tool_id="memory.search",
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
+                        payload_ref_or_inline={"citation_count": len(citations)},
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="model.route.selected",
+                        entity_type="agent_run",
+                        entity_id=agent_run.agent_run_id,
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="completed",
+                        agent_run_id=agent_run.agent_run_id,
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
+                        provider_used=response.provider_used,
+                        model_used=response.model_used,
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="workflow.step.completed",
+                        entity_type="workflow_step",
+                        entity_id=f"{agent_run.agent_run_id}:answer_question",
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="completed",
+                        agent_run_id=agent_run.agent_run_id,
+                        step_id="answer_question",
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
+                        provider_used=response.provider_used,
+                        model_used=response.model_used,
+                        payload_ref_or_inline={"grounded": True, "citation_count": len(citations)},
                     )
                     db.commit()
                 observation.update(
@@ -156,7 +224,7 @@ class KnowledgeQnAService:
             if db is not None:
                 db.rollback()
                 try:
-                    record_agent_run(
+                    agent_run = record_agent_run(
                         db,
                         subject=self._subject_for_current_track(),
                         status="failed",
@@ -164,6 +232,20 @@ class KnowledgeQnAService:
                         ended_at=datetime.now(timezone.utc),
                         trigger_event_name="knowledge.retrieved",
                         input_ref="knowledge_query_request",
+                        error_code=exc.__class__.__name__,
+                        error_detail=str(exc),
+                    )
+                    record_audit_event(
+                        db,
+                        event_name="workflow.step.failed",
+                        entity_type="workflow_step",
+                        entity_id=f"{agent_run.agent_run_id}:answer_question",
+                        event_actor=actor(actor_type="agent", actor_id=agent_run.agent_id),
+                        status="failed",
+                        agent_run_id=agent_run.agent_run_id,
+                        step_id="answer_question",
+                        approval_class=agent_run.approval_class,
+                        autonomy_class=agent_run.autonomy_class,
                         error_code=exc.__class__.__name__,
                         error_detail=str(exc),
                     )

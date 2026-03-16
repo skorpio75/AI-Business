@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from datetime import datetime, timezone
 
-from app.db.models import AgentRunORM, ApprovalORM, WorkflowRunORM, WorkflowStateSnapshotORM
-from app.models.audit import AgentRunRecord
+from app.db.models import AgentRunORM, ApprovalORM, AuditEventORM, WorkflowRunORM, WorkflowStateSnapshotORM
+from app.models.audit import AgentRunRecord, AuditEventRecord
 from app.models.schemas import ApprovalItem, EmailWorkflowResponse
 from app.models.workflow_state import WorkflowState
 
@@ -89,6 +89,40 @@ def insert_agent_run(db: Session, item: AgentRunRecord) -> None:
     )
 
 
+def insert_audit_event(db: Session, item: AuditEventRecord) -> None:
+    db.add(
+        AuditEventORM(
+            audit_event_id=item.audit_event_id,
+            tenant_id=item.tenant_id,
+            track=item.track,
+            occurred_at=item.occurred_at,
+            event_name=item.event_name,
+            entity_type=item.entity_type,
+            entity_id=item.entity_id,
+            actor_type=item.actor_type,
+            actor_id=item.actor_id,
+            status=item.status,
+            workflow_id=item.workflow_id,
+            run_id=item.run_id,
+            step_id=item.step_id,
+            agent_run_id=item.agent_run_id,
+            approval_id=item.approval_id,
+            approval_class=item.approval_class,
+            autonomy_class=item.autonomy_class,
+            tool_id=item.tool_id,
+            provider_used=item.provider_used,
+            model_used=item.model_used,
+            routing_path=item.routing_path,
+            fallback_mode=item.fallback_mode,
+            trace_ref=item.trace_ref,
+            payload_ref_or_inline=item.payload_ref_or_inline,
+            state_diff_ref=item.state_diff_ref,
+            error_code=item.error_code,
+            error_detail=item.error_detail,
+        )
+    )
+
+
 def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
     rows = db.execute(select(WorkflowRunORM)).scalars().all()
     snapshots = {
@@ -117,6 +151,21 @@ def list_agent_runs(db: Session, *, workflow_id: str | None = None) -> list[Agen
         query = query.where(AgentRunORM.workflow_id == workflow_id)
     rows = db.execute(query).scalars().all()
     return [AgentRunRecord.model_validate(row) for row in rows]
+
+
+def list_audit_events(
+    db: Session,
+    *,
+    workflow_id: str | None = None,
+    approval_id: str | None = None,
+) -> list[AuditEventRecord]:
+    query = select(AuditEventORM).order_by(AuditEventORM.occurred_at, AuditEventORM.audit_event_id)
+    if workflow_id is not None:
+        query = query.where(AuditEventORM.workflow_id == workflow_id)
+    if approval_id is not None:
+        query = query.where(AuditEventORM.approval_id == approval_id)
+    rows = db.execute(query).scalars().all()
+    return [AuditEventRecord.model_validate(row) for row in rows]
 
 
 def list_pending_approvals(db: Session) -> list[ApprovalItem]:

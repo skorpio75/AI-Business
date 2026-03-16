@@ -47,6 +47,7 @@ from app.services.finance_panel import FinancePanelService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import ModelGateway
 from app.services.personal_assistant_context import PersonalAssistantContextService
+from app.services.audit_event_logger import actor, record_audit_event
 from app.services.provider_auth import (
     ProviderAuthError,
     describe_provider_bootstrap,
@@ -277,6 +278,20 @@ def decide_approval(
 
     if payload.decision == "approve":
         if item.source_message_id and item.source_account_id:
+            record_audit_event(
+                db,
+                event_name="outbound.action.requested",
+                entity_type="approval",
+                entity_id=approval_id,
+                event_actor=actor(actor_type="workflow_system", actor_id="approval-decision-endpoint"),
+                status="requested",
+                workflow_id=item.workflow_id,
+                run_id=item.workflow_id,
+                approval_id=approval_id,
+                approval_class="ceo_required",
+                tool_id="email.send_external",
+                payload_ref_or_inline={"source_provider": item.source_provider},
+            )
             try:
                 personal_assistant_context.inbox_connector.reply_to_message(
                     account_id=item.source_account_id,
@@ -284,7 +299,42 @@ def decide_approval(
                     reply_body=item.draft_reply,
                 )
             except (ConnectorHttpError, NotImplementedError) as exc:
+                record_audit_event(
+                    db,
+                    event_name="tool.call.failed",
+                    entity_type="tool_call",
+                    entity_id=f"{approval_id}:email.send_external",
+                    event_actor=actor(
+                        actor_type="connector",
+                        actor_id=item.source_provider or current_settings.inbox_connector,
+                    ),
+                    status="failed",
+                    workflow_id=item.workflow_id,
+                    run_id=item.workflow_id,
+                    approval_id=approval_id,
+                    approval_class="ceo_required",
+                    tool_id="email.send_external",
+                    error_code=exc.__class__.__name__,
+                    error_detail=str(exc),
+                )
+                db.commit()
                 raise HTTPException(status_code=502, detail=f"email_send_failed:{exc}") from exc
+            record_audit_event(
+                db,
+                event_name="tool.call.completed",
+                entity_type="tool_call",
+                entity_id=f"{approval_id}:email.send_external",
+                event_actor=actor(
+                    actor_type="connector",
+                    actor_id=item.source_provider or current_settings.inbox_connector,
+                ),
+                status="completed",
+                workflow_id=item.workflow_id,
+                run_id=item.workflow_id,
+                approval_id=approval_id,
+                approval_class="ceo_required",
+                tool_id="email.send_external",
+            )
             item.send_status = "sent"
             item.send_detail = "Reply sent through configured inbox connector."
             item.sent_at = datetime.now(timezone.utc)
@@ -308,6 +358,19 @@ def decide_approval(
             send_status=item.send_status,
             decision_note=payload.note,
         )
+        record_audit_event(
+            db,
+            event_name="approval.decided",
+            entity_type="approval",
+            entity_id=approval_id,
+            event_actor=actor(actor_type="human_operator", actor_id="ceo"),
+            status="approved",
+            workflow_id=item.workflow_id,
+            run_id=item.workflow_id,
+            approval_id=approval_id,
+            approval_class="ceo_required",
+            payload_ref_or_inline={"decision": payload.decision, "note_present": payload.note is not None},
+        )
     elif payload.decision == "reject":
         item.status = "rejected"
         item.send_status = "not_applicable"
@@ -326,6 +389,19 @@ def decide_approval(
             approval_status="rejected",
             send_status=item.send_status,
             decision_note=payload.note,
+        )
+        record_audit_event(
+            db,
+            event_name="approval.rejected",
+            entity_type="approval",
+            entity_id=approval_id,
+            event_actor=actor(actor_type="human_operator", actor_id="ceo"),
+            status="rejected",
+            workflow_id=item.workflow_id,
+            run_id=item.workflow_id,
+            approval_id=approval_id,
+            approval_class="ceo_required",
+            payload_ref_or_inline={"decision": payload.decision, "note_present": payload.note is not None},
         )
     else:
         if not payload.edited_reply:
@@ -347,6 +423,19 @@ def decide_approval(
             approval_status="pending",
             send_status=item.send_status,
             decision_note=payload.note,
+        )
+        record_audit_event(
+            db,
+            event_name="approval.edited",
+            entity_type="approval",
+            entity_id=approval_id,
+            event_actor=actor(actor_type="human_operator", actor_id="ceo"),
+            status="pending",
+            workflow_id=item.workflow_id,
+            run_id=item.workflow_id,
+            approval_id=approval_id,
+            approval_class="ceo_required",
+            payload_ref_or_inline={"decision": payload.decision, "note_present": payload.note is not None},
         )
 
     item.decision_note = payload.note

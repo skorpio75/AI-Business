@@ -95,7 +95,7 @@ Represents one append-oriented trace event for workflow progression, tool use, a
 
 #### Purpose
 - provide step-level traceability
-- support later `audit_events` persistence
+- support persisted `audit_events` history
 - create one normalized audit language across workflows, approvals, tools, and routing decisions
 
 ## Minimum Audit Envelope
@@ -206,7 +206,7 @@ The audit model should join cleanly with the existing control models.
 - likely joins: `workflow_runs`, `workflow_state_snapshots`, later `audit_events`
 
 ### `audit_events`
-- persistence status: `planned`
+- persistence status: `implemented`
 - intended role: append-oriented event table for fine-grained traceability
 - expected grain: one row per auditable action, transition, tool call, routing choice, or approval event
 - likely joins: `workflow_runs`, `approvals`, later `agent_runs`
@@ -228,8 +228,9 @@ Current reality:
 - workflow runs and snapshots already provide partial traceability
 - `agent_runs` now persist bounded execution history for the current workflow and specialist-analysis seams
 - approvals already provide partial decision traceability
+- `audit_events` now persist append-oriented workflow-step, model-route, tool-call, approval, and outbound-action history for the current implemented seams
 - Langfuse already provides optional workflow/model traces
-- `audit_events` and Mission Control audit inspection remain roadmap work
+- Mission Control audit inspection and dedicated trace endpoints remain roadmap work
 
 ## Related Docs
 - `STATE_MODEL.md`

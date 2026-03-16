@@ -81,6 +81,8 @@ Tracing is additive rather than mandatory: if Langfuse is not configured or the 
 
 The platform now also persists bounded `agent_runs` execution history in its own database for the current email, knowledge, proposal, and specialist-advisory seams, so tenant-scoped run inspection no longer depends only on external tracing.
 
+Append-oriented `audit_events` now complement that summary layer with step, routing, tool, approval, and outbound-action history for the current implemented seams.
+
 ### Seed A Client Instance
 Generate a tenant-specific client contract and runtime env file from the Track B template:
 

@@ -22,6 +22,11 @@
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
+- [ ] `B-T50B` Add portfolio view keys, API client methods, and TypeScript contracts for `Clients`, `Engagements`, `Missions`, and `Mission Detail`
+- [ ] `B-T50E` Build the `Missions` page as the first portfolio operating surface
+- [ ] `B-T50F` Build the `Mission Detail` cockpit over roster, quality gates, approvals, and run activity
+- [ ] `B-T50C` Build the `Clients` portfolio page
+- [ ] `B-T50D` Build the `Engagements` portfolio page
 - [ ] `B-T02A` Add a Microsoft To Do section to `Inbox & Calendar` using the same Microsoft Graph tenant/client context
 - [ ] `B-T02B` Route assistant recommendation-to-task promotion through priority approval before writing Microsoft To Do
 - [ ] `B-T51` Define source adapters and normalization contracts for lead spotting across manual and non-manual channels
@@ -41,6 +46,7 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `B-T50A` Add `docs/mission-control-portfolio-ui-map.md` with the concrete UI map for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including proposed view keys, API shapes, and page/component structure
 - [x] `B-T62` Define the mission `quality_gate_plan` contract in backend/config, link `project_state` to quality-gate plans and results, and add a governed Track B default template
 - [x] `P5-T07` Define `AUDIT_MODEL.md` for canonical `agent_run`, `audit_event`, audit event family, and trace-linkage rules
 - [x] `P5-T06` Add explicit `README.md` test execution instructions for the full suite plus the unit, integration, and workflow layers

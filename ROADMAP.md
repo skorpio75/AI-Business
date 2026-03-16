@@ -200,6 +200,12 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T48: Add mission and engagement linkage to workflow and later `agent_runs` trace surfaces so consultant activity can be grouped by portfolio context
 - [ ] B-T49: Build a Track A portfolio summary feed that aggregates bounded client-runtime telemetry without sharing tenant-local mutable state
 - [ ] B-T50: Add a Mission Control portfolio dashboard for clients, engagements, missions, dispatched consultant-agent counts, active runs, approvals, and risk
+- [x] B-T50A: Define the concrete Mission Control portfolio UI map for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including proposed view keys, summary read models, TypeScript contracts, and page-component structure
+- [ ] B-T50B: Add frontend portfolio view keys, API client methods, and TypeScript response contracts for `clients`, `engagements`, `missions`, and `mission-detail`
+- [ ] B-T50C: Build the `Clients` Mission Control page with portfolio KPIs, filtering, client table, and detail panel
+- [ ] B-T50D: Build the `Engagements` Mission Control page with dispatch, roster, and billing posture summaries
+- [ ] B-T50E: Build the `Missions` Mission Control page as the first operational portfolio view over mission status, approvals, runs, and quality-gate posture
+- [ ] B-T50F: Build the `Mission Detail` cockpit with roster, quality gates, approvals, run activity, commercial-control summaries, and timeline
 
 ### Backlog - Growth Intake and Materialization
 - [ ] B-T51: Define source adapters and normalization contracts for `manual_entry`, `inbound_email`, `website_form`, `calendar_booking`, `meeting_note`, `referral`, `partner_channel`, `crm_import`, `document_intake`, `chat_message`, and `web_research`
@@ -265,6 +271,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T27: Extend UI routing indicators for local model, cloud route, and fallback execution paths
 - [ ] B-T27A: Enrich Agent Activity page descriptions with agent operating model metadata, including pod/family/mode context, execution posture, and whether the surface is direct-Ollama, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first
 - [ ] B-T27B: Bind Agent Activity runtime posture badges to governed registry/routing metadata so UI labels do not drift from `AGENT_LLM_ROUTING_MATRIX.md` and backend contracts
+- [ ] B-T27C: Reuse shared Mission Control portfolio UI primitives across the new `Clients`, `Engagements`, `Missions`, and `Mission Detail` screens so KPI strips, filters, tables, and detail panels stay visually consistent
 
 ### Backlog - Data Lifecycle Management
 - [ ] B-T28: Define retention periods by data class
@@ -406,6 +413,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for dispatch candidate planning, approved consultant rosters, billing plans, signed-scope to mission-start workflow, milestone acceptance to billing triggers, receivables follow-up, and mission closeout.
 - Added `docs/delivery-quality-gate-model.md` to define mission-specific delivery quality gates tied to SOW deliverables, project-plan phases, implementation evidence, milestone release, and final handoff.
 - Added roadmap coverage for mission `quality_gate_plan` contracts, phase-specific delivery gates, AI-assisted review rubrics, persisted gate results, and gating of milestone acceptance or handoff release when quality conditions are unresolved.
+- Completed `B-T50A` by adding `docs/mission-control-portfolio-ui-map.md`, which defines the next Mission Control portfolio screens for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including proposed navigation keys, summary read models, TypeScript response shapes, page sections, and recommended frontend implementation order.
 - Completed `B-T62` by adding typed mission quality-gate contracts in `app/models/delivery_quality.py`, mirroring them in `config/base/quality_gates.yaml`, linking `project_state` to active quality-gate plans and results, and binding the Track B client template to the governed `delivery_standard` gate template by default.
 - Added `docs/internal-vs-client-agent-usage-model.md` to make the Track A vs Track B agent-mode split explicit, including when to use `internal_operating`, `client_delivery`, and `client_facing_service` across the consulting lifecycle.
 - Completed `P5-T08` by adding a first-class `agent_runs` table, repository helpers, and persisted execution history for the current email, knowledge, proposal, and specialist-advisory seams, including tenant or track metadata plus workflow linkage where available.

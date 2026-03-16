@@ -199,6 +199,7 @@ The platform distinguishes pod-native agents, specialist overlays, and reusable 
 - Track A and Track B reuse rules are explicit
 - client-facing consultant families are documented as mission-bound instances rather than one shared runtime
 - Track A Mission Control portfolio visibility is defined over clients, engagements, missions, and dispatched agent instances without violating tenant isolation
+- the next Mission Control portfolio UI slice is concretely mapped for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including summary-read-model and frontend-contract expectations
 - Growth lead spotting and materialization are defined upstream of `lead.received`, including source classes and automatic-vs-review creation rules
 - commercial handoff into delivery is defined through dispatch candidate planning, approved consultant rosters, billing plans, and mission closeout controls
 - mission-specific quality gates are defined across planning, implementation, milestone release, and final handoff rather than only as one generic QA step

@@ -168,6 +168,7 @@ The workflow controls the process. AI is used only inside selected steps.
 - Mission Control is both the operator UI surface and the operating supervisor layer for visibility, escalation, approval routing, and audit.
 - Client-facing consulting and delivery agents should be instantiated per client, engagement, and mission rather than treated as one shared consultant identity.
 - Track A Mission Control should evolve into a portfolio cockpit that can view clients, engagements, missions, dispatched consultant-agent counts, run status, approvals, and risk across isolated client runtimes.
+- The next portfolio UI slice is now concretized in `docs/mission-control-portfolio-ui-map.md`, which maps the `Clients`, `Engagements`, `Missions`, and `Mission Detail` screens onto the existing Mission Control shell, summary-read-model approach, and future agent-instance registry.
 - Track A should remain the control plane for proposal, SOW, contract, dispatch planning, billing, receivables, and mission closeout, while Track B remains the tenant-scoped delivery plane.
 - mode selection should follow business purpose: Track A `internal_operating` for internal commercial and control work, Track B `client_delivery` for mission execution, and separate `client_facing_service` instances for client-scoped advisory outputs
 
@@ -195,6 +196,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - `AUDIT_MODEL.md` now defines the canonical `agent_run` and `audit_event` objects, audit event families, and linkage rules across runs, approvals, tools, autonomy, and observability traces
 - `docs/hybrid-rag-review-architecture.md` now defines hybrid retrieval source classes, evidence-lane separation, mission context-pack intent, and the bounded review/gate agent pattern for multi-agent workflows
 - `docs/agent-instance-portfolio-model.md` now defines how reusable families become client-scoped mission instances and how Track A can aggregate portfolio visibility without violating tenant isolation
+- `docs/mission-control-portfolio-ui-map.md` now defines the concrete Track A Mission Control screen map, frontend contracts, and implementation sequence for portfolio views over clients, engagements, missions, and mission detail
 - `docs/lead-intake-materialization-model.md` now defines supported lead source classes, automatic-vs-review materialization rules, and the event path from raw signal to canonical `lead.received`
 - `docs/consulting-engagement-lifecycle-model.md` now defines the signed-scope to mission-start handoff, dispatch candidate plan, approved consultant roster, milestone billing triggers, and mission closeout pattern
 - `docs/delivery-quality-gate-model.md` now defines mission-scoped quality gate planning, phase checkpoints, deliverable-class review patterns, and milestone or handoff release gating
@@ -317,6 +319,7 @@ See [PODS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PODS.md) for pod owners
 See [AUDIT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUDIT_MODEL.md) for the audit and execution-trace model that links workflows, agents, approvals, tools, routing, and outbound actions.
 See [hybrid-rag-review-architecture.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/hybrid-rag-review-architecture.md) for the target hybrid retrieval and bounded review/gate-agent design.
 See [agent-instance-portfolio-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/agent-instance-portfolio-model.md) for the client-scoped consultant-instance model and Track A portfolio cockpit design.
+See [mission-control-portfolio-ui-map.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/mission-control-portfolio-ui-map.md) for the concrete next-screen map for portfolio-focused Mission Control UI.
 See [consulting-engagement-lifecycle-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/consulting-engagement-lifecycle-model.md) for the end-to-end consulting flow from lead spotting through dispatch, delivery, milestone billing, and closeout.
 See [delivery-quality-gate-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/delivery-quality-gate-model.md) for mission-specific delivery quality gates across planning, implementation, milestone release, and handoff.
 See [internal-vs-client-agent-usage-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/internal-vs-client-agent-usage-model.md) for the explicit rule on when to use internal agents versus client-scoped agents.

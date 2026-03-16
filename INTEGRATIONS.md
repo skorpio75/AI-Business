@@ -100,6 +100,9 @@ External systems may help gather account context, but consulting mission framing
 ### Rule 9
 For Microsoft 365 personal-assistant flows, mailbox, calendar, and Microsoft To Do integration should reuse the same tenant, client ID, and operator account context unless an explicit isolation exception is documented.
 
+### Rule 10
+External web retrieval may broaden agent context and recommendations, but externally retrieved material must remain cited, distinguishable from internal or client-grounded sources, and non-authoritative unless later promoted through approved platform workflows.
+
 ## OpenClaw Interaction Pattern
 
 ### Pattern A: Event Ingress
@@ -215,9 +218,16 @@ These connectors are selected through environment settings. Write actions remain
 - Track B client instances can configure Langfuse through their tenant-scoped runtime env file so tracing enablement follows the same per-instance bootstrap model as other runtime settings.
 - If Langfuse is unconfigured or unavailable, tracing becomes a no-op rather than blocking workflow execution.
 
+## Planned Hybrid Retrieval Boundary
+- internal and tenant-scoped client corpora should remain the primary grounded retrieval layers for agent context
+- external web retrieval is a planned enrichment layer for broader technology, vendor, standards, and market context
+- hybrid retrieval outputs should preserve evidence provenance so operators can distinguish internal/client grounding from external enrichment
+- risky externally consequential outputs should be able to route through a bounded review/gate step before approval or release
+
 ## Current Integration Gaps
 - secret storage and rotation strategy
 - connector-to-tool-ID mapping for normalized tool/audit contracts
+- governed external web retrieval design with provenance, caching, and normalized tool mapping
 - richer connector diagnostics in Mission Control UI beyond the current API and health/status surfaces
 - Microsoft To Do list-selection, task-schema, and same-tenant recommendation-promotion contract design
 - approval and audit trace design for recommendation-to-task promotion and priority write-back

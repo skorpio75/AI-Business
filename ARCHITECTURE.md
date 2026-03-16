@@ -60,6 +60,7 @@ Infrastructure
 - family-level base prompts
 - workflow-step prompts
 - runtime prompt/template loader
+- hybrid context assembly over shared workspace, tenant-scoped corpora, internal corpora, and optional external-web enrichment
 - context injection for state, tool profile, approvals, tenant, and output schema
 - typed prompt composition contracts and config bindings
 - canonical prompt naming, storage, and loading conventions
@@ -143,6 +144,7 @@ Infrastructure
 - The test suite now also has a shared sample-data layer under `tests/sample_data.py` for repeated workflow payloads, approval decisions, connector bootstrap responses, and Track B runtime settings, keeping common test shapes aligned across unit, integration, and workflow coverage.
 - API integration coverage now runs against the real FastAPI app in-process through `tests/integration/base.py`, using dependency overrides for DB sessions and targeted patching for startup/bootstrap or external-service seams rather than bypassing the HTTP layer.
 - Workflow branch coverage now lives under `tests/workflow/`, combining service-level routing tests and HTTP-level approval-decision tests so escalation reasons, approval outcomes, and workflow state transitions are exercised without requiring a full external stack.
+- The target retrieval architecture is now a governed hybrid RAG model: internal and tenant-scoped client corpora provide grounding, shared workspace provides current truth, and optional external-web retrieval broadens advisory outputs without becoming authoritative state by default.
 
 ## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.
@@ -181,6 +183,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - consulting-oriented specialist contracts for mission framing and account-growth opportunity discovery
 - specialist analysis responses now include provider/model routing metadata for traceability
 - `AUDIT_MODEL.md` now defines the canonical `agent_run` and `audit_event` objects, audit event families, and linkage rules across runs, approvals, tools, autonomy, and observability traces
+- `docs/hybrid-rag-review-architecture.md` now defines hybrid retrieval source classes, evidence-lane separation, mission context-pack intent, and the bounded review/gate agent pattern for multi-agent workflows
 - operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
@@ -212,6 +215,7 @@ The intended multi-agent runtime supports:
 - workflows as the primary orchestrator
 - specialized agents as bounded executors
 - optional supervisor/orchestrator agents such as `Mission Control Agent` or later pod-specific supervisors
+- bounded review/gate agents such as `QA / Review Agent` or `Risk / Watchdog Agent` where workflow rubrics justify an explicit revise/approve/escalate checkpoint
 
 The architecture does not target unconstrained peer-agent autonomy. Supervisor behavior must remain observable, policy-bound, and subordinate to workflow control.
 
@@ -295,4 +299,5 @@ See [MEMORY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/MEMORY_MODEL.md
 See [PROMPTS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PROMPTS.md) for canonical prompt naming, storage, and loading conventions.
 See [PODS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PODS.md) for pod ownership and reuse rules.
 See [AUDIT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUDIT_MODEL.md) for the audit and execution-trace model that links workflows, agents, approvals, tools, routing, and outbound actions.
+See [hybrid-rag-review-architecture.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/hybrid-rag-review-architecture.md) for the target hybrid retrieval and bounded review/gate-agent design.
 See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

@@ -272,3 +272,15 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The platform should define a dedicated audit model in `AUDIT_MODEL.md` with canonical `agent_run` and `audit_event` objects, normalized audit event families, and explicit linkage to workflow runs, approvals, tool IDs, autonomy classes, approval classes, and external observability traces.
 - Rationale: Traceability requirements are already spread across workflows, approvals, Mission Control, Langfuse spans, and later roadmap items such as `agent_runs`, `audit_events`, and audit endpoints. A first-class audit model gives those future persistence and UI surfaces one governed contract instead of letting each implementation invent its own trace vocabulary.
+
+## ADR-046: Hybrid RAG should separate grounded internal or client evidence from external enrichment
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The platform should evolve toward a hybrid retrieval model where shared workspace plus internal and tenant-scoped client corpora provide primary grounding, while external web retrieval broadens context as a cited enrichment layer rather than silently becoming authoritative business truth.
+- Rationale: Internal operations and client-facing consulting both benefit from broader context, but the platform's governance model depends on preserving clear provenance and keeping current state authoritative only when written through approved workflows. Separating grounded evidence from external enrichment improves trust, auditability, and safer consulting outputs.
+
+## ADR-047: Judge or controller behavior in multi-agent flows should be a bounded review or gate step
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Review or judge-style agents such as `QA / Review Agent`, `Risk / Watchdog Agent`, or `Mission Control Agent` may be used in multi-agent workflows only as explicit rubric-driven steps that return finite outcomes such as `approve`, `revise`, `escalate`, or `human_review`.
+- Rationale: A bounded review or gate step adds real value for high-impact consulting, proposal, and delivery outputs, especially when hybrid retrieval is involved. But making every task pass through a universal autonomous judge would add cost, latency, and opaque control flow that conflicts with the workflow-first architecture.

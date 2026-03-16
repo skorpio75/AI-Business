@@ -101,6 +101,14 @@ Agent-to-agent handoff is allowed only in a structured form:
 
 This means A2A is workflow-mediated, not autonomous peer networking.
 
+### Review and Gate Pattern
+Bounded review or judge-style behavior is valid in later multi-agent workflows, but only as an explicit step pattern:
+
+- a review/gate agent receives a bounded artifact plus rubric
+- it returns finite outcomes such as `approve`, `revise`, `escalate`, or `human_review`
+- it does not become a universal always-on second pass for every task
+- it does not replace CEO approval for sensitive external commitments
+
 ## Multi-Agent Suitability Matrix
 The following families are currently assessed as high-suitability candidates for bounded multi-agent runtime use. This matrix is an implementation prioritization aid, not a mandate to promote every listed family immediately.
 

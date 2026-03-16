@@ -218,6 +218,8 @@ Workflow and agent execution is described through normalized state, event, tool,
 - prompt composition and context-injection contracts are defined in backend/config
 - prompt naming, storage, and loader fallback rules are defined
 - audit object, event-family, and linkage rules are defined for later `agent_runs`, `audit_events`, and Mission Control trace surfaces
+- hybrid retrieval source classes and provenance rules are defined so internal, client, and external evidence remain distinguishable
+- bounded review/gate agent behavior is defined as a workflow checkpoint pattern rather than a free-form supervisor override
 - specialist advisory contracts can carry client briefs, context signals, and service recommendations
 - specialist advisory contracts can also carry consulting mission assessments and upsell opportunities
 - agent-family LLM routing posture is documented so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic hybrids are planned explicitly by family

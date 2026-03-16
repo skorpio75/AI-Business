@@ -186,6 +186,15 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T01I: Track `Document Agent`, `Knowledge Agent`, and later `Reporting Agent` client-facing-service variants as separate direct-Ollama candidates because Track A and Track B instances must not share runtime assumptions
 - [ ] B-T01J: Define rollout waves for the direct-Ollama pattern: Wave 1 bounded internal/grounded outputs; Wave 2 internal synthesis panels; Wave 3 delivery-authoring families; Wave 4 externally consequential or richer client-facing consulting surfaces
 
+### Backlog - Hybrid Retrieval and Review Control
+- [ ] B-T40: Define hybrid retrieval source classes and provenance rules for `shared_workspace`, `internal_corpus`, `client_corpus`, and `external_web`
+- [ ] B-T41: Build a shared context-assembly service that composes workspace state, internal or client retrieval, episodic context, and optional external-web enrichment
+- [ ] B-T42: Add governed external web retrieval with normalized tool mapping, citation capture, and non-authoritative enrichment boundaries
+- [ ] B-T43: Extend `Knowledge Agent`, `CTO/CIO Agent`, and `Chief AI / Digital Strategy Agent` to use the shared hybrid RAG/context-assembly layer
+- [ ] B-T44: Add mission-scoped context packs for consulting engagements and delivery work so retrieval stays bounded to one client mission or workflow
+- [ ] B-T45: Define bounded review/gate agent step contracts with explicit rubrics and finite outcomes such as `approve`, `revise`, `escalate`, and `human_review`
+- [ ] B-T46: Add review/gate checkpoints for externally consequential advisory, proposal, and delivery-authoring workflows that combine grounded retrieval with broader enrichment
+
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
 - [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar

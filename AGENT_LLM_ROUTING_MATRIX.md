@@ -26,6 +26,7 @@ Current implementation truth still lives in:
 - Prefer `GW-R` for richer client-facing or cross-domain reasoning where output quality depends on more context and looser synthesis.
 - Prefer `DT-H` where business state changes, extraction, policy checks, or operational correctness matter more than narrative generation.
 - Track A and Track B variants are separate instances even when they share the same family. Routing posture may be similar, but runtime assumptions must not be shared implicitly.
+- Retrieval-enhanced families should distinguish grounded internal or client context from external-web enrichment rather than flattening all sources into one undifferentiated prompt context.
 
 ## Planned Agent Activity Label Mapping
 - `DO-C` should read in Mission Control as direct `Ollama` / compact local-first.
@@ -120,3 +121,4 @@ Current implementation truth still lives in:
 - Multi-agent suitability and LLM routing are related but not identical decisions.
 - A family can be high-suitability for bounded multi-agent runtime use while still preferring `DT-H` or `GW-R` instead of compact direct-Ollama.
 - The matrix should be revisited whenever a family becomes a real backend endpoint, panel, workflow step, or client-facing service.
+- Families that later adopt hybrid RAG should preserve provenance across internal, client, and external evidence lanes, especially when outputs may route through bounded review/gate checkpoints.

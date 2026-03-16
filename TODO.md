@@ -24,6 +24,8 @@
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
 - [ ] `B-T02A` Add a Microsoft To Do section to `Inbox & Calendar` using the same Microsoft Graph tenant/client context
 - [ ] `B-T02B` Route assistant recommendation-to-task promotion through priority approval before writing Microsoft To Do
+- [ ] `B-T40` Define hybrid retrieval source classes and provenance rules for internal, client, and external evidence
+- [ ] `B-T45` Define bounded review/gate agent step contracts for `approve`, `revise`, `escalate`, and `human_review`
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 - [ ] `B-T01A` Apply the compact direct-Ollama local-first pattern to Knowledge Q&A
 - [ ] `B-T01B` Apply the compact direct-Ollama local-first pattern to proposal drafting

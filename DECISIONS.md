@@ -284,3 +284,15 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Review or judge-style agents such as `QA / Review Agent`, `Risk / Watchdog Agent`, or `Mission Control Agent` may be used in multi-agent workflows only as explicit rubric-driven steps that return finite outcomes such as `approve`, `revise`, `escalate`, or `human_review`.
 - Rationale: A bounded review or gate step adds real value for high-impact consulting, proposal, and delivery outputs, especially when hybrid retrieval is involved. But making every task pass through a universal autonomous judge would add cost, latency, and opaque control flow that conflicts with the workflow-first architecture.
+
+## ADR-048: Client-facing consultant agents are instantiated per client, engagement, and mission
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Reusable consulting families such as `CTO/CIO Agent`, `Chief AI / Digital Strategy Agent`, `PMO / Project Control Agent`, `Architect Agent`, and related delivery-support families should run as mission-bound instances keyed to a specific `tenant`, `client`, `engagement`, and `mission`, rather than as one generic client-facing consultant runtime shared across accounts.
+- Rationale: The business model depends on reusing capability without sharing runtime identity or context across clients. Mission-bound instantiation preserves tenant isolation, keeps RAG and working memory scoped to one client context, and makes portfolio-level visibility legible because each dispatched consultant can be traced back to a concrete engagement and objective.
+
+## ADR-049: Track A portfolio visibility must aggregate bounded client-runtime summaries rather than shared mutable client state
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Track A Mission Control should evolve into a portfolio cockpit that can show clients, engagements, missions, dispatched consultant-agent counts, active runs, approvals, and risk across the client portfolio, but it must do so through bounded telemetry or summary feeds from isolated client runtimes rather than by centralizing client-local mutable state in one shared control plane.
+- Rationale: The CEO needs a genuine fleet view over consultant-agent deployment and health. But the core architecture and Track B isolation rules would be weakened if Track A became the writeable source of truth for all client delivery state. Summary-based portfolio visibility preserves both executive oversight and tenant isolation.

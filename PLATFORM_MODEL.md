@@ -34,6 +34,8 @@ Infrastructure
 ## Core Objects
 - `Pod`: ownership layer for Growth, Delivery, Ops, and Executive responsibilities
 - `Agent`: reasoning unit with bounded responsibility, tool profile, autonomy class, and state scope
+- `AgentInstance`: concrete runtime identity for one family and mode inside one tenant or mission scope
+- `AgentAssignment`: binding between an agent instance and a client, engagement, mission, workflow, or run scope
 - `Tool`: bounded action or retrieval capability exposed through a normalized tool ID
 - `Workflow`: deterministic coordination logic that sequences steps, applies policies, and records outcomes
 - `Trigger`: condition that starts a workflow or subflow, often driven by an event
@@ -43,6 +45,8 @@ Infrastructure
 - `Task`: a unit of follow-up work created inside or outside a workflow
 - `MemorySource`: document, record, trace, or connector source contributing to memory
 - `Client`: isolated business entity with its own state, storage, credentials, and runtime instances
+- `Engagement`: commercial container for a body of client work, such as a project, assessment, or advisory retainer
+- `Mission`: bounded objective or workstream inside an engagement
 - `Opportunity`: pre-sale entity representing lead, qualification, and proposal context
 - `Project`: post-sale entity representing scoped work, milestones, risks, and outcomes
 - `Policy`: rule constraining actions, approvals, autonomy, and tool use
@@ -55,6 +59,12 @@ Agent reuse is modeled through three levels:
 - `instance`: concrete runtime identity with isolated state and memory
 
 This allows the same family to exist in both internal and client-facing forms without violating Track A and Track B isolation.
+
+For client-facing consulting and delivery work, the concrete runtime should also be mission-bound:
+
+- one family can have many client-scoped instances
+- each client-scoped instance should bind to one `tenant_id`, `client_id`, `engagement_id`, and `mission_id`
+- Mission Control should supervise those instances as a portfolio rather than flattening them into one shared consultant identity
 
 ## Reasoning, Execution, Orchestration, Oversight
 - Reasoning is handled by agents.
@@ -89,6 +99,15 @@ Isolated runtime assets:
 - documents
 - client and project state
 - runtime agent instances
+
+## Portfolio Visibility Model
+Track A Mission Control is intended to operate as a portfolio control tower over internal and client-delivery activity.
+
+- Track B or client-delivery runtimes keep their own mutable state, memory, and approvals
+- Track A may aggregate bounded portfolio summaries such as mission labels, dispatched agent counts, run status, pending approvals, and risk flags
+- portfolio visibility must not become a shared mutable state layer across clients
+
+This supports a CEO-style operating view over clients, engagements, missions, and dispatched consultant agents while preserving tenant isolation.
 
 ## Scaling Model
 The platform is intended to support:

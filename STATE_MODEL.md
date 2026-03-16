@@ -7,6 +7,7 @@ Define the canonical operating state objects that workflows, agents, approvals, 
 - State is authoritative only when persisted through platform-controlled workflows or API paths.
 - Each state object must declare ownership, writers, and consuming workflows.
 - Track A and Track B state remain isolated by tenant and deployment boundary.
+- Track A portfolio oversight may aggregate bounded operational summaries from client runtimes, but those summaries do not replace tenant-local authoritative state.
 
 ## `opportunity_state`
 
@@ -128,6 +129,15 @@ Define the canonical operating state objects that workflows, agents, approvals, 
 - Delivery pod primarily owns `project_state`
 - workflow orchestration owns `run_state`
 - policy and approval controls own `approval_state`
+
+## Portfolio and Mission Scope Note
+The current canonical state set remains `opportunity_state`, `project_state`, `run_state`, and `approval_state`.
+
+For later client-portfolio control:
+
+- `client`, `engagement`, and `mission` should be treated as first-class operating objects
+- client-facing `agent_instance` assignment should bind to those objects
+- Track A Mission Control should consume summarized portfolio telemetry rather than sharing tenant-local `project_state` directly
 
 ## Backend Contract Mapping
 The backend contract layer mirrors this model in:

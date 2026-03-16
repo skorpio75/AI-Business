@@ -36,6 +36,20 @@ Example:
 - `Internal PMO Agent` is a Track A instance
 - `Client PMO Agent - Acme` is a separate Track B instance
 
+## Client Instance Binding
+For customer-facing use, a family should be instantiated against a specific client context rather than exposed as one generic consultant.
+
+- a client-facing instance should bind to `tenant_id`, `client_id`, `engagement_id`, and `mission_id`
+- the same family may have many parallel client-scoped consultant instances across the portfolio
+- each instance keeps isolated memory, tools, approvals, audit, and runtime configuration
+
+Example:
+- `CTO/CIO Agent` is the family
+- `client_delivery` is the mode
+- `acme-erp-discovery-cto-cio-01` is a mission-bound instance
+
+Track A Mission Control should eventually show these instances as dispatched consultants grouped by client, engagement, and mission.
+
 ## Prompt Model
 `AGENTS.md` is the operating catalog for agent families and runtime boundaries, not the primary home of agent prompts.
 
@@ -442,6 +456,12 @@ The following families are strong candidates for replicated client-delivery or c
 - Document Agent
 
 These are reused as separate instances per client, not shared Track A agents.
+
+In practice, the preferred scoping rule is:
+
+- one client-scoped instance per active mission or bounded workstream
+- one engagement may therefore have several consultant-agent instances from the same or different families
+- Track A should observe them through portfolio summaries, not by merging their working state into one shared runtime
 
 For advisory families such as `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent`, the client-scoped instance should ingest a bounded client brief that includes:
 - problem statement

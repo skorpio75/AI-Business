@@ -26,6 +26,8 @@
 - [ ] `B-T02B` Route assistant recommendation-to-task promotion through priority approval before writing Microsoft To Do
 - [ ] `B-T40` Define hybrid retrieval source classes and provenance rules for internal, client, and external evidence
 - [ ] `B-T45` Define bounded review/gate agent step contracts for `approve`, `revise`, `escalate`, and `human_review`
+- [ ] `B-T47` Define a formal agent-instance registry keyed by family, tenant, client, engagement, and mission
+- [ ] `B-T49` Build a Track A portfolio summary feed over isolated client runtimes
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 - [ ] `B-T01A` Apply the compact direct-Ollama local-first pattern to Knowledge Q&A
 - [ ] `B-T01B` Apply the compact direct-Ollama local-first pattern to proposal drafting
@@ -71,6 +73,7 @@
 - [ ] Keep `ROADMAP.md` as the full source of truth
 - [ ] Keep `TODO.md` short and execution-oriented
 - [ ] Keep Track A internal instances and Track B client instances isolated even when they share an agent family
+- [ ] Keep Track A portfolio visibility summary-only across client runtimes; do not turn it into shared mutable client state
 - [ ] Keep multi-agent runtime evolution workflow-first; avoid autonomous peer-agent complexity before step identity, handoff payloads, and execution logs are stable
 - [ ] Treat the prompt layer as part of the target runtime architecture, but defer large-scale prompt authoring until contracts, state, and workflow boundaries are stable
 - [ ] Reuse the compact direct-Ollama pattern selectively: best for bounded internal panels and short grounded outputs, not automatically for every richer client-facing reasoning surface

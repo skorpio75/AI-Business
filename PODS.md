@@ -15,6 +15,8 @@ Example:
 - `Internal PMO Agent` is one Track A instance
 - `Client PMO Agent - Acme ERP rollout` is a separate Track B instance
 
+For client-facing use, the instance should also bind to a concrete `client`, `engagement`, and `mission` so one reusable family can be dispatched across the portfolio without sharing runtime identity.
+
 ## Pod Definitions
 
 ### Pod A - Growth
@@ -126,6 +128,7 @@ Suggested overlay mapping:
 - Agents reason within pod-specific or overlay-specific responsibilities.
 - Tools act through policy and approval constraints.
 - Mission Control supervises cross-pod visibility, failed runs, and pending approvals.
+- Track A Mission Control should eventually aggregate portfolio summaries across client engagements and dispatched consultant instances without becoming the shared mutable source of truth for those client runtimes.
 
 ## Operating Maturity
 The pod model is designed to scale across these stages:

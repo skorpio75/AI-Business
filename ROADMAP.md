@@ -195,6 +195,12 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T45: Define bounded review/gate agent step contracts with explicit rubrics and finite outcomes such as `approve`, `revise`, `escalate`, and `human_review`
 - [ ] B-T46: Add review/gate checkpoints for externally consequential advisory, proposal, and delivery-authoring workflows that combine grounded retrieval with broader enrichment
 
+### Backlog - Client Portfolio and Agent Instance Control
+- [ ] B-T47: Define a formal agent-instance registry keyed by `family`, `mode`, `tenant`, `client`, `engagement`, and `mission`
+- [ ] B-T48: Add mission and engagement linkage to workflow and later `agent_runs` trace surfaces so consultant activity can be grouped by portfolio context
+- [ ] B-T49: Build a Track A portfolio summary feed that aggregates bounded client-runtime telemetry without sharing tenant-local mutable state
+- [ ] B-T50: Add a Mission Control portfolio dashboard for clients, engagements, missions, dispatched consultant-agent counts, active runs, approvals, and risk
+
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
 - [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar
@@ -370,6 +376,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a shared test sample-data layer in `tests/sample_data.py` for reusable email, approval, knowledge, proposal, connector-status, and Track B runtime payload builders, and refactored representative unit, integration, and workflow tests onto those builders with contract coverage in `tests/unit/test_sample_data.py`.
 - Added explicit `README.md` test execution instructions for the full suite plus the unit, integration, and workflow layers, and locked those commands in with a README contract test.
 - Added `AUDIT_MODEL.md` as the canonical audit contract for `agent_run`, `audit_event`, audit event families, and linkage rules across workflow runs, approvals, tool IDs, autonomy classes, routing, and external traces.
+- Added `docs/agent-instance-portfolio-model.md` to formalize mission-bound client consultant instances plus the Track A portfolio cockpit pattern, and confirmed the model is compatible with the current architecture and `AI-Business_IDE_Handoff.md`.
+- Added roadmap coverage for a future agent-instance registry, mission and engagement linkage in audit surfaces, a Track A portfolio summary feed, and a Mission Control portfolio dashboard over dispatched consultant agents.
 
 ## Next Action
 Start `P5-T08` to add `agent_runs` persistence for per-agent execution history against the new audit model.

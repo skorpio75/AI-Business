@@ -197,6 +197,8 @@ The platform distinguishes pod-native agents, specialist overlays, and reusable 
 - first-class Growth, Delivery, Ops, and Executive agents are defined
 - existing specialist roles are preserved and mapped
 - Track A and Track B reuse rules are explicit
+- client-facing consultant families are documented as mission-bound instances rather than one shared runtime
+- Track A Mission Control portfolio visibility is defined over clients, engagements, missions, and dispatched agent instances without violating tenant isolation
 
 ## Epic 12 - State, Event, Tool, and Autonomy Control Layer
 - Status: `IN_PROGRESS`

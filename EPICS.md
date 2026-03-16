@@ -202,6 +202,7 @@ The platform distinguishes pod-native agents, specialist overlays, and reusable 
 - Growth lead spotting and materialization are defined upstream of `lead.received`, including source classes and automatic-vs-review creation rules
 - commercial handoff into delivery is defined through dispatch candidate planning, approved consultant rosters, billing plans, and mission closeout controls
 - mission-specific quality gates are defined across planning, implementation, milestone release, and final handoff rather than only as one generic QA step
+- the backend/config layer defines a typed mission `quality_gate_plan` contract and governed base templates for later runtime use
 
 ## Epic 12 - State, Event, Tool, and Autonomy Control Layer
 - Status: `IN_PROGRESS`

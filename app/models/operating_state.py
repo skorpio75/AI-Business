@@ -46,6 +46,10 @@ class ProjectState(BaseModel):
     overdue_actions_count: int = 0
     next_steerco_date: Optional[datetime] = None
     deliverables: list[str] = Field(default_factory=list)
+    quality_gate_plan_id: Optional[str] = None
+    active_quality_gate_ids: list[str] = Field(default_factory=list)
+    quality_gate_status: Optional[str] = None
+    quality_gate_result_refs: list[str] = Field(default_factory=list)
     raid_log_ref: Optional[str] = None
     acceptance_refs: list[str] = Field(default_factory=list)
     memory_refs: list[str] = Field(default_factory=list)
@@ -146,6 +150,7 @@ DEFAULT_STATE_REGISTRY = StateRegistry(
                 "project-management",
                 "quality-testing-gate",
                 "documentation-handover",
+                "delivery quality gates",
             ],
         ),
         StateOwnershipContract(

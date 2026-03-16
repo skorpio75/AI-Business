@@ -189,3 +189,10 @@ This model implies later work for:
 - AI-assisted review prompts tied to SOW, project plan, and acceptance criteria
 - milestone-release gating before client acceptance routing
 - handoff-readiness gating before mission closeout
+
+## Current Contract Mapping
+The current backend and config contract layer now maps this model through:
+
+- `app/models/delivery_quality.py`
+- `config/base/quality_gates.yaml`
+- `app/models/operating_state.py` via `project_state` links to active gate plans and results

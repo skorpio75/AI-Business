@@ -30,7 +30,6 @@
 - [ ] `B-T56` Define the `approved_consultant_roster` contract and Track B visibility model for dispatched consultants
 - [ ] `B-T57` Define `billing_plan` contracts for the approved billing method
 - [ ] `B-T58` Build the signed-scope to mission-start workflow with dispatch approval and roster activation
-- [ ] `B-T62` Define the `quality_gate_plan` contract per mission
 - [ ] `B-T63` Add mission-phase delivery quality gates for implementation, milestone release, and handoff readiness
 - [ ] `B-T40` Define hybrid retrieval source classes and provenance rules for internal, client, and external evidence
 - [ ] `B-T45` Define bounded review/gate agent step contracts for `approve`, `revise`, `escalate`, and `human_review`
@@ -42,6 +41,7 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `B-T62` Define the mission `quality_gate_plan` contract in backend/config, link `project_state` to quality-gate plans and results, and add a governed Track B default template
 - [x] `P5-T07` Define `AUDIT_MODEL.md` for canonical `agent_run`, `audit_event`, audit event family, and trace-linkage rules
 - [x] `P5-T06` Add explicit `README.md` test execution instructions for the full suite plus the unit, integration, and workflow layers
 - [x] `P5-T05` Add shared test fixtures and sample data builders for email, approval, knowledge, proposal, connector-status, and Track B runtime test shapes

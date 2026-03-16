@@ -28,6 +28,7 @@ state_registry:
         - project-management
         - quality-testing-gate
         - documentation-handover
+        - delivery quality gates
 
     - state_id: run_state
       primary_owner: workflow_orchestration_layer

@@ -100,8 +100,10 @@ runtime_defaults:
     - client_facing_service
   advisory_mission_framing: true
   bounded_upsell_detection: true
+  default_quality_gate_template: delivery_standard
 
 notes:
   - Finalized Track B client contract for the reusable deployment template pack.
   - P4-T03 seed automation should treat this file as the source of truth for deployment naming, storage roots, and default workflow and specialist enablement.
   - P4-T04 runtime isolation requires a tenant-scoped runtime env file plus tenant-bound storage, prompt, and secret paths.
+  - B-T62 introduces a default mission quality-gate template so client-delivery startup can bind a governed gate plan without inventing tenant-local defaults.

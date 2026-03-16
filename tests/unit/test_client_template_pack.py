@@ -45,6 +45,7 @@ class ClientTemplatePackTests(UnitTestCase):
             client_config["runtime_defaults"]["operating_modes"],
             ["client_delivery", "client_facing_service"],
         )
+        self.assertEqual(client_config["runtime_defaults"]["default_quality_gate_template"], "delivery_standard")
 
     def test_deployment_template_uses_client_scoped_identity(self) -> None:
         env_template = (PACK_ROOT / "deployment.env.example").read_text(encoding="utf-8")

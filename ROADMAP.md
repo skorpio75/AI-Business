@@ -217,7 +217,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T61: Define and implement a mission-closeout workflow covering final acceptance, billing completion, lessons learned, roster deactivation, and archive state
 
 ### Backlog - Delivery Quality Gates
-- [ ] B-T62: Define the `quality_gate_plan` contract per mission, including phase checkpoints, deliverable classes, gate families, and release conditions
+- [x] B-T62: Define the `quality_gate_plan` contract per mission, including phase checkpoints, deliverable classes, gate families, and release conditions
 - [ ] B-T63: Add mission-phase quality gates for planning, requirements/design, implementation, milestone release, and handoff readiness
 - [ ] B-T64: Add AI-assisted deliverable review prompts that use SOW, project plan, acceptance criteria, and evidence packs as gate rubric inputs
 - [ ] B-T65: Persist quality-gate results and surface them in Track A and Track B delivery readiness views
@@ -406,6 +406,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for dispatch candidate planning, approved consultant rosters, billing plans, signed-scope to mission-start workflow, milestone acceptance to billing triggers, receivables follow-up, and mission closeout.
 - Added `docs/delivery-quality-gate-model.md` to define mission-specific delivery quality gates tied to SOW deliverables, project-plan phases, implementation evidence, milestone release, and final handoff.
 - Added roadmap coverage for mission `quality_gate_plan` contracts, phase-specific delivery gates, AI-assisted review rubrics, persisted gate results, and gating of milestone acceptance or handoff release when quality conditions are unresolved.
+- Completed `B-T62` by adding typed mission quality-gate contracts in `app/models/delivery_quality.py`, mirroring them in `config/base/quality_gates.yaml`, linking `project_state` to active quality-gate plans and results, and binding the Track B client template to the governed `delivery_standard` gate template by default.
 
 ## Next Action
 Start `P5-T08` to add `agent_runs` persistence for per-agent execution history against the new audit model.

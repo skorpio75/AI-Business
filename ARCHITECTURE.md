@@ -194,6 +194,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - `docs/lead-intake-materialization-model.md` now defines supported lead source classes, automatic-vs-review materialization rules, and the event path from raw signal to canonical `lead.received`
 - `docs/consulting-engagement-lifecycle-model.md` now defines the signed-scope to mission-start handoff, dispatch candidate plan, approved consultant roster, milestone billing triggers, and mission closeout pattern
 - `docs/delivery-quality-gate-model.md` now defines mission-scoped quality gate planning, phase checkpoints, deliverable-class review patterns, and milestone or handoff release gating
+- `app/models/delivery_quality.py` plus `config/base/quality_gates.yaml` now define the typed mission `quality_gate_plan` contract and governed base templates for later delivery startup and gate execution
 - operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role

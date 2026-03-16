@@ -1,0 +1,256 @@
+quality_gate_registry:
+  templates:
+    - template_id: advisory_light
+      description: Lightweight quality gates for advisory and document-heavy missions.
+      recommended_for:
+        - assessments
+        - advisory packs
+        - strategy deliverables
+      deliverable_classes:
+        - document_deliverable
+        - analysis_deliverable
+        - handover_deliverable
+      checkpoints:
+        - checkpoint_id: planning-document-alignment
+          phase: planning
+          gate_type: document_review_gate
+          deliverable_classes:
+            - document_deliverable
+            - analysis_deliverable
+          required_agent_families:
+            - qa-review
+          rubric_inputs:
+            - mission_statement
+            - sow_excerpt
+            - project_plan
+            - acceptance_criteria
+          release_blocking: true
+          pass_condition_summary: The planned advisory deliverables align with the SOW and have clear acceptance criteria.
+          escalation_conditions:
+            - scope contradiction
+            - missing acceptance criteria
+        - checkpoint_id: handover-advisory-readiness
+          phase: handover
+          gate_type: handover_readiness_gate
+          deliverable_classes:
+            - handover_deliverable
+            - document_deliverable
+          required_agent_families:
+            - documentation
+            - qa-review
+          rubric_inputs:
+            - deliverable_artifact
+            - acceptance_criteria
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: The advisory package is complete, internally consistent, and ready for handoff.
+          escalation_conditions:
+            - missing sections
+            - unresolved contradictions
+
+    - template_id: delivery_standard
+      description: Default delivery gate pattern for mixed consulting and implementation work.
+      recommended_for:
+        - standard delivery
+        - platform rollout
+        - automation projects
+      deliverable_classes:
+        - requirements_deliverable
+        - architecture_deliverable
+        - document_deliverable
+        - analysis_deliverable
+        - test_evidence_deliverable
+        - handover_deliverable
+      checkpoints:
+        - checkpoint_id: planning-gate-plan-baseline
+          phase: planning
+          gate_type: requirements_traceability_gate
+          deliverable_classes:
+            - requirements_deliverable
+            - document_deliverable
+          required_agent_families:
+            - qa-review
+            - mission-control
+          rubric_inputs:
+            - mission_statement
+            - sow_excerpt
+            - project_plan
+            - acceptance_criteria
+          release_blocking: true
+          pass_condition_summary: The project plan reflects agreed deliverables, milestones, and acceptance criteria.
+          escalation_conditions:
+            - missing milestone coverage
+            - weak traceability to SOW
+        - checkpoint_id: design-architecture-review
+          phase: analysis_design
+          gate_type: architecture_review_gate
+          deliverable_classes:
+            - architecture_deliverable
+            - analysis_deliverable
+          required_agent_families:
+            - qa-review
+            - risk-watchdog
+          rubric_inputs:
+            - sow_excerpt
+            - project_plan
+            - deliverable_artifact
+            - acceptance_criteria
+            - internal_retrieval
+          release_blocking: true
+          pass_condition_summary: Design artifacts are complete, feasible, and aligned with mission constraints.
+          escalation_conditions:
+            - unresolved design risk
+            - missing dependency treatment
+        - checkpoint_id: milestone-release-readiness
+          phase: pre_milestone
+          gate_type: milestone_release_gate
+          deliverable_classes:
+            - document_deliverable
+            - test_evidence_deliverable
+            - handover_deliverable
+          required_agent_families:
+            - qa-review
+            - testing-qa
+            - mission-control
+          rubric_inputs:
+            - deliverable_artifact
+            - acceptance_criteria
+            - test_evidence
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: Milestone evidence is complete and ready for client acceptance routing.
+          escalation_conditions:
+            - failing evidence
+            - missing required gate results
+            - open blocker defects
+        - checkpoint_id: handover-final-readiness
+          phase: handover
+          gate_type: handover_readiness_gate
+          deliverable_classes:
+            - handover_deliverable
+            - document_deliverable
+          required_agent_families:
+            - documentation
+            - qa-review
+          rubric_inputs:
+            - deliverable_artifact
+            - acceptance_criteria
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: Handover materials are complete, versioned, and operationally clear.
+          escalation_conditions:
+            - missing handover content
+            - unclear ownership after release
+
+    - template_id: implementation_heavy
+      description: Heavier gate pattern for code, automation, and implementation-intensive missions.
+      recommended_for:
+        - software delivery
+        - automation buildout
+        - integration implementation
+      deliverable_classes:
+        - requirements_deliverable
+        - architecture_deliverable
+        - code_deliverable
+        - configuration_deliverable
+        - test_evidence_deliverable
+        - handover_deliverable
+      checkpoints:
+        - checkpoint_id: implementation-traceability-baseline
+          phase: planning
+          gate_type: requirements_traceability_gate
+          deliverable_classes:
+            - requirements_deliverable
+            - architecture_deliverable
+          required_agent_families:
+            - qa-review
+            - mission-control
+          rubric_inputs:
+            - mission_statement
+            - sow_excerpt
+            - project_plan
+            - acceptance_criteria
+          release_blocking: true
+          pass_condition_summary: Implementation scope is traceable from SOW through plan and acceptance criteria.
+          escalation_conditions:
+            - requirements gaps
+            - missing implementation checkpoints
+        - checkpoint_id: implementation-artifact-review
+          phase: implementation
+          gate_type: implementation_review_gate
+          deliverable_classes:
+            - code_deliverable
+            - configuration_deliverable
+          required_agent_families:
+            - qa-review
+            - testing-qa
+          rubric_inputs:
+            - deliverable_artifact
+            - acceptance_criteria
+            - test_evidence
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: Implementation artifacts meet the agreed design intent and are supported by evidence.
+          escalation_conditions:
+            - untested changes
+            - implementation drift
+            - critical defects
+        - checkpoint_id: test-readiness-check
+          phase: implementation
+          gate_type: test_readiness_gate
+          deliverable_classes:
+            - test_evidence_deliverable
+            - code_deliverable
+          required_agent_families:
+            - testing-qa
+          rubric_inputs:
+            - acceptance_criteria
+            - test_evidence
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: Testing evidence is sufficient for the current release or milestone decision.
+          escalation_conditions:
+            - missing test coverage
+            - high-severity unresolved defects
+        - checkpoint_id: implementation-milestone-release
+          phase: pre_milestone
+          gate_type: milestone_release_gate
+          deliverable_classes:
+            - code_deliverable
+            - configuration_deliverable
+            - test_evidence_deliverable
+          required_agent_families:
+            - qa-review
+            - testing-qa
+            - risk-watchdog
+          rubric_inputs:
+            - deliverable_artifact
+            - acceptance_criteria
+            - test_evidence
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: Implementation milestone is ready for client acceptance and release discussion.
+          escalation_conditions:
+            - release blocker
+            - security or risk concern
+            - insufficient evidence
+        - checkpoint_id: implementation-handover-readiness
+          phase: handover
+          gate_type: handover_readiness_gate
+          deliverable_classes:
+            - handover_deliverable
+            - configuration_deliverable
+            - document_deliverable
+          required_agent_families:
+            - documentation
+            - qa-review
+          rubric_inputs:
+            - deliverable_artifact
+            - acceptance_criteria
+            - prior_gate_results
+          release_blocking: true
+          pass_condition_summary: Technical handover is complete enough for the client or downstream operator to run safely.
+          escalation_conditions:
+            - missing runbook
+            - missing environment notes
+            - open unresolved blocker

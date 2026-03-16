@@ -1,14 +1,10 @@
 import unittest
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-
-from app.core.settings import Settings
-from app.db.base import Base
 from app.models.schemas import EmailWorkflowRequest
 from app.services.email_workflow import EmailWorkflowService
 from app.services.model_gateway import GenerationResult, ModelGateway
 from app.services.observability import LangfuseObservabilityService
+from tests.unit.base import UnitTestCase
 
 
 class RecordingObservation:
@@ -54,9 +50,9 @@ class StaticEmailGateway:
         )
 
 
-class LangfuseObservabilityTests(unittest.TestCase):
+class LangfuseObservabilityTests(UnitTestCase):
     def test_observability_service_is_safe_when_unconfigured(self) -> None:
-        service = LangfuseObservabilityService(settings=Settings(_env_file=None, langfuse_enabled=False))
+        service = LangfuseObservabilityService(settings=self.build_settings(langfuse_enabled=False))
 
         with service.start_span(name="test-span", input={"ok": True}) as observation:
             observation.update(output={"status": "ok"})
@@ -67,10 +63,10 @@ class LangfuseObservabilityTests(unittest.TestCase):
     def test_model_gateway_records_span_and_generation_events(self) -> None:
         client = RecordingLangfuseClient()
         observability = LangfuseObservabilityService(
-            settings=Settings(_env_file=None, langfuse_enabled=True, langfuse_public_key="pk", langfuse_secret_key="sk"),
+            settings=self.build_settings(langfuse_enabled=True, langfuse_public_key="pk", langfuse_secret_key="sk"),
             client=client,
         )
-        gateway = ModelGateway(settings=Settings(_env_file=None), observability=observability)
+        gateway = ModelGateway(settings=self.build_settings(), observability=observability)
         gateway._resolve_local_model_name = lambda preferred_model=None: ("qwen2.5:1.5b", None, None)  # type: ignore[method-assign]
         gateway._ollama_request = lambda **kwargs: ({"response": "local traced output"}, None, None)  # type: ignore[method-assign]
 
@@ -87,15 +83,13 @@ class LangfuseObservabilityTests(unittest.TestCase):
     def test_email_workflow_records_workflow_span(self) -> None:
         client = RecordingLangfuseClient()
         observability = LangfuseObservabilityService(
-            settings=Settings(_env_file=None, langfuse_enabled=True, langfuse_public_key="pk", langfuse_secret_key="sk"),
+            settings=self.build_settings(langfuse_enabled=True, langfuse_public_key="pk", langfuse_secret_key="sk"),
             client=client,
         )
         gateway = StaticEmailGateway(observability=observability)
         service = EmailWorkflowService(model_gateway=gateway)
 
-        engine = create_engine("sqlite+pysqlite:///:memory:")
-        Base.metadata.create_all(engine)
-        with Session(engine) as db:
+        with self.sqlite_session() as db:
             response = service.run(
                 EmailWorkflowRequest(
                     sender="client@example.com",

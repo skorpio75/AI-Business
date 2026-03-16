@@ -1,16 +1,14 @@
-import tempfile
 import unittest
-from pathlib import Path
 
 import yaml
 
 from scripts.seed_config import seed_client_instance
+from tests.unit.base import UnitTestCase
 
 
-class SeedConfigTests(unittest.TestCase):
+class SeedConfigTests(UnitTestCase):
     def test_seed_client_instance_materializes_client_contract_and_env(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_root = Path(temp_dir)
+        with self.temporary_directory() as output_root:
 
             result = seed_client_instance(
                 client_id="Acme ERP Rollout",
@@ -38,8 +36,7 @@ class SeedConfigTests(unittest.TestCase):
             self.assertIn("GOOGLE_SECRETS_PATH=secrets/acme-erp/google-oauth.json", env_text)
 
     def test_seed_client_instance_dry_run_does_not_write_files(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_root = Path(temp_dir)
+        with self.temporary_directory() as output_root:
 
             result = seed_client_instance(
                 client_id="Beta Advisory",
@@ -54,8 +51,7 @@ class SeedConfigTests(unittest.TestCase):
                 self.assertFalse(directory.exists())
 
     def test_seed_client_instance_requires_force_to_overwrite(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_root = Path(temp_dir)
+        with self.temporary_directory() as output_root:
 
             seed_client_instance(
                 client_id="Gamma Delivery",

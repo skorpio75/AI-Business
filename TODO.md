@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: formalize the unit test base structure after the first observability slice
+- Immediate goal: add workflow branch coverage for approval and escalation paths
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P5-T02` Add unit test base structure
+- [ ] `P5-T04` Add workflow branch tests for approval and escalation paths
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
@@ -30,6 +30,8 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `P5-T03` Add in-process FastAPI integration tests with DB dependency overrides and targeted service/startup patching
+- [x] `P5-T02` Add a lightweight shared unit-test base structure for repo-root access, settings construction, temp dirs, in-memory DB sessions, and Track B seeded-client lifecycle helpers
 - [x] `P5-T01` Add optional Langfuse tracing for workflow spans and nested `ModelGateway` generation observations, with env-gated settings and unit coverage
 - [x] `P4-T06` Document the Track B client bootstrap runbook, including tenant env activation, startup, connector bootstrap, verification, and cleanup
 - [x] `P4-T05` Validate workflow portability across seeded client instances by running reusable workflows under tenant-scoped runtime settings and checking the seeded workflow pack contract

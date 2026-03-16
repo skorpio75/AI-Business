@@ -129,7 +129,7 @@ The platform provides traces and debugging visibility.
 - model usage visible in both API responses and Langfuse trace metadata
 
 ## Epic 8 - Testing Foundation
-- Status: `NOT_STARTED`
+- Status: `IN_PROGRESS`
 ### Outcome
 Reliable automated tests for core modules and workflows.
 
@@ -139,8 +139,9 @@ Reliable automated tests for core modules and workflows.
 
 ### Acceptance criteria
 - unit tests run locally
-- integration tests cover API endpoints
-- workflow tests cover main branches
+- a shared unit-test base structure exists for common settings, temp-dir, in-memory DB, and Track B seeded-client setup
+- integration tests cover the current FastAPI endpoints with an in-process client plus dependency overrides for DB and external dependencies
+- workflow tests cover the current approval and escalation branches for reusable workflow surfaces
 
 ## Epic 9 - Later Ops Automation
 - Status: `NOT_STARTED`

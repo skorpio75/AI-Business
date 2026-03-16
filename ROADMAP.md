@@ -24,7 +24,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
-| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 1/12 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 4/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -128,9 +128,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 
 ### Phase 5 - Observability + Testing
 - [x] P5-T01: Add Langfuse trace integration
-- [ ] P5-T02: Add unit test base structure
-- [ ] P5-T03: Add API integration tests
-- [ ] P5-T04: Add workflow branch tests (approval/escalation)
+- [x] P5-T02: Add unit test base structure
+- [x] P5-T03: Add API integration tests
+- [x] P5-T04: Add workflow branch tests (approval/escalation)
 - [ ] P5-T05: Add test fixtures and sample data
 - [ ] P5-T06: Add test execution instructions in `README.md`
 - [ ] P5-T07: Define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability
@@ -355,6 +355,9 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for extending `Inbox & Calendar` with Microsoft To Do under the same Microsoft Graph tenant/client boundary, including approval-gated promotion of assistant recommendations into prioritized tasks.
 - Documented the Track B bootstrap operator flow in `docs/track-b-bootstrap-runbook.md`, including tenant seeding, `RUNTIME_ENV_FILE` activation, database and API startup, Google and Microsoft connector bootstrap, verification, and cleanup guidance.
 - Added optional Langfuse tracing across the current reusable workflow entry points plus the shared `ModelGateway`, with env-gated settings, tenant-friendly client env support, a fail-open observability wrapper, and unit coverage for workflow spans and nested generation observations.
+- Added a lightweight shared unit-test base structure under `tests/unit/base.py`, with package markers plus helpers for repo-root access, settings construction, temporary directories, in-memory SQLite sessions, and Track B seeded-client lifecycle management, and refactored representative tests onto that base.
+- Added in-process FastAPI integration tests for health, workflow run/list, approval decision, knowledge Q&A, proposal generation, connector bootstrap status, and request validation, backed by an integration-test base that overrides DB sessions and patches startup or external-service seams as needed.
+- Added workflow branch tests under `tests/workflow/` for email-routing escalation branches (`cloud_unconfigured_used_local`, `cloud_unavailable_used_local`, `routed_to_cloud`) and approval decision branches (reject, edit validation, edit-pending, and approve-without-source behavior).
 
 ## Next Action
-Start `P5-T02` to formalize the unit test base structure now that initial Langfuse tracing is in place.
+Start `P5-T05` to add shared test fixtures and sample data now that unit, API integration, and workflow-branch layers are all in place.

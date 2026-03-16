@@ -1,15 +1,9 @@
-import os
-import shutil
 import unittest
-import uuid
-from pathlib import Path
 
 import yaml
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
+from sqlalchemy import select
 
-from app.core.settings import ROOT, ensure_runtime_directories, get_settings
-from app.db.base import Base
+from app.core.settings import ROOT
 from app.db.models import ApprovalORM, WorkflowRunORM, WorkflowStateSnapshotORM
 from app.knowledge.ingestion import DocumentIngestionService
 from app.knowledge.retrieval import KeywordRetrievalService
@@ -17,7 +11,7 @@ from app.models.schemas import EmailWorkflowRequest, KnowledgeQueryRequest
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import GenerationResult, TextGenerationResult
-from scripts.seed_config import SeedResult, seed_client_instance
+from tests.unit.base import TrackBSeededClientTestCase
 
 
 class PortableWorkflowGateway:
@@ -51,28 +45,13 @@ class PortableWorkflowGateway:
         )
 
 
-class TrackBWorkflowPortabilityTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self._seeded_results: list[SeedResult] = []
-        self._original_runtime_env_file = os.environ.get("RUNTIME_ENV_FILE")
-        get_settings.cache_clear()
-
-    def tearDown(self) -> None:
-        if self._original_runtime_env_file is None:
-            os.environ.pop("RUNTIME_ENV_FILE", None)
-        else:
-            os.environ["RUNTIME_ENV_FILE"] = self._original_runtime_env_file
-        get_settings.cache_clear()
-
-        for result in reversed(self._seeded_results):
-            self._cleanup_seeded_client(result)
-
+class TrackBWorkflowPortabilityTests(TrackBSeededClientTestCase):
     def test_seeded_instances_load_isolated_track_b_settings(self) -> None:
-        alpha = self._seed_client_instance("Acme Portability Alpha", api_port=8111, postgres_port=5511)
-        beta = self._seed_client_instance("Beta Portability Bravo", api_port=8112, postgres_port=5512)
+        alpha = self.seed_track_b_client("Acme Portability Alpha", api_port=8111, postgres_port=5511, tenant_prefix="track-b-portability")
+        beta = self.seed_track_b_client("Beta Portability Bravo", api_port=8112, postgres_port=5512, tenant_prefix="track-b-portability")
 
-        alpha_settings = self._activate_seeded_client(alpha)
-        beta_settings = self._activate_seeded_client(beta)
+        alpha_settings = self.activate_seeded_client(alpha)
+        beta_settings = self.activate_seeded_client(beta)
 
         self.assertEqual(alpha_settings.primary_track, "track_b_client")
         self.assertEqual(beta_settings.primary_track, "track_b_client")
@@ -84,12 +63,12 @@ class TrackBWorkflowPortabilityTests(unittest.TestCase):
 
     def test_implemented_workflows_run_across_seeded_clients(self) -> None:
         seeded_clients = [
-            self._seed_client_instance("Acme Workflow Portability", api_port=8121, postgres_port=5521),
-            self._seed_client_instance("Beta Workflow Portability", api_port=8122, postgres_port=5522),
+            self.seed_track_b_client("Acme Workflow Portability", api_port=8121, postgres_port=5521, tenant_prefix="track-b-portability"),
+            self.seed_track_b_client("Beta Workflow Portability", api_port=8122, postgres_port=5522, tenant_prefix="track-b-portability"),
         ]
 
         for seeded in seeded_clients:
-            settings = self._activate_seeded_client(seeded)
+            settings = self.activate_seeded_client(seeded)
             gateway = PortableWorkflowGateway(settings.tenant_id)
 
             handbook_path = settings.resolved_client_documents_dir / "delivery-handbook.md"
@@ -120,10 +99,8 @@ class TrackBWorkflowPortabilityTests(unittest.TestCase):
                 )
             )
 
-            engine = create_engine("sqlite+pysqlite:///:memory:")
-            Base.metadata.create_all(engine)
             email_service = EmailWorkflowService(model_gateway=gateway)
-            with Session(engine) as db:
+            with self.sqlite_session() as db:
                 email_response = email_service.run(
                     EmailWorkflowRequest(
                         sender="client@example.com",
@@ -152,8 +129,8 @@ class TrackBWorkflowPortabilityTests(unittest.TestCase):
 
     def test_seeded_client_contracts_keep_track_b_workflow_pack_ids(self) -> None:
         seeded_clients = [
-            self._seed_client_instance("Acme Contract Portability", api_port=8131, postgres_port=5531),
-            self._seed_client_instance("Beta Contract Portability", api_port=8132, postgres_port=5532),
+            self.seed_track_b_client("Acme Contract Portability", api_port=8131, postgres_port=5531, tenant_prefix="track-b-portability"),
+            self.seed_track_b_client("Beta Contract Portability", api_port=8132, postgres_port=5532, tenant_prefix="track-b-portability"),
         ]
         base_workflows = yaml.safe_load((ROOT / "config" / "base" / "workflows.yaml").read_text(encoding="utf-8"))
         base_workflow_ids = {item["id"] for item in base_workflows["workflows"]}
@@ -167,35 +144,6 @@ class TrackBWorkflowPortabilityTests(unittest.TestCase):
             self.assertEqual(planned_portability, ["email-operations"])
             self.assertTrue(set(default_enabled).issubset(base_workflow_ids))
             self.assertTrue(set(planned_portability).issubset(base_workflow_ids))
-
-    def _seed_client_instance(self, name: str, *, api_port: int, postgres_port: int) -> SeedResult:
-        tenant_id = f"track-b-portability-{uuid.uuid4().hex[:8]}"
-        result = seed_client_instance(
-            client_id=name,
-            name=name,
-            tenant_id=tenant_id,
-            output_root=ROOT,
-            api_port=api_port,
-            postgres_port=postgres_port,
-        )
-        self._seeded_results.append(result)
-        return result
-
-    def _activate_seeded_client(self, result: SeedResult):
-        os.environ["RUNTIME_ENV_FILE"] = str(result.runtime_env_path.relative_to(ROOT))
-        get_settings.cache_clear()
-        settings = get_settings()
-        ensure_runtime_directories(settings)
-        return settings
-
-    def _cleanup_seeded_client(self, result: SeedResult) -> None:
-        shutil.rmtree(ROOT / "data" / "clients" / result.tenant_id, ignore_errors=True)
-        shutil.rmtree(ROOT / "prompts" / "clients" / result.tenant_id, ignore_errors=True)
-        shutil.rmtree(ROOT / "secrets" / result.tenant_id, ignore_errors=True)
-        if result.client_config_path.exists():
-            result.client_config_path.unlink()
-        if result.runtime_env_path.exists():
-            result.runtime_env_path.unlink()
 
 
 if __name__ == "__main__":

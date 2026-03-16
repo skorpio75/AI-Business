@@ -1,12 +1,11 @@
 import unittest
-from pathlib import Path
 
+from tests.unit.base import ROOT, UnitTestCase
 
-ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK_PATH = ROOT / "docs" / "track-b-bootstrap-runbook.md"
 
 
-class TrackBBootstrapRunbookTests(unittest.TestCase):
+class TrackBBootstrapRunbookTests(UnitTestCase):
     def test_runbook_exists_and_covers_critical_bootstrap_steps(self) -> None:
         self.assertTrue(RUNBOOK_PATH.is_file(), "Missing Track B bootstrap runbook")
         text = RUNBOOK_PATH.read_text(encoding="utf-8")

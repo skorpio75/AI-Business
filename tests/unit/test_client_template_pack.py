@@ -1,14 +1,13 @@
 import unittest
-from pathlib import Path
 
 import yaml
 
+from tests.unit.base import ROOT, UnitTestCase
 
-ROOT = Path(__file__).resolve().parents[2]
 PACK_ROOT = ROOT / "config" / "client-template"
 
 
-class ClientTemplatePackTests(unittest.TestCase):
+class ClientTemplatePackTests(UnitTestCase):
     def test_pack_contains_expected_artifacts(self) -> None:
         expected_files = [
             "README.md",

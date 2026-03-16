@@ -242,3 +242,21 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Langfuse integration should be env-gated and fail-open, with workflow/service spans added at the reusable workflow entry points and nested generation observations added inside the shared `ModelGateway` for local, cloud, and fallback routing paths.
 - Rationale: Observability needs to illuminate real routing and workflow behavior without becoming a new source of runtime fragility. Instrumenting the shared gateway plus current workflow entry points captures high-value traces for prompts, provider/model selection, and fallback behavior while preserving MVP resilience when Langfuse is not configured.
+
+## ADR-041: Unit tests should share a lightweight base layer instead of repeating setup inline
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The unit test suite should standardize common setup through a small shared base layer in `tests/unit/base.py`, covering repo-root lookup, settings construction without env-file loading, temporary directories, in-memory SQLite sessions, and Track B seeded-client lifecycle helpers.
+- Rationale: The suite was already repeating the same setup patterns across tests, especially for Track B env switching and ephemeral DB setup. A lightweight base layer reduces duplication and makes later Phase 5 work easier without prematurely introducing a heavy fixture framework before reuse patterns are stable.
+
+## ADR-042: API integration tests should exercise FastAPI through an in-process client with dependency overrides
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: API integration coverage should run against the real FastAPI app via an in-process `TestClient`, using dependency overrides for database sessions and targeted patching for global service singletons or startup/bootstrap seams when external dependencies would otherwise make the route non-deterministic.
+- Rationale: The goal of API integration tests is to validate routing, request/response schemas, dependency injection, serialization, and persistence behavior without requiring external infrastructure for every test run. An in-process client keeps the coverage close to real HTTP behavior while preserving speed and determinism for the local suite.
+
+## ADR-043: Workflow branch tests should explicitly cover approval and escalation behavior
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The workflow-test layer should cover approval decision branches through HTTP-level tests and escalation/routing branches through focused service-level tests, with these scenarios organized under `tests/workflow/`.
+- Rationale: Approval and escalation regressions are too workflow-specific to fit cleanly inside generic unit tests, but they do not always require a full external integration environment. A dedicated workflow-test layer keeps these branches visible and targeted, especially for `email-operations`, where routing, fallback, and approval outcomes all materially affect operator trust.

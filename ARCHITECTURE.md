@@ -138,6 +138,9 @@ Infrastructure
 - Track B portability validation now proves that seeded client instances can run the reusable `knowledge-qna` and `email-operations` workflows under tenant-scoped settings, while `document-intake` and `reporting` remain governed workflow-pack contract entries until their service implementations exist.
 - `docs/track-b-bootstrap-runbook.md` now captures the operator sequence for seeding, activating `RUNTIME_ENV_FILE`, starting tenant-scoped infrastructure, bootstrapping connectors, and verifying a client instance without falling back to shared Track A defaults.
 - Langfuse tracing is now wired at the workflow/service seam plus the shared `ModelGateway`, so workflow spans and nested prompt/model-generation observations are available when the Langfuse env keys are configured, without making tracing a runtime dependency for unconfigured environments.
+- The test suite now also has a shared unit-test base layer under `tests/unit/base.py` for repo-root access, settings construction, temporary directories, in-memory DB sessions, and Track B seeded-client lifecycle helpers, so later Phase 5 tests build on one consistent setup pattern.
+- API integration coverage now runs against the real FastAPI app in-process through `tests/integration/base.py`, using dependency overrides for DB sessions and targeted patching for startup/bootstrap or external-service seams rather than bypassing the HTTP layer.
+- Workflow branch coverage now lives under `tests/workflow/`, combining service-level routing tests and HTTP-level approval-decision tests so escalation reasons, approval outcomes, and workflow state transitions are exercised without requiring a full external stack.
 
 ## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.

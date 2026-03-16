@@ -236,3 +236,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Track B should ship with a concrete bootstrap runbook that documents the exact seed, startup, connector-bootstrap, verification, and cleanup sequence, with explicit emphasis that `RUNTIME_ENV_FILE` must be set before any Python process starts for a client instance.
 - Rationale: Isolation is enforced partly by runtime configuration selection, not only by static files. A generated tenant env file is not enough if operators can still launch migrations, the API, or token bootstrap scripts against the shared root `.env`. A runbook turns the bootstrap path into a repeatable operational procedure instead of relying on implicit knowledge.
+
+## ADR-040: Langfuse tracing should be optional and attached at workflow and model-gateway seams
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Langfuse integration should be env-gated and fail-open, with workflow/service spans added at the reusable workflow entry points and nested generation observations added inside the shared `ModelGateway` for local, cloud, and fallback routing paths.
+- Rationale: Observability needs to illuminate real routing and workflow behavior without becoming a new source of runtime fragility. Instrumenting the shared gateway plus current workflow entry points captures high-value traces for prompts, provider/model selection, and fallback behavior while preserving MVP resilience when Langfuse is not configured.

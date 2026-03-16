@@ -116,7 +116,7 @@ A reproducible isolated client platform can be deployed quickly.
 - client-facing advisory agents use governed LLM reasoning for consulting analysis, with deterministic fallback reserved for resilience and guardrails
 
 ## Epic 7 - Observability
-- Status: `NOT_STARTED`
+- Status: `IN_PROGRESS`
 ### Outcome
 The platform provides traces and debugging visibility.
 
@@ -124,9 +124,9 @@ The platform provides traces and debugging visibility.
 - Langfuse
 
 ### Acceptance criteria
-- workflow traces visible
-- prompt traces visible
-- model usage visible
+- workflow traces visible, starting with Langfuse spans for the current reusable workflow services
+- prompt traces visible through nested `ModelGateway` generation observations
+- model usage visible in both API responses and Langfuse trace metadata
 
 ## Epic 8 - Testing Foundation
 - Status: `NOT_STARTED`

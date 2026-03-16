@@ -208,6 +208,13 @@ These integrations may enrich a client advisory brief, but the normalized proble
 
 These connectors are selected through environment settings. Write actions remain approval-bound in MVP and execute only through platform-controlled paths after approval is recorded here.
 
+## Current Observability Integration
+- Langfuse tracing is now supported as an optional external observability integration.
+- The integration is env-gated through `LANGFUSE_ENABLED`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST`, and optional `LANGFUSE_RELEASE`.
+- Workflow/service spans are emitted for the current reusable workflow surfaces, and nested generation observations are emitted from the shared `ModelGateway` for local, cloud, and fallback routing paths.
+- Track B client instances can configure Langfuse through their tenant-scoped runtime env file so tracing enablement follows the same per-instance bootstrap model as other runtime settings.
+- If Langfuse is unconfigured or unavailable, tracing becomes a no-op rather than blocking workflow execution.
+
 ## Current Integration Gaps
 - secret storage and rotation strategy
 - connector-to-tool-ID mapping for normalized tool/audit contracts

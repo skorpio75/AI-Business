@@ -4,10 +4,20 @@ from app.models.specialist_contracts import ChiefAIDigitalStrategyInput, CTOCIOC
 from app.services.agent_registry import AgentRegistryService
 from app.services.chief_ai_panel import ChiefAIPanelService
 from app.services.cto_cio_panel import CTOCIOPanelService
-from app.services.model_gateway import StructuredGenerationResult
+from app.services.model_gateway import StructuredGenerationResult, TextGenerationResult
 
 
 class StubModelGateway:
+    def generate_text(self, *, prompt: str, fallback_content: str, **kwargs) -> TextGenerationResult:
+        del prompt, kwargs
+        return TextGenerationResult(
+            content=fallback_content,
+            provider_used="fallback-rule",
+            model_used="rules-test",
+            local_llm_invoked=False,
+            cloud_llm_invoked=False,
+        )
+
     def generate_structured_json(self, *, prompt: str, fallback_payload: dict) -> StructuredGenerationResult:
         return StructuredGenerationResult(
             content=fallback_payload,

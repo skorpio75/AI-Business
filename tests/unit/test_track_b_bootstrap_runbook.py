@@ -15,6 +15,7 @@ class TrackBBootstrapRunbookTests(unittest.TestCase):
             "RUNTIME_ENV_FILE",
             "scripts\\seed_config.py",
             "config/clients/<tenant>.env",
+            "LANGFUSE_ENABLED",
             "docker compose -f docker-compose.yml -f config/client-template/docker-compose.client.yaml --env-file",
             "scripts\\init_db.py",
             "/healthz",

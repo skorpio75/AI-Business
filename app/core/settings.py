@@ -48,6 +48,11 @@ class Settings(BaseSettings):
     model_timeout_seconds: float = 10.0
     cloud_model: str = "openai/gpt-4o-mini"
     openrouter_api_key: Optional[str] = None
+    langfuse_enabled: bool = False
+    langfuse_public_key: Optional[str] = None
+    langfuse_secret_key: Optional[str] = None
+    langfuse_host: str = "https://cloud.langfuse.com"
+    langfuse_release: Optional[str] = None
 
     local_confidence_threshold: float = 0.8
     max_local_input_chars: int = 3000

@@ -98,6 +98,7 @@ async def lifespan(_: FastAPI):
     ensure_runtime_directories(get_runtime_settings())
     bootstrap_provider_tokens_on_startup()
     yield
+    gateway.observability.flush()
 
 
 app = FastAPI(title=settings.app_name, lifespan=lifespan)

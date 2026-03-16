@@ -56,6 +56,8 @@ class ClientTemplatePackTests(unittest.TestCase):
         self.assertIn("TENANT_ID=client-template", env_template)
         self.assertIn("PRIMARY_TRACK=track_b_client", env_template)
         self.assertIn("RUNTIME_ENV_FILE=config/client-template/deployment.env.example", env_template)
+        self.assertIn("LANGFUSE_ENABLED=false", env_template)
+        self.assertIn("LANGFUSE_HOST=https://cloud.langfuse.com", env_template)
         self.assertIn("container_name: ${CLIENT_SLUG:-client-template}-agent-platform-postgres", compose_template)
         self.assertIn("name: ${CLIENT_SLUG:-client-template}_postgres_data", compose_template)
         self.assertIn("documents_root: data/clients/client-template/documents", storage_map)

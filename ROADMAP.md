@@ -24,7 +24,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
-| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 0/12 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 1/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -127,7 +127,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P4-T06: Document client bootstrap runbook
 
 ### Phase 5 - Observability + Testing
-- [ ] P5-T01: Add Langfuse trace integration
+- [x] P5-T01: Add Langfuse trace integration
 - [ ] P5-T02: Add unit test base structure
 - [ ] P5-T03: Add API integration tests
 - [ ] P5-T04: Add workflow branch tests (approval/escalation)
@@ -354,6 +354,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for richer Mission Control transparency on the Agent Activity page so agent descriptions can show operating model and runtime posture such as direct `Ollama`, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first execution.
 - Added roadmap coverage for extending `Inbox & Calendar` with Microsoft To Do under the same Microsoft Graph tenant/client boundary, including approval-gated promotion of assistant recommendations into prioritized tasks.
 - Documented the Track B bootstrap operator flow in `docs/track-b-bootstrap-runbook.md`, including tenant seeding, `RUNTIME_ENV_FILE` activation, database and API startup, Google and Microsoft connector bootstrap, verification, and cleanup guidance.
+- Added optional Langfuse tracing across the current reusable workflow entry points plus the shared `ModelGateway`, with env-gated settings, tenant-friendly client env support, a fail-open observability wrapper, and unit coverage for workflow spans and nested generation observations.
 
 ## Next Action
-Start `P5-T01` to add Langfuse trace integration now that Phase 4 Track B template work is complete.
+Start `P5-T02` to formalize the unit test base structure now that initial Langfuse tracing is in place.

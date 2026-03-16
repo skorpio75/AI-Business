@@ -74,6 +74,11 @@ Seed automation now turns that pack into tenant-specific artifacts under `config
 
 For the full operator sequence, including the `RUNTIME_ENV_FILE` activation rule, database startup, connector bootstrap, and smoke tests, use [docs/track-b-bootstrap-runbook.md](docs/track-b-bootstrap-runbook.md).
 
+## Observability
+Langfuse tracing is now integrated as an optional, env-gated observability layer. When `LANGFUSE_ENABLED=true` and valid `LANGFUSE_PUBLIC_KEY` plus `LANGFUSE_SECRET_KEY` are present, the platform emits workflow spans for `email-operations`, `knowledge-qna`, and `proposal-generation`, plus nested generation observations from `ModelGateway` for local, cloud, and fallback routing paths.
+
+Tracing is additive rather than mandatory: if Langfuse is not configured or the SDK is unavailable, the platform continues to run without failing workflow execution.
+
 ### Seed A Client Instance
 Generate a tenant-specific client contract and runtime env file from the Track B template:
 

@@ -61,6 +61,7 @@ Confirm that:
 - `DATABASE_URL` points at the tenant PostgreSQL port and database
 - `CLIENT_DOCUMENTS_DIR`, `CLIENT_LOGS_DIR`, `CLIENT_EXPORTS_DIR`, `CLIENT_VECTOR_DIR`, and `CLIENT_PROMPT_OVERRIDE_DIR` all point inside the tenant roots
 - `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH` point inside `secrets/<tenant>/`
+- optional Langfuse settings such as `LANGFUSE_ENABLED`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST` are set here if this client instance should emit workflow and model traces
 
 Do not edit `config/client-template/` for a live client. Treat that folder as the shared blueprint and `config/clients/` as the generated tenant runtime config.
 

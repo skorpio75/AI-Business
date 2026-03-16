@@ -176,3 +176,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-15
 - Decision: Specialist consulting and counseling surfaces such as the `CTO/CIO Agent` and `Chief AI / Digital Strategy Agent` should perform their primary reasoning through the shared prompt/model layer and `ModelGateway`, while deterministic logic remains as a fallback for resilience, output-shape recovery, and governance guardrails.
 - Rationale: High-value consulting, internal counseling, and client-facing deliverables depend on LLM reasoning capacity and cannot be reduced to static keyword heuristics alone. Keeping that reasoning inside the governed prompt/model layer preserves routing visibility, prompt controls, output schemas, and future auditability.
+
+## ADR-030: Heavy internal specialist panels should be section-assembled with configurable model timeouts
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The internal CTO/CIO and Chief AI specialist panels should assemble their responses from multiple smaller section-level prompt/model calls instead of one oversized structured generation, and the shared model timeout should be configurable through runtime settings and `.env`.
+- Rationale: Direct end-to-end panel generation can exceed local Ollama latency budgets for complex advisory outputs, especially on smaller local models. Splitting the work into narrower calls improves the chance of local completion while preserving governed fallback, and making the timeout configurable avoids hard-coding one latency budget for every environment.

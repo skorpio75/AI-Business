@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from app.core.prompt_loader import PromptLoader
 from app.core.settings import Settings
 from app.models.agent_contract import AgentContract
@@ -16,6 +18,17 @@ from app.models.specialist_contracts import (
 from app.services.model_gateway import ModelGateway
 
 
+@dataclass
+class PanelSectionRoute:
+    section_name: str
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool
+    cloud_llm_invoked: bool
+    llm_diagnostic_code: str | None = None
+    llm_diagnostic_detail: str | None = None
+
+
 class CTOCIOPanelService:
     def __init__(self, model_gateway: ModelGateway | None = None) -> None:
         self.model_gateway = model_gateway or ModelGateway(settings=Settings())
@@ -23,6 +36,133 @@ class CTOCIOPanelService:
 
     def build_panel(self, *, agent: AgentContract) -> CTOCIOPanelResponse:
         fallback_response = self._build_fallback_panel(agent)
+        scope_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="scope_insights",
+                section_focus=(
+                    "Return only the three strongest internal scope insights for customer scope, architecture, or internal platform focus areas."
+                ),
+                output_schema=(
+                    '{"scope_insights":[{"insight_id":"string","title":"string","summary":"string","focus_area":"customer_scope|architecture|internal_platform","tone":"neutral|success|warning|critical"}]}'
+                ),
+            ),
+            fallback_payload={
+                "scope_insights": [item.model_dump() for item in fallback_response.scope_insights],
+            },
+        )
+        strategy_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="strategy_options",
+                section_focus=(
+                    "Return only a small set of practical strategy options with benefits, tradeoffs, and recommended_when guidance."
+                ),
+                output_schema=(
+                    '{"strategy_options":[{"option_id":"string","title":"string","summary":"string","benefits":["string"],"tradeoffs":["string"],"recommended_when":"string"}]}'
+                ),
+            ),
+            fallback_payload={
+                "strategy_options": [item.model_dump() for item in fallback_response.strategy_options],
+            },
+        )
+        architecture_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="architecture_advice",
+                section_focus=(
+                    "Return only the architecture advice section with current state, target state, key constraints, proposed changes, and risks."
+                ),
+                output_schema=(
+                    '{"architecture_advice":{"current_state":"string","target_state":"string","key_constraints":["string"],"proposed_changes":["string"],"risks":["string"]}}'
+                ),
+            ),
+            fallback_payload={
+                "architecture_advice": fallback_response.architecture_advice.model_dump(),
+            },
+        )
+        backlog_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="internal_improvement_backlog",
+                section_focus=(
+                    "Return only the internal improvement backlog with the most actionable platform priorities."
+                ),
+                output_schema=(
+                    '{"internal_improvement_backlog":[{"item_id":"string","title":"string","rationale":"string","priority":"now|next|later","impact":"low|medium|high","effort":"small|medium|large","owner_hint":"string"}]}'
+                ),
+            ),
+            fallback_payload={
+                "internal_improvement_backlog": [
+                    item.model_dump() for item in fallback_response.internal_improvement_backlog
+                ],
+            },
+        )
+        scope_insights, scope_route = self._resolve_panel_list_section(
+            section_name="scope_insights",
+            key="scope_insights",
+            generation=scope_generation,
+            fallback_items=fallback_response.scope_insights,
+            validator=CTOCIOScopeInsight.model_validate,
+            validation_detail="The scope insights section did not match the expected schema, so fallback insights were used.",
+        )
+        strategy_options, strategy_route = self._resolve_panel_list_section(
+            section_name="strategy_options",
+            key="strategy_options",
+            generation=strategy_generation,
+            fallback_items=fallback_response.strategy_options,
+            validator=StrategyOption.model_validate,
+            validation_detail="The strategy options section did not match the expected schema, so fallback options were used.",
+        )
+        architecture_advice, architecture_route = self._resolve_panel_object_section(
+            section_name="architecture_advice",
+            key="architecture_advice",
+            generation=architecture_generation,
+            fallback_value=fallback_response.architecture_advice,
+            validator=ArchitectureAdvice.model_validate,
+            validation_detail="The architecture advice section did not match the expected schema, so fallback advice was used.",
+        )
+        backlog_items, backlog_route = self._resolve_panel_list_section(
+            section_name="internal_improvement_backlog",
+            key="internal_improvement_backlog",
+            generation=backlog_generation,
+            fallback_items=fallback_response.internal_improvement_backlog,
+            validator=ImprovementBacklogItem.model_validate,
+            validation_detail="The internal improvement backlog section did not match the expected schema, so fallback backlog items were used.",
+        )
+        route_summary = self._summarize_panel_routes(
+            panel_name="CTO/CIO panel",
+            routes=[scope_route, strategy_route, architecture_route, backlog_route],
+        )
+
+        return CTOCIOPanelResponse(
+            agent_id=agent.agent_id,
+            display_name=agent.display_name,
+            role_summary=agent.role_summary,
+            primary_track=agent.deployment.primary_track,
+            operating_modes=agent.operating_modes,
+            tool_profile_by_mode=agent.tool_profile_by_mode,
+            provider_used=route_summary["provider_used"],
+            model_used=route_summary["model_used"],
+            local_llm_invoked=route_summary["local_llm_invoked"],
+            cloud_llm_invoked=route_summary["cloud_llm_invoked"],
+            llm_diagnostic_code=route_summary["llm_diagnostic_code"],
+            llm_diagnostic_detail=route_summary["llm_diagnostic_detail"],
+            scope_insights=scope_insights,
+            strategy_options=strategy_options,
+            architecture_advice=architecture_advice,
+            internal_improvement_backlog=backlog_items,
+            approval_required=fallback_response.approval_required,
+        )
+
+    def _render_panel_section_prompt(
+        self,
+        *,
+        agent: AgentContract,
+        section_name: str,
+        section_focus: str,
+        output_schema: str,
+    ) -> str:
         prompt = self.prompt_loader.render_composition(
             "specialist-advisory.cto-cio-panel",
             template_context={
@@ -40,57 +180,153 @@ class CTOCIOPanelService:
                     "Current internal state includes workflow-first orchestration, prompt-layer contracts, "
                     "typed specialist panels, client advisory endpoints, and pending multi-agent runtime evolution."
                 ),
-                "output_schema": (
-                    '{"scope_insights":[{"insight_id":"string","title":"string","summary":"string","focus_area":"customer_scope|architecture|internal_platform","tone":"neutral|success|warning|critical"}],'
-                    '"strategy_options":[{"option_id":"string","title":"string","summary":"string","benefits":["string"],"tradeoffs":["string"],"recommended_when":"string"}],'
-                    '"architecture_advice":{"current_state":"string","target_state":"string","key_constraints":["string"],"proposed_changes":["string"],"risks":["string"]},'
-                    '"internal_improvement_backlog":[{"item_id":"string","title":"string","rationale":"string","priority":"now|next|later","impact":"low|medium|high","effort":"small|medium|large","owner_hint":"string"}],"approval_required":true}'
-                ),
+                "output_schema": output_schema,
             },
         )
-        generation = self.model_gateway.generate_structured_json(
-            prompt=prompt,
-            fallback_payload={
-                "scope_insights": [item.model_dump() for item in fallback_response.scope_insights],
-                "strategy_options": [item.model_dump() for item in fallback_response.strategy_options],
-                "architecture_advice": fallback_response.architecture_advice.model_dump(),
-                "internal_improvement_backlog": [
-                    item.model_dump() for item in fallback_response.internal_improvement_backlog
-                ],
-                "approval_required": fallback_response.approval_required,
-            },
+        return (
+            f"{prompt}\n\n"
+            f"For this call only, focus on the `{section_name}` section.\n"
+            f"{section_focus}\n"
+            f"Return JSON with exactly this top-level schema and no extra keys:\n{output_schema}\n"
+            "Do not include any commentary outside the JSON object."
         )
 
+    def _resolve_panel_list_section(
+        self,
+        *,
+        section_name: str,
+        key: str,
+        generation,
+        fallback_items: list,
+        validator,
+        validation_detail: str,
+    ) -> tuple[list, PanelSectionRoute]:
+        items = generation.content.get(key) if isinstance(generation.content, dict) else None
+        if not isinstance(items, list):
+            return fallback_items, self._validation_fallback_route(
+                section_name=section_name,
+                generation=generation,
+                validation_detail=validation_detail,
+            )
         try:
-            return CTOCIOPanelResponse.model_validate(
-                {
-                    "agent_id": agent.agent_id,
-                    "display_name": agent.display_name,
-                    "role_summary": agent.role_summary,
-                    "primary_track": agent.deployment.primary_track,
-                    "operating_modes": agent.operating_modes,
-                    "tool_profile_by_mode": agent.tool_profile_by_mode,
-                    "provider_used": generation.provider_used,
-                    "model_used": generation.model_used,
-                    "local_llm_invoked": generation.local_llm_invoked,
-                    "cloud_llm_invoked": generation.cloud_llm_invoked,
-                    "llm_diagnostic_code": generation.llm_diagnostic_code,
-                    "llm_diagnostic_detail": generation.llm_diagnostic_detail,
-                    **generation.content,
-                }
+            return [validator(item) for item in items], self._route_from_generation(
+                section_name=section_name,
+                generation=generation,
             )
         except Exception:
-            return fallback_response.model_copy(
-                update=self._fallback_generation_metadata(
-                    generation.provider_used,
-                    generation.model_used,
-                    generation.local_llm_invoked,
-                    generation.cloud_llm_invoked,
-                    generation.llm_diagnostic_code,
-                    generation.llm_diagnostic_detail,
-                    "The structured CTO/CIO panel response did not match the expected schema, so the rule-based panel was returned.",
-                )
+            return fallback_items, self._validation_fallback_route(
+                section_name=section_name,
+                generation=generation,
+                validation_detail=validation_detail,
             )
+
+    def _resolve_panel_object_section(
+        self,
+        *,
+        section_name: str,
+        key: str,
+        generation,
+        fallback_value,
+        validator,
+        validation_detail: str,
+    ) -> tuple[object, PanelSectionRoute]:
+        value = generation.content.get(key) if isinstance(generation.content, dict) else None
+        if not isinstance(value, dict):
+            return fallback_value, self._validation_fallback_route(
+                section_name=section_name,
+                generation=generation,
+                validation_detail=validation_detail,
+            )
+        try:
+            return validator(value), self._route_from_generation(
+                section_name=section_name,
+                generation=generation,
+            )
+        except Exception:
+            return fallback_value, self._validation_fallback_route(
+                section_name=section_name,
+                generation=generation,
+                validation_detail=validation_detail,
+            )
+
+    def _route_from_generation(self, *, section_name: str, generation) -> PanelSectionRoute:
+        return PanelSectionRoute(
+            section_name=section_name,
+            provider_used=generation.provider_used,
+            model_used=generation.model_used,
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
+            llm_diagnostic_code=generation.llm_diagnostic_code,
+            llm_diagnostic_detail=generation.llm_diagnostic_detail,
+        )
+
+    def _validation_fallback_route(
+        self,
+        *,
+        section_name: str,
+        generation,
+        validation_detail: str,
+    ) -> PanelSectionRoute:
+        return PanelSectionRoute(
+            section_name=section_name,
+            provider_used="fallback-rule",
+            model_used="rules-v1",
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
+            llm_diagnostic_code=self._combine_diagnostic_code(
+                generation.llm_diagnostic_code,
+                "structured_response_validation_failed",
+            ),
+            llm_diagnostic_detail=self._combine_diagnostic_detail(
+                generation.llm_diagnostic_detail,
+                validation_detail,
+            ),
+        )
+
+    def _summarize_panel_routes(
+        self,
+        *,
+        panel_name: str,
+        routes: list[PanelSectionRoute],
+    ) -> dict[str, str | bool | None]:
+        provider_used = "local"
+        if any(route.provider_used == "fallback-rule" for route in routes):
+            provider_used = "fallback-rule"
+        elif any(route.provider_used == "cloud" for route in routes):
+            provider_used = "cloud"
+
+        concrete_models = {
+            route.model_used
+            for route in routes
+            if route.model_used not in {"rules-v1", "section-assembled"}
+        }
+        if provider_used == "fallback-rule" and not concrete_models:
+            model_used = "rules-v1"
+        elif len(concrete_models) == 1 and len({route.provider_used for route in routes}) == 1:
+            model_used = next(iter(concrete_models))
+        else:
+            model_used = "section-assembled"
+
+        route_notes = []
+        for route in routes:
+            note = f"{route.section_name}={route.provider_used}"
+            if route.llm_diagnostic_detail:
+                note = f"{note} ({route.llm_diagnostic_detail})"
+            route_notes.append(note)
+
+        return {
+            "provider_used": provider_used,
+            "model_used": model_used,
+            "local_llm_invoked": any(route.local_llm_invoked for route in routes),
+            "cloud_llm_invoked": any(route.cloud_llm_invoked for route in routes),
+            "llm_diagnostic_code": self._combine_diagnostic_code(
+                *[route.llm_diagnostic_code for route in routes]
+            ),
+            "llm_diagnostic_detail": (
+                f"{panel_name} was assembled from {len(routes)} smaller section calls. "
+                f"Section routes: {'; '.join(route_notes)}."
+            ),
+        }
 
     def _build_fallback_panel(self, agent: AgentContract) -> CTOCIOPanelResponse:
         scope_insights = [

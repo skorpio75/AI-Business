@@ -25,6 +25,7 @@
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 
 ## Recently Finished
+- [x] Make the shared model timeout configurable via `.env` and split the heavy CTO/CIO and Chief AI internal panel generation into smaller section calls for local-first execution
 - [x] `P4-T01D` Route internal CTO/CIO and Chief AI specialist panels through the governed prompt/model layer and surface routing metadata
 - [x] `P4-T01C` Route CTO/CIO and Chief AI specialist analysis through the governed prompt/model layer with deterministic fallback guardrails
 - [x] `P4-T01B` Extend CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity detection

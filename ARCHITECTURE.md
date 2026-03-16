@@ -125,7 +125,8 @@ Infrastructure
 - CTO/CIO and Chief AI specialist APIs now also accept bounded client briefs so advisory instances can analyze problem statements, context/history, and recommend relevant services.
 - Those specialist analysis contracts now also frame the client mission and surface bounded upsell opportunities for consulting-led account growth.
 - CTO/CIO and Chief AI specialist analysis now runs through the shared model gateway and prompt layer, while deterministic logic remains as a governance-friendly fallback path.
-- The internal CTO/CIO and Chief AI specialist panels now also run through the shared model gateway and expose routing metadata in Mission Control.
+- The internal CTO/CIO and Chief AI specialist panels now also run through the shared model gateway, expose routing metadata in Mission Control, and are assembled from smaller section-level model calls to reduce local-model timeout pressure.
+- Shared model timeout control is environment-configurable through `MODEL_TIMEOUT_SECONDS` so local and cloud routing can be tuned without code edits.
 - Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google and Microsoft connector credentials.
 
 ## 6. Architectural Rule

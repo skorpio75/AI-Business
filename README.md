@@ -105,6 +105,7 @@ Start with a small, serious foundation. Do not over-engineer the first version.
 - Use case: inbox triage + draft reply + CEO approval.
 - Backend: FastAPI endpoint for `email-operations`.
 - Model routing: local-first (Ollama), optional cloud fallback (OpenRouter-compatible via LiteLLM).
+- Runtime timeout: model requests use `MODEL_TIMEOUT_SECONDS`, configurable through `.env`.
 
 ## Local Run
 1. Create and activate a virtual environment.
@@ -192,7 +193,7 @@ Client-facing advisory specialists can now analyze a bounded client brief instea
 - `POST /specialists/cto-cio/analyze` accepts a problem statement, client context/history, current stack, constraints, and desired outcomes, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, strategy options, and architecture advice.
 - `POST /specialists/chief-ai-digital-strategy/analyze` accepts a problem statement, business/client context, history, process areas, data assets, and delivery constraints, then returns a consulting mission assessment, context signals, recommended services, upsell opportunities, an opportunity map, a phased blueprint, and maturity guidance.
 - both specialist analysis endpoints now run through the shared prompt/model layer and return provider/model routing metadata, while deterministic fallback remains in place for resilience and governance-safe output recovery
-- the internal CTO/CIO and Chief AI specialist panels also run through the same governed prompt/model layer and now surface provider/model routing metadata in Mission Control
+- the internal CTO/CIO and Chief AI specialist panels also run through the same governed prompt/model layer, now surface provider/model routing metadata in Mission Control, and are assembled from smaller section-level model calls to reduce local timeout pressure
 
 ## Current Control Layers
 - normalized events, approval classes, and autonomy classes are defined in backend contracts/config

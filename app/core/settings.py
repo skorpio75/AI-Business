@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     ollama_base_url: str = "http://localhost:11434"
     local_model: str = "qwen2.5:3b"
+    model_timeout_seconds: float = 10.0
     cloud_model: str = "openai/gpt-4o-mini"
     openrouter_api_key: Optional[str] = None
 

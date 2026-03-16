@@ -10,7 +10,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - `DONE`
 
 ## Current Snapshot
-- Updated: 2026-03-15
+- Updated: 2026-03-16
 - Overall Status: `IN_PROGRESS`
 - Active Phase: `Phase 4 - Track B Client Template MVP`
 - Active Cross-Cutting Stream: `AI-Business IDE handoff integration`
@@ -321,6 +321,11 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Confirmed Growth is the best first true multi-agent pod and Delivery remains the flagship multi-agent runtime after the foundational execution-contract and observability work is in place.
 - Added a multi-agent suitability matrix to guide runtime-splitting priority, with a high-suitability set covering Growth specialists, Delivery specialists, Mission Control, Risk, executive synthesis, and selected finance/advisory families.
 - Added a medium-suitability tier for families that are valuable in bounded collaboration, exception handling, or synthesis chains but may remain workflow-stage-oriented or rules-based longer.
+
+### 2026-03-16
+- Made the shared model timeout configurable through `MODEL_TIMEOUT_SECONDS` in runtime settings and `.env`.
+- Refactored the internal CTO/CIO and Chief AI specialist panels to assemble their outputs from smaller section-level prompt/model calls rather than one oversized panel generation request.
+- Preserved routing and fallback visibility for the section-assembled panels by aggregating per-section model diagnostics back into one Mission Control response.
 
 ## Next Action
 Start `P4-T01` to create the client deployment template pack for Track B.

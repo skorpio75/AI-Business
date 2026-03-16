@@ -53,7 +53,7 @@ class ModelGateway:
     def __init__(self, settings: Settings):
         self.settings = settings
         self.prompt_loader = PromptLoader()
-        self.model_timeout_seconds = 10.0
+        self.model_timeout_seconds = settings.model_timeout_seconds
         self._resolved_local_model: Optional[str] = None
 
     def _heuristic_classification(self, subject: str, body: str) -> tuple[str, float]:

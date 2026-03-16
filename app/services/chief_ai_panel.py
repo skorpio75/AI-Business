@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from app.core.prompt_loader import PromptLoader
 from app.core.settings import Settings
 from app.models.agent_contract import AgentContract
@@ -16,6 +18,17 @@ from app.models.specialist_contracts import (
 from app.services.model_gateway import ModelGateway
 
 
+@dataclass
+class PanelSectionRoute:
+    section_name: str
+    provider_used: str
+    model_used: str
+    local_llm_invoked: bool
+    cloud_llm_invoked: bool
+    llm_diagnostic_code: str | None = None
+    llm_diagnostic_detail: str | None = None
+
+
 class ChiefAIPanelService:
     def __init__(self, model_gateway: ModelGateway | None = None) -> None:
         self.model_gateway = model_gateway or ModelGateway(settings=Settings())
@@ -23,6 +36,137 @@ class ChiefAIPanelService:
 
     def build_panel(self, *, agent: AgentContract) -> ChiefAIPanelResponse:
         fallback_response = self._build_fallback_panel(agent)
+        summary_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="executive_summary",
+                section_focus="Return only a concise executive summary of the internal AI strategy posture.",
+                output_schema='{"executive_summary":"string"}',
+            ),
+            fallback_payload={"executive_summary": fallback_response.executive_summary},
+        )
+        signal_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="scope_signals",
+                section_focus=(
+                    "Return only the most important internal AI strategy scope signals with clear focus areas and tones."
+                ),
+                output_schema=(
+                    '{"scope_signals":[{"signal_id":"string","title":"string","summary":"string","focus_area":"offer_design|delivery_controls|commercialization","tone":"neutral|success|warning|critical"}]}'
+                ),
+            ),
+            fallback_payload={"scope_signals": [item.model_dump() for item in fallback_response.scope_signals]},
+        )
+        opportunity_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="opportunity_map",
+                section_focus="Return only the AI opportunity map with the clearest internal offer and productization opportunities.",
+                output_schema=(
+                    '{"opportunity_map":[{"opportunity_id":"string","title":"string","problem_statement":"string","expected_value":"string","priority":"now|next|later","dependencies":["string"]}]}'
+                ),
+            ),
+            fallback_payload={"opportunity_map": [item.model_dump() for item in fallback_response.opportunity_map]},
+        )
+        blueprint_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="delivery_blueprint",
+                section_focus="Return only the phased delivery blueprint for how internal AI strategy should be operationalized.",
+                output_schema=(
+                    '{"delivery_blueprint":[{"phase_id":"string","title":"string","objectives":["string"],"deliverables":["string"],"risks":["string"]}]}'
+                ),
+            ),
+            fallback_payload={
+                "delivery_blueprint": [item.model_dump() for item in fallback_response.delivery_blueprint]
+            },
+        )
+        maturity_generation = self.model_gateway.generate_structured_json(
+            prompt=self._render_panel_section_prompt(
+                agent=agent,
+                section_name="maturity_model",
+                section_focus="Return only the maturity dimensions and next actions that matter most for internal AI strategy execution.",
+                output_schema=(
+                    '{"maturity_model":[{"dimension":"string","current_level":"ad_hoc|emerging|repeatable|managed|optimized","target_level":"ad_hoc|emerging|repeatable|managed|optimized","gap_summary":"string","next_actions":["string"]}]}'
+                ),
+            ),
+            fallback_payload={"maturity_model": [item.model_dump() for item in fallback_response.maturity_model]},
+        )
+
+        executive_summary, summary_route = self._resolve_panel_text_section(
+            section_name="executive_summary",
+            key="executive_summary",
+            generation=summary_generation,
+            fallback_value=fallback_response.executive_summary,
+            validation_detail="The executive summary section did not match the expected schema, so the fallback summary was used.",
+        )
+        scope_signals, signal_route = self._resolve_panel_list_section(
+            section_name="scope_signals",
+            key="scope_signals",
+            generation=signal_generation,
+            fallback_items=fallback_response.scope_signals,
+            validator=ChiefAIScopeSignal.model_validate,
+            validation_detail="The scope signals section did not match the expected schema, so fallback signals were used.",
+        )
+        opportunity_map, opportunity_route = self._resolve_panel_list_section(
+            section_name="opportunity_map",
+            key="opportunity_map",
+            generation=opportunity_generation,
+            fallback_items=fallback_response.opportunity_map,
+            validator=OpportunityMapItem.model_validate,
+            validation_detail="The opportunity map section did not match the expected schema, so fallback opportunities were used.",
+        )
+        delivery_blueprint, blueprint_route = self._resolve_panel_list_section(
+            section_name="delivery_blueprint",
+            key="delivery_blueprint",
+            generation=blueprint_generation,
+            fallback_items=fallback_response.delivery_blueprint,
+            validator=DeliveryBlueprintPhase.model_validate,
+            validation_detail="The delivery blueprint section did not match the expected schema, so the fallback blueprint was used.",
+        )
+        maturity_model, maturity_route = self._resolve_panel_list_section(
+            section_name="maturity_model",
+            key="maturity_model",
+            generation=maturity_generation,
+            fallback_items=fallback_response.maturity_model,
+            validator=MaturityDimension.model_validate,
+            validation_detail="The maturity model section did not match the expected schema, so the fallback maturity model was used.",
+        )
+        route_summary = self._summarize_panel_routes(
+            panel_name="Chief AI panel",
+            routes=[summary_route, signal_route, opportunity_route, blueprint_route, maturity_route],
+        )
+
+        return ChiefAIPanelResponse(
+            agent_id=agent.agent_id,
+            display_name=agent.display_name,
+            role_summary=agent.role_summary,
+            primary_track=agent.deployment.primary_track,
+            operating_modes=agent.operating_modes,
+            tool_profile_by_mode=agent.tool_profile_by_mode,
+            provider_used=route_summary["provider_used"],
+            model_used=route_summary["model_used"],
+            local_llm_invoked=route_summary["local_llm_invoked"],
+            cloud_llm_invoked=route_summary["cloud_llm_invoked"],
+            llm_diagnostic_code=route_summary["llm_diagnostic_code"],
+            llm_diagnostic_detail=route_summary["llm_diagnostic_detail"],
+            executive_summary=executive_summary,
+            scope_signals=scope_signals,
+            opportunity_map=opportunity_map,
+            delivery_blueprint=delivery_blueprint,
+            maturity_model=maturity_model,
+            approval_required=fallback_response.approval_required,
+        )
+
+    def _render_panel_section_prompt(
+        self,
+        *,
+        agent: AgentContract,
+        section_name: str,
+        section_focus: str,
+        output_schema: str,
+    ) -> str:
         prompt = self.prompt_loader.render_composition(
             "specialist-advisory.chief-ai-panel",
             template_context={
@@ -41,56 +185,142 @@ class ChiefAIPanelService:
                     "prompt-layer contracts, client consulting paths, and a need to turn internal AI capability into "
                     "repeatable offers and governed delivery motions."
                 ),
-                "output_schema": (
-                    '{"executive_summary":"string","scope_signals":[{"signal_id":"string","title":"string","summary":"string","focus_area":"offer_design|delivery_controls|commercialization","tone":"neutral|success|warning|critical"}],'
-                    '"opportunity_map":[{"opportunity_id":"string","title":"string","problem_statement":"string","expected_value":"string","priority":"now|next|later","dependencies":["string"]}],'
-                    '"delivery_blueprint":[{"phase_id":"string","title":"string","objectives":["string"],"deliverables":["string"],"risks":["string"]}],'
-                    '"maturity_model":[{"dimension":"string","current_level":"ad_hoc|emerging|repeatable|managed|optimized","target_level":"ad_hoc|emerging|repeatable|managed|optimized","gap_summary":"string","next_actions":["string"]}],"approval_required":true}'
-                ),
+                "output_schema": output_schema,
             },
         )
-        generation = self.model_gateway.generate_structured_json(
-            prompt=prompt,
-            fallback_payload={
-                "executive_summary": fallback_response.executive_summary,
-                "scope_signals": [item.model_dump() for item in fallback_response.scope_signals],
-                "opportunity_map": [item.model_dump() for item in fallback_response.opportunity_map],
-                "delivery_blueprint": [item.model_dump() for item in fallback_response.delivery_blueprint],
-                "maturity_model": [item.model_dump() for item in fallback_response.maturity_model],
-                "approval_required": fallback_response.approval_required,
-            },
+        return (
+            f"{prompt}\n\n"
+            f"For this call only, focus on the `{section_name}` section.\n"
+            f"{section_focus}\n"
+            f"Return JSON with exactly this top-level schema and no extra keys:\n{output_schema}\n"
+            "Do not include any commentary outside the JSON object."
         )
 
+    def _resolve_panel_text_section(
+        self,
+        *,
+        section_name: str,
+        key: str,
+        generation,
+        fallback_value: str,
+        validation_detail: str,
+    ) -> tuple[str, PanelSectionRoute]:
+        value = generation.content.get(key) if isinstance(generation.content, dict) else None
+        if isinstance(value, str) and value.strip():
+            return value.strip(), self._route_from_generation(section_name=section_name, generation=generation)
+        return fallback_value, self._validation_fallback_route(
+            section_name=section_name,
+            generation=generation,
+            validation_detail=validation_detail,
+        )
+
+    def _resolve_panel_list_section(
+        self,
+        *,
+        section_name: str,
+        key: str,
+        generation,
+        fallback_items: list,
+        validator,
+        validation_detail: str,
+    ) -> tuple[list, PanelSectionRoute]:
+        items = generation.content.get(key) if isinstance(generation.content, dict) else None
+        if not isinstance(items, list):
+            return fallback_items, self._validation_fallback_route(
+                section_name=section_name,
+                generation=generation,
+                validation_detail=validation_detail,
+            )
         try:
-            return ChiefAIPanelResponse.model_validate(
-                {
-                    "agent_id": agent.agent_id,
-                    "display_name": agent.display_name,
-                    "role_summary": agent.role_summary,
-                    "primary_track": agent.deployment.primary_track,
-                    "operating_modes": agent.operating_modes,
-                    "tool_profile_by_mode": agent.tool_profile_by_mode,
-                    "provider_used": generation.provider_used,
-                    "model_used": generation.model_used,
-                    "local_llm_invoked": generation.local_llm_invoked,
-                    "cloud_llm_invoked": generation.cloud_llm_invoked,
-                    "llm_diagnostic_code": generation.llm_diagnostic_code,
-                    "llm_diagnostic_detail": generation.llm_diagnostic_detail,
-                    **generation.content,
-                }
+            return [validator(item) for item in items], self._route_from_generation(
+                section_name=section_name,
+                generation=generation,
             )
         except Exception:
-            return fallback_response.model_copy(
-                update=self._fallback_generation_metadata(
-                    generation.provider_used,
-                    generation.model_used,
-                    generation.local_llm_invoked,
-                    generation.cloud_llm_invoked,
-                    generation.llm_diagnostic_code,
-                    generation.llm_diagnostic_detail,
-                    "The structured Chief AI panel response did not match the expected schema, so the rule-based panel was returned.",
-                )
+            return fallback_items, self._validation_fallback_route(
+                section_name=section_name,
+                generation=generation,
+                validation_detail=validation_detail,
             )
+
+    def _route_from_generation(self, *, section_name: str, generation) -> PanelSectionRoute:
+        return PanelSectionRoute(
+            section_name=section_name,
+            provider_used=generation.provider_used,
+            model_used=generation.model_used,
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
+            llm_diagnostic_code=generation.llm_diagnostic_code,
+            llm_diagnostic_detail=generation.llm_diagnostic_detail,
+        )
+
+    def _validation_fallback_route(
+        self,
+        *,
+        section_name: str,
+        generation,
+        validation_detail: str,
+    ) -> PanelSectionRoute:
+        return PanelSectionRoute(
+            section_name=section_name,
+            provider_used="fallback-rule",
+            model_used="rules-v1",
+            local_llm_invoked=generation.local_llm_invoked,
+            cloud_llm_invoked=generation.cloud_llm_invoked,
+            llm_diagnostic_code=self._combine_diagnostic_code(
+                generation.llm_diagnostic_code,
+                "structured_response_validation_failed",
+            ),
+            llm_diagnostic_detail=self._combine_diagnostic_detail(
+                generation.llm_diagnostic_detail,
+                validation_detail,
+            ),
+        )
+
+    def _summarize_panel_routes(
+        self,
+        *,
+        panel_name: str,
+        routes: list[PanelSectionRoute],
+    ) -> dict[str, str | bool | None]:
+        provider_used = "local"
+        if any(route.provider_used == "fallback-rule" for route in routes):
+            provider_used = "fallback-rule"
+        elif any(route.provider_used == "cloud" for route in routes):
+            provider_used = "cloud"
+
+        concrete_models = {
+            route.model_used
+            for route in routes
+            if route.model_used not in {"rules-v1", "section-assembled"}
+        }
+        if provider_used == "fallback-rule" and not concrete_models:
+            model_used = "rules-v1"
+        elif len(concrete_models) == 1 and len({route.provider_used for route in routes}) == 1:
+            model_used = next(iter(concrete_models))
+        else:
+            model_used = "section-assembled"
+
+        route_notes = []
+        for route in routes:
+            note = f"{route.section_name}={route.provider_used}"
+            if route.llm_diagnostic_detail:
+                note = f"{note} ({route.llm_diagnostic_detail})"
+            route_notes.append(note)
+
+        return {
+            "provider_used": provider_used,
+            "model_used": model_used,
+            "local_llm_invoked": any(route.local_llm_invoked for route in routes),
+            "cloud_llm_invoked": any(route.cloud_llm_invoked for route in routes),
+            "llm_diagnostic_code": self._combine_diagnostic_code(
+                *[route.llm_diagnostic_code for route in routes]
+            ),
+            "llm_diagnostic_detail": (
+                f"{panel_name} was assembled from {len(routes)} smaller section calls. "
+                f"Section routes: {'; '.join(route_notes)}."
+            ),
+        }
 
     def _build_fallback_panel(self, agent: AgentContract) -> ChiefAIPanelResponse:
         strategy_output = ChiefAIDigitalStrategyOutput(

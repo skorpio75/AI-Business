@@ -82,6 +82,7 @@ Infrastructure
 - normalized event families and workflow triggers
 - canonical operating state objects
 - run and approval state for Mission Control visibility
+- audit objects and append-oriented trace events for execution, approvals, tools, and routing
 
 ### Memory
 - working memory
@@ -179,6 +180,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - typed specialist advisory-analysis contracts for client briefs, context signals, and service recommendations
 - consulting-oriented specialist contracts for mission framing and account-growth opportunity discovery
 - specialist analysis responses now include provider/model routing metadata for traceability
+- `AUDIT_MODEL.md` now defines the canonical `agent_run` and `audit_event` objects, audit event families, and linkage rules across runs, approvals, tools, autonomy, and observability traces
 - operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
@@ -292,4 +294,5 @@ Isolation must be enforced through:
 See [MEMORY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/MEMORY_MODEL.md) for the full shared-brain definition and consistency rules.
 See [PROMPTS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PROMPTS.md) for canonical prompt naming, storage, and loading conventions.
 See [PODS.md](c:/Users/dpizz/OneDrive/Python/AI Business/PODS.md) for pod ownership and reuse rules.
+See [AUDIT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUDIT_MODEL.md) for the audit and execution-trace model that links workflows, agents, approvals, tools, routing, and outbound actions.
 See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability
+- Immediate goal: add `agent_runs` persistence for per-agent execution history
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P5-T07` Define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability
+- [ ] `P5-T08` Add `agent_runs` persistence for per-agent execution history
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
@@ -30,6 +30,7 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `P5-T07` Define `AUDIT_MODEL.md` for canonical `agent_run`, `audit_event`, audit event family, and trace-linkage rules
 - [x] `P5-T06` Add explicit `README.md` test execution instructions for the full suite plus the unit, integration, and workflow layers
 - [x] `P5-T05` Add shared test fixtures and sample data builders for email, approval, knowledge, proposal, connector-status, and Track B runtime test shapes
 - [x] `P5-T04` Add workflow branch tests for approval and escalation paths

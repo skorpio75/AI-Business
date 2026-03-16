@@ -127,6 +127,7 @@ The platform provides traces and debugging visibility.
 - workflow traces visible, starting with Langfuse spans for the current reusable workflow services
 - prompt traces visible through nested `ModelGateway` generation observations
 - model usage visible in both API responses and Langfuse trace metadata
+- `AUDIT_MODEL.md` defines canonical audit objects and event families for agent execution, approvals, tools, routing, and outbound traceability
 
 ## Epic 8 - Testing Foundation
 - Status: `IN_PROGRESS`
@@ -216,6 +217,7 @@ Workflow and agent execution is described through normalized state, event, tool,
 - family-level base prompts and workflow-step prompts are planned as separate runtime concerns
 - prompt composition and context-injection contracts are defined in backend/config
 - prompt naming, storage, and loader fallback rules are defined
+- audit object, event-family, and linkage rules are defined for later `agent_runs`, `audit_events`, and Mission Control trace surfaces
 - specialist advisory contracts can carry client briefs, context signals, and service recommendations
 - specialist advisory contracts can also carry consulting mission assessments and upsell opportunities
 - agent-family LLM routing posture is documented so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic hybrids are planned explicitly by family

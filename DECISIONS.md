@@ -266,3 +266,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Repeated test request bodies, connector-status responses, and Track B runtime settings should be centralized in a lightweight builder module under `tests/sample_data.py` rather than duplicated inline across unit, integration, and workflow tests.
 - Rationale: By Phase 5, the suite had recurring email workflow payloads, approval decisions, connector bootstrap responses, and tenant-scoped settings shapes spread across multiple test layers. Small shared builders reduce drift and maintenance cost while preserving the repo's current lightweight `unittest` style without introducing a heavier fixture framework prematurely.
+
+## ADR-045: Auditability should use a first-class platform audit model
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The platform should define a dedicated audit model in `AUDIT_MODEL.md` with canonical `agent_run` and `audit_event` objects, normalized audit event families, and explicit linkage to workflow runs, approvals, tool IDs, autonomy classes, approval classes, and external observability traces.
+- Rationale: Traceability requirements are already spread across workflows, approvals, Mission Control, Langfuse spans, and later roadmap items such as `agent_runs`, `audit_events`, and audit endpoints. A first-class audit model gives those future persistence and UI surfaces one governed contract instead of letting each implementation invent its own trace vocabulary.

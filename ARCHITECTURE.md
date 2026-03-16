@@ -166,6 +166,7 @@ The workflow controls the process. AI is used only inside selected steps.
 - Client-facing consulting and delivery agents should be instantiated per client, engagement, and mission rather than treated as one shared consultant identity.
 - Track A Mission Control should evolve into a portfolio cockpit that can view clients, engagements, missions, dispatched consultant-agent counts, run status, approvals, and risk across isolated client runtimes.
 - Track A should remain the control plane for proposal, SOW, contract, dispatch planning, billing, receivables, and mission closeout, while Track B remains the tenant-scoped delivery plane.
+- mode selection should follow business purpose: Track A `internal_operating` for internal commercial and control work, Track B `client_delivery` for mission execution, and separate `client_facing_service` instances for client-scoped advisory outputs
 
 ## 8. Memory Model
 - Working memory: active workflow state and approval checkpoints.
@@ -194,6 +195,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - `docs/lead-intake-materialization-model.md` now defines supported lead source classes, automatic-vs-review materialization rules, and the event path from raw signal to canonical `lead.received`
 - `docs/consulting-engagement-lifecycle-model.md` now defines the signed-scope to mission-start handoff, dispatch candidate plan, approved consultant roster, milestone billing triggers, and mission closeout pattern
 - `docs/delivery-quality-gate-model.md` now defines mission-scoped quality gate planning, phase checkpoints, deliverable-class review patterns, and milestone or handoff release gating
+- `docs/internal-vs-client-agent-usage-model.md` now defines when to use `internal_operating`, `client_delivery`, and `client_facing_service` across the engagement lifecycle
 - `app/models/delivery_quality.py` plus `config/base/quality_gates.yaml` now define the typed mission `quality_gate_plan` contract and governed base templates for later delivery startup and gate execution
 - operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
@@ -314,4 +316,5 @@ See [hybrid-rag-review-architecture.md](c:/Users/dpizz/OneDrive/Python/AI Busine
 See [agent-instance-portfolio-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/agent-instance-portfolio-model.md) for the client-scoped consultant-instance model and Track A portfolio cockpit design.
 See [consulting-engagement-lifecycle-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/consulting-engagement-lifecycle-model.md) for the end-to-end consulting flow from lead spotting through dispatch, delivery, milestone billing, and closeout.
 See [delivery-quality-gate-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/delivery-quality-gate-model.md) for mission-specific delivery quality gates across planning, implementation, milestone release, and handoff.
+See [internal-vs-client-agent-usage-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/internal-vs-client-agent-usage-model.md) for the explicit rule on when to use internal agents versus client-scoped agents.
 See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

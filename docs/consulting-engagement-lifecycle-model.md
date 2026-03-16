@@ -11,6 +11,13 @@ The recommended architecture is a linked two-environment model:
 
 This preserves client isolation while keeping the consulting firm's commercial and financial control in Track A.
 
+## Agent Usage Rule
+The lifecycle should also make the internal-vs-client agent switch explicit.
+
+- before mission approval, default to Track A `internal_operating`
+- after roster activation, use Track B `client_delivery` for mission execution
+- keep client-scoped advisory or service outputs in separate client runtimes rather than reusing the internal agent directly
+
 ## Lifecycle Stages
 The target lifecycle should follow these stages:
 

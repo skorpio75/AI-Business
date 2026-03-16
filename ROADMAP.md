@@ -407,6 +407,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added `docs/delivery-quality-gate-model.md` to define mission-specific delivery quality gates tied to SOW deliverables, project-plan phases, implementation evidence, milestone release, and final handoff.
 - Added roadmap coverage for mission `quality_gate_plan` contracts, phase-specific delivery gates, AI-assisted review rubrics, persisted gate results, and gating of milestone acceptance or handoff release when quality conditions are unresolved.
 - Completed `B-T62` by adding typed mission quality-gate contracts in `app/models/delivery_quality.py`, mirroring them in `config/base/quality_gates.yaml`, linking `project_state` to active quality-gate plans and results, and binding the Track B client template to the governed `delivery_standard` gate template by default.
+- Added `docs/internal-vs-client-agent-usage-model.md` to make the Track A vs Track B agent-mode split explicit, including when to use `internal_operating`, `client_delivery`, and `client_facing_service` across the consulting lifecycle.
 
 ## Next Action
 Start `P5-T08` to add `agent_runs` persistence for per-agent execution history against the new audit model.

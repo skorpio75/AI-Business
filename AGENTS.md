@@ -50,6 +50,18 @@ Example:
 
 Track A Mission Control should eventually show these instances as dispatched consultants grouped by client, engagement, and mission.
 
+## Mode Selection Rule
+Choose the agent mode based on what business process the agent is serving.
+
+- use `internal_operating` when the agent is working for the consulting firm's own sales, approval, dispatch, billing, portfolio, or closeout process
+- use `client_delivery` when the agent is executing an approved client mission inside the tenant-scoped delivery context
+- use `client_facing_service` when the agent is producing a client-scoped advisory or service output, still as a separate client runtime
+
+Practical default:
+
+- Track A first
+- Track B only after mission approval and roster activation
+
 ## Prompt Model
 `AGENTS.md` is the operating catalog for agent families and runtime boundaries, not the primary home of agent prompts.
 

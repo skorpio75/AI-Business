@@ -139,6 +139,13 @@ This model is compatible with the current workflow-first and bounded-review arch
 - review or gate agents still operate as explicit workflow steps
 - Mission Control still supervises rather than replacing workflow control
 
+## Internal vs Client Usage Rule
+This model does not mean every family should immediately become a client runtime.
+
+- use Track A internal instances for commercial shaping, mission approval, dispatch planning, billing, and portfolio oversight
+- use Track B client instances for approved mission execution and client-scoped evidence handling
+- use the same family in both places only through separate instances with different state, tools, and approvals
+
 ## Planned Implementation Direction
 This model implies later implementation work for:
 

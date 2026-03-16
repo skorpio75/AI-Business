@@ -69,6 +69,15 @@ For client-facing consulting and delivery work, the concrete runtime should also
 - each client-scoped instance should bind to one `tenant_id`, `client_id`, `engagement_id`, and `mission_id`
 - Mission Control should supervise those instances as a portfolio rather than flattening them into one shared consultant identity
 
+## Mode Usage Rule
+Mode selection should follow business purpose, not only family identity.
+
+- `internal_operating` is for the consulting firm's own commercial, approval, billing, and portfolio-control processes
+- `client_delivery` is for tenant-scoped mission execution
+- `client_facing_service` is for bounded client-scoped advisory or service outputs
+
+The same family may appear in more than one mode, but those are separate runtime instances with different state and authority boundaries.
+
 ## Reasoning, Execution, Orchestration, Oversight
 - Reasoning is handled by agents.
 - Execution is handled by tools.

@@ -229,6 +229,7 @@ Current reality:
 - `agent_runs` now persist bounded execution history for the current workflow and specialist-analysis seams
 - approvals already provide partial decision traceability
 - `audit_events` now persist append-oriented workflow-step, model-route, tool-call, approval, and outbound-action history for the current implemented seams
+- audit contracts now validate normalized trigger-event names, explicit audit-event-family names, normalized `tool_id` values, and governed approval/autonomy literals at the Pydantic contract layer
 - aggregated API inspection endpoints now expose workflow, approval, and agent trace bundles over those persisted audit records
 - Langfuse already provides optional workflow/model traces
 - richer Mission Control audit presentation remains roadmap work

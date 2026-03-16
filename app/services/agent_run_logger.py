@@ -7,19 +7,20 @@ from sqlalchemy.orm import Session
 from app.core.settings import get_settings
 from app.db.repository import insert_agent_run
 from app.models.agent_contract import AgentContract
-from app.models.audit import AgentRunRecord
+from app.models.audit import AgentRunMode, AgentRunRecord, AgentRunStatus
+from app.models.control_plane import ApprovalClass, AutonomyClass, NormalizedEventName
 
 
 @dataclass(frozen=True)
 class AgentRunSubject:
     agent_id: str
     agent_family: str
-    mode: str
-    autonomy_class: str | None = None
-    approval_class: str | None = None
+    mode: AgentRunMode
+    autonomy_class: AutonomyClass | None = None
+    approval_class: ApprovalClass | None = None
 
 
-def subject_from_agent(agent: AgentContract, *, mode: str) -> AgentRunSubject:
+def subject_from_agent(agent: AgentContract, *, mode: AgentRunMode) -> AgentRunSubject:
     return AgentRunSubject(
         agent_id=agent.agent_id,
         agent_family=agent.family_id or agent.agent_id,
@@ -33,9 +34,9 @@ def subject_from_identity(
     *,
     agent_id: str,
     agent_family: str,
-    mode: str,
-    autonomy_class: str | None = None,
-    approval_class: str | None = None,
+    mode: AgentRunMode,
+    autonomy_class: AutonomyClass | None = None,
+    approval_class: ApprovalClass | None = None,
 ) -> AgentRunSubject:
     return AgentRunSubject(
         agent_id=agent_id,
@@ -50,13 +51,13 @@ def record_agent_run(
     db: Session,
     *,
     subject: AgentRunSubject,
-    status: str,
+    status: AgentRunStatus,
     started_at: datetime,
     ended_at: datetime | None = None,
     workflow_id: str | None = None,
     run_id: str | None = None,
     step_id: str | None = None,
-    trigger_event_name: str | None = None,
+    trigger_event_name: NormalizedEventName | None = None,
     input_ref: str | None = None,
     output_ref: str | None = None,
     provider_used: str | None = None,

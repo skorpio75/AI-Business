@@ -6,36 +6,38 @@ from sqlalchemy.orm import Session
 
 from app.core.settings import get_settings
 from app.db.repository import insert_audit_event
-from app.models.audit import AuditEventRecord
+from app.models.audit import AuditActorType, AuditEventName, AuditEventRecord, AuditEventStatus
+from app.models.control_plane import ApprovalClass, AutonomyClass
+from app.models.tool_profiles import NormalizedToolId
 
 
 @dataclass(frozen=True)
 class AuditActor:
-    actor_type: str
+    actor_type: AuditActorType
     actor_id: str
 
 
-def actor(*, actor_type: str, actor_id: str) -> AuditActor:
+def actor(*, actor_type: AuditActorType, actor_id: str) -> AuditActor:
     return AuditActor(actor_type=actor_type, actor_id=actor_id)
 
 
 def record_audit_event(
     db: Session,
     *,
-    event_name: str,
+    event_name: AuditEventName,
     entity_type: str,
     entity_id: str,
     event_actor: AuditActor,
-    status: str,
+    status: AuditEventStatus,
     occurred_at: datetime | None = None,
     workflow_id: str | None = None,
     run_id: str | None = None,
     step_id: str | None = None,
     agent_run_id: str | None = None,
     approval_id: str | None = None,
-    approval_class: str | None = None,
-    autonomy_class: str | None = None,
-    tool_id: str | None = None,
+    approval_class: ApprovalClass | None = None,
+    autonomy_class: AutonomyClass | None = None,
+    tool_id: NormalizedToolId | None = None,
     provider_used: str | None = None,
     model_used: str | None = None,
     routing_path: str | None = None,

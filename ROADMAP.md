@@ -24,7 +24,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
-| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 10/12 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 11/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -137,7 +137,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P5-T08: Add `agent_runs` persistence for per-agent execution history
 - [x] P5-T09: Add `audit_events` persistence for step-level actions, tool usage, and approval events
 - [x] P5-T10: Expose audit/trace endpoints for workflow, agent, and approval inspection
-- [ ] P5-T11: Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
+- [x] P5-T11: Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
 - [ ] P5-T12: Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
 
 ### Phase 6 - Later Ops Layer (CI/CD, LLMOps/MLOps)
@@ -419,6 +419,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P5-T08` by adding a first-class `agent_runs` table, repository helpers, and persisted execution history for the current email, knowledge, proposal, and specialist-advisory seams, including tenant or track metadata plus workflow linkage where available.
 - Completed `P5-T09` by adding append-oriented `audit_events` persistence plus runtime emission for workflow-step completion or failure, model-route selection, memory-search tool usage, approval request or decision paths, and outbound email-send actions.
 - Completed `P5-T10` by exposing aggregated trace endpoints for workflow, approval, and agent inspection so Mission Control and operators can query bundled `workflow_run`, approval, `agent_runs`, and `audit_events` views without reconstructing audit state client-side.
+- Completed `P5-T11` by aligning audit and trace contracts with governed vocabularies: `AgentRunRecord.trigger_event_name` now uses the normalized event contract, `AuditEventRecord.event_name` now uses explicit audit event families, `tool_id` now uses normalized tool IDs, and `mode`, `approval_class`, and `autonomy_class` now flow through typed governed literals in the audit/logger layer. Expanded the normalized event contract to cover the newer commercial and mission lifecycle events documented in `EVENT_MODEL.md` and added validation tests for accepted vs rejected audit values.
 
 ## Next Action
-Start `P5-T11` to align audit and trace payloads more strictly with normalized events, tool IDs, autonomy classes, and approval classes.
+Start `P5-T12` to expose persisted event and run traces in Mission Control with source-event, routing-path, and escalation visibility.

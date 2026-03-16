@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: align audit and trace payloads with normalized events, tool IDs, autonomy classes, and approval classes
+- Immediate goal: expose persisted audit events and agent-run traces in Mission Control with clear routing and escalation visibility
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P5-T11` Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
+- [ ] `P5-T12` Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
@@ -46,6 +46,7 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `P5-T11` Align audit and trace contracts with normalized events, tool IDs, autonomy classes, and approval classes, and expand the normalized event contract to cover the newer lifecycle events documented in `EVENT_MODEL.md`
 - [x] `B-T50A` Add `docs/mission-control-portfolio-ui-map.md` with the concrete UI map for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including proposed view keys, API shapes, and page/component structure
 - [x] `B-T62` Define the mission `quality_gate_plan` contract in backend/config, link `project_state` to quality-gate plans and results, and add a governed Track B default template
 - [x] `P5-T07` Define `AUDIT_MODEL.md` for canonical `agent_run`, `audit_event`, audit event family, and trace-linkage rules

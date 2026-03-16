@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 export type WorkflowRun = {
   workflow_id: string;
   status: "pending_approval" | "completed";

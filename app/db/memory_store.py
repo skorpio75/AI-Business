@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from typing import Dict
 
 from app.models.schemas import ApprovalItem, EmailWorkflowResponse

@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # AI-Business IDE Handoff
 
 ## Purpose

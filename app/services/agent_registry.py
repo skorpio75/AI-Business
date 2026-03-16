@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from app.models.agent_contract import AgentContract, AgentRegistry, DEFAULT_AGENT_REGISTRY
 
 

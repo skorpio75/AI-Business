@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """enable pgvector extension
 
 Revision ID: 20260309_0002

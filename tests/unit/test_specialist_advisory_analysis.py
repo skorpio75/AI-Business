@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import unittest
 
 from app.models.specialist_contracts import ChiefAIDigitalStrategyInput, CTOCIOCounselInput

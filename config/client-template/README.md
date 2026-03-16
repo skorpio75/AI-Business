@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Track B Client Template Pack
 
 This folder is the first reusable deployment pack for Track B client instances.

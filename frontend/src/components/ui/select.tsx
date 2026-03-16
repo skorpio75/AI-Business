@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 

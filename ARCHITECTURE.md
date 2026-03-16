@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Architecture
 
 ## 1. Top-Down View

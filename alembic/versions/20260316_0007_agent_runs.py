@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """add agent run execution history table
 
 Revision ID: 20260316_0007

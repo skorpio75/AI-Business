@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Vision
 
 Build one clean open-source platform blueprint, deploy it separately per instance, and run an IT freelancer company through approval-gated agent workflows.

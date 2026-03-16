@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService

@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Event Model
 
 ## Purpose

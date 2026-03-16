@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable

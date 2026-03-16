@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 

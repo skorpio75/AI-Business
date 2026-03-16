@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from app.models.agent_contract import AgentContract
 from app.models.schemas import FinancePanelAgentSummary, FinancePanelResponse
 from app.models.specialist_contracts import (

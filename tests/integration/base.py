@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from contextlib import ExitStack
 from typing import Iterator
 from unittest.mock import patch

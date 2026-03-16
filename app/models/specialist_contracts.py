@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field

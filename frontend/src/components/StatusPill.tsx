@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import { Badge } from "./ui/badge";
 
 type StatusTone = "neutral" | "warning" | "success" | "critical";

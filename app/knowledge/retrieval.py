@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from dataclasses import dataclass
 from typing import Protocol
 

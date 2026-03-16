@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from typing import Optional
 
 from sqlalchemy import select

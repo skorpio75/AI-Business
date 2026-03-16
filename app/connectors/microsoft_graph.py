@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib import parse

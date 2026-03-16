@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from types import SimpleNamespace
 from unittest.mock import patch
 

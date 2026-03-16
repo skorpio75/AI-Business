@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 models:
   primary_chat_model: gpt-4o-mini
   fallback_chat_model: gpt-4.1-mini

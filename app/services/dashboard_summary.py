@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from app.models.agent_contract import AgentContract
 from app.models.connectors import PersonalAssistantContext
 from app.models.schemas import (

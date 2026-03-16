@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 storage:
   tenant_id: client-template
   track: track_b_client

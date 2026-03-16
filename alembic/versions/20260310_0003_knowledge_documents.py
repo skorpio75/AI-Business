@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """knowledge documents with pgvector embeddings
 
 Revision ID: 20260310_0003

@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Internal vs Client Agent Usage Model
 
 ## Purpose

@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Agent: Email Agent
 
 ## Purpose

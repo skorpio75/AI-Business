@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # LLMOps and MLOps Later
 
 Planned later-stage controls:

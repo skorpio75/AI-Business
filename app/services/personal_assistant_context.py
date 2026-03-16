@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from datetime import datetime, timedelta, timezone
 
 from app.connectors.calendar import CalendarConnector, NullCalendarConnector

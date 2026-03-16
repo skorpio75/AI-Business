@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """add audit events table
 
 Revision ID: 20260316_0008

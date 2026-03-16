@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Platform Foundation
 
 Core services:

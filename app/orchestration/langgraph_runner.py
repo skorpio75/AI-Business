@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from typing import Any, TypedDict
 
 from app.models.workflow_state import WorkflowState

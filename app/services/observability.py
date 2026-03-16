@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import logging
 from contextlib import contextmanager
 from typing import Any, Iterator

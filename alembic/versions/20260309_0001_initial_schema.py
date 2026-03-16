@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """initial schema
 
 Revision ID: 20260309_0001

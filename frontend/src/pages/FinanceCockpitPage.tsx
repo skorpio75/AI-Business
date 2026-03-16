@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import { useEffect, useState } from "react";
 
 import { StatusPill } from "../components/StatusPill";

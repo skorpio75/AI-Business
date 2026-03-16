@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 agents:
   - id: email-agent
     enabled: true

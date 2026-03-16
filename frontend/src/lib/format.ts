@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 export function formatDateTime(input: string): string {
   const value = new Date(input);
   if (Number.isNaN(value.getTime())) {

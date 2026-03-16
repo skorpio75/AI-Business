@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """Apply latest Alembic migrations for local development."""
 
 from alembic import command

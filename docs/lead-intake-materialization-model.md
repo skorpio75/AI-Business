@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Lead Intake and Materialization Model
 
 ## Purpose

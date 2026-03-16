@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """workflow state snapshots
 
 Revision ID: 20260310_0004

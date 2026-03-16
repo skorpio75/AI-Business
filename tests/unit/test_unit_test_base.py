@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from pathlib import Path
 
 from app.db.models import WorkflowRunORM

@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Delivery Quality Gate Model
 
 ## Purpose

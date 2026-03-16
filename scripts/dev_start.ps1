@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 

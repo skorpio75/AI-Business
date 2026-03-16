@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 services:
   postgres:
     container_name: ${CLIENT_SLUG:-client-template}-agent-platform-postgres

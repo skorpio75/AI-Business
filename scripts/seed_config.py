@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import argparse
 import copy
 import re

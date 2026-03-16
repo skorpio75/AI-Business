@@ -1,3 +1,4 @@
+<%doc>Copyright (c) Dario Pizzolante</%doc>
 """${message}
 
 Revision ID: ${up_revision}

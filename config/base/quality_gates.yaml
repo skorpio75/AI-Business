@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 quality_gate_registry:
   templates:
     - template_id: advisory_light

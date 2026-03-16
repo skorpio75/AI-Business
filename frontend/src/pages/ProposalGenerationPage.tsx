@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import { useState } from "react";
 
 import { ModelRouteIndicator } from "../components/ModelRouteIndicator";

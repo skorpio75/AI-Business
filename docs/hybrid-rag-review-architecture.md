@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Hybrid RAG and Review Architecture
 
 ## Purpose

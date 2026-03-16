@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Enterprise Agent Platform
 
 ## Overview

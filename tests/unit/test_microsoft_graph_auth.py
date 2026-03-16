@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import os
 import shutil
 import unittest

@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """Document ingestion entrypoint for local knowledge files."""
 
 import argparse

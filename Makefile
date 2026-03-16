@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 .PHONY: up down logs api db-upgrade
 
 up:

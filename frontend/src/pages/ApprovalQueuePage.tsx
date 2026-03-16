@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import { useDeferredValue, useEffect, useState } from "react";
 
 import { StatusPill } from "../components/StatusPill";

@@ -1,3 +1,4 @@
+/* Copyright (c) Dario Pizzolante */
 import { startTransition, useEffect, useState } from "react";
 import {
   Activity,

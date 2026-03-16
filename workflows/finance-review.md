@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Workflow: Finance Review
 
 ## Trigger

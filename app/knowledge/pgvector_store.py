@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import hashlib
 import math
 

@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Project Documentation
 
 This document covers the major topics the user requested.  It is intended to be exported to Word format (e.g. via `pandoc DOCUMENTATION.md -o documentation.docx`).

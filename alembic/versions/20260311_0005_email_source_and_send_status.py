@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 """add email source metadata and send status tracking
 
 Revision ID: 20260311_0005

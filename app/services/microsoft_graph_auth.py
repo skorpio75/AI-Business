@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from pathlib import Path
 from typing import Any
 

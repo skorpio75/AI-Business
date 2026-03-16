@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import re
 from typing import Any, Literal, Optional
 

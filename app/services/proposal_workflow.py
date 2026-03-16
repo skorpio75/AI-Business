@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from datetime import datetime, timezone
 from uuid import uuid4
 

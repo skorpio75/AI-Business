@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from app.connectors.calendar import CalendarConnector, NullCalendarConnector
 from app.connectors.gmail import GmailInboxConnector
 from app.connectors.google_calendar import GoogleCalendarConnector

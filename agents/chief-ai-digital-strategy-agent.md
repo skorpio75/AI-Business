@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Agent: Chief AI / Digital Strategy Agent
 
 ## Purpose

@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import unittest
 
 from app.services.email_workflow import EmailWorkflowService

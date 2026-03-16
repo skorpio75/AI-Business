@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 conventions:
   naming:
     family_base_asset_pattern: <family_id>.family.base

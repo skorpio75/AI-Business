@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import json
 from pathlib import Path
 from string import Template

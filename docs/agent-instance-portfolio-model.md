@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 # Agent Instance and Portfolio Model
 
 ## Purpose

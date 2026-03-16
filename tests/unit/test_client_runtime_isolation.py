@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import unittest
 from pathlib import Path
 import shutil

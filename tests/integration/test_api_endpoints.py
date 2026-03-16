@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 from app.db.repository import list_agent_runs, list_audit_events
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
 from app.services.chief_ai_panel import ChiefAIPanelService

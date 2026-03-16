@@ -1,3 +1,4 @@
+<!-- Copyright (c) Dario Pizzolante -->
 ﻿# Enterprise Agent Platform MVP - Two-Track Blueprint
 
 ## Current Implementation Note

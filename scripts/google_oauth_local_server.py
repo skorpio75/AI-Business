@@ -1,3 +1,4 @@
+# Copyright (c) Dario Pizzolante
 import json
 import sys
 import threading

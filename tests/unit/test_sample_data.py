@@ -3,6 +3,8 @@ from pathlib import Path
 
 from app.models.schemas import EmailWorkflowRequest
 from tests.sample_data import (
+    chief_ai_analysis_payload,
+    cto_cio_analysis_payload,
     DEFAULT_CONNECTOR_BOOTSTRAP_PROVIDER,
     DEFAULT_EMAIL_SOURCE_METADATA,
     approval_decision_payload,
@@ -47,9 +49,13 @@ class SampleDataTests(unittest.TestCase):
     def test_other_payload_builders_clone_defaults(self) -> None:
         knowledge_payload = knowledge_query_payload(limit=5)
         proposal_payload = proposal_generation_payload(client_name="Beta Corp")
+        cto_payload = cto_cio_analysis_payload(engagement_name="ERP Reset")
+        chief_ai_payload = chief_ai_analysis_payload(engagement_name="AI Service Desk")
 
         self.assertEqual(knowledge_payload["limit"], 5)
         self.assertEqual(proposal_payload["client_name"], "Beta Corp")
+        self.assertEqual(cto_payload["engagement_name"], "ERP Reset")
+        self.assertEqual(chief_ai_payload["engagement_name"], "AI Service Desk")
 
     def test_connector_bootstrap_status_builder_returns_normalized_model(self) -> None:
         response = connector_bootstrap_status_response(status="degraded", detail="Needs refresh.")

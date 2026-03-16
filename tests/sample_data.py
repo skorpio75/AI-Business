@@ -30,6 +30,34 @@ DEFAULT_PROPOSAL_GENERATION_PAYLOAD = {
     "constraints": ["Budget approval pending"],
 }
 
+DEFAULT_CTO_CIO_ANALYSIS_PAYLOAD = {
+    "engagement_name": "Retail ERP Recovery",
+    "problem_statement": "The client has legacy ERP and CRM fragmentation with manual handoffs.",
+    "business_goal": "Reduce delivery friction and create a safer modernization path.",
+    "client_context": "Leadership wants a phased roadmap without disrupting operations.",
+    "engagement_history": [
+        "A prior migration attempt stalled because integration scope was too broad.",
+    ],
+    "current_stack": ["legacy ERP", "CRM", "Excel"],
+    "constraints": ["phased rollout", "limited bandwidth"],
+    "desired_outcomes": ["clear roadmap", "lower integration risk"],
+}
+
+DEFAULT_CHIEF_AI_ANALYSIS_PAYLOAD = {
+    "engagement_name": "Support Operations AI Review",
+    "problem_statement": "Support staff spend too much time answering repetitive questions and triaging email.",
+    "business_context": "Leadership wants a practical AI roadmap without unmanaged risk.",
+    "client_context": "The company has scattered policy documents and approval-heavy workflows.",
+    "engagement_history": [
+        "A chatbot pilot failed because source content was unreliable.",
+    ],
+    "process_areas": ["support", "email triage"],
+    "data_assets": ["policy PDFs"],
+    "current_stack": ["shared mailbox", "SharePoint"],
+    "delivery_constraints": ["human approval required", "8-week pilot window"],
+    "desired_outcomes": ["faster response times", "better answer consistency"],
+}
+
 DEFAULT_CONNECTOR_BOOTSTRAP_PROVIDER = {
     "provider_id": "microsoft_graph",
     "inbox_selected": True,
@@ -89,6 +117,18 @@ def knowledge_query_payload(**overrides: Any) -> dict[str, Any]:
 
 def proposal_generation_payload(**overrides: Any) -> dict[str, Any]:
     payload = dict(DEFAULT_PROPOSAL_GENERATION_PAYLOAD)
+    payload.update(overrides)
+    return payload
+
+
+def cto_cio_analysis_payload(**overrides: Any) -> dict[str, Any]:
+    payload = dict(DEFAULT_CTO_CIO_ANALYSIS_PAYLOAD)
+    payload.update(overrides)
+    return payload
+
+
+def chief_ai_analysis_payload(**overrides: Any) -> dict[str, Any]:
+    payload = dict(DEFAULT_CHIEF_AI_ANALYSIS_PAYLOAD)
     payload.update(overrides)
     return payload
 

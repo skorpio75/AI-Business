@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: add `agent_runs` persistence for per-agent execution history
+- Immediate goal: add `audit_events` persistence for step-level actions, tool usage, and approval events
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P5-T08` Add `agent_runs` persistence for per-agent execution history
+- [ ] `P5-T09` Add `audit_events` persistence for step-level actions, tool usage, and approval events
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels

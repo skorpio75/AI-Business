@@ -224,6 +224,7 @@ Workflow and agent execution is described through normalized state, event, tool,
 - prompt composition and context-injection contracts are defined in backend/config
 - prompt naming, storage, and loader fallback rules are defined
 - audit object, event-family, and linkage rules are defined for later `agent_runs`, `audit_events`, and Mission Control trace surfaces
+- bounded workflow and specialist executions now persist `agent_runs` summaries so later `audit_events` can attach to a real execution-history backbone
 - hybrid retrieval source classes and provenance rules are defined so internal, client, and external evidence remain distinguishable
 - bounded review/gate agent behavior is defined as a workflow checkpoint pattern rather than a free-form supervisor override
 - specialist advisory contracts can carry client briefs, context signals, and service recommendations

@@ -1,4 +1,7 @@
+from app.db.repository import list_agent_runs
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
+from app.services.chief_ai_panel import ChiefAIPanelService
+from app.services.cto_cio_panel import CTOCIOPanelService
 from app.services.email_workflow import EmailWorkflowService
 from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import GenerationResult, TextGenerationResult
@@ -6,7 +9,9 @@ from app.services.proposal_workflow import ProposalWorkflowService
 from tests.integration.base import ApiIntegrationTestCase
 from tests.sample_data import (
     approval_decision_payload,
+    chief_ai_analysis_payload,
     connector_bootstrap_status_response,
+    cto_cio_analysis_payload,
     email_workflow_payload,
     knowledge_query_payload,
     proposal_generation_payload,
@@ -14,6 +19,9 @@ from tests.sample_data import (
 
 
 class StubWorkflowGateway:
+    def __init__(self) -> None:
+        self.settings = type("StubSettings", (), {"primary_track": "track_a_internal"})()
+
     def generate_text(self, *, prompt: str, fallback_content: str, **kwargs) -> TextGenerationResult:
         del prompt, fallback_content, kwargs
         return TextGenerationResult(
@@ -33,6 +41,22 @@ class StubWorkflowGateway:
             model_used="stub/local",
             local_llm_invoked=True,
         )
+
+    def generate_structured_json(self, *, prompt: str, fallback_payload: dict):
+        del prompt
+        return type(
+            "StubStructuredResult",
+            (),
+            {
+                "content": fallback_payload,
+                "provider_used": "fallback-rule",
+                "model_used": "rules-test",
+                "local_llm_invoked": False,
+                "cloud_llm_invoked": False,
+                "llm_diagnostic_code": None,
+                "llm_diagnostic_detail": None,
+            },
+        )()
 
 
 class StubRetrievalService:
@@ -72,6 +96,8 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
             KnowledgeQnAService(retrieval_service=StubRetrievalService(), model_gateway=gateway),
         )
         self.patch_api_attr("proposal_workflow", ProposalWorkflowService(model_gateway=gateway))
+        self.patch_api_attr("cto_cio_panel", CTOCIOPanelService(model_gateway=gateway))
+        self.patch_api_attr("chief_ai_panel", ChiefAIPanelService(model_gateway=gateway))
 
     def test_healthz_returns_runtime_metadata(self) -> None:
         response = self.client.get("/healthz")
@@ -162,6 +188,59 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertEqual(payload["provider_used"], "local")
         self.assertIn("Proposal draft for Acme", payload["title"])
         self.assertEqual(payload["proposal_draft"], "Generated content from integration stub.")
+
+    def test_agent_runs_are_persisted_for_workflows_and_specialist_analyses(self) -> None:
+        email_response = self.client.post(
+            "/workflows/email-operations/run",
+            json=email_workflow_payload(),
+        )
+        knowledge_response = self.client.post(
+            "/knowledge/qna",
+            json=knowledge_query_payload(),
+        )
+        proposal_response = self.client.post(
+            "/workflows/proposal-generation/run",
+            json=proposal_generation_payload(),
+        )
+        cto_response = self.client.post(
+            "/specialists/cto-cio/analyze",
+            json=cto_cio_analysis_payload(),
+        )
+        chief_ai_response = self.client.post(
+            "/specialists/chief-ai-digital-strategy/analyze",
+            json=chief_ai_analysis_payload(),
+        )
+
+        self.assertEqual(email_response.status_code, 200)
+        self.assertEqual(knowledge_response.status_code, 200)
+        self.assertEqual(proposal_response.status_code, 200)
+        self.assertEqual(cto_response.status_code, 200)
+        self.assertEqual(chief_ai_response.status_code, 200)
+
+        with self._session_factory() as db:
+            agent_runs = list_agent_runs(db)
+
+        self.assertEqual(len(agent_runs), 5)
+        self.assertEqual(
+            {item.agent_id for item in agent_runs},
+            {
+                "email-agent",
+                "knowledge-agent",
+                "proposal-sow-agent",
+                "cto-cio-agent",
+                "chief-ai-digital-strategy-agent",
+            },
+        )
+        self.assertEqual(
+            {item.mode for item in agent_runs if item.agent_id in {"cto-cio-agent", "chief-ai-digital-strategy-agent"}},
+            {"client_facing_service"},
+        )
+        self.assertTrue(
+            any(item.workflow_id == email_response.json()["workflow_id"] for item in agent_runs if item.agent_id == "email-agent")
+        )
+        self.assertTrue(
+            any(item.workflow_id == proposal_response.json()["workflow_id"] for item in agent_runs if item.agent_id == "proposal-sow-agent")
+        )
 
     def test_connector_bootstrap_status_endpoint_returns_normalized_response(self) -> None:
         expected = connector_bootstrap_status_response()

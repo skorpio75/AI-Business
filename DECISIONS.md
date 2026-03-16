@@ -326,3 +326,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Reusable families may exist in `internal_operating`, `client_delivery`, or `client_facing_service` mode, but the selected mode must follow the business process being served. Track A `internal_operating` instances are used for the firm's own lead, proposal, approval, dispatch, billing, and portfolio-control processes. Track B `client_delivery` instances are used for tenant-scoped mission execution. `client_facing_service` instances remain separate client runtimes for bounded advisory or service outputs and must not be treated as the same runtime identity as the internal agent.
 - Rationale: Without an explicit usage rule, the platform risks blurring pre-sales/internal control work with client mission execution. Tying mode selection to business purpose preserves isolation, clarifies when Track B should start, and makes the lifecycle easier to operate and audit.
+
+## ADR-055: `agent_runs` should land as the first persisted audit primitive before step-level `audit_events`
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The platform should persist bounded `agent_runs` first, using a summary table linked to tenant, track, agent family, mode, workflow IDs where available, and provider or model metadata across the current workflow and specialist-advisory seams before introducing the more granular append-oriented `audit_events` layer.
+- Rationale: Existing traceability was split across workflow runs, snapshots, approvals, and optional Langfuse spans. Adding `agent_runs` first creates one durable execution-history backbone for Mission Control and later audit work without forcing the repo to define every step-level event and tool-action contract in the same slice.

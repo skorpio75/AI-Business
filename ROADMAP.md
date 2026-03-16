@@ -24,7 +24,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
-| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 7/12 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 8/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -134,7 +134,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P5-T05: Add test fixtures and sample data
 - [x] P5-T06: Add test execution instructions in `README.md`
 - [x] P5-T07: Define `AUDIT_MODEL.md` for agent execution, approvals, and decision traceability
-- [ ] P5-T08: Add `agent_runs` persistence for per-agent execution history
+- [x] P5-T08: Add `agent_runs` persistence for per-agent execution history
 - [ ] P5-T09: Add `audit_events` persistence for step-level actions, tool usage, and approval events
 - [ ] P5-T10: Expose audit/trace endpoints for workflow, agent, and approval inspection
 - [ ] P5-T11: Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
@@ -408,6 +408,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for mission `quality_gate_plan` contracts, phase-specific delivery gates, AI-assisted review rubrics, persisted gate results, and gating of milestone acceptance or handoff release when quality conditions are unresolved.
 - Completed `B-T62` by adding typed mission quality-gate contracts in `app/models/delivery_quality.py`, mirroring them in `config/base/quality_gates.yaml`, linking `project_state` to active quality-gate plans and results, and binding the Track B client template to the governed `delivery_standard` gate template by default.
 - Added `docs/internal-vs-client-agent-usage-model.md` to make the Track A vs Track B agent-mode split explicit, including when to use `internal_operating`, `client_delivery`, and `client_facing_service` across the consulting lifecycle.
+- Completed `P5-T08` by adding a first-class `agent_runs` table, repository helpers, and persisted execution history for the current email, knowledge, proposal, and specialist-advisory seams, including tenant or track metadata plus workflow linkage where available.
 
 ## Next Action
-Start `P5-T08` to add `agent_runs` persistence for per-agent execution history against the new audit model.
+Start `P5-T09` to add `audit_events` persistence for step-level actions, tool usage, and approval events on top of the new `agent_runs` layer.

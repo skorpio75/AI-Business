@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from datetime import datetime, timezone
 
-from app.db.models import ApprovalORM, WorkflowRunORM, WorkflowStateSnapshotORM
+from app.db.models import AgentRunORM, ApprovalORM, WorkflowRunORM, WorkflowStateSnapshotORM
+from app.models.audit import AgentRunRecord
 from app.models.schemas import ApprovalItem, EmailWorkflowResponse
 from app.models.workflow_state import WorkflowState
 
@@ -55,6 +56,39 @@ def insert_approval(db: Session, item: ApprovalItem) -> None:
     )
 
 
+def insert_agent_run(db: Session, item: AgentRunRecord) -> None:
+    db.add(
+        AgentRunORM(
+            agent_run_id=item.agent_run_id,
+            tenant_id=item.tenant_id,
+            track=item.track,
+            agent_id=item.agent_id,
+            agent_family=item.agent_family,
+            mode=item.mode,
+            status=item.status,
+            started_at=item.started_at,
+            ended_at=item.ended_at,
+            workflow_id=item.workflow_id,
+            run_id=item.run_id,
+            step_id=item.step_id,
+            parent_agent_run_id=item.parent_agent_run_id,
+            trigger_event_name=item.trigger_event_name,
+            input_ref=item.input_ref,
+            output_ref=item.output_ref,
+            autonomy_class=item.autonomy_class,
+            approval_class=item.approval_class,
+            provider_used=item.provider_used,
+            model_used=item.model_used,
+            routing_path=item.routing_path,
+            fallback_mode=item.fallback_mode,
+            confidence=item.confidence,
+            trace_ref=item.trace_ref,
+            error_code=item.error_code,
+            error_detail=item.error_detail,
+        )
+    )
+
+
 def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
     rows = db.execute(select(WorkflowRunORM)).scalars().all()
     snapshots = {
@@ -75,6 +109,14 @@ def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
             )
         results.append(response)
     return results
+
+
+def list_agent_runs(db: Session, *, workflow_id: str | None = None) -> list[AgentRunRecord]:
+    query = select(AgentRunORM).order_by(AgentRunORM.started_at, AgentRunORM.agent_run_id)
+    if workflow_id is not None:
+        query = query.where(AgentRunORM.workflow_id == workflow_id)
+    rows = db.execute(query).scalars().all()
+    return [AgentRunRecord.model_validate(row) for row in rows]
 
 
 def list_pending_approvals(db: Session) -> list[ApprovalItem]:

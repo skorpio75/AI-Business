@@ -168,11 +168,14 @@ def get_cto_cio_panel() -> CTOCIOPanelResponse:
 
 
 @app.post("/specialists/cto-cio/analyze", response_model=CTOCIOAnalysisResponse)
-def analyze_cto_cio_client_context(payload: CTOCIOCounselInput) -> CTOCIOAnalysisResponse:
+def analyze_cto_cio_client_context(
+    payload: CTOCIOCounselInput,
+    db: Session = Depends(get_db),
+) -> CTOCIOAnalysisResponse:
     agent = agent_registry.get_agent("cto-cio-agent")
     if agent is None:
         raise HTTPException(status_code=404, detail="agent_not_found")
-    return cto_cio_panel.analyze_client_context(agent=agent, payload=payload)
+    return cto_cio_panel.analyze_client_context(agent=agent, payload=payload, db=db)
 
 
 @app.get("/specialists/finance/panel", response_model=FinancePanelResponse)
@@ -200,11 +203,12 @@ def get_chief_ai_panel() -> ChiefAIPanelResponse:
 @app.post("/specialists/chief-ai-digital-strategy/analyze", response_model=ChiefAIAnalysisResponse)
 def analyze_chief_ai_client_context(
     payload: ChiefAIDigitalStrategyInput,
+    db: Session = Depends(get_db),
 ) -> ChiefAIAnalysisResponse:
     agent = agent_registry.get_agent("chief-ai-digital-strategy-agent")
     if agent is None:
         raise HTTPException(status_code=404, detail="agent_not_found")
-    return chief_ai_panel.analyze_client_context(agent=agent, payload=payload)
+    return chief_ai_panel.analyze_client_context(agent=agent, payload=payload, db=db)
 
 
 @app.get("/personal-assistant/context", response_model=PersonalAssistantContext)
@@ -230,15 +234,19 @@ def get_connector_bootstrap_status() -> ConnectorBootstrapStatusResponse:
 
 
 @app.post("/knowledge/qna", response_model=KnowledgeQueryResponse)
-def run_knowledge_qna(payload: KnowledgeQueryRequest) -> KnowledgeQueryResponse:
-    return knowledge_qna.answer(payload)
+def run_knowledge_qna(
+    payload: KnowledgeQueryRequest,
+    db: Session = Depends(get_db),
+) -> KnowledgeQueryResponse:
+    return knowledge_qna.answer(payload, db=db)
 
 
 @app.post("/workflows/proposal-generation/run", response_model=ProposalGenerationResponse)
 def run_proposal_generation(
     payload: ProposalGenerationRequest,
+    db: Session = Depends(get_db),
 ) -> ProposalGenerationResponse:
-    return proposal_workflow.run(payload)
+    return proposal_workflow.run(payload, db=db)
 
 
 @app.get("/workflows/runs")

@@ -56,7 +56,7 @@ Represents one bounded agent execution inside a workflow step, supervisor action
 
 #### Purpose
 - summarize one agent execution window
-- support later `agent_runs` persistence
+- support persisted `agent_runs` history
 - link higher-level workflow visibility to finer-grained execution history
 
 ### `audit_event`
@@ -200,7 +200,7 @@ The audit model should join cleanly with the existing control models.
 ## Persistence Intent
 
 ### `agent_runs`
-- persistence status: `planned`
+- persistence status: `implemented`
 - intended role: summary table for per-agent execution history
 - expected grain: one row per bounded agent execution
 - likely joins: `workflow_runs`, `workflow_state_snapshots`, later `audit_events`
@@ -226,9 +226,10 @@ This document defines the canonical audit model before full persistence and UI e
 
 Current reality:
 - workflow runs and snapshots already provide partial traceability
+- `agent_runs` now persist bounded execution history for the current workflow and specialist-analysis seams
 - approvals already provide partial decision traceability
 - Langfuse already provides optional workflow/model traces
-- full `agent_runs`, `audit_events`, and Mission Control audit inspection remain roadmap work
+- `audit_events` and Mission Control audit inspection remain roadmap work
 
 ## Related Docs
 - `STATE_MODEL.md`

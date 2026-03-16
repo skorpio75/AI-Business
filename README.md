@@ -79,6 +79,8 @@ Langfuse tracing is now integrated as an optional, env-gated observability layer
 
 Tracing is additive rather than mandatory: if Langfuse is not configured or the SDK is unavailable, the platform continues to run without failing workflow execution.
 
+The platform now also persists bounded `agent_runs` execution history in its own database for the current email, knowledge, proposal, and specialist-advisory seams, so tenant-scoped run inspection no longer depends only on external tracing.
+
 ### Seed A Client Instance
 Generate a tenant-specific client contract and runtime env file from the Track B template:
 

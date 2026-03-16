@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime, timezone
+
+from sqlalchemy.orm import Session
 
 from app.core.prompt_loader import PromptLoader
 from app.core.settings import Settings
@@ -15,6 +18,7 @@ from app.models.specialist_contracts import (
     RecommendedService,
     UpsellOpportunity,
 )
+from app.services.agent_run_logger import record_agent_run, subject_from_agent
 from app.services.model_gateway import ModelGateway
 
 
@@ -745,7 +749,9 @@ class ChiefAIPanelService:
         *,
         agent: AgentContract,
         payload: ChiefAIDigitalStrategyInput,
+        db: Session | None = None,
     ) -> ChiefAIAnalysisResponse:
+        started_at = datetime.now(timezone.utc)
         combined_text = self._combine_text(payload)
         fallback_output = self._build_fallback_output(payload, combined_text)
         prompt = self.prompt_loader.render_composition(
@@ -810,7 +816,7 @@ class ChiefAIPanelService:
                 "The structured Chief AI analysis response did not match the expected schema, so the rule-based advisory output was returned.",
             )
 
-        return ChiefAIAnalysisResponse(
+        response = ChiefAIAnalysisResponse(
             agent_id=agent.agent_id,
             display_name=agent.display_name,
             role_summary=agent.role_summary,
@@ -833,6 +839,18 @@ class ChiefAIPanelService:
             maturity_model=strategy_output.maturity_model,
             approval_required=strategy_output.approval_required,
         )
+        if db is not None:
+            record_agent_run(
+                db,
+                subject=subject_from_agent(agent, mode="client_facing_service"),
+                status="completed",
+                started_at=started_at,
+                ended_at=datetime.now(timezone.utc),
+                provider_used=response.provider_used,
+                model_used=response.model_used,
+            )
+            db.commit()
+        return response
 
     def _build_fallback_output(
         self,

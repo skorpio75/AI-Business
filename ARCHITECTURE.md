@@ -148,6 +148,7 @@ Infrastructure
 - API integration coverage now runs against the real FastAPI app in-process through `tests/integration/base.py`, using dependency overrides for DB sessions and targeted patching for startup/bootstrap or external-service seams rather than bypassing the HTTP layer.
 - Workflow branch coverage now lives under `tests/workflow/`, combining service-level routing tests and HTTP-level approval-decision tests so escalation reasons, approval outcomes, and workflow state transitions are exercised without requiring a full external stack.
 - The target retrieval architecture is now a governed hybrid RAG model: internal and tenant-scoped client corpora provide grounding, shared workspace provides current truth, and optional external-web retrieval broadens advisory outputs without becoming authoritative state by default.
+- Bounded execution history now persists in an `agent_runs` table with tenant, track, family, mode, status, provider/model, and workflow-linkage metadata for the current email, knowledge, proposal, and specialist-advisory seams, forming the first internal audit primitive ahead of later `audit_events`.
 
 ## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.

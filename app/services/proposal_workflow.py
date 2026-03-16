@@ -1,9 +1,21 @@
+from datetime import datetime, timezone
 from uuid import uuid4
+
+from sqlalchemy.orm import Session
 
 from app.core.prompt_loader import PromptLoader
 from app.models.schemas import ProposalGenerationRequest, ProposalGenerationResponse
+from app.services.agent_run_logger import record_agent_run, subject_from_identity
 from app.services.model_gateway import ModelGateway
 from app.services.observability import NullObservabilityService
+
+PROPOSAL_AGENT_SUBJECT = subject_from_identity(
+    agent_id="proposal-sow-agent",
+    agent_family="proposal-sow",
+    mode="internal_operating",
+    autonomy_class="supervised_executor",
+    approval_class="ceo_required",
+)
 
 
 class ProposalWorkflowService:
@@ -12,66 +24,102 @@ class ProposalWorkflowService:
         self.prompt_loader = PromptLoader()
         self.observability = observability or getattr(model_gateway, "observability", NullObservabilityService())
 
-    def run(self, payload: ProposalGenerationRequest) -> ProposalGenerationResponse:
+    def run(self, payload: ProposalGenerationRequest, db: Session | None = None) -> ProposalGenerationResponse:
         workflow_id = str(uuid4())
-        with self.observability.start_span(
-            name="workflow.proposal-generation.run",
-            input={"workflow_id": workflow_id, "client_name": payload.client_name},
-            metadata={"workflow_type": "proposal-generation"},
-        ) as observation:
-            desired_outcomes = payload.desired_outcomes or ["Clarify project goals", "Define a first delivery slice"]
-            constraints = payload.constraints or ["Budget and delivery assumptions still need confirmation"]
-            prompt = self.prompt_loader.render_composition(
-                "proposal-generation.generate-draft",
-                template_context={
-                    "client_name": payload.client_name,
-                    "opportunity_summary": payload.opportunity_summary,
-                    "desired_outcomes": "\n".join(f"- {item}" for item in desired_outcomes),
-                    "constraints": "\n".join(f"- {item}" for item in constraints),
-                },
-                injected_context={
-                    "approval_policy": (
-                        "Draft only. Pricing, scope commitment, and client delivery promises require CEO review."
+        started_at = datetime.now(timezone.utc)
+        try:
+            with self.observability.start_span(
+                name="workflow.proposal-generation.run",
+                input={"workflow_id": workflow_id, "client_name": payload.client_name},
+                metadata={"workflow_type": "proposal-generation"},
+            ) as observation:
+                desired_outcomes = payload.desired_outcomes or ["Clarify project goals", "Define a first delivery slice"]
+                constraints = payload.constraints or ["Budget and delivery assumptions still need confirmation"]
+                prompt = self.prompt_loader.render_composition(
+                    "proposal-generation.generate-draft",
+                    template_context={
+                        "client_name": payload.client_name,
+                        "opportunity_summary": payload.opportunity_summary,
+                        "desired_outcomes": "\n".join(f"- {item}" for item in desired_outcomes),
+                        "constraints": "\n".join(f"- {item}" for item in constraints),
+                    },
+                    injected_context={
+                        "approval_policy": (
+                            "Draft only. Pricing, scope commitment, and client delivery promises require CEO review."
+                        ),
+                        "output_schema": (
+                            "proposal draft with executive summary, delivery shape, assumptions, and next steps"
+                        ),
+                    },
+                )
+                fallback_draft = self._fallback_draft(payload, desired_outcomes, constraints)
+                generation = self.model_gateway.generate_text(
+                    prompt=prompt,
+                    fallback_content=fallback_draft,
+                )
+                response = ProposalGenerationResponse(
+                    workflow_id=workflow_id,
+                    title=f"Proposal draft for {payload.client_name}",
+                    executive_summary=(
+                        f"Prepared a baseline proposal for {payload.client_name} based on the provided opportunity summary."
                     ),
-                    "output_schema": (
-                        "proposal draft with executive summary, delivery shape, assumptions, and next steps"
-                    ),
-                },
-            )
-            fallback_draft = self._fallback_draft(payload, desired_outcomes, constraints)
-            generation = self.model_gateway.generate_text(
-                prompt=prompt,
-                fallback_content=fallback_draft,
-            )
-            response = ProposalGenerationResponse(
-                workflow_id=workflow_id,
-                title=f"Proposal draft for {payload.client_name}",
-                executive_summary=(
-                    f"Prepared a baseline proposal for {payload.client_name} based on the provided opportunity summary."
-                ),
-                proposal_draft=generation.content,
-                next_steps=[
-                    "Validate scope and pricing assumptions with the client.",
-                    "Confirm delivery milestones and required approvals.",
-                    "Convert the baseline draft into a client-facing proposal after review.",
-                ],
-                provider_used=generation.provider_used,
-                model_used=generation.model_used,
-                local_llm_invoked=generation.local_llm_invoked,
-                cloud_llm_invoked=generation.cloud_llm_invoked,
-                llm_diagnostic_code=generation.llm_diagnostic_code,
-                llm_diagnostic_detail=generation.llm_diagnostic_detail,
-            )
-            observation.update(
-                output=response.model_dump(mode="json"),
-                metadata={
-                    "provider_used": response.provider_used,
-                    "model_used": response.model_used,
-                    "desired_outcome_count": len(desired_outcomes),
-                    "constraint_count": len(constraints),
-                },
-            )
-            return response
+                    proposal_draft=generation.content,
+                    next_steps=[
+                        "Validate scope and pricing assumptions with the client.",
+                        "Confirm delivery milestones and required approvals.",
+                        "Convert the baseline draft into a client-facing proposal after review.",
+                    ],
+                    provider_used=generation.provider_used,
+                    model_used=generation.model_used,
+                    local_llm_invoked=generation.local_llm_invoked,
+                    cloud_llm_invoked=generation.cloud_llm_invoked,
+                    llm_diagnostic_code=generation.llm_diagnostic_code,
+                    llm_diagnostic_detail=generation.llm_diagnostic_detail,
+                )
+                if db is not None:
+                    record_agent_run(
+                        db,
+                        subject=PROPOSAL_AGENT_SUBJECT,
+                        status="completed",
+                        started_at=started_at,
+                        ended_at=datetime.now(timezone.utc),
+                        workflow_id=workflow_id,
+                        run_id=workflow_id,
+                        trigger_event_name="proposal.requested",
+                        provider_used=response.provider_used,
+                        model_used=response.model_used,
+                    )
+                    db.commit()
+                observation.update(
+                    output=response.model_dump(mode="json"),
+                    metadata={
+                        "provider_used": response.provider_used,
+                        "model_used": response.model_used,
+                        "desired_outcome_count": len(desired_outcomes),
+                        "constraint_count": len(constraints),
+                    },
+                )
+                return response
+        except Exception as exc:
+            if db is not None:
+                db.rollback()
+                try:
+                    record_agent_run(
+                        db,
+                        subject=PROPOSAL_AGENT_SUBJECT,
+                        status="failed",
+                        started_at=started_at,
+                        ended_at=datetime.now(timezone.utc),
+                        workflow_id=workflow_id,
+                        run_id=workflow_id,
+                        trigger_event_name="proposal.requested",
+                        error_code=exc.__class__.__name__,
+                        error_detail=str(exc),
+                    )
+                    db.commit()
+                except Exception:
+                    db.rollback()
+            raise
 
     def _fallback_draft(
         self,

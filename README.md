@@ -70,7 +70,7 @@ The first Track B deployment pack now lives in `config/client-template/`. It inc
 
 The client contract now captures tenant identity, approval/governance defaults, deployment metadata, storage/secret paths, connector defaults, model-routing posture, and default workflow/service packaging. Runtime settings now also enforce those Track B boundaries: a client instance must use a tenant-scoped `RUNTIME_ENV_FILE`, storage roots stay under `data/clients/<tenant>/`, prompt overrides stay under `prompts/clients/<tenant>/`, and connector secrets stay under `secrets/<tenant>/`.
 
-That makes the template clonable without changing the shared codebase while setting up the next task: seed automation.
+Seed automation now turns that pack into tenant-specific artifacts under `config/clients/`, and portability coverage now proves that seeded client instances can run the reusable `knowledge-qna` and `email-operations` workflows under tenant-scoped runtime settings. `document-intake` and `reporting` remain in the Track B workflow pack as governed contract entries pending service implementation.
 
 ### Seed A Client Instance
 Generate a tenant-specific client contract and runtime env file from the Track B template:

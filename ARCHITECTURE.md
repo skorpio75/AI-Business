@@ -133,6 +133,7 @@ Infrastructure
 - That Track B client config is now expanded into a fuller contract that captures tenant identity, approval/governance defaults, deployment metadata, storage and secret paths, connector defaults, model-routing posture, and initial workflow/service packaging for later bootstrap automation.
 - `scripts/seed_config.py` now materializes tenant-specific client contracts and runtime env files under `config/clients/` and prepares the tenant-scoped storage, prompt, and secret roots expected by the runtime.
 - Track B runtime settings now enforce tenant-scoped env, secret, storage, and prompt-root boundaries, and startup creates those tenant-scoped directories before connector bootstrap runs.
+- Track B portability validation now proves that seeded client instances can run the reusable `knowledge-qna` and `email-operations` workflows under tenant-scoped settings, while `document-intake` and `reporting` remain governed workflow-pack contract entries until their service implementations exist.
 
 ## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.

@@ -109,7 +109,7 @@ A reproducible isolated client platform can be deployed quickly.
 - deployment can be cloned from the template env + compose overlay
 - seed scripts prepare first instance
 - runtime enforces tenant-scoped env, secret, storage, and prompt-root boundaries for Track B instances
-- workflows run with client-specific context
+- workflows run with client-specific context, with portability coverage proven for seeded `knowledge-qna` and `email-operations` instances while `document-intake` and `reporting` remain governed contract entries in the Track B workflow pack
 - client-facing advisory agents can analyze a client problem statement, context, and history before recommending services
 - client-facing advisory agents can frame the active consulting mission and detect bounded upsell opportunities that help grow the account
 - client-facing advisory agents use governed LLM reasoning for consulting analysis, with deterministic fallback reserved for resilience and guardrails

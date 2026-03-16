@@ -212,3 +212,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The client initialization seed flow should treat `config/client-template/` as the shared source template and write generated per-client artifacts into `config/clients/`, including a tenant-specific client contract and runtime env file, while also creating the tenant directory roots required by runtime isolation.
 - Rationale: Keeping generated client artifacts separate from the reusable template pack preserves the distinction between shared blueprint assets and tenant-specific operational config. It also makes repeated seeding safer and clearer, especially once multiple Track B client instances exist side by side.
+
+## ADR-036: Track B portability validation must distinguish runnable services from contract-only workflow pack entries
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Track B portability acceptance should prove that implemented reusable workflows run across multiple seeded client instances under tenant-scoped runtime settings, while separately verifying that additional workflow-pack entries remain preserved in the seeded client contract and shared workflow registry until their service implementations land.
+- Rationale: This keeps portability claims honest. The platform should not imply full end-to-end portability for workflows that are only documented in the client pack today, but it should still protect the shared Track B contract so later implementations can plug into an already-stable workflow pack.

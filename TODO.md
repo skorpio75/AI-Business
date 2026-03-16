@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 4 - Track B Client Template MVP`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: continue Track B by validating workflow portability across seeded client instances
+- Immediate goal: finish Track B by documenting the client bootstrap runbook
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,7 +18,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P4-T05` Validate workflow portability across instances
+- [ ] `P4-T06` Document client bootstrap runbook
 
 ## Soon After
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
@@ -27,6 +27,7 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `P4-T05` Validate workflow portability across seeded client instances by running reusable workflows under tenant-scoped runtime settings and checking the seeded workflow pack contract
 - [x] `P4-T03` Build the client initialization seed script to generate tenant-specific client contracts, runtime env files, and tenant directory roots
 - [x] `P4-T04` Isolate storage and credentials per client instance by enforcing tenant-scoped runtime env files, storage roots, prompt roots, and secret paths
 - [x] `P4-T02` Finalize `config/client-template/client.yaml` with tenant, governance, deployment, storage, connector, routing, and default workflow/service sections

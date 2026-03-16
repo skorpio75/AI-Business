@@ -201,6 +201,7 @@ The platform distinguishes pod-native agents, specialist overlays, and reusable 
 - Track A Mission Control portfolio visibility is defined over clients, engagements, missions, and dispatched agent instances without violating tenant isolation
 - Growth lead spotting and materialization are defined upstream of `lead.received`, including source classes and automatic-vs-review creation rules
 - commercial handoff into delivery is defined through dispatch candidate planning, approved consultant rosters, billing plans, and mission closeout controls
+- mission-specific quality gates are defined across planning, implementation, milestone release, and final handoff rather than only as one generic QA step
 
 ## Epic 12 - State, Event, Tool, and Autonomy Control Layer
 - Status: `IN_PROGRESS`

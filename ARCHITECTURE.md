@@ -84,6 +84,7 @@ Infrastructure
 - canonical operating state objects
 - pre-opportunity lead-signal normalization and materialization into `opportunity_state`
 - commercial-to-delivery handoff through approved dispatch planning, consultant roster activation, milestone acceptance, and billing control
+- mission-specific delivery quality gates tied to SOW deliverables, project plan checkpoints, implementation evidence, and handoff readiness
 - run and approval state for Mission Control visibility
 - audit objects and append-oriented trace events for execution, approvals, tools, and routing
 
@@ -192,6 +193,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - `docs/agent-instance-portfolio-model.md` now defines how reusable families become client-scoped mission instances and how Track A can aggregate portfolio visibility without violating tenant isolation
 - `docs/lead-intake-materialization-model.md` now defines supported lead source classes, automatic-vs-review materialization rules, and the event path from raw signal to canonical `lead.received`
 - `docs/consulting-engagement-lifecycle-model.md` now defines the signed-scope to mission-start handoff, dispatch candidate plan, approved consultant roster, milestone billing triggers, and mission closeout pattern
+- `docs/delivery-quality-gate-model.md` now defines mission-scoped quality gate planning, phase checkpoints, deliverable-class review patterns, and milestone or handoff release gating
 - operator-facing agent descriptions should be able to map registry metadata and routing posture into a readable operating-model summary without inventing a separate UI-only taxonomy
 - specialist overlay roles that complement, rather than replace, pod-native agents
 - a delivery distinction between `PMO / Project Control Agent` as governance/control-tower role and `Project Management / Delivery Coordination Agent` as day-to-day execution-follow-up role
@@ -310,4 +312,5 @@ See [AUDIT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUDIT_MODEL.md) 
 See [hybrid-rag-review-architecture.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/hybrid-rag-review-architecture.md) for the target hybrid retrieval and bounded review/gate-agent design.
 See [agent-instance-portfolio-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/agent-instance-portfolio-model.md) for the client-scoped consultant-instance model and Track A portfolio cockpit design.
 See [consulting-engagement-lifecycle-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/consulting-engagement-lifecycle-model.md) for the end-to-end consulting flow from lead spotting through dispatch, delivery, milestone billing, and closeout.
+See [delivery-quality-gate-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/delivery-quality-gate-model.md) for mission-specific delivery quality gates across planning, implementation, milestone release, and handoff.
 See [PLATFORM_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/PLATFORM_MODEL.md), [STATE_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/STATE_MODEL.md), [TOOLS.md](c:/Users/dpizz/OneDrive/Python/AI Business/TOOLS.md), [AUTONOMY_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUTONOMY_MODEL.md), and [EVENT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/EVENT_MODEL.md) for the formal operating meta-model added through the handoff integration.

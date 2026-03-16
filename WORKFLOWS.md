@@ -77,14 +77,15 @@ Each workflow should increasingly specify:
 - Handoff:
   1. PMO / Project Control Agent opens project structure
   2. Project Management / Delivery Coordination Agent activates work packages, actions, and checkpoint cadence
-  3. BA / Requirements Agent updates requirements
-  4. Architect Agent produces design
-  5. Build / Automation Agent implements
-  6. QA / Review Agent validates
-  7. Documentation Agent packages handover and working docs
-  8. Project Management / Delivery Coordination Agent updates follow-ups and checkpoint readiness
-  9. PMO / Project Control Agent updates steering status and escalations
-  10. Finance trigger if milestone is reached
+  3. create mission-specific `quality_gate_plan` from SOW deliverables, project plan, and acceptance criteria
+  4. BA / Requirements Agent updates requirements
+  5. Architect Agent produces design
+  6. Build / Automation Agent implements
+  7. QA / Review Agent validates the active deliverable class and phase checkpoint
+  8. Documentation Agent packages handover and working docs
+  9. Project Management / Delivery Coordination Agent updates follow-ups and checkpoint readiness
+  10. PMO / Project Control Agent updates steering status and escalations
+  11. Finance trigger if milestone is reached
 - Emitted events:
   - `project.created`
   - `requirements.updated`
@@ -279,9 +280,10 @@ State objects:
 1. ingest project scope and milestones
 2. PMO / Project Control Agent establishes control structure, milestones, and RAID baseline
 3. Project Management / Delivery Coordination Agent turns scope and milestones into active tasks, checkpoints, and follow-ups
-4. monitor progress and risks
-5. trigger quality gate
-6. route release recommendation to CEO
+4. create mission-specific quality gates for planning, implementation, milestone release, and handoff
+5. monitor progress and risks
+6. trigger the relevant quality gate for the active phase or deliverable class
+7. route release recommendation to CEO
 
 ### Workflow 12 - Quality and Testing Gate
 Start event:
@@ -293,10 +295,12 @@ State objects:
 - `approval_state` if release requires sign-off
 
 1. gather acceptance criteria
-2. run test checklist
-3. capture defects and severity
-4. summarize release readiness
-5. route final go/no-go to CEO
+2. gather SOW, project-plan, deliverable, and prior gate context
+3. run mission-appropriate review and test checks
+4. capture defects, traceability gaps, and severity
+5. summarize release or deliverable readiness
+6. return `approve`, `revise`, `escalate`, `human_review`, or `blocked`
+7. route final go/no-go to CEO when required
 
 ### Workflow 13 - Documentation and Handover
 Start event:
@@ -308,8 +312,9 @@ State objects:
 
 1. collect project artifacts
 2. generate structured documentation pack
-3. validate completeness
-4. route handover package for CEO review
+3. run handover-readiness gate against SOW deliverables, acceptance criteria, and operational completeness
+4. validate completeness
+5. route handover package for CEO review
 
 ### Workflow 14 - CTO/CIO Counsel and Platform Improvement
 Start event:

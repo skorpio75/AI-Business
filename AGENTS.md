@@ -281,6 +281,7 @@ The following agents are canonical first-class pod agents that complement the ex
 - Modes: `internal_operating`, `client_delivery`
 - Autonomy class: `assistant`
 - State ownership: updates quality and readiness fields in `project_state`
+- Mission role: acts as the primary mission-scoped quality-gate reviewer for documents, designs, implementation outputs, and milestone-readiness checks using the SOW, project plan, and acceptance criteria as rubric inputs
 
 #### Documentation Agent
 - Purpose: produce working documentation and handover packs

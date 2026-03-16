@@ -30,6 +30,8 @@
 - [ ] `B-T56` Define the `approved_consultant_roster` contract and Track B visibility model for dispatched consultants
 - [ ] `B-T57` Define `billing_plan` contracts for the approved billing method
 - [ ] `B-T58` Build the signed-scope to mission-start workflow with dispatch approval and roster activation
+- [ ] `B-T62` Define the `quality_gate_plan` contract per mission
+- [ ] `B-T63` Add mission-phase delivery quality gates for implementation, milestone release, and handoff readiness
 - [ ] `B-T40` Define hybrid retrieval source classes and provenance rules for internal, client, and external evidence
 - [ ] `B-T45` Define bounded review/gate agent step contracts for `approve`, `revise`, `escalate`, and `human_review`
 - [ ] `B-T47` Define a formal agent-instance registry keyed by family, tenant, client, engagement, and mission
@@ -82,6 +84,7 @@
 - [ ] Keep Track A portfolio visibility summary-only across client runtimes; do not turn it into shared mutable client state
 - [ ] Treat raw commercial signals separately from materialized leads; `lead.received` should only fire after normalization, dedupe, and create-or-review decisioning
 - [ ] Keep signed scope separate from mission startup; use approved dispatch planning, consultant roster activation, and billing-plan control in between
+- [ ] Keep quality gates phase-aware and mission-specific; do not collapse document review, code review, test readiness, and handoff readiness into one generic late QA step
 - [ ] Keep multi-agent runtime evolution workflow-first; avoid autonomous peer-agent complexity before step identity, handoff payloads, and execution logs are stable
 - [ ] Treat the prompt layer as part of the target runtime architecture, but defer large-scale prompt authoring until contracts, state, and workflow boundaries are stable
 - [ ] Reuse the compact direct-Ollama pattern selectively: best for bounded internal panels and short grounded outputs, not automatically for every richer client-facing reasoning surface

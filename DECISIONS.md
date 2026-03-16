@@ -314,3 +314,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Track B delivery instances may prepare milestone evidence and acceptance packets, but invoice triggering, release, receivables follow-up, and closeout billing control remain internal Track A responsibilities governed by an approved `billing_plan`. Billing should begin from client-approved milestone acceptance or other approved billing conditions rather than from internal delivery completion alone.
 - Rationale: This preserves the commercial reality of consulting work: delivery evidence is client-scoped, but billing authority and cash collection remain internal firm responsibilities. Separating milestone completion from client acceptance and invoice release improves auditability and avoids accidental billing drift.
+
+## ADR-053: Delivery quality gates should be mission-specific, phase-aware, and agent-run
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Delivery quality control should not be modeled as one generic QA step at the end of execution. Each mission should carry a `quality_gate_plan` derived from the SOW, project plan, deliverable classes, and acceptance criteria, with checkpoints that can review documents, architecture, code, automation outputs, test evidence, milestone readiness, and handoff completeness. These gates should be executed by bounded review families such as `QA / Review Agent`, `Testing / QA Agent`, `Documentation Agent`, and when justified `Risk / Watchdog Agent`.
+- Rationale: Real consulting work applies different quality checks at different delivery phases. A mission-scoped, AI-assisted gate model better reflects how planning, implementation, milestone release, and handoff are actually governed, while keeping review behavior observable and workflow-bound instead of ad hoc.

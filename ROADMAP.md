@@ -216,6 +216,13 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T60: Build receivables follow-up and exception routing against the approved billing plan
 - [ ] B-T61: Define and implement a mission-closeout workflow covering final acceptance, billing completion, lessons learned, roster deactivation, and archive state
 
+### Backlog - Delivery Quality Gates
+- [ ] B-T62: Define the `quality_gate_plan` contract per mission, including phase checkpoints, deliverable classes, gate families, and release conditions
+- [ ] B-T63: Add mission-phase quality gates for planning, requirements/design, implementation, milestone release, and handoff readiness
+- [ ] B-T64: Add AI-assisted deliverable review prompts that use SOW, project plan, acceptance criteria, and evidence packs as gate rubric inputs
+- [ ] B-T65: Persist quality-gate results and surface them in Track A and Track B delivery readiness views
+- [ ] B-T66: Prevent milestone-acceptance routing and handoff release when required quality gates are still failing, blocked, or unresolved
+
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
 - [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar
@@ -397,6 +404,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for lead-source adapters, dedupe and materialization rules, an operator lead-candidate review queue, and linkage from qualified opportunity into later mission dispatch planning.
 - Added `docs/consulting-engagement-lifecycle-model.md` to define the real consulting flow from signed scope through dispatch candidate planning, approved consultant roster activation, delivery startup, milestone billing, and mission closeout.
 - Added roadmap coverage for dispatch candidate planning, approved consultant rosters, billing plans, signed-scope to mission-start workflow, milestone acceptance to billing triggers, receivables follow-up, and mission closeout.
+- Added `docs/delivery-quality-gate-model.md` to define mission-specific delivery quality gates tied to SOW deliverables, project-plan phases, implementation evidence, milestone release, and final handoff.
+- Added roadmap coverage for mission `quality_gate_plan` contracts, phase-specific delivery gates, AI-assisted review rubrics, persisted gate results, and gating of milestone acceptance or handoff release when quality conditions are unresolved.
 
 ## Next Action
 Start `P5-T08` to add `agent_runs` persistence for per-agent execution history against the new audit model.

@@ -124,7 +124,8 @@ Typical startup flow:
 2. PMO / Project Control Agent establishes governance baseline
 3. Project Management / Delivery Coordination Agent creates the project plan
 4. deliverables from the SOW are mapped into milestones, work packages, checkpoints, and acceptance criteria
-5. BA, Architect, Build, QA, Documentation, and specialist advisory families are activated as needed from the approved roster
+5. a mission-specific `quality_gate_plan` is created from the SOW, project plan, deliverable classes, and acceptance criteria
+6. BA, Architect, Build, QA, Documentation, and specialist advisory families are activated as needed from the approved roster
 
 ## Deliverables and SOW Alignment
 Deliverables should remain first-class mission objects and stay linked to:
@@ -133,9 +134,28 @@ Deliverables should remain first-class mission objects and stay linked to:
 - the project plan
 - milestones
 - acceptance criteria
+- quality gates
 - later billing triggers
 
 This avoids a gap between commercial promises and delivery execution.
+
+## Delivery Quality Gates
+Delivery quality should be treated as a mission mechanism, not only as one generic QA step.
+
+The mission should carry a `quality_gate_plan` that defines:
+
+- which gate checkpoints apply in planning, design, implementation, milestone release, and handoff phases
+- which agent families review each deliverable class
+- which gates must pass before milestone acceptance or handoff routing can proceed
+
+Typical gate families:
+
+- `QA / Review Agent`
+- `Testing / QA Agent`
+- `Documentation Agent`
+- `Risk / Watchdog Agent` where escalation sensitivity is higher
+
+This lets the platform review documents, code, automation flows, testing evidence, and handover packs in a way that reflects the actual mission shape.
 
 ## Billing Plan
 The mission should also carry a `billing_plan` in Track A.
@@ -164,11 +184,12 @@ Billing should not start merely because work looks done internally.
 Recommended flow:
 
 1. Track B delivery agents prepare milestone evidence
-2. client acceptance is recorded
-3. `milestone.accepted` is emitted
-4. Track A internal billing agents create the invoice package according to the `billing_plan`
-5. invoice release remains approval-bound under policy
-6. receivables follow-up remains in Track A
+2. required quality gates pass or are escalated and resolved
+3. client acceptance is recorded
+4. `milestone.accepted` is emitted
+5. Track A internal billing agents create the invoice package according to the `billing_plan`
+6. invoice release remains approval-bound under policy
+7. receivables follow-up remains in Track A
 
 This keeps billing under internal control while still depending on client-approved delivery evidence.
 
@@ -178,6 +199,7 @@ Mission closeout should also be explicit.
 Suggested closeout conditions:
 
 - final deliverables accepted
+- final handoff-readiness gate passed
 - final invoice state resolved or intentionally open under policy
 - remaining approvals resolved
 - lessons learned captured

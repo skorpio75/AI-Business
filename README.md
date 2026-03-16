@@ -72,6 +72,8 @@ The client contract now captures tenant identity, approval/governance defaults, 
 
 Seed automation now turns that pack into tenant-specific artifacts under `config/clients/`, and portability coverage now proves that seeded client instances can run the reusable `knowledge-qna` and `email-operations` workflows under tenant-scoped runtime settings. `document-intake` and `reporting` remain in the Track B workflow pack as governed contract entries pending service implementation.
 
+For the full operator sequence, including the `RUNTIME_ENV_FILE` activation rule, database startup, connector bootstrap, and smoke tests, use [docs/track-b-bootstrap-runbook.md](docs/track-b-bootstrap-runbook.md).
+
 ### Seed A Client Instance
 Generate a tenant-specific client contract and runtime env file from the Track B template:
 

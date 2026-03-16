@@ -28,4 +28,6 @@ docker compose -f docker-compose.yml -f config/client-template/docker-compose.cl
 
 `P4-T03` now provides `scripts/seed_config.py`, which turns this template pack into a tenant-specific client contract and runtime env file under `config/clients/` and creates the tenant directory roots expected by the runtime.
 
-`P4-T05` now validates portability across seeded client instances: `knowledge-qna` and `email-operations` run under tenant-scoped runtime settings, while `document-intake` and `reporting` remain governed workflow-pack entries pending service implementation. `P4-T06` is the remaining bootstrap runbook task.
+`P4-T05` now validates portability across seeded client instances: `knowledge-qna` and `email-operations` run under tenant-scoped runtime settings, while `document-intake` and `reporting` remain governed workflow-pack entries pending service implementation.
+
+`P4-T06` is now captured in `docs/track-b-bootstrap-runbook.md`, which documents the tenant seed flow, the `RUNTIME_ENV_FILE` activation rule, database and API startup, connector bootstrap, verification, and cleanup steps for a real client instance.

@@ -218,3 +218,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: Track B portability acceptance should prove that implemented reusable workflows run across multiple seeded client instances under tenant-scoped runtime settings, while separately verifying that additional workflow-pack entries remain preserved in the seeded client contract and shared workflow registry until their service implementations land.
 - Rationale: This keeps portability claims honest. The platform should not imply full end-to-end portability for workflows that are only documented in the client pack today, but it should still protect the shared Track B contract so later implementations can plug into an already-stable workflow pack.
+
+## ADR-037: Track B bootstrap must be documented as an operator runbook centered on tenant env activation
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Track B should ship with a concrete bootstrap runbook that documents the exact seed, startup, connector-bootstrap, verification, and cleanup sequence, with explicit emphasis that `RUNTIME_ENV_FILE` must be set before any Python process starts for a client instance.
+- Rationale: Isolation is enforced partly by runtime configuration selection, not only by static files. A generated tenant env file is not enough if operators can still launch migrations, the API, or token bootstrap scripts against the shared root `.env`. A runbook turns the bootstrap path into a repeatable operational procedure instead of relying on implicit knowledge.

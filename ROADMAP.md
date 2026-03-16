@@ -12,7 +12,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 ## Current Snapshot
 - Updated: 2026-03-16
 - Overall Status: `IN_PROGRESS`
-- Active Phase: `Phase 4 - Track B Client Template MVP`
+- Active Phase: `Phase 5 - Observability + Testing`
 - Active Cross-Cutting Stream: `AI-Business IDE handoff integration`
 
 ## Phase Tracker
@@ -23,8 +23,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
-| Phase 4 | Track B client template MVP | IN_PROGRESS | dpizz | TBD | 9/10 tasks done |
-| Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
+| Phase 4 | Track B client template MVP | DONE | dpizz | TBD | 10/10 tasks done |
+| Phase 5 | Observability + testing | IN_PROGRESS | dpizz | TBD | 0/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
 ## Completed Baseline Items
@@ -124,7 +124,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P4-T03: Build seed script for client initialization
 - [x] P4-T04: Isolate storage/credentials per client instance
 - [x] P4-T05: Validate workflow portability across instances
-- [ ] P4-T06: Document client bootstrap runbook
+- [x] P4-T06: Document client bootstrap runbook
 
 ### Phase 5 - Observability + Testing
 - [ ] P5-T01: Add Langfuse trace integration
@@ -346,6 +346,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Expanded that rollout planning from a service-level shortlist into a broader agent-family candidate inventory aligned with `AGENTS.md`, including Delivery, Executive, Growth, Ops, and client-facing service families that may later adopt the same compact local-first Ollama pattern.
 - Created `AGENT_LLM_ROUTING_MATRIX.md` as the family-level routing reference for compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids, and synced the main governance docs to reference it.
 - Validated Track B workflow portability across seeded client instances by activating tenant-scoped runtime env files, running the reusable `knowledge-qna` and `email-operations` services under seeded client settings, and checking that `document-intake` and `reporting` remain preserved in the seeded Track B workflow pack contract.
+- Documented the Track B bootstrap operator flow in `docs/track-b-bootstrap-runbook.md`, including tenant seeding, `RUNTIME_ENV_FILE` activation, database and API startup, Google and Microsoft connector bootstrap, verification, and cleanup guidance.
 
 ## Next Action
-Start `P4-T06` to document the client bootstrap runbook now that the Track B template, seed flow, isolation rules, and workflow portability validation are in place.
+Start `P5-T01` to add Langfuse trace integration now that Phase 4 Track B template work is complete.

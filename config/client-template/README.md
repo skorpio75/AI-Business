@@ -16,6 +16,7 @@ The pack is designed to preserve the Track A / Track B isolation rule:
 - isolated database naming and port assignment
 - isolated secret-store paths
 - isolated storage roots for documents, logs, and exports
+- isolated runtime env file used for token persistence and connector bootstrap updates
 
 Example composition:
 
@@ -23,4 +24,8 @@ Example composition:
 docker compose -f docker-compose.yml -f config/client-template/docker-compose.client.yaml --env-file config/client-template/deployment.env.example up -d
 ```
 
-This pack is the Track B scaffold only. Later tasks still finalize the client contract, build seeding automation, harden runtime storage/credential isolation, validate workflow portability, and document the full bootstrap runbook.
+`P4-T04` now enforces the storage and credential boundary in runtime settings: Track B instances require a client-scoped `RUNTIME_ENV_FILE`, storage roots must stay under `data/clients/<tenant>/`, prompt overrides under `prompts/clients/<tenant>/`, and connector secrets under `secrets/<tenant>/`.
+
+`P4-T03` now provides `scripts/seed_config.py`, which turns this template pack into a tenant-specific client contract and runtime env file under `config/clients/` and creates the tenant directory roots expected by the runtime.
+
+Later tasks still validate workflow portability and document the full bootstrap runbook.

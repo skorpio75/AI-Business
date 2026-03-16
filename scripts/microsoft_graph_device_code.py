@@ -51,10 +51,10 @@ def main() -> int:
             allow_error_payload=True,
         )
         if "access_token" in token:
-            persist_tokens(token, env_path=ROOT / ".env")
-            print("Saved MICROSOFT_GRAPH_ACCESS_TOKEN to .env")
+            persist_tokens(token, settings=settings)
+            print("Saved MICROSOFT_GRAPH_ACCESS_TOKEN to the active runtime env file")
             if "refresh_token" in token:
-                print("Saved MICROSOFT_GRAPH_REFRESH_TOKEN to .env")
+                print("Saved MICROSOFT_GRAPH_REFRESH_TOKEN to the active runtime env file")
             return 0
 
         if token.get("error") == "authorization_pending":

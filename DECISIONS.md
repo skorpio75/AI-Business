@@ -200,3 +200,15 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: `config/client-template/client.yaml` should define the canonical Track B client contract for tenant identity, governance defaults, deployment metadata, storage and secret paths, connector defaults, model-routing posture, and initial workflow/service packaging so later seed automation can treat one file as the source of truth for a new client instance.
 - Rationale: The template pack is only partly useful if the key bootstrap assumptions remain scattered across docs or implied by other config files. A fuller client contract improves repeatability, keeps Track B bootstrap deterministic, and gives later seeding and isolation work one governed handoff artifact instead of several disconnected placeholders.
+
+## ADR-034: Track B runtime must enforce tenant-scoped env, secret, and storage boundaries
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: Track B runtime settings must reject client instances that fall back to the shared root `.env` or that point storage, prompt-override, or connector-secret paths outside the tenant-scoped roots defined for that client. Provider token persistence should follow the active client env file, and startup should create the validated tenant-scoped runtime directories before connector bootstrap runs.
+- Rationale: Track B isolation is not credible if credentials can still drift into the shared repo `.env` or if client storage paths can point at shared roots. Runtime validation and path-aware token persistence close the gap between the template contract and actual operational behavior.
+
+## ADR-035: Track B bootstrap should emit tenant-specific generated config outside the shared template pack
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: The client initialization seed flow should treat `config/client-template/` as the shared source template and write generated per-client artifacts into `config/clients/`, including a tenant-specific client contract and runtime env file, while also creating the tenant directory roots required by runtime isolation.
+- Rationale: Keeping generated client artifacts separate from the reusable template pack preserves the distinction between shared blueprint assets and tenant-specific operational config. It also makes repeated seeding safer and clearer, especially once multiple Track B client instances exist side by side.

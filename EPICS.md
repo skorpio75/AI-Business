@@ -108,6 +108,7 @@ A reproducible isolated client platform can be deployed quickly.
 - client contract defines tenant, governance, deployment, storage, connectors, model routing, and default workflow/service packaging
 - deployment can be cloned from the template env + compose overlay
 - seed scripts prepare first instance
+- runtime enforces tenant-scoped env, secret, storage, and prompt-root boundaries for Track B instances
 - workflows run with client-specific context
 - client-facing advisory agents can analyze a client problem statement, context, and history before recommending services
 - client-facing advisory agents can frame the active consulting mission and detect bounded upsell opportunities that help grow the account

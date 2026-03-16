@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.connectors.factory import build_calendar_connector, build_inbox_connector
 from app.connectors.http import ConnectorHttpError
-from app.core.settings import Settings, get_settings
+from app.core.settings import Settings, build_settings, ensure_runtime_directories, get_settings
 from app.knowledge.pgvector_store import PgVectorRetrievalService
 from app.db.repository import (
     get_approval,
@@ -69,7 +69,7 @@ chief_ai_panel = ChiefAIPanelService(model_gateway=gateway)
 
 
 def get_runtime_settings() -> Settings:
-    return Settings()
+    return build_settings()
 
 
 def build_personal_assistant_context_service(current_settings: Settings) -> PersonalAssistantContextService:
@@ -95,6 +95,7 @@ def bootstrap_provider_tokens_on_startup() -> None:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    ensure_runtime_directories(get_runtime_settings())
     bootstrap_provider_tokens_on_startup()
     yield
 

@@ -68,7 +68,23 @@ In short: internal and client-facing agents already use the same governed LLM-fi
 ## Track B Template Pack
 The first Track B deployment pack now lives in `config/client-template/`. It includes a finalized `client.yaml` contract, a client-scoped `deployment.env.example`, a `docker-compose.client.yaml` overlay, and a `storage-map.yaml` placeholder for isolated documents, logs, exports, prompt overrides, and connector secrets.
 
-The client contract now captures tenant identity, approval/governance defaults, deployment metadata, storage/secret paths, connector defaults, model-routing posture, and default workflow/service packaging. That makes the template clonable without changing the shared codebase while setting up the next task: seed automation.
+The client contract now captures tenant identity, approval/governance defaults, deployment metadata, storage/secret paths, connector defaults, model-routing posture, and default workflow/service packaging. Runtime settings now also enforce those Track B boundaries: a client instance must use a tenant-scoped `RUNTIME_ENV_FILE`, storage roots stay under `data/clients/<tenant>/`, prompt overrides stay under `prompts/clients/<tenant>/`, and connector secrets stay under `secrets/<tenant>/`.
+
+That makes the template clonable without changing the shared codebase while setting up the next task: seed automation.
+
+### Seed A Client Instance
+Generate a tenant-specific client contract and runtime env file from the Track B template:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\seed_config.py --client-id acme-erp-rollout --name "Acme ERP Rollout" --tenant-id acme-erp
+```
+
+That command creates:
+- `config/clients/acme-erp.yaml`
+- `config/clients/acme-erp.env`
+- tenant-scoped roots under `data/clients/acme-erp/`, `prompts/clients/acme-erp/`, and `secrets/acme-erp/`
+
+Use `--dry-run` to preview the outputs and `--force` to overwrite an existing generated client contract/env file.
 
 ## Repository Structure
 ```text
@@ -220,6 +236,7 @@ The personal assistant backend can now fetch real inbox and calendar data when c
 - If `GOOGLE_REFRESH_TOKEN` is configured together with `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, the backend refreshes the Google access token automatically when building connector context.
 - If `MICROSOFT_GRAPH_REFRESH_TOKEN` is configured, the backend refreshes the Microsoft Graph access token automatically each time the API starts and when connector context is rebuilt.
 - Provider credentials can live either directly in `.env` or in JSON secret files referenced by `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH`.
+- Track B client instances should also set `RUNTIME_ENV_FILE` so refresh/bootstrap flows write tokens back to the active client env file instead of the shared root `.env`.
 
 Use `PERSONAL_ASSISTANT_ACCOUNT_ID` and `PERSONAL_ASSISTANT_CALENDAR_ID` to target the mailbox/calendar, and keep both connector settings at `null` if you want the previous placeholder behavior.
 

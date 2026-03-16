@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.core.settings import get_settings
-from app.services.provider_auth import ENV_PATH, persist_provider_tokens, post_form
+from app.services.provider_auth import persist_provider_tokens, post_form
 
 
 class CallbackHandler(BaseHTTPRequestHandler):
@@ -96,10 +96,10 @@ def main() -> int:
         print(json.dumps(token_payload, indent=2), file=sys.stderr)
         return 1
 
-    persist_provider_tokens("google", token_payload, settings=settings, env_path=ENV_PATH)
-    print("Saved GOOGLE_ACCESS_TOKEN to .env or configured secret store.")
+    persist_provider_tokens("google", token_payload, settings=settings)
+    print("Saved GOOGLE_ACCESS_TOKEN to the active runtime env file or configured secret store.")
     if "refresh_token" in token_payload:
-        print("Saved GOOGLE_REFRESH_TOKEN to .env or configured secret store.")
+        print("Saved GOOGLE_REFRESH_TOKEN to the active runtime env file or configured secret store.")
     return 0
 
 

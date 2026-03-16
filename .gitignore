@@ -2,6 +2,10 @@
 .env.local
 .env.*.local
 .venv/
+data/
+secrets/
+config/clients/
+prompts/clients/
 __pycache__/
 .pytest_cache/
 .mypy_cache/

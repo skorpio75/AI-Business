@@ -194,6 +194,7 @@ These integrations may enrich a client advisory brief, but the normalized proble
 - Google local-loopback OAuth bootstrap via `scripts/google_oauth_local_server.py`
 - refresh-token lifecycle handling for Google and Microsoft Graph
 - optional JSON secret-store paths via `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH`
+- client-scoped `RUNTIME_ENV_FILE` support so Track B token persistence follows the active tenant env file instead of the shared repo root `.env`
 - bootstrap diagnostics through `GET /connectors/bootstrap-status`
 
 These connectors are selected through environment settings. Write actions remain approval-bound in MVP and execute only through platform-controlled paths after approval is recorded here.

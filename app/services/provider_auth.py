@@ -5,13 +5,13 @@ from pathlib import Path
 from typing import Any, Optional
 from urllib import error, parse, request
 
-from app.core.settings import Settings
+from app.core.settings import DEFAULT_ENV_PATH, Settings
 from app.models.connectors import ConnectorBootstrapStatusResponse, ProviderBootstrapStatus
 
 logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[2]
-ENV_PATH = ROOT / ".env"
+ENV_PATH = DEFAULT_ENV_PATH
 OUTLOOK_PROVIDERS = {"microsoft_graph", "graph", "outlook"}
 GOOGLE_INBOX_PROVIDERS = {"gmail"}
 GOOGLE_CALENDAR_PROVIDERS = {"google", "google_calendar", "google-calendar"}
@@ -134,7 +134,14 @@ def hydrate_provider_settings(settings: Settings) -> Settings:
     return settings.model_copy(update=updates) if updates else settings
 
 
-def persist_provider_tokens(provider_id: str, token_payload: dict[str, Any], *, settings: Settings, env_path: Path = ENV_PATH) -> None:
+def persist_provider_tokens(
+    provider_id: str,
+    token_payload: dict[str, Any],
+    *,
+    settings: Settings,
+    env_path: Path | None = None,
+) -> None:
+    target_env_path = env_path or settings.resolved_env_file
     values: dict[str, str] = {}
     if provider_id == "google":
         if token_payload.get("access_token"):
@@ -155,11 +162,11 @@ def persist_provider_tokens(provider_id: str, token_payload: dict[str, Any], *, 
     else:
         raise ProviderAuthError(f"Unsupported provider_id: {provider_id}")
 
-    if values and env_path.exists():
-        rewrite_env_values(env_path, values)
+    if values and target_env_path.exists():
+        rewrite_env_values(target_env_path, values)
 
 
-def refresh_google_access_token(settings: Settings, *, env_path: Path = ENV_PATH) -> dict[str, Any]:
+def refresh_google_access_token(settings: Settings, *, env_path: Path | None = None) -> dict[str, Any]:
     resolved = hydrate_provider_settings(settings)
     if not resolved.google_client_id or not resolved.google_client_secret:
         raise ProviderAuthError("Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET.")
@@ -181,7 +188,7 @@ def refresh_google_access_token(settings: Settings, *, env_path: Path = ENV_PATH
     return token_payload
 
 
-def refresh_microsoft_graph_access_token(settings: Settings, *, env_path: Path = ENV_PATH) -> dict[str, Any]:
+def refresh_microsoft_graph_access_token(settings: Settings, *, env_path: Path | None = None) -> dict[str, Any]:
     resolved = hydrate_provider_settings(settings)
     if not resolved.outlook_tenant_id or not resolved.outlook_client_id:
         raise ProviderAuthError("Missing OUTLOOK_TENANT_ID or OUTLOOK_CLIENT_ID.")
@@ -208,7 +215,7 @@ def refresh_microsoft_graph_access_token(settings: Settings, *, env_path: Path =
 def ensure_provider_tokens(
     settings: Settings,
     *,
-    env_path: Path = ENV_PATH,
+    env_path: Path | None = None,
     force_refresh: bool = False,
 ) -> Settings:
     resolved = hydrate_provider_settings(settings)

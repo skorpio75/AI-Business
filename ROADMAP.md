@@ -23,7 +23,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 | Phase 1 | Platform core (FastAPI, config, DB, LiteLLM) | DONE | dpizz | TBD | 8/8 tasks done |
 | Phase 2 | Workflow + knowledge foundation | DONE | dpizz | TBD | 20/20 tasks done |
 | Phase 3 | Track A internal MVP workflows (React UI) | DONE | dpizz | TBD | 20/20 tasks done |
-| Phase 4 | Track B client template MVP | IN_PROGRESS | dpizz | TBD | 6/10 tasks done |
+| Phase 4 | Track B client template MVP | IN_PROGRESS | dpizz | TBD | 8/10 tasks done |
 | Phase 5 | Observability + testing | NOT_STARTED | dpizz | TBD | 0/12 tasks done |
 | Phase 6 | Later ops layer (CI/CD, LLMOps/MLOps) | NOT_STARTED | dpizz | TBD | 0/10 tasks done |
 
@@ -121,8 +121,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P4-T01C: Route specialist advisory analysis through the governed prompt/model layer so consulting agents use LLM reasoning with deterministic fallback guardrails
 - [x] P4-T01D: Route internal CTO/CIO and Chief AI specialist panels through the governed prompt/model layer and surface routing metadata in Mission Control
 - [x] P4-T02: Finalize `config/client-template/client.yaml`
-- [ ] P4-T03: Build seed script for client initialization
-- [ ] P4-T04: Isolate storage/credentials per client instance
+- [x] P4-T03: Build seed script for client initialization
+- [x] P4-T04: Isolate storage/credentials per client instance
 - [ ] P4-T05: Validate workflow portability across instances
 - [ ] P4-T06: Document client bootstrap runbook
 
@@ -260,6 +260,8 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 ### 2026-03-15
 - Completed `P4-T01` by creating the first Track B client deployment template pack under `config/client-template/`, including a pack README, a client-scoped environment template, a compose overlay, and a storage/secret path map that can be cloned for isolated client instances.
 - Completed `P4-T02` by expanding `config/client-template/client.yaml` into a fuller Track B client contract covering tenant identity, governance, deployment, storage, connectors, model routing posture, and default workflow/service packaging for later seed automation.
+- Completed `P4-T03` by replacing the `scripts/seed_config.py` placeholder with a real client initialization seed flow that generates tenant-specific client contracts and runtime env files under `config/clients/` and creates the tenant storage, prompt, and secret directory roots.
+- Completed `P4-T04` by enforcing tenant-scoped runtime storage and credential boundaries: Track B settings now require a client-scoped runtime env file, storage and prompt roots are validated against the tenant path, provider token persistence follows the active client env file, and startup creates tenant-scoped runtime directories.
 - Completed `P4-T01D` by routing the internal CTO/CIO and Chief AI specialist panels through the shared prompt/model layer and surfacing provider/model routing metadata in Mission Control.
 - Completed `P4-T01C` by routing CTO/CIO and Chief AI specialist analysis through the shared prompt/model layer so consulting reasoning can use LLM capacity while retaining deterministic fallback, output schemas, and approval/governance guardrails.
 - Completed `P4-T01B` by extending CTO/CIO and Chief AI advisory analysis with consulting-style mission framing and upsell opportunity outputs so client-facing agents can solve a mission and discover adjacent growth paths for the account.
@@ -345,4 +347,4 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Created `AGENT_LLM_ROUTING_MATRIX.md` as the family-level routing reference for compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids, and synced the main governance docs to reference it.
 
 ## Next Action
-Start `P4-T03` to build the client initialization seed script against the finalized Track B client contract.
+Start `P4-T05` to validate workflow portability across seeded client instances now that the Track B template, seed flow, and isolation rules are in place.

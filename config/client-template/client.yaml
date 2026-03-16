@@ -30,6 +30,7 @@ governance:
 deployment:
   environment_name: client-template
   app_name: enterprise-agent-platform-client-template
+  runtime_env_var: RUNTIME_ENV_FILE
   compose:
     base_file: docker-compose.yml
     overlay_file: config/client-template/docker-compose.client.yaml
@@ -103,3 +104,4 @@ runtime_defaults:
 notes:
   - Finalized Track B client contract for the reusable deployment template pack.
   - P4-T03 seed automation should treat this file as the source of truth for deployment naming, storage roots, and default workflow and specialist enablement.
+  - P4-T04 runtime isolation requires a tenant-scoped runtime env file plus tenant-bound storage, prompt, and secret paths.

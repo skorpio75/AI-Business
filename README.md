@@ -66,9 +66,9 @@ In short: internal and client-facing agents already use the same governed LLM-fi
 - reusable document intake workflow
 
 ## Track B Template Pack
-The first Track B deployment pack now lives in `config/client-template/`. It includes the starter `client.yaml`, a client-scoped `deployment.env.example`, a `docker-compose.client.yaml` overlay, and a `storage-map.yaml` placeholder for isolated documents, logs, exports, prompt overrides, and connector secrets.
+The first Track B deployment pack now lives in `config/client-template/`. It includes a finalized `client.yaml` contract, a client-scoped `deployment.env.example`, a `docker-compose.client.yaml` overlay, and a `storage-map.yaml` placeholder for isolated documents, logs, exports, prompt overrides, and connector secrets.
 
-This pack makes the template clonable without changing the shared codebase while keeping later tasks separate for final client-contract design, seeding, runtime isolation hardening, workflow portability checks, and the bootstrap runbook.
+The client contract now captures tenant identity, approval/governance defaults, deployment metadata, storage/secret paths, connector defaults, model-routing posture, and default workflow/service packaging. That makes the template clonable without changing the shared codebase while setting up the next task: seed automation.
 
 ## Repository Structure
 ```text

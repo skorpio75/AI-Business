@@ -4,7 +4,7 @@ This folder is the first reusable deployment pack for Track B client instances.
 
 It packages the minimum artifacts needed to clone a client-scoped deployment without reworking the shared codebase:
 
-- `client.yaml`: client identity placeholder config. This remains intentionally minimal until `P4-T02`.
+- `client.yaml`: finalized Track B client contract covering tenant identity, governance, deployment, storage, connectors, model routing, and default workflow/service packaging.
 - `deployment.env.example`: client-scoped environment template for ports, database naming, tenant identity, and secret-store paths.
 - `docker-compose.client.yaml`: compose overlay that gives a cloned client deployment its own PostgreSQL container identity and named volume.
 - `storage-map.yaml`: canonical placeholder paths for client documents, logs, exports, prompt overrides, and connector secrets.

@@ -1,4 +1,105 @@
 client:
   id: client-template
-  name: template-company
+  slug: client-template
+  name: Template Company
+  legal_name: Template Company S.A.
+  primary_track: track_b_client
   isolated_deployment: true
+  template_version: 1
+  lifecycle_stage: template
+  timezone: Europe/Luxembourg
+  locale: en-US
+
+tenancy:
+  tenant_id: client-template
+  track: track_b_client
+  deployment_model: isolated_single_tenant
+  isolation_boundaries:
+    state: required
+    storage: required
+    credentials: required
+    audit: required
+
+governance:
+  approval_model: single_human_approver_mvp
+  approval_required_for_sensitive_actions: true
+  outbound_commitments_require_approval: true
+  client_deliverables_require_approval: true
+  autonomous_external_commitments_allowed: false
+
+deployment:
+  environment_name: client-template
+  app_name: enterprise-agent-platform-client-template
+  compose:
+    base_file: docker-compose.yml
+    overlay_file: config/client-template/docker-compose.client.yaml
+    env_file: config/client-template/deployment.env.example
+  api:
+    host: 0.0.0.0
+    port: 8000
+  database:
+    engine: postgresql
+    database_name: client_template_platform
+    port: 5440
+    url_env_var: DATABASE_URL
+
+storage:
+  documents_root: data/clients/client-template/documents
+  logs_root: data/clients/client-template/logs
+  exports_root: data/clients/client-template/exports
+  vector_root: data/clients/client-template/vector
+  prompt_override_root: prompts/clients/client-template
+  secret_paths:
+    google_oauth: secrets/client-template/google-oauth.json
+    microsoft_graph: secrets/client-template/microsoft-graph.json
+
+connectors:
+  inbox_default: null
+  calendar_default: null
+  supported_inbox_connectors:
+    - gmail
+    - outlook
+    - microsoft_graph
+  supported_calendar_connectors:
+    - google_calendar
+    - outlook
+    - microsoft_graph
+
+models:
+  local_model: qwen2.5:1.5b
+  cloud_model: openai/gpt-4o-mini
+  timeout_env_var: MODEL_TIMEOUT_SECONDS
+  routing_posture: governed_local_first
+
+solution_pack:
+  default_enabled_workflows:
+    - knowledge-qna
+    - document-intake
+    - reporting
+  planned_workflow_portability:
+    - email-operations
+  enabled_specialist_families:
+    - knowledge
+    - document
+    - reporting
+    - cto-cio-advisory
+    - chief-ai-digital-strategy
+    - consulting-support
+  candidate_delivery_families:
+    - pmo-project-control
+    - project-management-delivery-coordination
+    - ba-requirements
+    - architect
+    - qa-review
+    - documentation
+
+runtime_defaults:
+  operating_modes:
+    - client_delivery
+    - client_facing_service
+  advisory_mission_framing: true
+  bounded_upsell_detection: true
+
+notes:
+  - Finalized Track B client contract for the reusable deployment template pack.
+  - P4-T03 seed automation should treat this file as the source of truth for deployment naming, storage roots, and default workflow and specialist enablement.

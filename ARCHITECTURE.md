@@ -130,6 +130,7 @@ Infrastructure
 - Agent-family routing posture is now documented separately in `AGENT_LLM_ROUTING_MATRIX.md` so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids are planned explicitly by family rather than assumed uniformly across the catalog.
 - Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google and Microsoft connector credentials.
 - Track B now has an initial deployment template pack in `config/client-template/` with a starter client config, client-scoped env template, compose overlay, and canonical storage/secret path map for cloned client instances.
+- That Track B client config is now expanded into a fuller contract that captures tenant identity, approval/governance defaults, deployment metadata, storage and secret paths, connector defaults, model-routing posture, and initial workflow/service packaging for later bootstrap automation.
 
 ## 6. Architectural Rule
 The workflow controls the process. AI is used only inside selected steps.

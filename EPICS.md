@@ -105,6 +105,7 @@ A reproducible isolated client platform can be deployed quickly.
 
 ### Acceptance criteria
 - client config pack exists
+- client contract defines tenant, governance, deployment, storage, connectors, model routing, and default workflow/service packaging
 - deployment can be cloned from the template env + compose overlay
 - seed scripts prepare first instance
 - workflows run with client-specific context

@@ -3,7 +3,7 @@
 ## Current Focus
 - Active phase: `Phase 4 - Track B Client Template MVP`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: continue Track B by finalizing the client contract after landing the first deployment template pack
+- Immediate goal: continue Track B by building the first client initialization seed script against the finalized template contract
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -18,16 +18,17 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P4-T02` Finalize `config/client-template/client.yaml`
+- [ ] `P4-T03` Build seed script for client initialization
 
 ## Soon After
-- [ ] `P4-T03` Build seed script for client initialization
+- [ ] `P4-T04` Isolate storage/credentials per client instance
 - [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 - [ ] `B-T01A` Apply the compact direct-Ollama local-first pattern to Knowledge Q&A
 - [ ] `B-T01B` Apply the compact direct-Ollama local-first pattern to proposal drafting
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] `P4-T02` Finalize `config/client-template/client.yaml` with tenant, governance, deployment, storage, connector, routing, and default workflow/service sections
 - [x] `P4-T01` Create the first Track B client deployment template pack with a pack README, client-scoped env template, compose overlay, and storage/secret path map
 - [x] `B-T01-INV` Create `AGENT_LLM_ROUTING_MATRIX.md` and expand direct-Ollama planning from a few endpoints into a broader family-level candidate inventory aligned with `AGENTS.md`
 - [x] Make the shared model timeout configurable via `.env`, split the heavy CTO/CIO and Chief AI internal panel generation into smaller section calls, and simplify those sections into compact local-first prompts that complete on the faster local Ollama model

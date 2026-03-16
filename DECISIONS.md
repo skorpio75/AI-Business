@@ -194,3 +194,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The first Track B bootstrap layer should be represented as a reusable client template pack under `config/client-template/` that bundles a starter client config, a client-scoped environment template, a compose overlay, and a canonical storage/secret path map before later work adds fuller client contracts, seed automation, and enforced runtime isolation.
 - Rationale: Track B needs a concrete cloneable starting point before deeper bootstrap automation exists. Packaging these artifacts together creates an explicit handoff surface for later seeding and isolation work while preserving the architectural rule that Track A and Track B reuse the same codebase but not the same tenant, storage, or credential assumptions.
+
+## ADR-033: The Track B client template contract must carry bootstrap-critical runtime defaults
+- Status: Accepted
+- Date: 2026-03-16
+- Decision: `config/client-template/client.yaml` should define the canonical Track B client contract for tenant identity, governance defaults, deployment metadata, storage and secret paths, connector defaults, model-routing posture, and initial workflow/service packaging so later seed automation can treat one file as the source of truth for a new client instance.
+- Rationale: The template pack is only partly useful if the key bootstrap assumptions remain scattered across docs or implied by other config files. A fuller client contract improves repeatability, keeps Track B bootstrap deterministic, and gives later seeding and isolation work one governed handoff artifact instead of several disconnected placeholders.

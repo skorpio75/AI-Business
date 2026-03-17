@@ -2,7 +2,12 @@
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from app.db.repository import list_agent_runs
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+from app.db.base import Base
+from app.db.models import ApprovalORM, WorkflowRunORM, WorkflowStateSnapshotORM
+from app.db.repository import get_approval, get_workflow_run, list_agent_runs, list_audit_events
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
 from app.models.schemas import KnowledgeQueryRequest
 from app.services.email_workflow import EmailWorkflowService
@@ -96,3 +101,36 @@ class AgentRunsPersistenceTests(UnitTestCase):
         self.assertEqual(agent_run.mode, "client_delivery")
         self.assertEqual(agent_run.tenant_id, "acme")
         self.assertEqual(agent_run.track, "track_b_client")
+
+    def test_email_workflow_succeeds_when_observability_tables_are_missing(self) -> None:
+        service = EmailWorkflowService(model_gateway=StubEmailGateway())
+        engine = create_engine("sqlite+pysqlite:///:memory:")
+        Base.metadata.create_all(
+            engine,
+            tables=[
+                WorkflowRunORM.__table__,
+                ApprovalORM.__table__,
+                WorkflowStateSnapshotORM.__table__,
+            ],
+        )
+
+        with Session(engine) as db:
+            with patch(
+                "app.services.agent_run_logger.get_settings",
+                return_value=SimpleNamespace(tenant_id="internal", primary_track="track_a_internal"),
+            ), patch(
+                "app.services.audit_event_logger.get_settings",
+                return_value=SimpleNamespace(tenant_id="internal", primary_track="track_a_internal"),
+            ):
+                response = service.run(email_workflow_request(), db=db)
+
+                workflow_run = get_workflow_run(db, response.workflow_id)
+                approval = get_approval(db, response.approval_id)
+                agent_runs = list_agent_runs(db, workflow_id=response.workflow_id)
+                audit_events = list_audit_events(db, workflow_id=response.workflow_id)
+
+        self.assertEqual(response.status, "pending_approval")
+        self.assertIsNotNone(workflow_run)
+        self.assertIsNotNone(approval)
+        self.assertEqual(agent_runs, [])
+        self.assertEqual(audit_events, [])

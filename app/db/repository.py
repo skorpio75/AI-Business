@@ -1,7 +1,8 @@
 # Copyright (c) Dario Pizzolante
+import logging
 from typing import Optional
 
-from sqlalchemy import select
+from sqlalchemy import inspect, select
 from sqlalchemy.orm import Session
 
 from datetime import datetime, timezone
@@ -10,6 +11,9 @@ from app.db.models import AgentRunORM, ApprovalORM, AuditEventORM, WorkflowRunOR
 from app.models.audit import AgentRunRecord, AuditEventRecord
 from app.models.schemas import ApprovalItem, EmailWorkflowResponse
 from app.models.workflow_state import WorkflowState
+
+logger = logging.getLogger(__name__)
+_WARNED_MISSING_OPTIONAL_TABLES: set[tuple[int, str]] = set()
 
 
 def insert_workflow_run(db: Session, run: EmailWorkflowResponse) -> None:
@@ -58,6 +62,8 @@ def insert_approval(db: Session, item: ApprovalItem) -> None:
 
 
 def insert_agent_run(db: Session, item: AgentRunRecord) -> None:
+    if not _optional_table_available(db, AgentRunORM.__tablename__):
+        return
     db.add(
         AgentRunORM(
             agent_run_id=item.agent_run_id,
@@ -91,6 +97,8 @@ def insert_agent_run(db: Session, item: AgentRunRecord) -> None:
 
 
 def insert_audit_event(db: Session, item: AuditEventRecord) -> None:
+    if not _optional_table_available(db, AuditEventORM.__tablename__):
+        return
     db.add(
         AuditEventORM(
             audit_event_id=item.audit_event_id,
@@ -147,6 +155,8 @@ def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
 
 
 def list_agent_runs(db: Session, *, workflow_id: str | None = None) -> list[AgentRunRecord]:
+    if not _optional_table_available(db, AgentRunORM.__tablename__):
+        return []
     query = select(AgentRunORM).order_by(AgentRunORM.started_at, AgentRunORM.agent_run_id)
     if workflow_id is not None:
         query = query.where(AgentRunORM.workflow_id == workflow_id)
@@ -174,6 +184,8 @@ def list_agent_runs_for_agent(
     agent_id: str,
     limit: int | None = None,
 ) -> list[AgentRunRecord]:
+    if not _optional_table_available(db, AgentRunORM.__tablename__):
+        return []
     query = select(AgentRunORM).where(AgentRunORM.agent_id == agent_id).order_by(AgentRunORM.started_at.desc())
     if limit is not None:
         query = query.limit(limit)
@@ -188,6 +200,8 @@ def list_audit_events(
     approval_id: str | None = None,
     agent_run_ids: list[str] | None = None,
 ) -> list[AuditEventRecord]:
+    if not _optional_table_available(db, AuditEventORM.__tablename__):
+        return []
     query = select(AuditEventORM).order_by(AuditEventORM.occurred_at, AuditEventORM.audit_event_id)
     if workflow_id is not None:
         query = query.where(AuditEventORM.workflow_id == workflow_id)
@@ -314,3 +328,20 @@ def resolve_workflow_state(
     row.state_json = payload
     row.updated_at = datetime.now(timezone.utc)
     return WorkflowState.model_validate(row.state_json)
+
+
+def _optional_table_available(db: Session, table_name: str) -> bool:
+    bind = db.get_bind()
+    if bind is None:
+        return False
+    if inspect(bind).has_table(table_name):
+        return True
+    warning_key = (id(bind), table_name)
+    if warning_key not in _WARNED_MISSING_OPTIONAL_TABLES:
+        _WARNED_MISSING_OPTIONAL_TABLES.add(warning_key)
+        logger.warning(
+            "Optional observability table '%s' is missing; skipping related persistence. "
+            "Run 'python scripts/init_db.py' or 'alembic upgrade head' to install the latest schema.",
+            table_name,
+        )
+    return False

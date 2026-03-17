@@ -4,7 +4,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: expose persisted audit events and agent-run traces in Mission Control with clear routing and escalation visibility
+- Immediate goal: define the first internal `delivery_lab` contracts and promotion objects for Track A rehearsal work
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -19,11 +19,10 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [x] `P5-T12` Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
+- [ ] `B-T67` Define the internal `delivery_lab` state objects and promotion contracts
 
 ## Soon After
-- [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
-- [ ] `B-T67` Define the internal `delivery_lab` state objects and promotion contracts
+- [x] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
 - [ ] `B-T68` Add a generic Track A agent-invocation path for ad hoc delivery-family use
 - [ ] `B-T69` Add `Delivery Lab`, `Handover Packs`, and `Activation Queue` Mission Control surfaces
 - [ ] `B-T70` Add `handover_pack` promotion rules and explicit Track B activation flow
@@ -46,13 +45,14 @@
 - [ ] `B-T45` Define bounded review/gate agent step contracts for `approve`, `revise`, `escalate`, and `human_review`
 - [ ] `B-T47` Define a formal agent-instance registry keyed by family, tenant, client, engagement, and mission
 - [ ] `B-T49` Build a Track A portfolio summary feed over isolated client runtimes
-- [ ] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
+- [x] `H-T04` Reflect normalized metadata in later runtime/UI surfaces without disrupting current MVP delivery work
 - [ ] `B-T01A` Apply the compact direct-Ollama local-first pattern to Knowledge Q&A
 - [ ] `B-T01B` Apply the compact direct-Ollama local-first pattern to proposal drafting
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
 - [x] `P5-T11` Align audit and trace contracts with normalized events, tool IDs, autonomy classes, and approval classes, and expand the normalized event contract to cover the newer lifecycle events documented in `EVENT_MODEL.md`
+- [x] `H-T04` Reflect normalized metadata in registry/config and later runtime/UI surfaces, including governed operating-model and routing-posture labels in Mission Control
 - [x] `B-T50A` Add `docs/mission-control-portfolio-ui-map.md` with the concrete UI map for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including proposed view keys, API shapes, and page/component structure
 - [x] `B-T62` Define the mission `quality_gate_plan` contract in backend/config, link `project_state` to quality-gate plans and results, and add a governed Track B default template
 - [x] `P5-T07` Define `AUDIT_MODEL.md` for canonical `agent_run`, `audit_event`, audit event family, and trace-linkage rules

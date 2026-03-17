@@ -157,7 +157,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] H-T01: Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
 - [x] H-T02: Update governance docs to adopt the 4-pod model, reusable family/mode/instance agent model, and normalized event/state/tool/autonomy language
 - [x] H-T03: Align markdown agent/workflow specs more fully with the new contracts and cross-agent handoff choreography
-- [ ] H-T04: Reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work
+- [x] H-T04: Reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work
 
 ### Backlog - Multi-Agent Runtime Evolution
 - [ ] M-T01: Keep multi-agent runtime evolution workflow-first; do not introduce autonomous peer-agent orchestration as the MVP control model
@@ -435,6 +435,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P5-T09` by adding append-oriented `audit_events` persistence plus runtime emission for workflow-step completion or failure, model-route selection, memory-search tool usage, approval request or decision paths, and outbound email-send actions.
 - Completed `P5-T10` by exposing aggregated trace endpoints for workflow, approval, and agent inspection so Mission Control and operators can query bundled `workflow_run`, approval, `agent_runs`, and `audit_events` views without reconstructing audit state client-side.
 - Completed `P5-T11` by aligning audit and trace contracts with governed vocabularies: `AgentRunRecord.trigger_event_name` now uses the normalized event contract, `AuditEventRecord.event_name` now uses explicit audit event families, `tool_id` now uses normalized tool IDs, and `mode`, `approval_class`, and `autonomy_class` now flow through typed governed literals in the audit/logger layer. Expanded the normalized event contract to cover the newer commercial and mission lifecycle events documented in `EVENT_MODEL.md` and added validation tests for accepted vs rejected audit values.
+- Completed `H-T04` by adding a governed metadata summary layer over agent registry and specialist responses so Mission Control now reads normalized operating-model, routing-posture, track, replication, and tool-profile labels from backend contracts instead of reformatting raw enum values page by page.
 
 ## Next Action
-Continue `H-T04` to reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work.
+Start `B-T67` to define the internal `delivery_lab` state objects and promotion contracts in backend models, config, and runtime-facing payload shapes before opening the generic Track A invocation path.

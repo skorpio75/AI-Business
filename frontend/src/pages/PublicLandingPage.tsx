@@ -14,7 +14,13 @@ import {
 } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
-import { SERVICE_DEFINITIONS } from "@/lib/publicSite";
+import {
+  ABOUT_PATH,
+  ABOUT_SUMMARY,
+  EXPERIENCE_PILLS,
+  PROGRAMME_HIGHLIGHTS,
+  SERVICE_DEFINITIONS,
+} from "@/lib/publicSite";
 
 type ServiceCard = {
   title: string;
@@ -63,13 +69,6 @@ const PROCESS: ProcessStep[] = [
     summary: "Embed continuous improvement so the business gains stay visible, measurable, and sustainable.",
     accent: "violet",
   },
-];
-
-const EXPERIENCE_PILLS = [
-  "20+ years across IT leadership and delivery",
-  "Energy, consulting, legal-tech, and public sector",
-  "Executive leadership with hands-on programme delivery",
-  "Modernization, governance, and practical AI adoption",
 ];
 
 export function PublicLandingPage() {
@@ -193,41 +192,41 @@ export function PublicLandingPage() {
         <div className="site-section__intro">
           <p className="site-kicker">About</p>
           <h2>Experienced leadership with a practical delivery mindset.</h2>
-          <p>
-            I bring more than two decades of experience across IT leadership, digital
-            transformation, and operational management in international environments. My work has
-            spanned energy, consulting, legal-tech, and public-sector programmes.
-          </p>
-          <p>
-            The common thread is helping organizations modernize, structure delivery, improve
-            governance, and adopt technology in ways that make day-to-day operations stronger.
-          </p>
+          {ABOUT_SUMMARY.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+          <a className="site-button site-button--secondary site-button--inline" href={ABOUT_PATH}>
+            View full profile
+          </a>
         </div>
         <div className="experience-panel">
-          <div className="experience-panel__header">
-            <h3>Dario Pizzolante</h3>
-            <p>IT leadership, modernization, and AI-enabled business transformation</p>
-          </div>
+          <div className="experience-panel__profile">
+            <div className="experience-portrait-frame">
+                <img
+                  alt="Portrait of Dario Pizzolante"
+                  className="experience-portrait"
+                  src="/dario-pizzolante.jpg"
+                />
+              </div>
+              <div className="experience-panel__header">
+                <h3>Dario Pizzolante</h3>
+                <p>IT leadership, modernization, and AI-enabled business transformation</p>
+              </div>
+            </div>
           <div className="experience-pill-list">
-            {EXPERIENCE_PILLS.map((pill) => (
-              <span key={pill} className="experience-pill">
-                {pill}
+              {EXPERIENCE_PILLS.map((pill) => (
+                <span key={pill} className="experience-pill">
+                  {pill}
               </span>
             ))}
           </div>
           <div className="experience-highlights">
-            <article>
-              <strong>Societe Electrique de l&apos;Our</strong>
-              <span>Modernization roadmap, cloud transition, governance, and cost optimization.</span>
-            </article>
-            <article>
-              <strong>Unified Patent Court</strong>
-              <span>IT operating model and programme coordination across 25 member states.</span>
-            </article>
-            <article>
-              <strong>Net Service Lux</strong>
-              <span>Digitalization growth, local leadership, and AI-enabled solution expansion.</span>
-            </article>
+            {PROGRAMME_HIGHLIGHTS.map((item) => (
+              <article key={item.org}>
+                <strong>{item.org}</strong>
+                <span>{item.summary}</span>
+              </article>
+            ))}
           </div>
         </div>
       </section>

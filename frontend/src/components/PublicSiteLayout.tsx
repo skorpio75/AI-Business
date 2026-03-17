@@ -30,7 +30,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
       <main className="site-main">{children}</main>
 
       <footer className="site-footer">
-        <p>Stratevia, independent advisory for AI, digital transformation, and technology leadership.</p>
+        <p>Dalilto, independent advisory for AI, digital transformation, and technology leadership.</p>
       </footer>
     </div>
   );

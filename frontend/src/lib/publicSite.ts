@@ -4,6 +4,8 @@ export type ServiceSlug =
   | "automation-digital-operations"
   | "fractional-cto-transformation-advisory";
 
+export const ABOUT_PATH = "/about";
+
 export type ServiceDefinition = {
   slug: ServiceSlug;
   title: string;
@@ -19,9 +21,70 @@ export type ServiceDefinition = {
 export const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
-  { href: "/#about", label: "About" },
+  { href: ABOUT_PATH, label: "About" },
   { href: "/#booking", label: "Booking" },
 ] as const;
+
+export const ABOUT_SUMMARY = [
+  "I bring more than two decades of experience across IT leadership, digital transformation, and operational management in international environments. My work has spanned energy, consulting, legal-tech, and public-sector programmes.",
+  "The common thread is helping organizations modernize, structure delivery, improve governance, and adopt technology in ways that make day-to-day operations stronger.",
+];
+
+export const EXPERIENCE_PILLS = [
+  "20+ years across IT leadership and delivery",
+  "Energy, consulting, legal-tech, and public sector",
+  "Executive leadership with hands-on programme delivery",
+  "Modernization, governance, and practical AI adoption",
+];
+
+export const PROGRAMME_HIGHLIGHTS = [
+  {
+    org: "Societe Electrique de l'Our",
+    summary: "Modernization roadmap, cloud transition, governance, and cost optimization.",
+  },
+  {
+    org: "Unified Patent Court",
+    summary: "IT operating model and programme coordination across 25 member states.",
+  },
+  {
+    org: "Net Service Lux",
+    summary: "Digitalization growth, local leadership, and AI-enabled solution expansion.",
+  },
+];
+
+export const ABOUT_FACTS = [
+  "IT strategy, governance, and modernization roadmaps",
+  "Digital transformation with practical execution support",
+  "Leadership across teams, budgets, and vendor ecosystems",
+  "Applied AI and automation positioned around business value",
+];
+
+export const CAREER_MILESTONES = [
+  {
+    role: "Management Consulting",
+    period: "2025 to present",
+    summary:
+      "Management consulting and digitalization support focused on operational efficiency and day-to-day business improvement.",
+  },
+  {
+    role: "Managing Director, Net Service Lux",
+    period: "2023 to 2025",
+    summary:
+      "Led the Luxembourg subsidiary, developed local operations, and expanded digitalization and AI-enabled delivery services.",
+  },
+  {
+    role: "Head of IT, Societe Electrique de l'Our",
+    period: "2021 to 2023",
+    summary:
+      "Owned IT strategy and operations, modernization planning, service improvement, and major transformation initiatives.",
+  },
+  {
+    role: "IT Working Group Coordinator and IT Manager, Unified Patent Court",
+    period: "2016 to 2019",
+    summary:
+      "Helped establish the IT function of a new European jurisdiction and coordinated a multi-workstream international programme.",
+  },
+];
 
 export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   {

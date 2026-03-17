@@ -25,12 +25,13 @@ import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
 import { ChiefAiStrategyPage } from "./pages/ChiefAiStrategyPage";
 import { CtoCioPage } from "./pages/CtoCioPage";
 import { FinanceCockpitPage } from "./pages/FinanceCockpitPage";
+import { PublicAboutPage } from "./pages/PublicAboutPage";
 import { PublicLandingPage } from "./pages/PublicLandingPage";
 import { PublicServiceDetailPage } from "./pages/PublicServiceDetailPage";
 import { PublicServicesPage } from "./pages/PublicServicesPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
 import type { ViewKey } from "./types";
-import { getServiceDefinition, type ServiceSlug } from "./lib/publicSite";
+import { ABOUT_PATH, getServiceDefinition, type ServiceSlug } from "./lib/publicSite";
 
 const MISSION_CONTROL_PATH = "/mission-control";
 const SERVICES_PATH = "/services";
@@ -148,6 +149,7 @@ const NAV_COMPACT_BREAKPOINT = 960;
 
 type PublicRoute =
   | { kind: "landing" }
+  | { kind: "about" }
   | { kind: "services" }
   | { kind: "service-detail"; slug: ServiceSlug };
 
@@ -192,6 +194,10 @@ function resolveAppRoute(): AppRoute {
     return { kind: "public", route: { kind: "services" } };
   }
 
+  if (pathname === ABOUT_PATH) {
+    return { kind: "public", route: { kind: "about" } };
+  }
+
   if (pathname.startsWith(`${SERVICES_PATH}/`)) {
     const slug = pathname.slice(SERVICES_PATH.length + 1) as ServiceSlug;
 
@@ -204,6 +210,10 @@ function resolveAppRoute(): AppRoute {
 }
 
 function PublicSiteRouter({ route }: { route: PublicRoute }) {
+  if (route.kind === "about") {
+    return <PublicAboutPage />;
+  }
+
   if (route.kind === "services") {
     return <PublicServicesPage />;
   }

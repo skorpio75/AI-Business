@@ -17,6 +17,7 @@ import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   ABOUT_PATH,
   ABOUT_SUMMARY,
+  BOOKING_PATH,
   EXPERIENCE_PILLS,
   PROGRAMME_HIGHLIGHTS,
   SERVICE_DEFINITIONS,
@@ -86,8 +87,12 @@ export function PublicLandingPage() {
             I help organizations modernize operations, improve delivery, and apply AI where it
             creates real business value.
           </p>
+          <div className="hero-inline-note">
+            Senior support across strategy, transformation, and AI adoption with a practical
+            delivery mindset.
+          </div>
           <div className="site-hero__actions">
-            <a className="site-button site-button--primary" href="/#booking">
+            <a className="site-button site-button--primary" href={BOOKING_PATH}>
               Book a strategy call
               <ArrowRight className="size-4" />
             </a>
@@ -278,9 +283,9 @@ export function PublicLandingPage() {
             </p>
           </div>
           <div className="booking-card__actions">
-            <a className="site-button site-button--primary" href="/services">
+            <a className="site-button site-button--primary" href={BOOKING_PATH}>
               <CalendarDays className="size-4" />
-              Review service options
+              Go to booking page
             </a>
             <p>
               A first conversation can quickly clarify priorities, current blockers, and the most

@@ -12,7 +12,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
     <div className="public-site">
       <header className="site-header">
         <a className="site-brand" href="/">
-          <span className="site-brand__mark">D</span>
+          <span className="site-brand__mark">S</span>
           <span>
             <strong>Stratevia</strong>
             <small>AI, transformation, and technology advisory</small>

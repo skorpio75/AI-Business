@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { ArrowRight, BriefcaseBusiness, ExternalLink, Sparkles, Workflow } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
-import { SERVICE_DEFINITIONS, type ServiceSlug } from "@/lib/publicSite";
+import { BOOKING_PATH, SERVICE_DEFINITIONS, type ServiceSlug } from "@/lib/publicSite";
 
 const SERVICE_ICONS: Record<ServiceSlug, LucideIcon> = {
   "ai-strategy-roadmapping": Sparkles,
@@ -29,7 +29,7 @@ export function PublicServicesPage() {
         <div className="page-hero__panel">
           <strong>How I work</strong>
           <p>Senior advisory, practical framing, clear next steps, and delivery-minded guidance.</p>
-          <a className="site-button site-button--primary" href="/#booking">
+          <a className="site-button site-button--primary" href={BOOKING_PATH}>
             Start a conversation
             <ArrowRight className="size-4" />
           </a>

@@ -5,6 +5,7 @@ export type ServiceSlug =
   | "fractional-cto-transformation-advisory";
 
 export const ABOUT_PATH = "/about";
+export const BOOKING_PATH = "/booking";
 
 export type ServiceDefinition = {
   slug: ServiceSlug;
@@ -22,7 +23,7 @@ export const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: ABOUT_PATH, label: "About" },
-  { href: "/#booking", label: "Booking" },
+  { href: BOOKING_PATH, label: "Booking" },
 ] as const;
 
 export const ABOUT_SUMMARY = [
@@ -83,6 +84,27 @@ export const CAREER_MILESTONES = [
     period: "2016 to 2019",
     summary:
       "Helped establish the IT function of a new European jurisdiction and coordinated a multi-workstream international programme.",
+  },
+];
+
+export const BOOKING_POINTS = [
+  "A focused first conversation about your business context and priorities",
+  "Clear identification of the most valuable next step",
+  "A practical view of where strategy, modernization, or AI can help",
+];
+
+export const BOOKING_OPTIONS = [
+  {
+    title: "Strategy conversation",
+    summary: "A first discussion for leaders exploring transformation priorities, technology direction, or AI opportunities.",
+  },
+  {
+    title: "Operational improvement discussion",
+    summary: "A session centered on process friction, delivery bottlenecks, and practical modernization needs.",
+  },
+  {
+    title: "Advisory fit check",
+    summary: "A straightforward conversation to decide whether strategic advisory or fractional leadership support is the right fit.",
   },
 ];
 

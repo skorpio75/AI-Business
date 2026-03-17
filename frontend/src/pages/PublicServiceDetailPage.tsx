@@ -2,7 +2,7 @@
 import { ArrowRight } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
-import type { ServiceDefinition } from "@/lib/publicSite";
+import { BOOKING_PATH, type ServiceDefinition } from "@/lib/publicSite";
 
 type PublicServiceDetailPageProps = {
   service: ServiceDefinition;
@@ -24,7 +24,7 @@ export function PublicServiceDetailPage({ service }: PublicServiceDetailPageProp
         <div className="page-hero__panel">
           <strong>What this service brings</strong>
           <p>{service.summary}</p>
-          <a className="site-button site-button--primary" href="/#booking">
+          <a className="site-button site-button--primary" href={BOOKING_PATH}>
             Book a first conversation
             <ArrowRight className="size-4" />
           </a>

@@ -753,7 +753,9 @@
   .process-grid,
   .credibility-band,
   .experience-highlights,
-  .experience-pill-list {
+  .experience-pill-list,
+  .booking-option-grid,
+  .booking-points {
     @apply grid gap-5;
   }
 
@@ -807,6 +809,12 @@
 
   .site-hero__lead {
     @apply max-w-[60ch] text-lg leading-8;
+  }
+
+  .hero-inline-note {
+    @apply mt-6 max-w-[54ch] border-l pl-4 text-sm leading-7;
+    border-color: rgba(217, 116, 50, 0.38);
+    color: rgba(216, 221, 228, 0.78);
   }
 
   .page-lead,
@@ -1239,6 +1247,68 @@
     color: #ffffff;
   }
 
+  .booking-panel__head {
+    @apply grid gap-2;
+  }
+
+  .booking-actions {
+    @apply flex flex-wrap gap-3;
+  }
+
+  .booking-note {
+    @apply m-0 border-t pt-4 text-sm leading-6;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(207, 212, 220, 0.72);
+  }
+
+  .booking-points {
+    @apply mt-8;
+  }
+
+  .booking-point {
+    @apply flex items-start gap-3 border-t py-3;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(226, 230, 236, 0.84);
+  }
+
+  .booking-point:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .booking-option-grid {
+    @apply gap-0 md:grid-cols-3;
+    border-top: 1px solid rgba(214, 137, 76, 0.14);
+    border-bottom: 1px solid rgba(214, 137, 76, 0.14);
+  }
+
+  .booking-option {
+    @apply grid gap-4 border-r px-6 py-8 pr-8;
+    border-color: rgba(255, 255, 255, 0.07);
+  }
+
+  .booking-option:last-child {
+    border-right: 0;
+    padding-right: 1.5rem;
+  }
+
+  .booking-option__index {
+    @apply inline-flex w-fit rounded-[0.55rem] px-3 py-1 text-[0.72rem] font-semibold tracking-[0.18em];
+    color: #17110d;
+    background: #d97432;
+  }
+
+  .booking-option h2 {
+    @apply m-0 text-[1.55rem];
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
+
+  .booking-option p {
+    @apply m-0 max-w-[34ch] leading-7;
+    color: rgba(207, 212, 220, 0.76);
+  }
+
   .detail-card__eyebrow {
     @apply m-0 text-[0.74rem] uppercase tracking-[0.2em];
   }
@@ -1461,7 +1531,8 @@
     .credibility-band,
     .experience-pill-list,
     .experience-panel__profile,
-    .highlight-grid {
+    .highlight-grid,
+    .booking-option-grid {
       @apply grid-cols-1;
     }
 
@@ -1476,14 +1547,16 @@
     .service-grid,
     .process-grid,
     .credibility-band,
-    .highlight-grid {
+    .highlight-grid,
+    .booking-option-grid {
       border-bottom: 0;
     }
 
     .service-card,
     .process-card,
     .credibility-band article,
-    .highlight-card {
+    .highlight-card,
+    .booking-option {
       border-right: 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       padding-right: 1.5rem;
@@ -1492,7 +1565,8 @@
     .service-card:last-child,
     .process-card:last-child,
     .credibility-band article:last-child,
-    .highlight-card:last-child {
+    .highlight-card:last-child,
+    .booking-option:last-child {
       border-bottom: 0;
     }
 

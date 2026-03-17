@@ -5,6 +5,7 @@ import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   ABOUT_FACTS,
   ABOUT_SUMMARY,
+  BOOKING_PATH,
   CAREER_MILESTONES,
   EXPERIENCE_PILLS,
   PROGRAMME_HIGHLIGHTS,
@@ -33,7 +34,7 @@ export function PublicAboutPage() {
           <div className="about-portrait-wrap">
             <img alt="Portrait of Dario Pizzolante" className="about-portrait" src="/dario-pizzolante.jpg" />
           </div>
-          <a className="site-button site-button--primary" href="/#booking">
+          <a className="site-button site-button--primary" href={BOOKING_PATH}>
             Book a first conversation
             <ArrowRight className="size-4" />
           </a>

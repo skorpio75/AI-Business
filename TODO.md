@@ -51,6 +51,7 @@
 - [ ] `B-T01C` Evaluate email drafting for the same Ollama path with stronger output guardrails
 
 ## Recently Finished
+- [x] Add a concrete Track A single-VPS deployment pack with production Dockerfiles, VPS compose, env template, runbook, and install/update helper script
 - [x] `P5-T11` Align audit and trace contracts with normalized events, tool IDs, autonomy classes, and approval classes, and expand the normalized event contract to cover the newer lifecycle events documented in `EVENT_MODEL.md`
 - [x] `B-T67` Define typed `delivery_lab`, `handover_pack`, `readiness_gate_result`, and `activation_request` contracts in backend models and base config
 - [x] `H-T04` Reflect normalized metadata in registry/config and later runtime/UI surfaces, including governed operating-model and routing-posture labels in Mission Control

@@ -128,6 +128,7 @@ The repo now includes a concrete single-box Track A deployment pack in `deploy/t
 - a VPS-ready compose stack
 - a production env template
 - a deployment runbook
+- an install/update helper script that can clone or refresh the repo on the VPS once Git access is configured
 
 Use that pack when you want the practical first OVH implementation of the Stage 1 Track A-first shape documented here.
 

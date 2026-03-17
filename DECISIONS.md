@@ -363,3 +363,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-17
 - Decision: Production deployment should start with a Track A-first subscription and later add Track B runtimes only when client demand exists. Track A may use its own internal `Ollama` path, Track B may later use a shared `Ollama` inference service to reduce hosting duplication, and governed cloud fallback must remain available through the shared model gateway and routing matrix.
 - Rationale: The platform should not force full Track B infrastructure cost before there are real client missions. A staged rollout reduces cost and operational burden early, while separate internal and client inference lanes preserve clearer ownership, better local iteration for Track A, and cleaner options for later client-scale hosting.
+
+## ADR-061: Early Track A VPS deployment should remain repo-driven before image-registry automation exists
+- Status: Accepted
+- Date: 2026-03-17
+- Decision: The first OVH Track A production deployment should use a repo-driven installation model in which the VPS holds a checked-out copy of the governed repository and runs the versioned deployment pack from `deploy/track-a-vps/`. This may later evolve toward registry-published images and CI-driven rollout, but the runtime contracts, env model, and compose topology should stay compatible with that future move.
+- Rationale: The current platform is still in a start-slow stage where simplicity and operational clarity matter more than build-pipeline sophistication. A repo-driven VPS install keeps deployment understandable, aligns with the local-first workflow, makes the same deployment artifacts visible in version control, and avoids introducing a half-finished registry/release process before Epic 15 and later ops automation are ready.

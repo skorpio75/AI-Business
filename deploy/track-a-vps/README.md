@@ -9,6 +9,50 @@ This pack runs the current internal Track A stack on one VPS:
 
 It is intentionally a simple first-production shape. The database is local to the VPS so you can start slowly, then move it off-box later by changing `DATABASE_URL`.
 
+## Private GitHub Setup
+
+For a private GitHub repo, the safest simple setup is a read-only deploy key on the VPS.
+
+On the VPS:
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+ssh-keygen -t ed25519 -f ~/.ssh/ai-business-deploy -C "ovh-track-a-vps"
+cat ~/.ssh/ai-business-deploy.pub
+```
+
+Add that public key in GitHub:
+
+- repo `Settings`
+- `Deploy keys`
+- `Add deploy key`
+- read-only access only
+
+Then create `~/.ssh/config`:
+
+```text
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/ai-business-deploy
+  IdentitiesOnly yes
+```
+
+Lock down the file:
+
+```bash
+chmod 600 ~/.ssh/config ~/.ssh/ai-business-deploy
+```
+
+Test access:
+
+```bash
+ssh -T git@github.com
+```
+
+You should see a successful GitHub authentication message without shell access.
+
 ## 1. Prepare The VPS
 
 Recommended host layout:
@@ -32,6 +76,31 @@ sudo mkdir -p /opt/ai-business-data/secrets/internal
 
 ## 2. Create The VPS Env File
 
+### Fastest Path: Copy One Script And Let It Clone The Repo
+
+From your local machine, copy the installer script to the VPS:
+
+```bash
+scp deploy/track-a-vps/install.sh user@your-vps-ip:/tmp/ai-business-install.sh
+ssh user@your-vps-ip
+chmod +x /tmp/ai-business-install.sh
+```
+
+Then run it on the VPS:
+
+```bash
+/tmp/ai-business-install.sh --repo git@github.com:your-org/your-private-repo.git --branch main
+```
+
+That script:
+
+- clones or updates the repo to `/opt/ai-business`
+- creates `/opt/ai-business-data/...`
+- creates `deploy/track-a-vps/.env.track-a-vps` if missing
+- starts the stack once the env file is ready
+
+If the env file still has placeholder values, the script stops safely and tells you what to edit.
+
 From the repo root:
 
 ```bash
@@ -49,6 +118,8 @@ Use `PUBLIC_SITE_ADDR=:80` for initial IP-only smoke tests.
 Use `PUBLIC_SITE_ADDR=your-domain.example.com` once DNS points at the VPS and you want automatic HTTPS.
 
 ## 3. Build And Start Core Services
+
+If you already ran `install.sh`, you usually do not need the manual commands below except for troubleshooting or a later redeploy.
 
 ```bash
 docker compose --env-file deploy/track-a-vps/.env.track-a-vps -f deploy/track-a-vps/docker-compose.yml up -d postgres ollama
@@ -99,6 +170,12 @@ Restart after a git pull:
 
 ```bash
 docker compose --env-file deploy/track-a-vps/.env.track-a-vps -f deploy/track-a-vps/docker-compose.yml up -d --build api web
+```
+
+Or use the installer again for idempotent update plus restart:
+
+```bash
+bash /opt/ai-business/deploy/track-a-vps/install.sh --repo git@github.com:your-org/your-private-repo.git --branch main
 ```
 
 ## 6. Backup The Local DB

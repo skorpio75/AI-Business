@@ -140,6 +140,7 @@ The repo now includes a ready-to-implement single-VPS Track A deployment pack un
 - compose stack: `deploy/track-a-vps/docker-compose.yml`
 - VPS env template: `deploy/track-a-vps/.env.track-a-vps.example`
 - deployment runbook: `deploy/track-a-vps/README.md`
+- install/update helper: `deploy/track-a-vps/install.sh`
 
 This pack is designed for the "start slow" shape: one VPS running the current frontend, API, local PostgreSQL with `pgvector`, and local `Ollama`, while keeping later DB migration simple through `DATABASE_URL`.
 

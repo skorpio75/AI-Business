@@ -272,7 +272,7 @@ Track A can invoke delivery-family capabilities on demand, save internal rehears
 - Mission Control exposes readable `Delivery Lab`, `Handover Packs`, and `Activation Queue` views
 
 ## Epic 15 - Evolutive Cloud Deployment and Shared Inference
-- Status: `NOT_STARTED`
+- Status: `IN_PROGRESS`
 ### Outcome
 The platform can start with a Track A-first production subscription and evolve cleanly into Track B client scale-out with internal inference, shared Track B inference, and governed cloud fallback.
 
@@ -289,3 +289,4 @@ The platform can start with a Track A-first production subscription and evolve c
 - shared Track B inference is documented as an optional later stage
 - routing posture supports local-only, local-first, guarded-local, cloud-first, and deterministic-only execution
 - docs, roadmap, and bootstrap artifacts stay aligned with the staged rollout model
+- a concrete single-VPS Track A deployment pack exists for early production use, including compose, env template, runbook, and install/update helper

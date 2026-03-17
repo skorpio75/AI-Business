@@ -177,6 +177,7 @@ The workflow controls the process. AI is used only inside selected steps.
 - Track A direct invocation should support three internal activation shapes: `ad_hoc_session`, `saved_lab_mission`, and `engagement_bound_run`.
 - promotion from Track A rehearsal into Track B should happen through a bounded `handover_pack`, a `readiness_gate`, and an `activation_request` rather than by sharing mutable runtime state or memory across tracks.
 - mode selection should follow business purpose: Track A `internal_operating` for internal commercial and control work, Track B `client_delivery` for mission execution, and separate `client_facing_service` instances for client-scoped advisory outputs
+- the current first-production infrastructure path is repo-driven: a Track A VPS clones the governed repo, runs the deployment pack in `deploy/track-a-vps/`, and may later evolve toward image-registry deployment without changing runtime contracts
 
 ## 8A. Deployment Evolution Rule
 Cloud deployment should remain evolutive rather than assuming full Track B fleet scale on day one.

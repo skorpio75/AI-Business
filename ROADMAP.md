@@ -11,7 +11,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - `DONE`
 
 ## Current Snapshot
-- Updated: 2026-03-16
+- Updated: 2026-03-17
 - Overall Status: `IN_PROGRESS`
 - Active Phase: `Phase 5 - Observability + Testing`
 - Active Cross-Cutting Stream: `AI-Business IDE handoff integration`
@@ -436,6 +436,12 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P5-T10` by exposing aggregated trace endpoints for workflow, approval, and agent inspection so Mission Control and operators can query bundled `workflow_run`, approval, `agent_runs`, and `audit_events` views without reconstructing audit state client-side.
 - Completed `P5-T11` by aligning audit and trace contracts with governed vocabularies: `AgentRunRecord.trigger_event_name` now uses the normalized event contract, `AuditEventRecord.event_name` now uses explicit audit event families, `tool_id` now uses normalized tool IDs, and `mode`, `approval_class`, and `autonomy_class` now flow through typed governed literals in the audit/logger layer. Expanded the normalized event contract to cover the newer commercial and mission lifecycle events documented in `EVENT_MODEL.md` and added validation tests for accepted vs rejected audit values.
 - Completed `H-T04` by adding a governed metadata summary layer over agent registry and specialist responses so Mission Control now reads normalized operating-model, routing-posture, track, replication, and tool-profile labels from backend contracts instead of reformatting raw enum values page by page.
+
+### 2026-03-17
+- Added a concrete Track A single-VPS deployment pack under `deploy/track-a-vps/`, including production Dockerfiles for the API and frontend, a VPS-oriented compose stack, Caddy reverse-proxy config, and a production env template.
+- Added a `same-origin` frontend API-base mode so one-domain production deployment can serve the Mission Control frontend and reverse-proxied API cleanly without changing local development defaults.
+- Added `deploy/track-a-vps/install.sh` as an idempotent install/update helper that can clone or refresh the repo on a VPS, create the Track A persistence roots, bootstrap the VPS env file, and start the stack once required secrets and site settings are in place.
+- Documented the safest simple private-GitHub path for OVH VPS deployment through a read-only SSH deploy key plus a one-script bootstrap flow.
 - Completed `B-T67` by defining the first typed Track A delivery-lab and promotion contracts in `app/models/delivery_lab.py`, registering the related operating states in code and `config/base/state_registry.yaml`, and adding a base `config/base/delivery_lab.yaml` contract registry plus unit coverage for payload, registry, and YAML alignment.
 
 ## Next Action

@@ -15,6 +15,8 @@ The platform's value proposition lies in accelerating operations through determi
 
 ## Technical Blueprint and Architecture
 
+The operating model now also anticipates a Track A `delivery_lab` lane. This lets the firm invoke delivery families internally through ad hoc sessions, saved lab missions, and engagement-bound rehearsal work before promoting approved artifacts into Track B through handover and activation workflows.
+
 At a high level the platform composes several layers:
 
 - **Interfaces:** a React‑based operator console for humans and FastAPI HTTP endpoints for workflow triggers and status.
@@ -24,6 +26,8 @@ At a high level the platform composes several layers:
 - **Infrastructure:** primarily Docker Compose powering a local PostgreSQL instance with pgvector, file storage for documents, and optional connectors for email or calendar APIs.
 
 ### Deployment Model
+
+Production rollout should be evolutive. Track A can be deployed first with its own internal inference path, and isolated Track B runtimes can be added later as real client missions are approved.
 
 The codebase, configuration schema, and workflow/agent templates are shared across deployments, but each instance maintains isolation for data, credentials, and logs.  This ensures compliance and per‑customer customization while enabling rapid reuse.
 

@@ -125,6 +125,73 @@ Define the canonical operating state objects that workflows, agents, approvals, 
 ### Ownership
 - primary owner: policy and approval layer
 
+## `lab_mission_state`
+
+### Required fields
+- `id`
+- `tenant_id`
+- `title`
+- `status`
+- `goal`
+- `owner_agent_or_role`
+
+### Optional fields
+- `opportunity_id`
+- `engagement_id`
+- `source_session_id`
+- `deliverables`
+- `context_pack_refs`
+- `quality_gate_plan_ref`
+- `family_assignments`
+- `artifact_refs`
+
+### Ownership
+- primary owner: Track A internal delivery-lab workflows
+- steward: PMO / Project Control Agent or Project Management / Delivery Coordination Agent
+
+## `handover_pack_state`
+
+### Required fields
+- `id`
+- `tenant_id`
+- `source_lab_mission_id`
+- `status`
+- `mission_brief_ref`
+- `approved_roster_ref`
+
+### Optional fields
+- `project_plan_ref`
+- `raid_log_ref`
+- `quality_gate_plan_ref`
+- `context_pack_refs`
+- `assumption_refs`
+- `exclusion_refs`
+- `readiness_gate_result_ref`
+
+### Ownership
+- primary owner: Track A commercial-to-delivery promotion workflows
+
+## `activation_state`
+
+### Required fields
+- `activation_request_id`
+- `tenant_id`
+- `target_client_id`
+- `target_engagement_id`
+- `target_mission_id`
+- `status`
+
+### Optional fields
+- `handover_pack_id`
+- `target_runtime_env_ref`
+- `seed_status`
+- `activation_started_at`
+- `activation_completed_at`
+- `blocking_reason`
+
+### Ownership
+- primary owner: Track A activation workflow and Track B bootstrap control
+
 ## State Ownership Summary
 - Growth pod primarily owns `opportunity_state`
 - Delivery pod primarily owns `project_state`
@@ -137,6 +204,7 @@ The current canonical state set remains `opportunity_state`, `project_state`, `r
 For later client-portfolio control:
 
 - `client`, `engagement`, and `mission` should be treated as first-class operating objects
+- Track A should also treat `ad_hoc_session`, `lab_mission`, `handover_pack`, and `activation_request` as first-class operating objects for internal rehearsal and Track B promotion
 - client-facing `agent_instance` assignment should bind to those objects
 - Track A Mission Control should consume summarized portfolio telemetry rather than sharing tenant-local `project_state` directly
 - later commercial-to-delivery control should also formalize `dispatch_candidate_plan`, `approved_consultant_roster`, `billing_plan`, and milestone-acceptance or closeout state

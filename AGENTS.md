@@ -55,12 +55,14 @@ Track A Mission Control should eventually show these instances as dispatched con
 Choose the agent mode based on what business process the agent is serving.
 
 - use `internal_operating` when the agent is working for the consulting firm's own sales, approval, dispatch, billing, portfolio, or closeout process
+- use `internal_operating` for Track A `delivery_lab` and ad hoc delivery-authoring work when the firm is rehearsing, testing, or preparing delivery internally before a client runtime is activated
 - use `client_delivery` when the agent is executing an approved client mission inside the tenant-scoped delivery context
 - use `client_facing_service` when the agent is producing a client-scoped advisory or service output, still as a separate client runtime
 
 Practical default:
 
 - Track A first
+- Track A `delivery_lab` is valid for internal rehearsal, dogfooding, pre-delivery authoring, and testing of delivery-family capabilities without waiting for a real client mission
 - Track B only after mission approval and roster activation
 
 ## Prompt Model
@@ -92,8 +94,10 @@ Example:
 The target real-world consulting lifecycle should remain split across internal and client-delivery responsibilities.
 
 - Track A internal agents own lead intake, qualification, proposal, SOW, contract progression, dispatch planning, billing, receivables, and closeout governance
+- Track A internal agents may also run delivery-family capabilities in an internal `delivery_lab` stage, using mission-scoped rehearsal or pre-delivery instances that stay inside the internal tenant
 - Track B client-scoped agents own mission execution, delivery evidence, milestone readiness, and deliverable production inside the tenant boundary
 - signed scope should not activate delivery directly; it should first produce an approved consultant roster from a dispatch candidate plan
+- promotion from Track A rehearsal into Track B should happen through an approved `handover_pack`, a bounded `readiness_gate`, and a later activation flow rather than by sharing mutable runtime state or memory
 
 ## Pod Model
 The canonical operating model uses four pods:

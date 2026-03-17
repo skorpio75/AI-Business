@@ -230,6 +230,21 @@ DEFAULT_PROMPT_LAYER_REGISTRY = PromptLayerRegistry(
             template_fields=["sender", "subject", "body", "thread_context"],
             context_injection=[
                 _context(
+                    "tenant_context",
+                    source="tenant",
+                    description="Clarify the operating tenant and company context for the draft.",
+                ),
+                _context(
+                    "track",
+                    source="tenant",
+                    description="Clarify which governed operating track the draft is serving.",
+                ),
+                _context(
+                    "operating_mode",
+                    source="policy",
+                    description="Describe the operating mode for the current email workflow step.",
+                ),
+                _context(
                     "approval_policy",
                     source="policy",
                     required=True,
@@ -246,6 +261,16 @@ DEFAULT_PROMPT_LAYER_REGISTRY = PromptLayerRegistry(
                     source="tools",
                     description="Describe the bounded email tools available to the step.",
                 ),
+                _context(
+                    "state_summary",
+                    source="state",
+                    description="Summarize the message posture, risk, and response objective for the step.",
+                ),
+                _context(
+                    "memory_context",
+                    source="memory",
+                    description="Summarize relevant thread context or conversation history.",
+                ),
             ],
             notes="Base prompt asset is planned; current runtime composes step prompt plus injected operating context.",
         ),
@@ -256,8 +281,23 @@ DEFAULT_PROMPT_LAYER_REGISTRY = PromptLayerRegistry(
             agent_family_id="email",
             base_prompt_asset_id="email.family.base",
             step_prompt_asset_id="email.workflow.draft-reply",
-            template_fields=["subject", "body"],
+            template_fields=["sender", "subject", "body", "thread_context", "risk_level"],
             context_injection=[
+                _context(
+                    "tenant_context",
+                    source="tenant",
+                    description="Clarify the operating tenant and company context for the draft.",
+                ),
+                _context(
+                    "track",
+                    source="tenant",
+                    description="Clarify which governed operating track the draft is serving.",
+                ),
+                _context(
+                    "operating_mode",
+                    source="policy",
+                    description="Describe the operating mode for the current email workflow step.",
+                ),
                 _context(
                     "approval_policy",
                     source="policy",
@@ -268,6 +308,21 @@ DEFAULT_PROMPT_LAYER_REGISTRY = PromptLayerRegistry(
                     "autonomy_policy",
                     source="policy",
                     description="Clarify any additional bounded-autonomy notes for the draft step.",
+                ),
+                _context(
+                    "tool_profile",
+                    source="tools",
+                    description="Describe the bounded tools and sources available while drafting the reply.",
+                ),
+                _context(
+                    "state_summary",
+                    source="state",
+                    description="Summarize message posture, client expectations, and the desired response shape.",
+                ),
+                _context(
+                    "memory_context",
+                    source="memory",
+                    description="Provide thread context or prior discussion cues when available.",
                 ),
             ],
             notes="This prompt remains step-scoped; family-level prompt authoring is intentionally deferred.",

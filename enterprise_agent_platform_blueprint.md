@@ -15,6 +15,7 @@ As of 2026-03-16:
 - Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are in place, and approved Outlook replies can send through Microsoft Graph after platform approval.
 - The current model-routing reality is mixed: `ModelGateway` remains the shared runtime layer, LiteLLM remains the cloud/provider abstraction path, and some latency-sensitive local specialist-panel calls now use direct Ollama requests with compact prompts and explicit local-model overrides.
 - Agent-family routing posture is documented separately in `AGENT_LLM_ROUTING_MATRIX.md` so the direct-Ollama pattern is expanded selectively rather than assumed for every family.
+- The next operating-model extension is an internal Track A `delivery_lab` lane with `handover_pack`, `readiness_gate`, and Track B activation flow, plus an evolutive OVH deployment path that starts with Track A-first production and adds Track B runtimes as client demand appears.
 - For exact implementation truth, prefer `ROADMAP.md`, `TODO.md`, and the service code over this reference blueprint.
 
 ## 1. Objective
@@ -112,6 +113,16 @@ Create an agent-assisted operating system for the freelance business, with the u
 4. **Task and daily ops summary**
 5. **Reporting and follow-up generation**
 
+### Extended operating role
+
+Track A should also support an internal `delivery_lab` lane:
+
+- invoke delivery-family capabilities on demand through `ad_hoc_session`
+- save internal rehearsal work into `lab_mission` records
+- create approved `handover_pack` artifacts
+- run bounded `readiness_gate` checks before Track B activation
+- use a Track A-local `Ollama` path for internal iteration and dogfooding
+
 ### Main tech components
 
 - React UI
@@ -146,6 +157,21 @@ Create a reproducible client-ready platform template that can be deployed in iso
 - plus configuration packs
 - plus deployment templates
 - plus client-specific ingestion pipelines
+- plus later shared Track B inference support where a common `Ollama` server reduces duplicated model-hosting cost without sharing tenant state
+
+---
+
+## 5A. Promotion Bridge Between Track A and Track B
+
+The preferred lifecycle between internal rehearsal and real client execution is:
+
+1. Track A `ad_hoc_session` or `lab_mission`
+2. approved `handover_pack`
+3. bounded `readiness_gate`
+4. Track B `activation_request`
+5. mission-bound client runtime starts in Track B
+
+This keeps dogfooding and pre-delivery preparation strong in Track A while preserving Track B as the authoritative tenant-scoped execution plane.
 
 ---
 
@@ -170,6 +196,14 @@ Create a reproducible client-ready platform template that can be deployed in iso
 - logs
 - prompts if needed
 - connectors if needed
+- client delivery runtime state, even when a Track A handover artifact exists
+
+### Shared inference only where needed
+
+- Track A may use an internal `Ollama` endpoint for internal operations and delivery-lab work
+- Track B may later use a shared `Ollama` service for cost-efficient client inference
+- cloud fallback remains available through LiteLLM / `ModelGateway`
+- shared inference does not imply shared tenant storage, retrieval, or mutable state
 
 ---
 
@@ -1574,4 +1608,3 @@ Produce a grounded draft reply and route it for approval.
 - confidence score
 - approval status
 ```
-

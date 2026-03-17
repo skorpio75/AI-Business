@@ -46,6 +46,7 @@ Examples:
 - OpenClaw
 - specialized automation runtimes
 - external worker processes
+- shared inference runtimes such as Track A local `Ollama`, shared Track B `Ollama`, or governed cloud model gateways
 
 ## OpenClaw Integration
 
@@ -103,6 +104,25 @@ For Microsoft 365 personal-assistant flows, mailbox, calendar, and Microsoft To 
 
 ### Rule 10
 External web retrieval may broaden agent context and recommendations, but externally retrieved material must remain cited, distinguishable from internal or client-grounded sources, and non-authoritative unless later promoted through approved platform workflows.
+
+### Rule 11
+Shared inference infrastructure may be reused across isolated runtimes, but shared inference does not permit shared tenant state, shared retrieval, or shared mutable memory across clients.
+
+## Inference Topology
+The model-runtime layer should support an evolutive deployment path.
+
+- Track A may start with its own internal `Ollama` endpoint for internal operations and delivery-lab work
+- Track B may later use a shared `Ollama` inference service to reduce duplicated model-hosting cost across tenant runtimes
+- cloud fallback should remain available through the governed `ModelGateway` and family-level routing posture
+- shared inference should be treated as a runtime dependency, not as a shared state plane
+
+## Deployment Evolution Rule
+Cloud deployment should scale in stages rather than assuming a full client fleet on day one.
+
+- first activate Track A production runtime, storage, database, and internal inference
+- add Track B tenant runtimes only when real client missions are approved
+- later introduce shared client inference, private networking, object storage, and per-tenant observability as client volume grows
+- keep bootstrap and activation contracts explicit so later infrastructure scale-out does not force a change in operating semantics
 
 ## OpenClaw Interaction Pattern
 

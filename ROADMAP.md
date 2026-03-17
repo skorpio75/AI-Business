@@ -230,6 +230,20 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T65: Persist quality-gate results and surface them in Track A and Track B delivery readiness views
 - [ ] B-T66: Prevent milestone-acceptance routing and handoff release when required quality gates are still failing, blocked, or unresolved
 
+### Backlog - Internal Delivery Lab and Handover Promotion
+- [ ] B-T67: Define `ad_hoc_session`, `lab_mission`, `handover_pack`, `readiness_gate_result`, and `activation_request` contracts across markdown, backend models, and config
+- [ ] B-T68: Add a generic Track A agent-invocation path so delivery families can run on demand in `internal_operating` mode without waiting for a client mission
+- [ ] B-T69: Add internal `delivery_lab` workflow templates and Mission Control read models for `Ad Hoc Sessions`, `Lab Missions`, `Handover Packs`, and `Activation Queue`
+- [ ] B-T70: Add promotion rules so Track A rehearsal outputs can become an approved `handover_pack` instead of sharing mutable runtime state with Track B
+- [ ] B-T71: Add a bounded `readiness_gate` workflow using PMO, PM coordination, QA, Documentation, and Risk / Watchdog review families
+- [ ] B-T72: Build the Track B activation flow that seeds or activates the tenant runtime from an approved `activation_request`
+
+### Backlog - Evolutive Cloud Deployment and Shared Inference
+- [ ] B-T73: Document the Track A-first cloud rollout model, including internal subscription-first deployment and later Track B client scale-out
+- [ ] B-T74: Define the runtime topology for Track A local/internal `Ollama`, later shared Track B `Ollama`, and governed cloud fallback through `ModelGateway`
+- [ ] B-T75: Add environment and config contracts for model-invocation strategy such as `local_only`, `local_first`, `guarded_local_first`, `cloud_first`, and `deterministic_only`
+- [ ] B-T76: Define OVH deployment guidance for compute, storage, networking, database, object storage, and inference evolution across Track A-first and Track B growth stages
+
 ### Backlog - Connector Diagnostics
 - [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
 - [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar

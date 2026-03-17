@@ -345,3 +345,21 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The first read surface for auditability should be a small set of aggregated API endpoints that return bundled workflow, approval, and agent traces over persisted `workflow_runs`, approvals, `agent_runs`, and `audit_events` rather than exposing only low-level raw-table endpoints.
 - Rationale: Operators and the later UI need coherent inspection shapes immediately, but the Mission Control presentation work still comes later. Aggregated trace endpoints make the audit layer usable now while keeping room for stricter normalization and richer frontend views in subsequent tasks.
+
+## ADR-058: Track A should support an internal delivery-lab lane for delivery-family dogfooding and rehearsal
+- Status: Accepted
+- Date: 2026-03-17
+- Decision: Track A `internal_operating` mode should support bounded delivery-family invocation through `ad_hoc_session`, `saved_lab_mission`, and engagement-bound internal runs so the firm can use and test delivery capabilities before a real client runtime exists.
+- Rationale: If delivery families can only run after a real client mission starts, the platform delays learning, reduces dogfooding value, and makes Track B the first real proving ground. A governed Track A delivery-lab lane improves rehearsal, artifact preparation, operator familiarity, and prompt or workflow hardening without weakening the Track B isolation model.
+
+## ADR-059: Promotion from Track A rehearsal into Track B must use explicit handover and readiness artifacts
+- Status: Accepted
+- Date: 2026-03-17
+- Decision: Promotion from Track A internal rehearsal into Track B must happen through a bounded `handover_pack`, `readiness_gate_result`, and `activation_request`, rather than by sharing mutable Track A runtime state, memory, or agent identity directly into the client runtime.
+- Rationale: Track A should be able to prepare and validate delivery work, but Track B must remain the authoritative tenant-scoped execution plane. Explicit promotion artifacts preserve auditability, improve readiness review, and prevent accidental coupling between internal rehearsal state and live client delivery state.
+
+## ADR-060: Cloud deployment should evolve from Track A-first rollout to later Track B scale-out with separate inference lanes
+- Status: Accepted
+- Date: 2026-03-17
+- Decision: Production deployment should start with a Track A-first subscription and later add Track B runtimes only when client demand exists. Track A may use its own internal `Ollama` path, Track B may later use a shared `Ollama` inference service to reduce hosting duplication, and governed cloud fallback must remain available through the shared model gateway and routing matrix.
+- Rationale: The platform should not force full Track B infrastructure cost before there are real client missions. A staged rollout reduces cost and operational burden early, while separate internal and client inference lanes preserve clearer ownership, better local iteration for Track A, and cleaner options for later client-scale hosting.

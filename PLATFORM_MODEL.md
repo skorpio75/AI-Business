@@ -45,6 +45,11 @@ Infrastructure
 - `Approval`: a policy-gated human decision checkpoint tied to a run or business entity
 - `Task`: a unit of follow-up work created inside or outside a workflow
 - `MemorySource`: document, record, trace, or connector source contributing to memory
+- `AdHocSession`: short-lived operator-triggered internal invocation of one family for a bounded task
+- `LabMission`: internal Track A rehearsal or pre-delivery mission that lets delivery families run without a real client runtime
+- `HandoverPack`: approved promotion artifact that packages mission brief, deliverables, plans, context, and roster assumptions before Track B activation
+- `ReadinessGateResult`: bounded review outcome over a proposed handover, such as `ready`, `revise`, `blocked`, or `exec_review`
+- `ActivationRequest`: request to seed or activate Track B from an approved handover pack
 - `Client`: isolated business entity with its own state, storage, credentials, and runtime instances
 - `Engagement`: commercial container for a body of client work, such as a project, assessment, or advisory retainer
 - `Mission`: bounded objective or workstream inside an engagement
@@ -74,6 +79,7 @@ For client-facing consulting and delivery work, the concrete runtime should also
 Mode selection should follow business purpose, not only family identity.
 
 - `internal_operating` is for the consulting firm's own commercial, approval, billing, and portfolio-control processes
+- `internal_operating` may also be used for Track A mission-scoped rehearsal, delivery-lab work, ad hoc family invocation, and pre-delivery authoring that still belongs to the firm's internal process
 - `client_delivery` is for tenant-scoped mission execution
 - `client_facing_service` is for bounded client-scoped advisory or service outputs
 
@@ -94,6 +100,7 @@ The same family may appear in more than one mode, but those are separate runtime
 
 ### Track A
 - internal instance used to run the consulting firm
+- also hosts internal `delivery_lab` work, including ad hoc sessions, saved lab missions, and engagement-bound pre-delivery runs
 
 ### Track B
 - isolated client instance or replicated client-facing service deployment
@@ -121,6 +128,14 @@ Track A Mission Control is intended to operate as a portfolio control tower over
 - portfolio visibility must not become a shared mutable state layer across clients
 
 This supports a CEO-style operating view over clients, engagements, missions, and dispatched consultant agents while preserving tenant isolation.
+
+## Promotion Model
+Promotion across tracks should be explicit and artifact-based.
+
+- Track A may invoke delivery families freely for bounded internal work through `AdHocSession`, `LabMission`, or engagement-bound internal runs
+- Track A may persist approved rehearsal outputs into a `HandoverPack`
+- Track B activation should begin from an approved `ActivationRequest` backed by a successful `ReadinessGateResult`
+- Track B becomes the authoritative runtime for client delivery after activation; Track A should not remain the shared mutable execution state for that mission
 
 ## Scaling Model
 The platform is intended to support:

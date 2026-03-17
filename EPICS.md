@@ -251,3 +251,41 @@ The operating model supports growth from solo operator use to a boutique agent-a
 - maturity stages are described
 - delegation and scaling implications are documented
 - pod model remains valid across stages
+
+## Epic 14 - Internal Delivery Lab and Handover Promotion
+- Status: `NOT_STARTED`
+### Outcome
+Track A can invoke delivery-family capabilities on demand, save internal rehearsal missions, validate handover readiness, and promote approved work into Track B activation without sharing mutable runtime state.
+
+### Main tech components
+- FastAPI
+- React
+- LangGraph
+- PostgreSQL
+- Markdown governance
+
+### Acceptance criteria
+- Track A supports `ad_hoc_session`, `saved_lab_mission`, and `engagement_bound_run`
+- delivery-family capabilities are invokable in Track A without waiting for a real client mission
+- approved `handover_pack` and `readiness_gate_result` contracts exist
+- Track B activation begins from approved promotion artifacts rather than shared Track A memory
+- Mission Control exposes readable `Delivery Lab`, `Handover Packs`, and `Activation Queue` views
+
+## Epic 15 - Evolutive Cloud Deployment and Shared Inference
+- Status: `NOT_STARTED`
+### Outcome
+The platform can start with a Track A-first production subscription and evolve cleanly into Track B client scale-out with internal inference, shared Track B inference, and governed cloud fallback.
+
+### Main tech components
+- OVH compute and networking
+- PostgreSQL
+- Object storage
+- Ollama
+- LiteLLM / ModelGateway
+
+### Acceptance criteria
+- the deployment model explicitly supports Track A-first rollout and later Track B scale-out
+- Track A internal inference is documented and configurable
+- shared Track B inference is documented as an optional later stage
+- routing posture supports local-only, local-first, guarded-local, cloud-first, and deterministic-only execution
+- docs, roadmap, and bootstrap artifacts stay aligned with the staged rollout model

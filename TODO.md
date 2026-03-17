@@ -23,6 +23,11 @@
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
+- [ ] `B-T67` Define the internal `delivery_lab` state objects and promotion contracts
+- [ ] `B-T68` Add a generic Track A agent-invocation path for ad hoc delivery-family use
+- [ ] `B-T69` Add `Delivery Lab`, `Handover Packs`, and `Activation Queue` Mission Control surfaces
+- [ ] `B-T70` Add `handover_pack` promotion rules and explicit Track B activation flow
+- [ ] `B-T74` Define the Track A internal `Ollama`, shared Track B `Ollama`, and cloud-fallback topology
 - [ ] `B-T50B` Add portfolio view keys, API client methods, and TypeScript contracts for `Clients`, `Engagements`, `Missions`, and `Mission Detail`
 - [ ] `B-T50E` Build the `Missions` page as the first portfolio operating surface
 - [ ] `B-T50F` Build the `Mission Detail` cockpit over roster, quality gates, approvals, and run activity

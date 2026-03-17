@@ -71,6 +71,66 @@ Each workflow should increasingly specify:
   - `mission.approved`
   - `project.created`
 
+### Internal Delivery Lab Invocation
+- Start event: operator launch or `agent.invoke.requested`
+- Pod owner: `Delivery` plus `Executive`
+- State objects: `run_state`, later `lab_mission_state`, `approval_state` where promotion is requested
+- Handoff:
+  1. operator selects family, task template, and scope type such as `ad_hoc_session`, `saved_lab_mission`, or `engagement_bound_run`
+  2. assemble internal context pack from workspace, documents, and optional uploaded artifacts
+  3. run the selected family in Track A `internal_operating` mode
+  4. return bounded output and trace metadata
+  5. optionally promote the result into a saved `lab_mission`
+- Emitted events:
+  - `agent.invoke.requested`
+  - `lab.session.started`
+  - `lab.session.saved`
+
+### Lab Mission to Handover Pack
+- Start event: operator promotion request or `lab.session.saved`
+- Pod owner: `Delivery` plus `Growth`
+- State objects: `lab_mission_state`, `run_state`, `approval_state`
+- Handoff:
+  1. collect mission brief, deliverables, draft artifacts, context pack, and family assignments
+  2. build the proposed `handover_pack`
+  3. route approval if the handover should become activation-eligible
+  4. persist the approved pack
+- Emitted events:
+  - `handover.pack.drafted`
+  - `handover.pack.approved`
+
+### Handover Readiness Gate
+- Start event: approved `handover.pack.approved`
+- Pod owner: `Delivery` plus `Executive`
+- State objects: `handover_pack_state`, `run_state`, `approval_state`
+- Handoff:
+  1. PMO / Project Control Agent validates governance baseline
+  2. Project Management / Delivery Coordination Agent validates plan and checkpoints
+  3. QA / Review Agent validates deliverable and readiness rubric
+  4. Documentation Agent validates artifact completeness
+  5. Risk / Watchdog Agent routes `ready`, `revise`, `blocked`, or `exec_review`
+- Emitted events:
+  - `readiness.review.started`
+  - `readiness.ready`
+  - `readiness.revise`
+  - `readiness.blocked`
+
+### Track B Activation
+- Start event: `readiness.ready`
+- Pod owner: `Executive` plus `Delivery`
+- State objects: `handover_pack_state`, `activation_state`, `run_state`, `approval_state`
+- Handoff:
+  1. create `activation_request`
+  2. seed or activate the Track B runtime if needed
+  3. instantiate the approved consultant roster
+  4. ingest starter context and initialize project state
+  5. emit delivery-start event for Track B
+- Emitted events:
+  - `activation.requested`
+  - `activation.started`
+  - `activation.completed`
+  - `mission.delivery.started`
+
 ### Delivery Flow
 - Start event: `deal.won`
 - Pod owner: `Delivery`

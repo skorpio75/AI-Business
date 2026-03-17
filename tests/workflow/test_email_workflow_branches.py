@@ -62,20 +62,207 @@ class StubPersonalAssistantContextService:
         )
 
 
+class RecordingPromptLoader:
+    def __init__(self) -> None:
+        self.calls: list[dict] = []
+
+    def render_composition(self, composition_id: str, *, template_context: dict | None = None, injected_context: dict | None = None) -> str:
+        self.calls.append(
+            {
+                "composition_id": composition_id,
+                "template_context": template_context or {},
+                "injected_context": injected_context or {},
+            }
+        )
+        return f"prompt:{composition_id}"
+
+
 class EmailRoutingBranchTests(UnitTestCase):
+    def test_draft_email_uses_email_specific_model_and_richer_prompt_context(self) -> None:
+        gateway = ModelGateway(settings=self.build_settings())
+        prompt_loader = RecordingPromptLoader()
+        gateway.prompt_loader = prompt_loader
+        text_calls: list[dict] = []
+
+        def fake_text(**kwargs):
+            text_calls.append(kwargs)
+            return (
+                TextGenerationResult(
+                    content="I am reviewing the next checkpoint and any current blockers, and I will confirm timing today.",
+                    provider_used="local",
+                    model_used="ollama/test-email",
+                    local_llm_invoked=True,
+                ),
+                True,
+                None,
+                None,
+            )
+
+        gateway._call_local_ollama_text = fake_text  # type: ignore[method-assign]
+
+        result = gateway.draft_email(
+            sender="client@example.com",
+            subject="Need a delivery update",
+            body="Can you confirm the next checkpoint and whether anything is blocked?",
+            thread_context="Previous note: the plan was under review.",
+            risk_level="medium",
+        )
+
+        self.assertEqual(result.provider_used, "local")
+        self.assertEqual(text_calls[0]["local_model_override"], "llama3.2:3b")
+        self.assertEqual(text_calls[0]["timeout_seconds"], 30)
+        self.assertEqual(text_calls[0]["num_predict"], 180)
+        self.assertEqual(
+            {call["composition_id"] for call in prompt_loader.calls},
+            {"email-operations.draft-reply"},
+        )
+        draft_call = next(call for call in prompt_loader.calls if call["composition_id"] == "email-operations.draft-reply")
+        self.assertEqual(draft_call["injected_context"]["track"], "track_a_internal")
+        self.assertEqual(draft_call["injected_context"]["operating_mode"], "internal_operating")
+        self.assertIn("risk=medium", draft_call["injected_context"]["state_summary"])
+        self.assertIn("Previous note", draft_call["injected_context"]["memory_context"])
+        self.assertEqual(draft_call["template_context"]["sender"], "client@example.com")
+        self.assertEqual(draft_call["template_context"]["risk_level"], "medium")
+        self.assertIn("solo consulting CEO support", draft_call["injected_context"]["tenant_context"])
+
+    def test_draft_email_retries_on_stronger_local_model_when_first_draft_is_generic(self) -> None:
+        gateway = ModelGateway(settings=self.build_settings())
+        text_calls: list[dict] = []
+
+        def fake_text(**kwargs):
+            text_calls.append(kwargs)
+            if kwargs["local_model_override"] == "llama3.2:3b":
+                return (
+                    TextGenerationResult(
+                        content="Thanks for your message. I reviewed your request and prepared a draft response.",
+                        provider_used="local",
+                        model_used="ollama/llama3.2:3b",
+                        local_llm_invoked=True,
+                    ),
+                    True,
+                    None,
+                    None,
+                )
+            return (
+                TextGenerationResult(
+                    content="I am reviewing the next checkpoint, current blockers, and revised timing, and I will confirm the next step shortly.",
+                    provider_used="local",
+                    model_used="ollama/qwen2.5:1.5b-instruct-q4_K_M",
+                    local_llm_invoked=True,
+                ),
+                True,
+                None,
+                None,
+            )
+
+        gateway._call_local_ollama_text = fake_text  # type: ignore[method-assign]
+
+        result = gateway.draft_email(
+            sender="client@example.com",
+            subject="Need a delivery update",
+            body="Can you confirm the next checkpoint and whether anything is blocked?",
+            thread_context="Previous note: the plan was under review.",
+            risk_level="medium",
+        )
+
+        self.assertEqual(len(text_calls), 2)
+        self.assertEqual(text_calls[0]["local_model_override"], "llama3.2:3b")
+        self.assertEqual(text_calls[1]["local_model_override"], "qwen2.5:1.5b-instruct-q4_K_M")
+        self.assertEqual(result.provider_used, "local")
+        self.assertEqual(result.model_used, "ollama/qwen2.5:1.5b-instruct-q4_K_M")
+        self.assertEqual(result.escalation_reason, "routed_to_stronger_local")
+        self.assertIn("next checkpoint", result.draft_reply)
+
+    def test_draft_email_replaces_placeholder_heavy_output_with_guardrailed_fallback(self) -> None:
+        gateway = ModelGateway(settings=self.build_settings())
+        gateway._call_local_ollama_text = lambda **kwargs: (  # type: ignore[method-assign]
+            TextGenerationResult(
+                content=(
+                    "Subject: Confirmation of Next Checkpoint\n\n"
+                    "Dear [Client's Name],\n\n"
+                    "The next milestone is scheduled for [Date].\n\n"
+                    "Best regards,\n[Your Name]"
+                ),
+                provider_used="local",
+                model_used="ollama/test-email",
+                local_llm_invoked=True,
+            ),
+            True,
+            None,
+            None,
+        )
+
+        result = gateway.draft_email(
+            sender="client@example.com",
+            subject="Need a delivery update",
+            body="Can you confirm the next checkpoint and whether anything is blocked?",
+            thread_context="Previous note: the plan was under review.",
+            risk_level="medium",
+        )
+
+        self.assertEqual(result.provider_used, "fallback-rule")
+        self.assertEqual(result.model_used, "rules-v2-email-guardrail")
+        self.assertIn(result.llm_diagnostic_code, {"email_draft_placeholder_detected", "multiple_llm_failures"})
+        self.assertNotIn("[Client's Name]", result.draft_reply)
+        self.assertNotIn("[Date]", result.draft_reply)
+        self.assertIn("Need a delivery update", result.draft_reply)
+        self.assertIn("next checkpoint", result.draft_reply)
+
+    def test_draft_email_uses_fallback_local_model_before_cloud_when_primary_local_fails(self) -> None:
+        gateway = ModelGateway(
+            settings=self.build_settings(
+                force_local_only=False,
+                openrouter_api_key="test-key",
+            )
+        )
+        text_calls: list[dict] = []
+
+        def fake_text(**kwargs):
+            text_calls.append(kwargs)
+            if kwargs["local_model_override"] == "llama3.2:3b":
+                return None, True, "local_ollama_timeout", "Primary local timed out."
+            return (
+                TextGenerationResult(
+                    content="I am reviewing the next checkpoint and any current blockers, and I will confirm the next step shortly.",
+                    provider_used="local",
+                    model_used="ollama/qwen2.5:1.5b-instruct-q4_K_M",
+                    local_llm_invoked=True,
+                ),
+                True,
+                None,
+                None,
+            )
+
+        gateway._call_local_ollama_text = fake_text  # type: ignore[method-assign]
+        gateway._call_text_model = lambda **kwargs: self.fail("cloud should not be used when fallback local succeeds")  # type: ignore[method-assign]
+
+        result = gateway.draft_email(
+            sender="client@example.com",
+            subject="Need a delivery update",
+            body="Can you confirm the next checkpoint and whether anything is blocked?",
+            thread_context="Previous note: the plan was under review.",
+            risk_level="medium",
+        )
+
+        self.assertEqual(len(text_calls), 2)
+        self.assertEqual(text_calls[0]["local_model_override"], "llama3.2:3b")
+        self.assertEqual(text_calls[1]["local_model_override"], "qwen2.5:1.5b-instruct-q4_K_M")
+        self.assertEqual(result.provider_used, "local")
+        self.assertEqual(result.model_used, "ollama/qwen2.5:1.5b-instruct-q4_K_M")
+        self.assertEqual(result.escalation_reason, "routed_to_fallback_local")
+        self.assertIn(result.llm_diagnostic_code, {"local_ollama_timeout", "multiple_llm_failures"})
+
     def test_draft_email_marks_cloud_unconfigured_when_escalation_is_needed(self) -> None:
         gateway = ModelGateway(
             settings=self.build_settings(
                 force_local_only=False,
                 openrouter_api_key=None,
-                local_confidence_threshold=0.8,
+                local_confidence_threshold=0.9,
             )
         )
-        gateway._call_local_ollama_structured = lambda **kwargs: (  # type: ignore[method-assign]
-            GenerationResult(
-                intent="urgent-request",
-                confidence=0.41,
-                draft_reply="Local draft",
+        gateway._call_local_ollama_text = lambda **kwargs: (  # type: ignore[method-assign]
+            TextGenerationResult(
+                content="Local draft",
                 provider_used="local",
                 model_used="ollama/test-local",
                 local_llm_invoked=True,
@@ -103,14 +290,12 @@ class EmailRoutingBranchTests(UnitTestCase):
             settings=self.build_settings(
                 force_local_only=False,
                 openrouter_api_key="test-key",
-                local_confidence_threshold=0.8,
+                local_confidence_threshold=0.9,
             )
         )
-        gateway._call_local_ollama_structured = lambda **kwargs: (  # type: ignore[method-assign]
-            GenerationResult(
-                intent="general-inquiry",
-                confidence=0.44,
-                draft_reply="Local draft",
+        gateway._call_local_ollama_text = lambda **kwargs: (  # type: ignore[method-assign]
+            TextGenerationResult(
+                content="Local draft",
                 provider_used="local",
                 model_used="ollama/test-local",
                 local_llm_invoked=True,
@@ -119,7 +304,7 @@ class EmailRoutingBranchTests(UnitTestCase):
             None,
             None,
         )
-        gateway._call_model = lambda **kwargs: (None, True, "cloud_llm_request_failed", "Cloud request failed.")  # type: ignore[method-assign]
+        gateway._call_text_model = lambda **kwargs: (None, True, "cloud_llm_request_failed", "Cloud request failed.")  # type: ignore[method-assign]
 
         result = gateway.draft_email(
             sender="client@example.com",
@@ -139,14 +324,12 @@ class EmailRoutingBranchTests(UnitTestCase):
             settings=self.build_settings(
                 force_local_only=False,
                 openrouter_api_key="test-key",
-                local_confidence_threshold=0.8,
+                local_confidence_threshold=0.9,
             )
         )
-        gateway._call_local_ollama_structured = lambda **kwargs: (  # type: ignore[method-assign]
-            GenerationResult(
-                intent="general-inquiry",
-                confidence=0.40,
-                draft_reply="Local draft",
+        gateway._call_local_ollama_text = lambda **kwargs: (  # type: ignore[method-assign]
+            TextGenerationResult(
+                content="Local draft",
                 provider_used="local",
                 model_used="ollama/test-local",
                 local_llm_invoked=True,
@@ -155,11 +338,9 @@ class EmailRoutingBranchTests(UnitTestCase):
             None,
             None,
         )
-        gateway._call_model = lambda **kwargs: (  # type: ignore[method-assign]
-            GenerationResult(
-                intent="general-inquiry",
-                confidence=0.95,
-                draft_reply="Cloud draft",
+        gateway._call_text_model = lambda **kwargs: (  # type: ignore[method-assign]
+            TextGenerationResult(
+                content="Cloud draft",
                 provider_used="cloud",
                 model_used="openrouter/test-cloud",
                 cloud_llm_invoked=True,

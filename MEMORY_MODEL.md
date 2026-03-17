@@ -73,6 +73,8 @@ Storage:
 Examples:
 - contracts and SOWs
 - client context
+- internal delivery-lab mission briefs
+- approved handover packs and readiness rubrics
 - delivery standards
 - accounting policies
 - architecture notes
@@ -147,6 +149,7 @@ It is a structured, instance-isolated memory system that workflows and agents ca
 - approvals
 - project and client records
 - delivery and finance operational state
+- internal delivery-lab missions, handover packs, and activation requests when they belong to the internal Track A instance
 
 ### Not Shared Across Clients
 - documents
@@ -184,6 +187,7 @@ Not all information should become long-term memory.
 - low-confidence guesses
 - temporary scratch reasoning
 - unapproved external commitments
+- raw lab-session output into Track B tenant memory without an explicit handover/activation workflow
 
 ## Consistency Rules
 
@@ -211,6 +215,14 @@ When a workflow runs, context should be assembled in this order:
 5. current workflow working memory
 
 This prevents overloading prompts with stale or irrelevant context.
+
+## Lab and Handover Memory Rule
+Track A delivery-lab work adds an explicit pre-delivery memory lane.
+
+- `ad_hoc_session` output may remain ephemeral unless the operator saves it
+- `lab_mission` artifacts may promote into semantic memory or shared workspace inside Track A
+- `handover_pack` is the approved promotion artifact for Track B startup
+- Track B should initialize from the approved handover artifact set, not from shared mutable Track A memory
 
 ## Memory by Time Horizon
 

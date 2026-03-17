@@ -49,6 +49,14 @@ class Settings(BaseSettings):
     model_timeout_seconds: float = 10.0
     cloud_model: str = "openai/gpt-4o-mini"
     openrouter_api_key: Optional[str] = None
+    email_local_model: str = "llama3.2:3b"
+    email_local_timeout_seconds: float = 30.0
+    email_local_text_num_predict: int = 180
+    email_strong_local_model: Optional[str] = "qwen2.5:1.5b-instruct-q4_K_M"
+    email_strong_local_timeout_seconds: float = 60.0
+    email_strong_local_text_num_predict: int = 220
+    email_upgrade_on_weak_draft: bool = True
+    email_cloud_max_tokens: int = 400
     langfuse_enabled: bool = False
     langfuse_public_key: Optional[str] = None
     langfuse_secret_key: Optional[str] = None

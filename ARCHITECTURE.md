@@ -107,6 +107,8 @@ Infrastructure
 - Docker Compose
 - PostgreSQL
 - local file storage
+- evolutive deployment path where Track A is deployed first, then Track B client stacks are added gradually
+- separate inference topology for Track A internal Ollama, optional shared Track B Ollama, and governed cloud fallback
 
 ## 4. MVP Workflow Coverage
 ### Implemented end-to-end in the current internal MVP
@@ -171,7 +173,19 @@ The workflow controls the process. AI is used only inside selected steps.
 - Track A Mission Control should evolve into a portfolio cockpit that can view clients, engagements, missions, dispatched consultant-agent counts, run status, approvals, and risk across isolated client runtimes.
 - The next portfolio UI slice is now concretized in `docs/mission-control-portfolio-ui-map.md`, which maps the `Clients`, `Engagements`, `Missions`, and `Mission Detail` screens onto the existing Mission Control shell, summary-read-model approach, and future agent-instance registry.
 - Track A should remain the control plane for proposal, SOW, contract, dispatch planning, billing, receivables, and mission closeout, while Track B remains the tenant-scoped delivery plane.
+- Track A should also gain an explicit `delivery_lab` lane where delivery families can run in `internal_operating` mode for ad hoc use, internal rehearsal, dogfooding, and pre-delivery authoring before a Track B mission is activated.
+- Track A direct invocation should support three internal activation shapes: `ad_hoc_session`, `saved_lab_mission`, and `engagement_bound_run`.
+- promotion from Track A rehearsal into Track B should happen through a bounded `handover_pack`, a `readiness_gate`, and an `activation_request` rather than by sharing mutable runtime state or memory across tracks.
 - mode selection should follow business purpose: Track A `internal_operating` for internal commercial and control work, Track B `client_delivery` for mission execution, and separate `client_facing_service` instances for client-scoped advisory outputs
+
+## 8A. Deployment Evolution Rule
+Cloud deployment should remain evolutive rather than assuming full Track B fleet scale on day one.
+
+- start with one Track A production subscription and keep Track B as a documented bootstrap path until client demand exists
+- give Track A its own internal inference path, including local or colocated `Ollama`, so internal dogfooding, delivery-lab runs, and prompt iteration do not depend on future client infrastructure
+- add Track B stacks gradually as client missions activate, keeping each tenant runtime isolated by app config, database, storage, secrets, and audit boundary
+- when Track B volume grows, introduce an optional shared Track B `Ollama` inference service to reduce duplicated model-hosting cost while preserving tenant-local state and retrieval
+- keep cloud fallback available through the governed `ModelGateway` and routing matrix so local-first, guarded-local, cloud-first, or deterministic-only posture can be selected by family and mode
 
 ## 8. Memory Model
 - Working memory: active workflow state and approval checkpoints.
@@ -321,6 +335,12 @@ See [AUDIT_MODEL.md](c:/Users/dpizz/OneDrive/Python/AI Business/AUDIT_MODEL.md) 
 See [hybrid-rag-review-architecture.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/hybrid-rag-review-architecture.md) for the target hybrid retrieval and bounded review/gate-agent design.
 See [agent-instance-portfolio-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/agent-instance-portfolio-model.md) for the client-scoped consultant-instance model and Track A portfolio cockpit design.
 See [mission-control-portfolio-ui-map.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/mission-control-portfolio-ui-map.md) for the concrete next-screen map for portfolio-focused Mission Control UI.
+See [delivery-lab-operating-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/delivery-lab-operating-model.md) for the Track A internal delivery-lab activation model, backend contract direction, and local-first invocation rule.
+See [handover-pack-schema.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/handover-pack-schema.md) for the promotion artifact contract between Track A rehearsal and Track B activation.
+See [track-b-activation-runbook.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/track-b-activation-runbook.md) for the implementation and operator path from approved handover to seeded Track B runtime.
+See [ovh-deployment-topology.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/ovh-deployment-topology.md) for the Track A-first OVH rollout model, local/cloud parity rules, and staged infrastructure matrix.
+See [model-invocation-strategy.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/model-invocation-strategy.md) for the local, shared-client, and cloud model-routing strategy contract.
+See [agent-workbench-ui-map.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/agent-workbench-ui-map.md) for the Mission Control page map and TypeScript contracts for ad hoc invocation, lab missions, handover packs, and activation queue.
 See [consulting-engagement-lifecycle-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/consulting-engagement-lifecycle-model.md) for the end-to-end consulting flow from lead spotting through dispatch, delivery, milestone billing, and closeout.
 See [delivery-quality-gate-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/delivery-quality-gate-model.md) for mission-specific delivery quality gates across planning, implementation, milestone release, and handoff.
 See [internal-vs-client-agent-usage-model.md](c:/Users/dpizz/OneDrive/Python/AI Business/docs/internal-vs-client-agent-usage-model.md) for the explicit rule on when to use internal agents versus client-scoped agents.

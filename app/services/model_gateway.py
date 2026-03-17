@@ -1,5 +1,6 @@
 # Copyright (c) Dario Pizzolante
 import json
+import re
 from dataclasses import dataclass
 from typing import Optional
 from urllib import error as urllib_error
@@ -66,13 +67,13 @@ class ModelGateway:
     def _heuristic_classification(self, subject: str, body: str) -> tuple[str, float]:
         combined = f"{subject}\n{body}".lower()
         intent = "general-inquiry"
-        confidence = 0.68
+        confidence = 0.84
         if any(word in combined for word in ("invoice", "payment", "quote", "proposal")):
             intent = "commercial-request"
-            confidence = 0.78
+            confidence = 0.86
         if any(word in combined for word in ("urgent", "asap", "today", "blocked")):
             intent = "urgent-request"
-            confidence = 0.82
+            confidence = 0.9
         return intent, confidence
 
     def _heuristic_fallback(self, subject: str, body: str) -> GenerationResult:
@@ -95,6 +96,128 @@ class ModelGateway:
         if message:
             return message[:240]
         return exc.__class__.__name__
+
+    def _normalize_email_draft_text(self, draft: str) -> str:
+        text = draft.strip()
+        lines = text.splitlines()
+        if lines and lines[0].strip().lower().startswith("subject:"):
+            lines = lines[1:]
+            while lines and not lines[0].strip():
+                lines = lines[1:]
+        text = "\n".join(lines).strip()
+        text = re.sub(r"\n{3,}", "\n\n", text)
+        return text
+
+    def _draft_contains_unresolved_placeholders(self, draft: str) -> bool:
+        if re.search(r"\[[^\]]+\]", draft):
+            return True
+        placeholder_markers = (
+            "client's name",
+            "your name",
+            "specific issue",
+            "related topic",
+        )
+        lowered = draft.lower()
+        return any(marker in lowered for marker in placeholder_markers)
+
+    def _join_focus_items(self, items: list[str]) -> str:
+        if not items:
+            return "the points you raised"
+        if len(items) == 1:
+            return items[0]
+        if len(items) == 2:
+            return f"{items[0]} and {items[1]}"
+        return ", ".join(items[:-1]) + f", and {items[-1]}"
+
+    def _extract_email_focus(self, *, subject: str, body: str, thread_context: str | None) -> str:
+        combined = f"{subject}\n{body}".lower()
+        focus_items: list[str] = []
+        for keywords, focus in [
+            (("checkpoint", "milestone"), "the next checkpoint"),
+            (("blocked", "blocker", "issue"), "any current blockers"),
+            (("plan", "timeline", "timing", "schedule"), "the updated plan and timing"),
+            (("proposal", "quote", "pricing", "scope"), "scope and commercial details"),
+            (("invoice", "payment"), "invoice and payment details"),
+            (("review",), "the item currently under review"),
+        ]:
+            if any(keyword in combined for keyword in keywords) and focus not in focus_items:
+                focus_items.append(focus)
+        if thread_context and "dependenc" in thread_context.lower():
+            focus_items.append("the dependency review noted in the thread")
+        return self._join_focus_items(focus_items[:3])
+
+    def _bounded_email_reply(
+        self,
+        *,
+        intent: str,
+        subject: str,
+        body: str,
+        thread_context: str | None,
+    ) -> str:
+        subject_ref = subject.strip() or "your message"
+        focus = self._extract_email_focus(subject=subject, body=body, thread_context=thread_context)
+        if intent == "urgent-request":
+            return (
+                f"Thanks for flagging this regarding {subject_ref}. "
+                f"I am reviewing {focus} now, and I will confirm the immediate next step and timing shortly."
+            )
+        if intent == "commercial-request":
+            return (
+                f"Thanks for your note regarding {subject_ref}. "
+                f"I am reviewing {focus} and will come back with a concrete response shortly."
+            )
+        return (
+            f"Thanks for your note about {subject_ref}. "
+            f"I am reviewing {focus} and will confirm the next step and timing shortly."
+        )
+
+    def _draft_appears_generic(self, draft: str) -> bool:
+        lowered = draft.lower()
+        generic_markers = (
+            "reviewed your request",
+            "prepared a draft response",
+            "confirm next steps and timing shortly",
+            "please let me know if you have any specific questions",
+            "thank you for your email regarding",
+        )
+        return any(marker in lowered for marker in generic_markers)
+
+    def _apply_email_draft_guardrails(
+        self,
+        *,
+        result: GenerationResult,
+        subject: str,
+        body: str,
+        thread_context: str | None,
+    ) -> GenerationResult:
+        normalized_draft = self._normalize_email_draft_text(result.draft_reply)
+        if self._draft_contains_unresolved_placeholders(normalized_draft):
+            return GenerationResult(
+                intent=result.intent,
+                confidence=result.confidence,
+                draft_reply=self._bounded_email_reply(
+                    intent=result.intent,
+                    subject=subject,
+                    body=body,
+                    thread_context=thread_context,
+                ),
+                provider_used="fallback-rule",
+                model_used="rules-v2-email-guardrail",
+                escalation_reason=result.escalation_reason,
+                local_llm_invoked=result.local_llm_invoked,
+                cloud_llm_invoked=result.cloud_llm_invoked,
+                llm_diagnostic_code=self._select_diagnostic_code(
+                    result.llm_diagnostic_code,
+                    "email_draft_placeholder_detected",
+                ),
+                llm_diagnostic_detail=self._join_diagnostic_details(
+                    result.llm_diagnostic_detail,
+                    "Generated draft contained unresolved placeholders or template markers, so a bounded rule-based draft was substituted.",
+                ),
+            )
+        if normalized_draft != result.draft_reply:
+            result.draft_reply = normalized_draft
+        return result
 
     def _select_diagnostic_code(self, *codes: Optional[str]) -> Optional[str]:
         unique_codes = []
@@ -332,9 +455,15 @@ class ModelGateway:
         return self._resolved_local_model, None, None
 
     def _call_local_ollama_structured(
-        self, *, prompt: str
+        self,
+        *,
+        prompt: str,
+        local_model_override: str | None = None,
+        timeout_seconds: float | None = None,
     ) -> tuple[Optional[GenerationResult], bool, Optional[str], Optional[str]]:
-        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name()
+        model_name, diagnostic_code, diagnostic_detail = self._resolve_local_model_name(
+            preferred_model=local_model_override
+        )
         if not model_name:
             return None, False, diagnostic_code, diagnostic_detail
 
@@ -343,7 +472,11 @@ class ModelGateway:
             input={"prompt": prompt},
             metadata={"provider": "local", "operation": "structured-email"},
             model=f"ollama/{model_name}",
-            model_parameters={"temperature": 0.2, "format": "json"},
+            model_parameters={
+                "temperature": 0.2,
+                "format": "json",
+                "timeout_seconds": timeout_seconds or self.model_timeout_seconds,
+            },
         ) as observation:
             payload, request_code, request_detail = self._ollama_request(
                 path="/api/generate",
@@ -354,6 +487,7 @@ class ModelGateway:
                     "format": "json",
                     "options": {"temperature": 0.2},
                 },
+                timeout_seconds=timeout_seconds,
             )
             if not payload:
                 observation.update(
@@ -426,7 +560,12 @@ class ModelGateway:
             )
 
     def _call_text_model(
-        self, *, provider: str, model: str, prompt: str
+        self,
+        *,
+        provider: str,
+        model: str,
+        prompt: str,
+        max_tokens: int | None = None,
     ) -> tuple[Optional[TextGenerationResult], bool, Optional[str], Optional[str]]:
         with self.observability.start_generation(
             name="model-gateway.provider-text",
@@ -459,6 +598,8 @@ class ModelGateway:
                 "timeout": self.model_timeout_seconds,
                 "request_timeout": self.model_timeout_seconds,
             }
+            if max_tokens is not None:
+                kwargs["max_tokens"] = max_tokens
 
             if provider == "local":
                 kwargs["api_base"] = self.settings.ollama_base_url
@@ -604,73 +745,220 @@ class ModelGateway:
             },
             metadata={"workflow_id": "email-operations", "operation": "draft-email"},
         ) as observation:
-            prompt = self.prompt_loader.render_composition(
-                "email-operations.classify-email",
+            thread_summary = thread_context.strip() if thread_context else "No prior thread context was provided."
+            state_summary = (
+                f"risk={risk_level}\n"
+                f"body_length={len(body)}\n"
+                "goal=address request directly, propose next step, avoid overcommitment"
+            )
+            draft_prompt = self.prompt_loader.render_composition(
+                "email-operations.draft-reply",
                 template_context={
                     "sender": sender,
                     "subject": subject,
                     "body": body,
                     "thread_context": thread_context or "none",
+                    "risk_level": risk_level,
                 },
                 injected_context={
-                    "approval_policy": "External send remains approval-gated for MVP email operations.",
-                    "output_schema": "JSON object with intent, confidence, and draft_reply",
-                    "tool_profile": "email.read + memory.search + approval.request",
+                    "tenant_context": f"tenant={self.settings.tenant_id}; solo consulting CEO support",
+                    "track": self.settings.primary_track,
+                    "operating_mode": "internal_operating",
+                    "approval_policy": "draft only; outbound send requires approval",
+                    "autonomy_policy": f"risk={risk_level}; keep bounded and specific",
+                    "tool_profile": "use email body + thread only",
+                    "state_summary": state_summary,
+                    "memory_context": thread_summary,
                 },
             )
-            draft_prompt = self.prompt_loader.render_composition(
-                "email-operations.draft-reply",
-                template_context={
-                    "subject": subject,
-                    "body": body,
-                },
-                injected_context={
-                    "approval_policy": "Reply draft only. No outbound send without recorded approval.",
-                    "autonomy_policy": (
-                        f"Risk level is {risk_level}. Keep the draft bounded and avoid unsupported commitments."
-                    ),
-                },
-            )
+            intent, confidence = self._heuristic_classification(subject, body)
 
-            local_result, local_structured_invoked, local_structured_code, local_structured_detail = (
-                self._call_local_ollama_structured(prompt=prompt)
+            local_text, local_llm_invoked, local_text_code, local_text_detail = self._call_local_ollama_text(
+                prompt=draft_prompt,
+                num_predict=self.settings.email_local_text_num_predict,
+                timeout_seconds=self.settings.email_local_timeout_seconds,
+                local_model_override=self.settings.email_local_model,
             )
-            local_llm_invoked = local_structured_invoked
-            if local_result is None:
-                local_text, local_text_invoked, local_text_code, local_text_detail = self._call_local_ollama_text(
-                    prompt=draft_prompt
+            local_result: GenerationResult | None = None
+            if local_text is not None:
+                local_result = GenerationResult(
+                    intent=intent,
+                    confidence=confidence,
+                    draft_reply=local_text.content,
+                    provider_used=local_text.provider_used,
+                    model_used=local_text.model_used,
+                    local_llm_invoked=local_llm_invoked,
+                    cloud_llm_invoked=local_text.cloud_llm_invoked,
+                    llm_diagnostic_code=local_text_code,
+                    llm_diagnostic_detail=local_text_detail,
                 )
-                local_llm_invoked = local_llm_invoked or local_text_invoked
-                if local_text is not None:
-                    intent, confidence = self._heuristic_classification(subject, body)
-                    local_result = GenerationResult(
-                        intent=intent,
-                        confidence=confidence,
-                        draft_reply=local_text.content,
-                        provider_used=local_text.provider_used,
-                        model_used=local_text.model_used,
-                        local_llm_invoked=local_llm_invoked,
-                        cloud_llm_invoked=local_text.cloud_llm_invoked,
-                        llm_diagnostic_code=local_structured_code,
-                        llm_diagnostic_detail=self._join_diagnostic_details(
-                            local_structured_detail,
-                            "Structured email classification failed, so the gateway reused local plain-text output for the draft.",
-                        ),
+                if (
+                    self.settings.email_upgrade_on_weak_draft
+                    and self.settings.email_strong_local_model
+                    and self.settings.email_strong_local_model != self.settings.email_local_model
+                    and (
+                        self._draft_contains_unresolved_placeholders(local_result.draft_reply)
+                        or self._draft_appears_generic(local_result.draft_reply)
                     )
-            else:
-                local_text_code = None
-                local_text_detail = None
+                ):
+                    stronger_prompt = (
+                        f"{draft_prompt}\n\n"
+                        "Revision pass:\n"
+                        "- avoid placeholders and template markers\n"
+                        "- avoid generic filler\n"
+                        "- mention the concrete request and next step\n"
+                        "- do not invent names, dates, or meetings"
+                    )
+                    stronger_text, stronger_invoked, stronger_code, stronger_detail = self._call_local_ollama_text(
+                        prompt=stronger_prompt,
+                        num_predict=self.settings.email_strong_local_text_num_predict,
+                        timeout_seconds=self.settings.email_strong_local_timeout_seconds,
+                        local_model_override=self.settings.email_strong_local_model,
+                    )
+                    local_llm_invoked = local_llm_invoked or stronger_invoked
+                    if stronger_text is not None:
+                        local_result = GenerationResult(
+                            intent=intent,
+                            confidence=confidence,
+                            draft_reply=stronger_text.content,
+                            provider_used=stronger_text.provider_used,
+                            model_used=stronger_text.model_used,
+                            local_llm_invoked=local_llm_invoked,
+                            cloud_llm_invoked=stronger_text.cloud_llm_invoked,
+                            escalation_reason="routed_to_stronger_local",
+                            llm_diagnostic_code=self._select_diagnostic_code(
+                                local_text_code,
+                                "email_draft_quality_retry",
+                            ),
+                            llm_diagnostic_detail=self._join_diagnostic_details(
+                                local_text_detail,
+                                "A stronger local email model was used because the first draft looked weak or template-like.",
+                            ),
+                        )
+                    else:
+                        local_result.llm_diagnostic_code = self._select_diagnostic_code(
+                            local_result.llm_diagnostic_code,
+                            stronger_code,
+                        )
+                        local_result.llm_diagnostic_detail = self._join_diagnostic_details(
+                            local_result.llm_diagnostic_detail,
+                            stronger_detail,
+                            "The stronger local retry did not produce a usable draft.",
+                        )
+                local_result = self._apply_email_draft_guardrails(
+                    result=local_result,
+                    subject=subject,
+                    body=body,
+                    thread_context=thread_context,
+                )
 
             if local_result is None:
+                fallback_local_text = None
+                fallback_local_code = None
+                fallback_local_detail = None
+                if (
+                    self.settings.email_strong_local_model
+                    and self.settings.email_strong_local_model != self.settings.email_local_model
+                ):
+                    fallback_local_text, fallback_local_invoked, fallback_local_code, fallback_local_detail = (
+                        self._call_local_ollama_text(
+                            prompt=draft_prompt,
+                            num_predict=self.settings.email_strong_local_text_num_predict,
+                            timeout_seconds=self.settings.email_strong_local_timeout_seconds,
+                            local_model_override=self.settings.email_strong_local_model,
+                        )
+                    )
+                    local_llm_invoked = local_llm_invoked or fallback_local_invoked
+                    if fallback_local_text is not None:
+                        fallback_local_result = GenerationResult(
+                            intent=intent,
+                            confidence=confidence,
+                            draft_reply=fallback_local_text.content,
+                            provider_used=fallback_local_text.provider_used,
+                            model_used=fallback_local_text.model_used,
+                            local_llm_invoked=local_llm_invoked,
+                            cloud_llm_invoked=fallback_local_text.cloud_llm_invoked,
+                            escalation_reason="routed_to_fallback_local",
+                            llm_diagnostic_code=self._select_diagnostic_code(
+                                local_text_code,
+                                "email_fallback_local_used",
+                            ),
+                            llm_diagnostic_detail=self._join_diagnostic_details(
+                                local_text_detail,
+                                "Fallback local email model produced the final draft after the primary local model failed.",
+                            ),
+                        )
+                        fallback_local_result = self._apply_email_draft_guardrails(
+                            result=fallback_local_result,
+                            subject=subject,
+                            body=body,
+                            thread_context=thread_context,
+                        )
+                        observation.update(
+                            output={"intent": fallback_local_result.intent, "draft_reply": fallback_local_result.draft_reply},
+                            metadata=self._result_metadata(fallback_local_result),
+                        )
+                        return fallback_local_result
+
+                cloud_llm_invoked = False
+                cloud_code = None
+                cloud_detail = None
+                if not self.settings.force_local_only and self.settings.openrouter_api_key:
+                    cloud_text, cloud_llm_invoked, cloud_code, cloud_detail = self._call_text_model(
+                        provider="cloud",
+                        model=f"openrouter/{self.settings.cloud_model}",
+                        prompt=draft_prompt,
+                        max_tokens=self.settings.email_cloud_max_tokens,
+                    )
+                    if cloud_text is not None:
+                        cloud_result = GenerationResult(
+                            intent=intent,
+                            confidence=confidence,
+                            draft_reply=cloud_text.content,
+                            provider_used=cloud_text.provider_used,
+                            model_used=cloud_text.model_used,
+                            local_llm_invoked=local_llm_invoked,
+                            cloud_llm_invoked=cloud_llm_invoked or cloud_text.cloud_llm_invoked,
+                            llm_diagnostic_code=self._select_diagnostic_code(
+                                local_text_code,
+                                fallback_local_code,
+                            ),
+                            llm_diagnostic_detail=self._join_diagnostic_details(
+                                local_text_detail,
+                                fallback_local_detail,
+                                "Cloud text generation produced the final draft after the local path failed.",
+                            ),
+                        )
+                        cloud_result = self._apply_email_draft_guardrails(
+                            result=cloud_result,
+                            subject=subject,
+                            body=body,
+                            thread_context=thread_context,
+                        )
+                        observation.update(
+                            output={"intent": cloud_result.intent, "draft_reply": cloud_result.draft_reply},
+                            metadata=self._result_metadata(cloud_result),
+                        )
+                        return cloud_result
+                elif self.settings.force_local_only:
+                    cloud_code = "force_local_only_enabled"
+                    cloud_detail = "Cloud fallback was skipped because force_local_only is enabled."
+                else:
+                    cloud_code = "cloud_unconfigured"
+                    cloud_detail = "Cloud fallback was skipped because OPENROUTER_API_KEY is not configured."
+
                 fallback_result = self._heuristic_fallback(subject, body)
                 fallback_result.local_llm_invoked = local_llm_invoked
+                fallback_result.cloud_llm_invoked = cloud_llm_invoked
                 fallback_result.llm_diagnostic_code = self._select_diagnostic_code(
-                    local_structured_code,
                     local_text_code,
+                    fallback_local_code,
+                    cloud_code,
                 )
                 fallback_result.llm_diagnostic_detail = self._join_diagnostic_details(
-                    local_structured_detail,
                     local_text_detail,
+                    fallback_local_detail,
+                    cloud_detail,
                     "Rule-based fallback was used because local email drafting did not produce a usable result.",
                 )
                 observation.update(
@@ -713,12 +1001,13 @@ class ModelGateway:
                 )
                 return local_result
 
-            cloud_result, cloud_llm_invoked, cloud_code, cloud_detail = self._call_model(
+            cloud_text, cloud_llm_invoked, cloud_code, cloud_detail = self._call_text_model(
                 provider="cloud",
                 model=f"openrouter/{self.settings.cloud_model}",
-                prompt=prompt,
+                prompt=draft_prompt,
+                max_tokens=self.settings.email_cloud_max_tokens,
             )
-            if cloud_result is None:
+            if cloud_text is None:
                 local_result.local_llm_invoked = local_llm_invoked or local_result.local_llm_invoked
                 local_result.cloud_llm_invoked = cloud_llm_invoked
                 local_result.escalation_reason = "cloud_unavailable_used_local"
@@ -737,11 +1026,25 @@ class ModelGateway:
                 )
                 return local_result
 
+            cloud_result = GenerationResult(
+                intent=intent,
+                confidence=confidence,
+                draft_reply=cloud_text.content,
+                provider_used=cloud_text.provider_used,
+                model_used=cloud_text.model_used,
+                local_llm_invoked=local_llm_invoked,
+                cloud_llm_invoked=cloud_llm_invoked or cloud_text.cloud_llm_invoked,
+                escalation_reason="routed_to_cloud",
+                llm_diagnostic_code=local_result.llm_diagnostic_code,
+                llm_diagnostic_detail=local_result.llm_diagnostic_detail,
+            )
             cloud_result.local_llm_invoked = local_llm_invoked
-            cloud_result.cloud_llm_invoked = cloud_llm_invoked or cloud_result.cloud_llm_invoked
-            cloud_result.escalation_reason = "routed_to_cloud"
-            cloud_result.llm_diagnostic_code = local_result.llm_diagnostic_code
-            cloud_result.llm_diagnostic_detail = local_result.llm_diagnostic_detail
+            cloud_result = self._apply_email_draft_guardrails(
+                result=cloud_result,
+                subject=subject,
+                body=body,
+                thread_context=thread_context,
+            )
             observation.update(
                 output={"intent": cloud_result.intent, "draft_reply": cloud_result.draft_reply},
                 metadata=self._result_metadata(cloud_result),

@@ -1,6 +1,14 @@
-Write a short professional email reply.
-Return only the reply body text.
-Do not invent commitments.
+Write a professional email reply body.
+Return only the reply text.
 
+Rules:
+- sound calm, specific, and commercially mature
+- answer the sender's request directly
+- include a bounded next step
+- do not invent dates, scope, pricing, meetings, or approvals
+
+Sender: ${sender}
 Subject: ${subject}
+Risk: ${risk_level}
 Body: ${body}
+Thread: ${thread_context}

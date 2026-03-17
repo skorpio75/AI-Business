@@ -5,6 +5,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 from app.models.control_plane import ApprovalClass, AutonomyClass
+from app.models.governed_metadata import GovernedMetadataSummary, build_governed_metadata_summary
 from app.models.tool_profiles import TOOL_PROFILE_BINDING_MAP
 
 AgentDomain = Literal["corporate", "delivery", "platform"]
@@ -69,6 +70,7 @@ class AgentContract(BaseModel):
     outputs: list[str] = Field(default_factory=list)
     constraints: list[str] = Field(default_factory=list)
     runtime: AgentRuntimeState = Field(default_factory=AgentRuntimeState)
+    governed_metadata: Optional[GovernedMetadataSummary] = None
 
 
 class AgentRegistry(BaseModel):
@@ -1243,3 +1245,13 @@ for agent in DEFAULT_AGENT_REGISTRY.agents:
                 tool_profile_by_mode[operating_mode] = profile_id
         if tool_profile_by_mode:
             agent.tool_profile_by_mode = tool_profile_by_mode
+    agent.governed_metadata = build_governed_metadata_summary(
+        pod=agent.pod,
+        family_id=agent.family_id,
+        primary_track=agent.deployment.primary_track,
+        operating_modes=agent.operating_modes,
+        approval_class=agent.approval_class,
+        autonomy_class=agent.autonomy_class,
+        replication_mode=agent.deployment.replication_mode,
+        tool_profile_by_mode=agent.tool_profile_by_mode,
+    )

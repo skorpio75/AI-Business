@@ -138,20 +138,7 @@ def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
         snapshot.workflow_id: snapshot
         for snapshot in db.execute(select(WorkflowStateSnapshotORM)).scalars().all()
     }
-    results: list[EmailWorkflowResponse] = []
-    for row in rows:
-        response = EmailWorkflowResponse.model_validate(row)
-        snapshot = snapshots.get(row.workflow_id)
-        outputs = snapshot.state_json.get("outputs") if snapshot and isinstance(snapshot.state_json, dict) else None
-        if isinstance(outputs, dict):
-            response = response.model_copy(
-                update={
-                    "llm_diagnostic_code": outputs.get("llm_diagnostic_code"),
-                    "llm_diagnostic_detail": outputs.get("llm_diagnostic_detail"),
-                }
-            )
-        results.append(response)
-    return results
+    return [_workflow_run_response_from_row(row, snapshots.get(row.workflow_id)) for row in rows]
 
 
 def list_agent_runs(db: Session, *, workflow_id: str | None = None) -> list[AgentRunRecord]:
@@ -168,7 +155,8 @@ def get_workflow_run(db: Session, workflow_id: str) -> EmailWorkflowResponse | N
     row = db.get(WorkflowRunORM, workflow_id)
     if row is None:
         return None
-    return EmailWorkflowResponse.model_validate(row)
+    snapshot = db.get(WorkflowStateSnapshotORM, workflow_id)
+    return _workflow_run_response_from_row(row, snapshot)
 
 
 def get_approval_by_workflow_id(db: Session, workflow_id: str) -> ApprovalItem | None:
@@ -345,3 +333,19 @@ def _optional_table_available(db: Session, table_name: str) -> bool:
             table_name,
         )
     return False
+
+
+def _workflow_run_response_from_row(
+    row: WorkflowRunORM,
+    snapshot: WorkflowStateSnapshotORM | None,
+) -> EmailWorkflowResponse:
+    response = EmailWorkflowResponse.model_validate(row)
+    outputs = snapshot.state_json.get("outputs") if snapshot and isinstance(snapshot.state_json, dict) else None
+    if isinstance(outputs, dict):
+        response = response.model_copy(
+            update={
+                "llm_diagnostic_code": outputs.get("llm_diagnostic_code"),
+                "llm_diagnostic_detail": outputs.get("llm_diagnostic_detail"),
+            }
+        )
+    return response

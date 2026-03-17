@@ -1,11 +1,17 @@
 /* Copyright (c) Dario Pizzolante */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
 import { StatusPill } from "../components/StatusPill";
 import { apiClient } from "../lib/api";
 import { formatConfidence, truncate } from "../lib/format";
-import type { DashboardSummary, WorkflowRun } from "../types";
+import type {
+  AgentRunRecord,
+  AuditEventRecord,
+  DashboardSummary,
+  WorkflowRun,
+  WorkflowTrace,
+} from "../types";
 
 function runStatusTone(run: WorkflowRun): "neutral" | "success" | "warning" | "critical" {
   if (run.status === "completed" && run.approval_status === "approved") {
@@ -15,6 +21,117 @@ function runStatusTone(run: WorkflowRun): "neutral" | "success" | "warning" | "c
     return "critical";
   }
   return "warning";
+}
+
+function traceSignalTone(value: string | null | undefined): "neutral" | "success" | "warning" | "critical" {
+  if (!value) {
+    return "neutral";
+  }
+  const normalized = value.toLowerCase();
+  if (
+    normalized.includes("fail") ||
+    normalized.includes("reject") ||
+    normalized.includes("block") ||
+    normalized.includes("critical")
+  ) {
+    return "critical";
+  }
+  if (
+    normalized.includes("escalat") ||
+    normalized.includes("pending") ||
+    normalized.includes("warn") ||
+    normalized.includes("fallback")
+  ) {
+    return "warning";
+  }
+  if (normalized.includes("complete") || normalized.includes("approve") || normalized.includes("sent")) {
+    return "success";
+  }
+  return "neutral";
+}
+
+function prettyLabel(value: string | null | undefined): string {
+  if (!value) {
+    return "Not recorded";
+  }
+  return value.replace(/[._-]+/g, " ");
+}
+
+function formatTimestamp(value: string | null | undefined): string {
+  if (!value) {
+    return "Not recorded";
+  }
+  return new Date(value).toLocaleString();
+}
+
+function inlinePayloadSummary(payload: Record<string, unknown> | string | null | undefined): string | null {
+  if (!payload) {
+    return null;
+  }
+  if (typeof payload === "string") {
+    return payload;
+  }
+  const entries = Object.entries(payload).slice(0, 3);
+  if (!entries.length) {
+    return null;
+  }
+  return entries.map(([key, value]) => `${prettyLabel(key)}=${String(value)}`).join(" · ");
+}
+
+function routeHops(trace: WorkflowTrace | null): string[] {
+  if (!trace) {
+    return [];
+  }
+  return Array.from(
+    new Set(
+      [...trace.agent_runs.map((run) => run.routing_path), ...trace.audit_events.map((event) => event.routing_path)].filter(
+        (value): value is string => Boolean(value),
+      ),
+    ),
+  );
+}
+
+function sourceEvents(trace: WorkflowTrace | null): string[] {
+  if (!trace) {
+    return [];
+  }
+  return Array.from(
+    new Set(
+      trace.agent_runs
+        .map((run) => run.trigger_event_name)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  );
+}
+
+function traceEscalations(trace: WorkflowTrace | null, run: WorkflowRun | null): string[] {
+  const signals = new Set<string>();
+  if (run?.escalation_reason) {
+    signals.add(run.escalation_reason);
+  }
+  if (!trace) {
+    return Array.from(signals);
+  }
+  trace.agent_runs.forEach((item) => {
+    if (item.status === "failed" || item.status === "blocked") {
+      signals.add(`${item.agent_id}: ${prettyLabel(item.status)}`);
+    }
+    if (item.error_code) {
+      signals.add(`${item.agent_id}: ${item.error_code}`);
+    }
+  });
+  trace.audit_events.forEach((event) => {
+    if (
+      event.status === "failed" ||
+      event.status === "blocked" ||
+      event.status === "rejected" ||
+      event.status === "escalated" ||
+      event.event_name.includes("escalated")
+    ) {
+      signals.add(`${prettyLabel(event.event_name)} (${prettyLabel(event.status)})`);
+    }
+  });
+  return Array.from(signals);
 }
 
 type WorkflowMonitorPageProps = {
@@ -27,6 +144,9 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
   const [error, setError] = useState<string | null>(null);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [selectedTrace, setSelectedTrace] = useState<WorkflowTrace | null>(null);
+  const [traceLoading, setTraceLoading] = useState(false);
+  const [traceError, setTraceError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -36,10 +156,7 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
       setError(null);
 
       try {
-        const [nextRuns, nextSummary] = await Promise.all([
-          apiClient.getWorkflowRuns(),
-          apiClient.getDashboardSummary(),
-        ]);
+        const [nextRuns, nextSummary] = await Promise.all([apiClient.getWorkflowRuns(), apiClient.getDashboardSummary()]);
         if (!active) {
           return;
         }
@@ -47,7 +164,12 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
         const orderedRuns = [...nextRuns].reverse();
         setRuns(orderedRuns);
         setSummary(nextSummary);
-        setSelectedWorkflowId((current) => current ?? orderedRuns[0]?.workflow_id ?? null);
+        setSelectedWorkflowId((current) => {
+          if (current && orderedRuns.some((run) => run.workflow_id === current)) {
+            return current;
+          }
+          return orderedRuns[0]?.workflow_id ?? null;
+        });
       } catch (loadError) {
         if (!active) {
           return;
@@ -66,12 +188,61 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
     };
   }, [refreshToken]);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadTrace(workflowId: string) {
+      setTraceLoading(true);
+      setTraceError(null);
+      try {
+        const trace = await apiClient.getWorkflowTrace(workflowId);
+        if (!active) {
+          return;
+        }
+        setSelectedTrace(trace);
+      } catch (loadError) {
+        if (!active) {
+          return;
+        }
+        setSelectedTrace(null);
+        setTraceError(loadError instanceof Error ? loadError.message : "unknown_error");
+      } finally {
+        if (active) {
+          setTraceLoading(false);
+        }
+      }
+    }
+
+    if (!selectedWorkflowId) {
+      setSelectedTrace(null);
+      setTraceError(null);
+      setTraceLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    void loadTrace(selectedWorkflowId);
+    return () => {
+      active = false;
+    };
+  }, [selectedWorkflowId, refreshToken]);
+
   const selectedRun =
     runs.find((run) => run.workflow_id === selectedWorkflowId) ?? runs[0] ?? null;
   const escalationCount = runs.filter((run) => run.escalation_reason).length;
   const averageConfidence = runs.length
     ? Math.round((runs.reduce((sum, run) => sum + run.confidence, 0) / runs.length) * 100)
     : 0;
+
+  const traceRouteSummary = useMemo(() => routeHops(selectedTrace), [selectedTrace]);
+  const traceSourceSummary = useMemo(() => sourceEvents(selectedTrace), [selectedTrace]);
+  const traceEscalationSummary = useMemo(
+    () => traceEscalations(selectedTrace, selectedRun),
+    [selectedRun, selectedTrace],
+  );
+  const selectedAuditEvents = selectedTrace?.audit_events ?? [];
+  const selectedAgentRuns = selectedTrace?.agent_runs ?? [];
 
   return (
     <section className="page-grid">
@@ -81,8 +252,9 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
           <h2>Track live approval-bound runs from the API.</h2>
         </div>
         <p className="hero-copy">
-          This page reads `GET /workflows/runs` and surfaces the current queue shape, model
-          choices, and escalation patterns.
+          This page reads `GET /workflows/runs` and `GET /audit/workflows/{'{'}workflow_id{'}'}` so
+          Mission Control can show source events, routing paths, and escalation visibility without
+          leaving the dashboard.
         </p>
       </div>
 
@@ -98,6 +270,10 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
         <article className="stat-card">
           <span>Escalations</span>
           <strong>{escalationCount}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Trace events</span>
+          <strong>{selectedAuditEvents.length}</strong>
         </article>
       </div>
 
@@ -137,7 +313,10 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 onClick={() => setSelectedWorkflowId(run.workflow_id)}
               >
                 <div className="list-card__topline">
-                  <StatusPill label={`${run.status.replace("_", " ")} / ${run.approval_status}`} tone={runStatusTone(run)} />
+                  <StatusPill
+                    label={`${run.status.replace("_", " ")} / ${run.approval_status}`}
+                    tone={runStatusTone(run)}
+                  />
                   <span>{formatConfidence(run.confidence)}</span>
                 </div>
                 <h4>{run.intent}</h4>
@@ -179,7 +358,10 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
               </div>
               <div className="detail-row">
                 <span>Status</span>
-                <StatusPill label={`${selectedRun.status.replace("_", " ")} / ${selectedRun.approval_status}`} tone={runStatusTone(selectedRun)} />
+                <StatusPill
+                  label={`${selectedRun.status.replace("_", " ")} / ${selectedRun.approval_status}`}
+                  tone={runStatusTone(selectedRun)}
+                />
               </div>
               <div className="detail-row">
                 <span>Send</span>
@@ -193,6 +375,10 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 <strong>
                   {selectedRun.provider_used} / {selectedRun.model_used}
                 </strong>
+              </div>
+              <div className="detail-row">
+                <span>Source provider</span>
+                <strong>{selectedRun.source_provider ?? "Manual / not recorded"}</strong>
               </div>
               <div className="detail-row">
                 <span>Local LLM</span>
@@ -213,6 +399,43 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 llmDiagnosticCode={selectedRun.llm_diagnostic_code}
                 llmDiagnosticDetail={selectedRun.llm_diagnostic_detail}
               />
+              <section className="trace-section">
+                <div className="trace-summary-grid">
+                  <article className="list-card">
+                    <div className="list-card__topline">
+                      <p className="eyebrow">Source event</p>
+                      <StatusPill
+                        label={traceSourceSummary.length ? `${traceSourceSummary.length} tracked` : "pending"}
+                        tone={traceSourceSummary.length ? "success" : "neutral"}
+                      />
+                    </div>
+                    <p>{traceSourceSummary[0] ? prettyLabel(traceSourceSummary[0]) : "No source event recorded yet."}</p>
+                  </article>
+                  <article className="list-card">
+                    <div className="list-card__topline">
+                      <p className="eyebrow">Routing path</p>
+                      <StatusPill
+                        label={traceRouteSummary.length ? `${traceRouteSummary.length} hops` : "pending"}
+                        tone={traceRouteSummary.length ? "warning" : "neutral"}
+                      />
+                    </div>
+                    <p>{traceRouteSummary.length ? traceRouteSummary.join(" -> ") : "No routing path recorded yet."}</p>
+                  </article>
+                  <article className="list-card">
+                    <div className="list-card__topline">
+                      <p className="eyebrow">Escalation signals</p>
+                      <StatusPill
+                        label={`${traceEscalationSummary.length}`}
+                        tone={traceEscalationSummary.length ? "warning" : "success"}
+                      />
+                    </div>
+                    <p>
+                      {traceEscalationSummary[0] ??
+                        "No escalation or blocked signal is currently recorded for this run."}
+                    </p>
+                  </article>
+                </div>
+              </section>
               <div className="draft-block">
                 <p className="eyebrow">Draft reply</p>
                 <pre>{selectedRun.draft_reply}</pre>
@@ -228,6 +451,96 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                   <strong>No escalation reason recorded for this run.</strong>
                 </div>
               )}
+
+              <section className="trace-section">
+                <div className="panel-header">
+                  <div>
+                    <p className="eyebrow">Agent runs</p>
+                    <h3>Execution chain</h3>
+                  </div>
+                  <StatusPill
+                    label={traceLoading ? "loading" : `${selectedAgentRuns.length} runs`}
+                    tone={traceLoading ? "warning" : "neutral"}
+                  />
+                </div>
+                {traceError ? <p className="panel-state panel-state--error">{traceError}</p> : null}
+                {!traceLoading && !traceError && !selectedAgentRuns.length ? (
+                  <p className="panel-state">No agent runs recorded for this workflow yet.</p>
+                ) : null}
+                <div className="trace-list">
+                  {selectedAgentRuns.map((agentRun: AgentRunRecord) => (
+                    <article key={agentRun.agent_run_id} className="trace-card">
+                      <div className="trace-card__header">
+                        <div>
+                          <p className="eyebrow">{prettyLabel(agentRun.mode)}</p>
+                          <h4>{prettyLabel(agentRun.agent_id)}</h4>
+                        </div>
+                        <StatusPill label={prettyLabel(agentRun.status)} tone={traceSignalTone(agentRun.status)} />
+                      </div>
+                      <div className="trace-card__meta">
+                        <span>{formatTimestamp(agentRun.started_at)}</span>
+                        <span>{agentRun.routing_path ?? agentRun.provider_used ?? "path not recorded"}</span>
+                      </div>
+                      <p>
+                        Source event: {prettyLabel(agentRun.trigger_event_name)}. Confidence:{" "}
+                        {agentRun.confidence != null ? formatConfidence(agentRun.confidence) : "not scored"}.
+                      </p>
+                      {agentRun.error_code ? (
+                        <p className="trace-card__error">
+                          {agentRun.error_code}: {agentRun.error_detail ?? "No extra detail recorded."}
+                        </p>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className="trace-section">
+                <div className="panel-header">
+                  <div>
+                    <p className="eyebrow">Audit timeline</p>
+                    <h3>Trace events</h3>
+                  </div>
+                  <StatusPill
+                    label={traceLoading ? "loading" : `${selectedAuditEvents.length} events`}
+                    tone={traceLoading ? "warning" : "neutral"}
+                  />
+                </div>
+                {traceError ? <p className="panel-state panel-state--error">{traceError}</p> : null}
+                {!traceLoading && !traceError && !selectedAuditEvents.length ? (
+                  <p className="panel-state">No audit events recorded for this workflow yet.</p>
+                ) : null}
+                <div className="trace-list">
+                  {selectedAuditEvents.map((event: AuditEventRecord) => (
+                    <article key={event.audit_event_id} className="trace-card">
+                      <div className="trace-card__header">
+                        <div>
+                          <p className="eyebrow">{formatTimestamp(event.occurred_at)}</p>
+                          <h4>{prettyLabel(event.event_name)}</h4>
+                        </div>
+                        <StatusPill label={prettyLabel(event.status)} tone={traceSignalTone(event.status)} />
+                      </div>
+                      <div className="trace-card__meta">
+                        <span>{prettyLabel(event.actor_type)}: {prettyLabel(event.actor_id)}</span>
+                        <span>{event.routing_path ?? event.provider_used ?? "path not recorded"}</span>
+                      </div>
+                      <p>
+                        Entity: {prettyLabel(event.entity_type)} / {event.entity_id}
+                        {event.step_id ? ` · Step ${event.step_id}` : ""}
+                        {event.tool_id ? ` · Tool ${event.tool_id}` : ""}
+                      </p>
+                      {inlinePayloadSummary(event.payload_ref_or_inline) ? (
+                        <p>{inlinePayloadSummary(event.payload_ref_or_inline)}</p>
+                      ) : null}
+                      {event.error_code ? (
+                        <p className="trace-card__error">
+                          {event.error_code}: {event.error_detail ?? "No extra detail recorded."}
+                        </p>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              </section>
             </div>
           ) : (
             <p className="panel-state">Select a workflow run to inspect it.</p>
@@ -252,7 +565,16 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                 <article key={item.title} className="list-card">
                   <div className="list-card__topline">
                     <strong>{item.title}</strong>
-                    <StatusPill label={item.urgency} tone={item.urgency === "high" ? "critical" : item.urgency === "medium" ? "warning" : "success"} />
+                    <StatusPill
+                      label={item.urgency}
+                      tone={
+                        item.urgency === "high"
+                          ? "critical"
+                          : item.urgency === "medium"
+                            ? "warning"
+                            : "success"
+                      }
+                    />
                   </div>
                   <p>{item.reason}</p>
                 </article>
@@ -267,7 +589,16 @@ export function WorkflowMonitorPage({ refreshToken }: WorkflowMonitorPageProps) 
                   <article key={item.title} className="list-card">
                     <div className="list-card__topline">
                       <strong>{item.title}</strong>
-                      <StatusPill label={item.severity} tone={item.severity === "critical" ? "critical" : item.severity === "warning" ? "warning" : "neutral"} />
+                      <StatusPill
+                        label={item.severity}
+                        tone={
+                          item.severity === "critical"
+                            ? "critical"
+                            : item.severity === "warning"
+                              ? "warning"
+                              : "neutral"
+                        }
+                      />
                     </div>
                     <p>{item.detail}</p>
                   </article>

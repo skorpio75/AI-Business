@@ -137,14 +137,13 @@ export function FinanceCockpitPage({ refreshToken }: FinanceCockpitPageProps) {
                       <div className="list-card__topline">
                         <strong>{agent.display_name}</strong>
                         <div className="tag-cloud">
-                          <StatusPill label={agent.approval_class.replaceAll("_", " ")} tone="neutral" />
-                          <StatusPill label={agent.autonomy_class.replaceAll("_", " ")} tone="success" />
+                          <StatusPill label={agent.governed_metadata.routing_posture} tone="neutral" />
+                          <StatusPill label={agent.governed_metadata.autonomy_label} tone="success" />
                         </div>
                       </div>
                       <p>{agent.role_summary}</p>
-                      <span className="muted-note">
-                        {agent.operating_modes.map((mode) => mode.replaceAll("_", " ")).join(", ")}
-                      </span>
+                      <span className="muted-note">{agent.governed_metadata.operating_model_label}</span>
+                      <span className="muted-note">{agent.governed_metadata.routing_posture_label}</span>
                     </article>
                   ))}
                 </div>

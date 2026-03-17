@@ -175,4 +175,5 @@ class FinancePanelService:
             tool_profile_by_mode=agent.tool_profile_by_mode,
             approval_class=agent.approval_class,
             autonomy_class=agent.autonomy_class,
+            governed_metadata=agent.governed_metadata,
         )

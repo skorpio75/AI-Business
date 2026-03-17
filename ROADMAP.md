@@ -139,7 +139,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [x] P5-T09: Add `audit_events` persistence for step-level actions, tool usage, and approval events
 - [x] P5-T10: Expose audit/trace endpoints for workflow, agent, and approval inspection
 - [x] P5-T11: Align audit/trace model with normalized events, tool IDs, autonomy classes, and approval classes
-- [ ] P5-T12: Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
+- [x] P5-T12: Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
 
 ### Phase 6 - Later Ops Layer (CI/CD, LLMOps/MLOps)
 - [ ] P6-T01: Define git branching and release workflow
@@ -437,4 +437,4 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P5-T11` by aligning audit and trace contracts with governed vocabularies: `AgentRunRecord.trigger_event_name` now uses the normalized event contract, `AuditEventRecord.event_name` now uses explicit audit event families, `tool_id` now uses normalized tool IDs, and `mode`, `approval_class`, and `autonomy_class` now flow through typed governed literals in the audit/logger layer. Expanded the normalized event contract to cover the newer commercial and mission lifecycle events documented in `EVENT_MODEL.md` and added validation tests for accepted vs rejected audit values.
 
 ## Next Action
-Start `P5-T12` to expose persisted event and run traces in Mission Control with source-event, routing-path, and escalation visibility.
+Continue `H-T04` to reflect normalized metadata in registry/config and later runtime/UI surfaces without disrupting current MVP delivery work.

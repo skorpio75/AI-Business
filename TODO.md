@@ -19,7 +19,7 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `P5-T12` Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
+- [x] `P5-T12` Expose event/run traces in Mission Control with source event, routing path, and escalation visibility
 
 ## Soon After
 - [ ] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels

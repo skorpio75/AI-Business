@@ -8,6 +8,7 @@ from pydantic import field_validator
 
 from app.models.agent_contract import AgentContract
 from app.models.audit import AgentRunRecord, AuditEventRecord
+from app.models.governed_metadata import GovernedMetadataSummary
 from app.models.specialist_contracts import (
     ArchitectureAdvice,
     CloseChecklistItem,
@@ -247,6 +248,7 @@ class CTOCIOPanelResponse(BaseModel):
     primary_track: Literal["track_a_internal", "track_b_client"]
     operating_modes: list[str] = Field(default_factory=list)
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    governed_metadata: GovernedMetadataSummary
     provider_used: str
     model_used: str
     local_llm_invoked: bool = False
@@ -267,6 +269,7 @@ class CTOCIOAnalysisResponse(BaseModel):
     primary_track: Literal["track_a_internal", "track_b_client"]
     operating_modes: list[str] = Field(default_factory=list)
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    governed_metadata: GovernedMetadataSummary
     provider_used: str
     model_used: str
     local_llm_invoked: bool = False
@@ -292,6 +295,7 @@ class FinancePanelAgentSummary(BaseModel):
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
     approval_class: Literal["none", "bounded", "ceo_required"]
     autonomy_class: Literal["assistant", "supervised_executor", "bounded_autonomous", "approval_gated"]
+    governed_metadata: GovernedMetadataSummary
 
 
 class FinancePanelResponse(BaseModel):
@@ -322,6 +326,7 @@ class ChiefAIPanelResponse(BaseModel):
     primary_track: Literal["track_a_internal", "track_b_client"]
     operating_modes: list[str] = Field(default_factory=list)
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    governed_metadata: GovernedMetadataSummary
     provider_used: str
     model_used: str
     local_llm_invoked: bool = False
@@ -343,6 +348,7 @@ class ChiefAIAnalysisResponse(BaseModel):
     primary_track: Literal["track_a_internal", "track_b_client"]
     operating_modes: list[str] = Field(default_factory=list)
     tool_profile_by_mode: dict[str, str] = Field(default_factory=dict)
+    governed_metadata: GovernedMetadataSummary
     provider_used: str
     model_used: str
     local_llm_invoked: bool = False

@@ -88,6 +88,8 @@ class SpecialistAdvisoryAnalysisTests(unittest.TestCase):
         self.assertEqual(response.model_used, "rules-test")
         self.assertGreater(len(response.scope_insights), 0)
         self.assertGreater(len(response.strategy_options), 0)
+        self.assertEqual(response.governed_metadata.routing_posture, "DO-C")
+        self.assertIn("Direct Ollama", response.governed_metadata.routing_posture_label)
 
     def test_chief_ai_analysis_recommends_knowledge_and_workflow_services(self) -> None:
         agent = self.registry.get_agent("chief-ai-digital-strategy-agent")
@@ -145,6 +147,8 @@ class SpecialistAdvisoryAnalysisTests(unittest.TestCase):
         self.assertEqual(response.model_used, "rules-test")
         self.assertGreater(len(response.scope_signals), 0)
         self.assertGreater(len(response.opportunity_map), 0)
+        self.assertEqual(response.governed_metadata.routing_posture, "DO-C")
+        self.assertIn("Internal", response.governed_metadata.operating_model_label)
 
 
 if __name__ == "__main__":

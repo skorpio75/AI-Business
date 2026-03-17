@@ -259,7 +259,7 @@ def run_proposal_generation(
     return proposal_workflow.run(payload, db=db)
 
 
-@app.get("/workflows/runs")
+@app.get("/workflows/runs", response_model=list[EmailWorkflowResponse])
 def list_workflow_runs_endpoint(db: Session = Depends(get_db)) -> list[EmailWorkflowResponse]:
     return list_workflow_runs(db)
 

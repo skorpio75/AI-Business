@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { useEffect, useState } from "react";
 
+import { GovernedMetadataBlock } from "../components/GovernedMetadataBlock";
 import { ModelRouteIndicator } from "../components/ModelRouteIndicator";
 import { StatusPill } from "../components/StatusPill";
 import { apiClient } from "../lib/api";
@@ -104,7 +105,7 @@ export function CtoCioPage({ refreshToken }: CtoCioPageProps) {
                 <div className="list-card__topline">
                   <StatusPill label={panel.primary_track.replaceAll("_", " ")} tone="neutral" />
                   <StatusPill
-                    label={panel.approval_required ? "approval required" : "advisory only"}
+                    label={panel.governed_metadata.approval_label}
                     tone={panel.approval_required ? "warning" : "success"}
                   />
                 </div>
@@ -115,10 +116,7 @@ export function CtoCioPage({ refreshToken }: CtoCioPageProps) {
               </div>
               <p>{panel.role_summary}</p>
 
-              <div className="callout callout--soft">
-                <p className="eyebrow">Operating modes</p>
-                <strong>{panel.operating_modes.map((mode) => mode.replaceAll("_", " ")).join(", ")}</strong>
-              </div>
+              <GovernedMetadataBlock metadata={panel.governed_metadata} />
 
               <div className="callout callout--soft">
                 <p className="eyebrow">Model routing</p>
@@ -131,20 +129,6 @@ export function CtoCioPage({ refreshToken }: CtoCioPageProps) {
                   llmDiagnosticDetail={panel.llm_diagnostic_detail}
                 />
               </div>
-
-              {Object.keys(panel.tool_profile_by_mode).length > 0 ? (
-                <div className="mini-list">
-                  <p className="eyebrow">Tool profiles</p>
-                  <ul>
-                    {Object.entries(panel.tool_profile_by_mode).map(([mode, profileId]) => (
-                      <li key={mode}>
-                        <strong>{mode.replaceAll("_", " ")}</strong>: {profileId}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
               <div className="assistant-section">
                 <p className="eyebrow">Customer scope insights</p>
                 <div className="stack-list">

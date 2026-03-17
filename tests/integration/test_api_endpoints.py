@@ -131,6 +131,16 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertEqual(len(approvals_response.json()), 1)
         self.assertEqual(approvals_response.json()[0]["workflow_id"], run_payload["workflow_id"])
 
+    def test_agents_endpoint_exposes_governed_metadata_labels(self) -> None:
+        response = self.client.get("/agents")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        cto_agent = next(item for item in payload if item["agent_id"] == "cto-cio-agent")
+        self.assertEqual(cto_agent["governed_metadata"]["routing_posture"], "DO-C")
+        self.assertIn("Direct Ollama", cto_agent["governed_metadata"]["routing_posture_label"])
+        self.assertGreaterEqual(len(cto_agent["governed_metadata"]["tool_profiles"]), 1)
+
     def test_approval_decision_approve_sends_reply_and_updates_state(self) -> None:
         run_response = self.client.post(
             "/workflows/email-operations/run",
@@ -297,6 +307,18 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertEqual(payload["approval"]["workflow_id"], workflow_id)
         self.assertGreaterEqual(len(payload["agent_runs"]), 1)
         self.assertGreaterEqual(len(payload["audit_events"]), 1)
+
+    def test_specialist_panel_endpoints_include_governed_metadata(self) -> None:
+        cto_response = self.client.get("/specialists/cto-cio/panel")
+        chief_ai_response = self.client.get("/specialists/chief-ai-digital-strategy/panel")
+        finance_response = self.client.get("/specialists/finance/panel")
+
+        self.assertEqual(cto_response.status_code, 200)
+        self.assertEqual(chief_ai_response.status_code, 200)
+        self.assertEqual(finance_response.status_code, 200)
+        self.assertEqual(cto_response.json()["governed_metadata"]["routing_posture"], "DO-C")
+        self.assertEqual(chief_ai_response.json()["governed_metadata"]["routing_posture"], "DO-C")
+        self.assertTrue(all("governed_metadata" in item for item in finance_response.json()["agents"]))
 
     def test_approval_trace_endpoint_returns_decision_timeline(self) -> None:
         run_response = self.client.post(

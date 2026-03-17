@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { useEffect, useState } from "react";
 
+import { GovernedMetadataBlock } from "../components/GovernedMetadataBlock";
 import { StatusPill } from "../components/StatusPill";
 import { apiClient } from "../lib/api";
 import type { AgentContract } from "../types";
@@ -79,51 +80,39 @@ export function AgentActivityPage({ refreshToken }: AgentActivityPageProps) {
             <div className="detail-stack">
               <div className="detail-row">
                 <span>Approval class</span>
-                <strong>{agent.approval_class.replace("_", " ")}</strong>
+                <strong>{agent.governed_metadata?.approval_label ?? agent.approval_class.replace("_", " ")}</strong>
               </div>
               <div className="detail-row">
                 <span>Autonomy class</span>
-                <strong>{agent.autonomy_class.replaceAll("_", " ")}</strong>
+                <strong>{agent.governed_metadata?.autonomy_label ?? agent.autonomy_class.replaceAll("_", " ")}</strong>
               </div>
               {agent.pod ? (
                 <div className="detail-row">
                   <span>Pod</span>
-                  <strong>{agent.pod.replace("_", " ")}</strong>
+                  <strong>{agent.governed_metadata?.pod_label ?? agent.pod.replace("_", " ")}</strong>
                 </div>
               ) : null}
               {agent.family_id ? (
                 <div className="detail-row">
                   <span>Family</span>
-                  <strong>{agent.family_id}</strong>
+                  <strong>{agent.governed_metadata?.family_label ?? agent.family_id}</strong>
                 </div>
               ) : null}
               <div className="detail-row">
                 <span>Primary track</span>
-                <strong>{agent.deployment.primary_track.replaceAll("_", " ")}</strong>
+                <strong>
+                  {agent.governed_metadata?.primary_track_label ?? agent.deployment.primary_track.replaceAll("_", " ")}
+                </strong>
               </div>
               <div className="detail-row">
                 <span>Replication</span>
-                <strong>{agent.deployment.replication_mode.replace("_", " ")}</strong>
+                <strong>
+                  {agent.governed_metadata?.replication_label ?? agent.deployment.replication_mode.replace("_", " ")}
+                </strong>
               </div>
             </div>
 
-            {agent.operating_modes && agent.operating_modes.length > 0 ? (
-              <div className="callout callout--soft">
-                <p className="eyebrow">Operating modes</p>
-                <strong>{agent.operating_modes.map((mode) => mode.replaceAll("_", " ")).join(", ")}</strong>
-              </div>
-            ) : null}
-
-            {agent.tool_profile_by_mode && Object.keys(agent.tool_profile_by_mode).length > 0 ? (
-              <div className="callout callout--soft">
-                <p className="eyebrow">Tool profiles</p>
-                <strong>
-                  {Object.entries(agent.tool_profile_by_mode)
-                    .map(([mode, profileId]) => `${mode.replaceAll("_", " ")} -> ${profileId}`)
-                    .join(" | ")}
-                </strong>
-              </div>
-            ) : null}
+            {agent.governed_metadata ? <GovernedMetadataBlock metadata={agent.governed_metadata} /> : null}
 
             {agent.deployment.replication_notes ? (
               <div className="callout callout--soft">

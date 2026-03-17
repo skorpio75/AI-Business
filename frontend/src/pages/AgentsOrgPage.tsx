@@ -93,8 +93,17 @@ export function AgentsOrgPage({ refreshToken }: AgentsOrgPageProps) {
                     </div>
                     <div className="org-card__meta">
                       <StatusPill label={agent.runtime.status} tone={agent.runtime.status === "disabled" ? "critical" : "success"} />
-                      <StatusPill label={agent.approval_class.replace("_", " ")} tone="neutral" />
+                      <StatusPill
+                        label={agent.governed_metadata?.routing_posture ?? agent.approval_class.replace("_", " ")}
+                        tone="neutral"
+                      />
                     </div>
+                    {agent.governed_metadata ? (
+                      <div className="assistant-section">
+                        <span className="muted-note">{agent.governed_metadata.operating_model_label}</span>
+                        <span className="muted-note">{agent.governed_metadata.routing_posture_label}</span>
+                      </div>
+                    ) : null}
                   </article>
                 ))}
               </div>

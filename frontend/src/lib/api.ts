@@ -9,6 +9,7 @@ import type {
   KnowledgeQueryResponse,
   PersonalAssistantContext,
   ProposalGenerationResponse,
+  WorkflowTrace,
   WorkflowRun,
 } from "../types";
 
@@ -87,6 +88,10 @@ export const apiClient = {
 
   getWorkflowRuns(): Promise<WorkflowRun[]> {
     return getJson<WorkflowRun[]>("/workflows/runs");
+  },
+
+  getWorkflowTrace(workflowId: string): Promise<WorkflowTrace> {
+    return getJson<WorkflowTrace>(`/audit/workflows/${workflowId}`);
   },
 
   getPendingApprovals(): Promise<ApprovalItem[]> {

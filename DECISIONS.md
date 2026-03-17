@@ -303,6 +303,7 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-16
 - Decision: The platform should distinguish raw `lead_signal` inputs from materialized leads. Supported source classes may include manual entry, inbound email, website forms, calendar bookings, referrals, CRM imports, document intake, chat, and researched account signals. Automatic lead creation is allowed only when source identity, account or contact context, and a consulting need are sufficiently clear; otherwise the signal should become a reviewable candidate rather than silently entering the active pipeline.
 - Rationale: The current Growth flow already assumes `lead.received`, but real commercial intake starts earlier and is often noisy. A governed Track A materialization layer keeps the sales process realistic, preserves auditability, supports automation for non-manual sources, and prevents low-quality external signals from polluting `opportunity_state`.
+- Implementation note: the first live adapter is a public `website_form` booking endpoint behind the public site. It materializes structured booking requests into the private platform without exposing Mission Control or other internal operator surfaces.
 
 ## ADR-051: Signed scope must produce an approved dispatch plan before mission startup
 - Status: Accepted

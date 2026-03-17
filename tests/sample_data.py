@@ -31,6 +31,18 @@ DEFAULT_PROPOSAL_GENERATION_PAYLOAD = {
     "constraints": ["Budget approval pending"],
 }
 
+DEFAULT_PUBLIC_BOOKING_PAYLOAD = {
+    "full_name": "Dario Pizzolante",
+    "email": "dario@example.com",
+    "company": "Stratevia",
+    "role_title": "Managing Director",
+    "service_interest": "AI strategy and roadmapping",
+    "challenge_summary": "We need a practical conversation about modernization priorities and where AI can create business value.",
+    "preferred_timing": "Within the next 2 weeks",
+    "website_path": "/booking",
+    "consent_to_contact": True,
+}
+
 DEFAULT_CTO_CIO_ANALYSIS_PAYLOAD = {
     "engagement_name": "Retail ERP Recovery",
     "problem_statement": "The client has legacy ERP and CRM fragmentation with manual handoffs.",
@@ -118,6 +130,12 @@ def knowledge_query_payload(**overrides: Any) -> dict[str, Any]:
 
 def proposal_generation_payload(**overrides: Any) -> dict[str, Any]:
     payload = dict(DEFAULT_PROPOSAL_GENERATION_PAYLOAD)
+    payload.update(overrides)
+    return payload
+
+
+def public_booking_payload(**overrides: Any) -> dict[str, Any]:
+    payload = dict(DEFAULT_PUBLIC_BOOKING_PAYLOAD)
     payload.update(overrides)
     return payload
 

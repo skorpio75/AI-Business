@@ -1,5 +1,5 @@
 # Copyright (c) Dario Pizzolante
-from app.db.repository import list_agent_runs, list_audit_events
+from app.db.repository import get_public_lead_submission, list_agent_runs, list_audit_events
 from app.knowledge.retrieval import RetrievalQuery, RetrievalResult
 from app.services.chief_ai_panel import ChiefAIPanelService
 from app.services.cto_cio_panel import CTOCIOPanelService
@@ -16,6 +16,7 @@ from tests.sample_data import (
     email_workflow_payload,
     knowledge_query_payload,
     proposal_generation_payload,
+    public_booking_payload,
 )
 
 
@@ -199,6 +200,30 @@ class ApiEndpointIntegrationTests(ApiIntegrationTestCase):
         self.assertEqual(payload["provider_used"], "local")
         self.assertIn("Proposal draft for Acme", payload["title"])
         self.assertEqual(payload["proposal_draft"], "Generated content from integration stub.")
+
+    def test_public_booking_endpoint_materializes_private_lead_submission(self) -> None:
+        response = self.client.post(
+            "/public/booking-requests",
+            json=public_booking_payload(),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "received")
+        self.assertEqual(payload["source_class"], "website_form")
+        self.assertEqual(payload["submission_kind"], "booking_request")
+
+        with self._session_factory() as db:
+            stored = get_public_lead_submission(db, payload["submission_id"])
+            audit_events = list_audit_events(db)
+
+        self.assertIsNotNone(stored)
+        assert stored is not None
+        self.assertEqual(stored.lead_id, payload["lead_id"])
+        self.assertEqual(stored.status, "received")
+        event_names = [item.event_name for item in audit_events if item.entity_id == payload["submission_id"]]
+        self.assertIn("agent.run.started", event_names)
+        self.assertIn("agent.run.completed", event_names)
 
     def test_agent_runs_are_persisted_for_workflows_and_specialist_analyses(self) -> None:
         email_response = self.client.post(

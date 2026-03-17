@@ -245,6 +245,12 @@ These connectors are selected through environment settings. Write actions remain
 - hybrid retrieval outputs should preserve evidence provenance so operators can distinguish internal/client grounding from external enrichment
 - risky externally consequential outputs should be able to route through a bounded review/gate step before approval or release
 
+## Current Public Website Intake Boundary
+- the public website can submit booking requests into the platform through a dedicated private intake API path rather than exposing Mission Control or internal agent surfaces
+- the current live source class is `website_form`, implemented for advisory booking requests from the public `/booking` page
+- the website-to-platform handoff persists the submission inside Track A and materializes it as a governed received lead for later Growth follow-up
+- the frontend can target the same host on port `8000` by default so local-network testing from another device remains possible during development
+
 ## Current Integration Gaps
 - secret storage and rotation strategy
 - connector-to-tool-ID mapping for normalized tool/audit contracts
@@ -252,3 +258,4 @@ These connectors are selected through environment settings. Write actions remain
 - richer connector diagnostics in Mission Control UI beyond the current API and health/status surfaces
 - Microsoft To Do list-selection, task-schema, and same-tenant recommendation-promotion contract design
 - approval and audit trace design for recommendation-to-task promotion and priority write-back
+- scheduler integration and private qualification follow-up behind the current public booking intake path

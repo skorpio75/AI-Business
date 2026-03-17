@@ -44,6 +44,8 @@ from app.models.schemas import (
     KnowledgeQueryResponse,
     ProposalGenerationRequest,
     ProposalGenerationResponse,
+    PublicLeadCaptureRequest,
+    PublicLeadCaptureResponse,
     WorkflowTraceResponse,
 )
 from app.models.specialist_contracts import ChiefAIDigitalStrategyInput, CTOCIOCounselInput
@@ -57,6 +59,7 @@ from app.services.knowledge_qna import KnowledgeQnAService
 from app.services.model_gateway import ModelGateway
 from app.services.personal_assistant_context import PersonalAssistantContextService
 from app.services.audit_event_logger import actor, record_audit_event
+from app.services.public_lead_intake import PublicLeadIntakeService
 from app.services.provider_auth import (
     ProviderAuthError,
     describe_provider_bootstrap,
@@ -76,6 +79,16 @@ dashboard_summary = DashboardSummaryService()
 cto_cio_panel = CTOCIOPanelService(model_gateway=gateway)
 finance_panel = FinancePanelService()
 chief_ai_panel = ChiefAIPanelService(model_gateway=gateway)
+public_lead_intake = PublicLeadIntakeService()
+
+LOCAL_NETWORK_ORIGIN_REGEX = (
+    r"^https?://("
+    r"localhost|127\.0\.0\.1|"
+    r"10(?:\.\d{1,3}){3}|"
+    r"192\.168(?:\.\d{1,3}){2}|"
+    r"172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2}"
+    r")(?::\d+)?$"
+)
 
 
 def get_runtime_settings() -> Settings:
@@ -120,6 +133,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://localhost:3000",
     ],
+    allow_origin_regex=LOCAL_NETWORK_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -257,6 +271,16 @@ def run_proposal_generation(
     db: Session = Depends(get_db),
 ) -> ProposalGenerationResponse:
     return proposal_workflow.run(payload, db=db)
+
+
+@app.post("/public/booking-requests", response_model=PublicLeadCaptureResponse)
+def capture_public_booking_request(
+    payload: PublicLeadCaptureRequest,
+    db: Session = Depends(get_db),
+) -> PublicLeadCaptureResponse:
+    response = public_lead_intake.capture_booking_request(payload, db=db)
+    db.commit()
+    return response
 
 
 @app.get("/workflows/runs", response_model=list[EmailWorkflowResponse])

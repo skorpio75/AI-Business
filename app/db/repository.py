@@ -7,9 +7,16 @@ from sqlalchemy.orm import Session
 
 from datetime import datetime, timezone
 
-from app.db.models import AgentRunORM, ApprovalORM, AuditEventORM, WorkflowRunORM, WorkflowStateSnapshotORM
+from app.db.models import (
+    AgentRunORM,
+    ApprovalORM,
+    AuditEventORM,
+    PublicLeadSubmissionORM,
+    WorkflowRunORM,
+    WorkflowStateSnapshotORM,
+)
 from app.models.audit import AgentRunRecord, AuditEventRecord
-from app.models.schemas import ApprovalItem, EmailWorkflowResponse
+from app.models.schemas import ApprovalItem, EmailWorkflowResponse, PublicLeadCaptureResponse
 from app.models.workflow_state import WorkflowState
 
 logger = logging.getLogger(__name__)
@@ -132,6 +139,32 @@ def insert_audit_event(db: Session, item: AuditEventRecord) -> None:
     )
 
 
+def insert_public_lead_submission(
+    db: Session,
+    item: PublicLeadCaptureResponse,
+    payload: dict[str, object],
+) -> None:
+    db.add(
+        PublicLeadSubmissionORM(
+            submission_id=item.submission_id,
+            lead_id=item.lead_id,
+            submitted_at=item.received_at,
+            source_class=item.source_class,
+            submission_kind=item.submission_kind,
+            materialization_status=item.materialization_status,
+            lead_status=item.status,
+            full_name=str(payload["full_name"]),
+            email=str(payload["email"]),
+            company=payload.get("company") if isinstance(payload.get("company"), str) else None,
+            role_title=payload.get("role_title") if isinstance(payload.get("role_title"), str) else None,
+            service_interest=payload.get("service_interest") if isinstance(payload.get("service_interest"), str) else None,
+            challenge_summary=str(payload["challenge_summary"]),
+            preferred_timing=payload.get("preferred_timing") if isinstance(payload.get("preferred_timing"), str) else None,
+            website_path=str(payload["website_path"]),
+        )
+    )
+
+
 def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
     rows = db.execute(select(WorkflowRunORM)).scalars().all()
     snapshots = {
@@ -139,6 +172,22 @@ def list_workflow_runs(db: Session) -> list[EmailWorkflowResponse]:
         for snapshot in db.execute(select(WorkflowStateSnapshotORM)).scalars().all()
     }
     return [_workflow_run_response_from_row(row, snapshots.get(row.workflow_id)) for row in rows]
+
+
+def get_public_lead_submission(db: Session, submission_id: str) -> PublicLeadCaptureResponse | None:
+    row = db.get(PublicLeadSubmissionORM, submission_id)
+    if row is None:
+        return None
+    return PublicLeadCaptureResponse(
+        submission_id=row.submission_id,
+        lead_id=row.lead_id,
+        status=row.lead_status,
+        source_class=row.source_class,
+        submission_kind=row.submission_kind,
+        materialization_status=row.materialization_status,
+        received_at=row.submitted_at,
+        message="Your request has been received and routed into the private intake workflow.",
+    )
 
 
 def list_agent_runs(db: Session, *, workflow_id: str | None = None) -> list[AgentRunRecord]:

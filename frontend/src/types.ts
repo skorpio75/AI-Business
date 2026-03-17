@@ -262,6 +262,17 @@ export type ProposalGenerationResponse = {
   llm_diagnostic_detail?: string | null;
 };
 
+export type PublicLeadCaptureResponse = {
+  submission_id: string;
+  lead_id: string;
+  status: "received";
+  source_class: "website_form";
+  submission_kind: "booking_request";
+  materialization_status: "materialized";
+  received_at: string;
+  message: string;
+};
+
 export type DashboardKpi = {
   id: string;
   label: string;

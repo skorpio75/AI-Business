@@ -120,3 +120,23 @@ class AuditEventORM(Base):
     state_diff_ref: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
     error_code: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
     error_detail: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+
+class PublicLeadSubmissionORM(Base):
+    __tablename__ = "public_lead_submissions"
+
+    submission_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    lead_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    source_class: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    submission_kind: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    materialization_status: Mapped[str] = mapped_column(String(32), nullable=False)
+    lead_status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    full_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    email: Mapped[str] = mapped_column(String(320), nullable=False, index=True)
+    company: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, index=True)
+    role_title: Mapped[Optional[str]] = mapped_column(String(160), nullable=True)
+    service_interest: Mapped[Optional[str]] = mapped_column(String(128), nullable=True, index=True)
+    challenge_summary: Mapped[str] = mapped_column(Text, nullable=False)
+    preferred_timing: Mapped[Optional[str]] = mapped_column(String(160), nullable=True)
+    website_path: Mapped[str] = mapped_column(String(256), nullable=False)

@@ -31,6 +31,7 @@ import { PublicLandingPage } from "./pages/PublicLandingPage";
 import { PublicServiceDetailPage } from "./pages/PublicServiceDetailPage";
 import { PublicServicesPage } from "./pages/PublicServicesPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
+import { API_BASE_URL } from "./lib/api";
 import type { ViewKey } from "./types";
 import { ABOUT_PATH, BOOKING_PATH, getServiceDefinition, type ServiceSlug } from "./lib/publicSite";
 
@@ -368,7 +369,7 @@ function MissionControlApp() {
           </nav>
           <div className="nav-panel__footer">
             <span>API base</span>
-            <code>{import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"}</code>
+            <code>{API_BASE_URL || "same-origin"}</code>
           </div>
         </aside>
 

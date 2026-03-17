@@ -214,6 +214,7 @@ The handoff integration adds an explicit formal operating layer to the architect
 - `docs/agent-instance-portfolio-model.md` now defines how reusable families become client-scoped mission instances and how Track A can aggregate portfolio visibility without violating tenant isolation
 - `docs/mission-control-portfolio-ui-map.md` now defines the concrete Track A Mission Control screen map, frontend contracts, and implementation sequence for portfolio views over clients, engagements, missions, and mission detail
 - `docs/lead-intake-materialization-model.md` now defines supported lead source classes, automatic-vs-review materialization rules, and the event path from raw signal to canonical `lead.received`
+- the public website can now post `website_form` booking requests into a private Track A intake endpoint so visitors stay on the public site while lead data flows into the hidden platform
 - `docs/consulting-engagement-lifecycle-model.md` now defines the signed-scope to mission-start handoff, dispatch candidate plan, approved consultant roster, milestone billing triggers, and mission closeout pattern
 - `docs/delivery-quality-gate-model.md` now defines mission-scoped quality gate planning, phase checkpoints, deliverable-class review patterns, and milestone or handoff release gating
 - `docs/internal-vs-client-agent-usage-model.md` now defines when to use `internal_operating`, `client_delivery`, and `client_facing_service` across the engagement lifecycle

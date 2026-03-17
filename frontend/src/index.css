@@ -720,6 +720,10 @@
     margin: 0 auto;
   }
 
+  .page-hero--booking {
+    align-items: start;
+  }
+
   .page-section {
     @apply grid gap-8 py-2;
     width: min(1180px, calc(100% - 2rem));
@@ -1247,8 +1251,84 @@
     color: #ffffff;
   }
 
+  .booking-form-panel {
+    min-width: 0;
+  }
+
   .booking-panel__head {
     @apply grid gap-2;
+  }
+
+  .booking-form {
+    @apply grid gap-5;
+  }
+
+  .booking-form__grid {
+    @apply grid gap-4 md:grid-cols-2;
+  }
+
+  .booking-field {
+    @apply grid min-w-0 gap-2;
+  }
+
+  .booking-field--full {
+    @apply md:col-span-2;
+  }
+
+  .booking-field span {
+    @apply text-[0.76rem] font-semibold uppercase tracking-[0.14em];
+    color: rgba(222, 226, 232, 0.8);
+  }
+
+  .booking-field input,
+  .booking-field select,
+  .booking-field textarea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: #f4f5f7;
+    padding: 0.95rem 1rem;
+    border-radius: 0.55rem;
+    outline: none;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .booking-field textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+
+  .booking-field input,
+  .booking-field select {
+    min-height: 3.6rem;
+  }
+
+  .booking-field input::placeholder,
+  .booking-field textarea::placeholder {
+    color: rgba(207, 212, 220, 0.44);
+  }
+
+  .booking-field input:focus,
+  .booking-field select:focus,
+  .booking-field textarea:focus {
+    border-color: rgba(217, 116, 50, 0.42);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(217, 116, 50, 0.12);
+  }
+
+  .booking-consent {
+    @apply flex items-start gap-3 border-t pt-4;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(219, 223, 229, 0.8);
+  }
+
+  .booking-consent input {
+    margin-top: 0.15rem;
+    accent-color: #d97432;
   }
 
   .booking-actions {
@@ -1259,6 +1339,10 @@
     @apply m-0 border-t pt-4 text-sm leading-6;
     border-color: rgba(255, 255, 255, 0.08);
     color: rgba(207, 212, 220, 0.72);
+  }
+
+  .booking-note--success {
+    color: rgba(237, 202, 171, 0.88);
   }
 
   .booking-points {
@@ -1454,6 +1538,10 @@
       @apply grid-cols-1;
     }
 
+    .page-hero--booking {
+      @apply grid-cols-1;
+    }
+
     .site-hero h1,
     .site-section__intro h2,
     .page-hero h1 {
@@ -1464,6 +1552,32 @@
   @media (min-width: 961px) {
     .app-main {
       @apply grid-cols-[minmax(250px,290px)_minmax(0,1fr)];
+    }
+
+    .page-hero--booking {
+      width: min(1280px, calc(100% - 2rem));
+      grid-template-columns: minmax(0, 0.88fr) minmax(760px, 1.22fr);
+      gap: 3rem;
+    }
+
+    .page-hero--booking .page-hero__panel {
+      width: 100%;
+      max-width: none;
+    }
+
+    .page-hero--booking .booking-form {
+      width: 100%;
+    }
+
+    .page-hero--booking .booking-form__grid {
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      column-gap: 1.25rem;
+      row-gap: 1.1rem;
+    }
+
+    .page-hero--booking .booking-field,
+    .page-hero--booking .booking-field--full {
+      width: 100%;
     }
   }
 

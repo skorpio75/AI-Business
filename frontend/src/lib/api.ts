@@ -9,6 +9,7 @@ import type {
   KnowledgeQueryResponse,
   PersonalAssistantContext,
   ProposalGenerationResponse,
+  PublicLeadCaptureResponse,
   WorkflowTrace,
   WorkflowRun,
 } from "../types";
@@ -16,6 +17,9 @@ import type {
 function resolveApiBaseUrl(): string {
   const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
   if (!configuredBaseUrl) {
+    if (typeof window !== "undefined") {
+      return `${window.location.protocol}//${window.location.hostname}:8000`;
+    }
     return "http://127.0.0.1:8000";
   }
   if (configuredBaseUrl === "same-origin") {
@@ -137,6 +141,20 @@ export const apiClient = {
     constraints: string[];
   }): Promise<ProposalGenerationResponse> {
     return postJson<ProposalGenerationResponse>("/workflows/proposal-generation/run", payload);
+  },
+
+  submitPublicBookingRequest(payload: {
+    full_name: string;
+    email: string;
+    company?: string;
+    role_title?: string;
+    service_interest?: string;
+    challenge_summary: string;
+    preferred_timing?: string;
+    website_path: string;
+    consent_to_contact: boolean;
+  }): Promise<PublicLeadCaptureResponse> {
+    return postJson<PublicLeadCaptureResponse>("/public/booking-requests", payload);
   },
 
   decideApproval(

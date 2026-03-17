@@ -34,6 +34,7 @@
 - [ ] `B-T50D` Build the `Engagements` portfolio page
 - [ ] `B-T02A` Add a Microsoft To Do section to `Inbox & Calendar` using the same Microsoft Graph tenant/client context
 - [ ] `B-T02B` Route assistant recommendation-to-task promotion through priority approval before writing Microsoft To Do
+- [x] `B-T51A` Add the first live `website_form` intake path from the public booking page into the private platform
 - [ ] `B-T51` Define source adapters and normalization contracts for lead spotting across manual and non-manual channels
 - [ ] `B-T52` Add lead-candidate dedupe and materialization rules before canonical `lead.received`
 - [ ] `B-T55` Define the `dispatch_candidate_plan` contract between signed scope and mission startup

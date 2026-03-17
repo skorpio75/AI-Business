@@ -30,6 +30,10 @@ DecisionType = Literal["approve", "reject", "edit"]
 ApprovalStatus = Literal["pending", "approved", "rejected", "edited"]
 WorkflowRunStatus = Literal["pending_approval", "completed"]
 SendStatus = Literal["pending", "sent", "not_applicable"]
+LeadSourceClass = Literal["website_form"]
+LeadSubmissionKind = Literal["booking_request"]
+LeadMaterializationStatus = Literal["materialized"]
+LeadLifecycleStatus = Literal["received"]
 
 
 class EmailWorkflowRequest(BaseModel):
@@ -166,6 +170,49 @@ class ProposalGenerationResponse(BaseModel):
     cloud_llm_invoked: bool = False
     llm_diagnostic_code: Optional[str] = None
     llm_diagnostic_detail: Optional[str] = None
+
+
+class PublicLeadCaptureRequest(BaseModel):
+    full_name: str = Field(min_length=2, max_length=160)
+    email: str = Field(min_length=5, max_length=320, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+    company: Optional[str] = Field(default=None, max_length=200)
+    role_title: Optional[str] = Field(default=None, max_length=160)
+    service_interest: Optional[str] = Field(default=None, max_length=128)
+    challenge_summary: str = Field(min_length=20, max_length=3000)
+    preferred_timing: Optional[str] = Field(default=None, max_length=160)
+    website_path: str = Field(default="/booking", min_length=1, max_length=256)
+    consent_to_contact: bool = True
+
+    @field_validator("full_name", "company", "role_title", "service_interest", "preferred_timing", mode="before")
+    @classmethod
+    def normalize_optional_text(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = " ".join(value.split()).strip()
+        return cleaned or None
+
+    @field_validator("challenge_summary", "website_path", mode="before")
+    @classmethod
+    def normalize_required_text(cls, value: str) -> str:
+        return " ".join(value.split()).strip()
+
+    @field_validator("consent_to_contact")
+    @classmethod
+    def require_contact_consent(cls, value: bool) -> bool:
+        if not value:
+            raise ValueError("consent_to_contact_required")
+        return value
+
+
+class PublicLeadCaptureResponse(BaseModel):
+    submission_id: str
+    lead_id: str
+    status: LeadLifecycleStatus = "received"
+    source_class: LeadSourceClass = "website_form"
+    submission_kind: LeadSubmissionKind = "booking_request"
+    materialization_status: LeadMaterializationStatus = "materialized"
+    received_at: datetime
+    message: str
 
 
 class WorkflowTraceResponse(BaseModel):

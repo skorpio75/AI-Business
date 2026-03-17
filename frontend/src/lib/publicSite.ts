@@ -108,6 +108,13 @@ export const BOOKING_OPTIONS = [
   },
 ];
 
+export const BOOKING_TIMING_OPTIONS = [
+  "As soon as possible",
+  "Within the next 2 weeks",
+  "Within the next month",
+  "Just exploring for now",
+] as const;
+
 export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   {
     slug: "ai-strategy-roadmapping",

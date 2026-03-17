@@ -209,6 +209,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T50F: Build the `Mission Detail` cockpit with roster, quality gates, approvals, run activity, commercial-control summaries, and timeline
 
 ### Backlog - Growth Intake and Materialization
+- [x] B-T51A: Add an initial `website_form` source adapter and private public-site intake endpoint for booking requests
 - [ ] B-T51: Define source adapters and normalization contracts for `manual_entry`, `inbound_email`, `website_form`, `calendar_booking`, `meeting_note`, `referral`, `partner_channel`, `crm_import`, `document_intake`, `chat_message`, and `web_research`
 - [ ] B-T52: Add lead-candidate dedupe and materialization rules that decide create, merge, review, or discard before emitting canonical `lead.received`
 - [ ] B-T53: Add an operator review queue for ambiguous or low-confidence lead candidates
@@ -424,6 +425,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added roadmap coverage for a future agent-instance registry, mission and engagement linkage in audit surfaces, a Track A portfolio summary feed, and a Mission Control portfolio dashboard over dispatched consultant agents.
 - Added `docs/lead-intake-materialization-model.md` to define lead source classes, signal-to-candidate normalization, automatic-vs-review materialization rules, and the event path from raw commercial signal to canonical `lead.received`.
 - Added roadmap coverage for lead-source adapters, dedupe and materialization rules, an operator lead-candidate review queue, and linkage from qualified opportunity into later mission dispatch planning.
+- Completed `B-T51A` by adding the first live `website_form` adapter: the public booking page now posts into a private Track A intake endpoint, persists normalized booking requests, and materializes them as governed received leads for later Growth follow-up.
 - Added `docs/consulting-engagement-lifecycle-model.md` to define the real consulting flow from signed scope through dispatch candidate planning, approved consultant roster activation, delivery startup, milestone billing, and mission closeout.
 - Added roadmap coverage for dispatch candidate planning, approved consultant rosters, billing plans, signed-scope to mission-start workflow, milestone acceptance to billing triggers, receivables follow-up, and mission closeout.
 - Added `docs/delivery-quality-gate-model.md` to define mission-specific delivery quality gates tied to SOW deliverables, project-plan phases, implementation evidence, milestone release, and final handoff.

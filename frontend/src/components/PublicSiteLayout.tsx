@@ -14,7 +14,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
         <a className="site-brand" href="/">
           <span className="site-brand__mark">D</span>
           <span>
-            <strong>Dalilto</strong>
+            <strong>Stratevia</strong>
             <small>AI, transformation, and technology advisory</small>
           </span>
         </a>
@@ -30,7 +30,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
       <main className="site-main">{children}</main>
 
       <footer className="site-footer">
-        <p>Dalilto, independent advisory for AI, digital transformation, and technology leadership.</p>
+        <p>Stratevia, independent advisory for AI, digital transformation, and technology leadership.</p>
       </footer>
     </div>
   );

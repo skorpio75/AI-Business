@@ -134,6 +134,15 @@ enterprise-agent-platform/
 ## Startup Goal
 Deliver one internal instance for real usage and one client-ready deployment template with reusable workflow specs.
 
+## Track A VPS Deployment
+The repo now includes a ready-to-implement single-VPS Track A deployment pack under `deploy/track-a-vps/`.
+
+- compose stack: `deploy/track-a-vps/docker-compose.yml`
+- VPS env template: `deploy/track-a-vps/.env.track-a-vps.example`
+- deployment runbook: `deploy/track-a-vps/README.md`
+
+This pack is designed for the "start slow" shape: one VPS running the current frontend, API, local PostgreSQL with `pgvector`, and local `Ollama`, while keeping later DB migration simple through `DATABASE_URL`.
+
 ## Delivery Philosophy
 Start with a small, serious foundation. Do not over-engineer the first version.
 

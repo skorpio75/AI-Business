@@ -122,6 +122,15 @@ These product classes are based on OVH official product lines as of 2026-03-17.
 - introduce shared Track B inference only when multiple client runtimes justify it
 - move storage to object storage before artifact growth becomes painful
 
+## Concrete Starter Pack
+The repo now includes a concrete single-box Track A deployment pack in `deploy/track-a-vps/`, including:
+
+- a VPS-ready compose stack
+- a production env template
+- a deployment runbook
+
+Use that pack when you want the practical first OVH implementation of the Stage 1 Track A-first shape documented here.
+
 ## Official OVH References
 - VPS: https://www.ovhcloud.com/en/vps/
 - Managed PostgreSQL: https://www.ovhcloud.com/en/public-cloud/postgresql/

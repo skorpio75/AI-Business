@@ -1,0 +1,14 @@
+{
+    email {$ACME_EMAIL}
+}
+
+{$PUBLIC_SITE_ADDR:80} {
+    encode zstd gzip
+    root * /srv
+
+    @api path /healthz /agents* /dashboard* /specialists* /personal-assistant* /connectors* /knowledge* /workflows* /audit* /approvals*
+    reverse_proxy @api api:8000
+
+    try_files {path} /index.html
+    file_server
+}

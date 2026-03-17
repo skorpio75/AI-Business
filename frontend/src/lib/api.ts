@@ -13,7 +13,18 @@ import type {
   WorkflowRun,
 } from "../types";
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
+function resolveApiBaseUrl(): string {
+  const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+  if (!configuredBaseUrl) {
+    return "http://127.0.0.1:8000";
+  }
+  if (configuredBaseUrl === "same-origin") {
+    return "";
+  }
+  return configuredBaseUrl.replace(/\/$/, "");
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 async function getJson<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {

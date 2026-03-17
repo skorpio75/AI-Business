@@ -1,0 +1,106 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: ai-business-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-agent_platform}
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agent}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agent} -d ${POSTGRES_DB:-agent_platform}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ${TRACK_A_DATA_ROOT:-/opt/ai-business-data}/postgres:/var/lib/postgresql/data
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ai-business-ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - ${TRACK_A_DATA_ROOT:-/opt/ai-business-data}/ollama:/root/.ollama
+
+  api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.api
+    container_name: ai-business-api
+    restart: unless-stopped
+    env_file:
+      - ./.env.track-a-vps
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-agent}:${POSTGRES_PASSWORD:-agent}@postgres:5432/${POSTGRES_DB:-agent_platform}
+      OLLAMA_BASE_URL: http://ollama:11434
+      RUNTIME_ENV_FILE: /app/deploy/track-a-vps/.env.track-a-vps
+      CLIENT_DOCUMENTS_DIR: data/internal/documents
+      CLIENT_LOGS_DIR: data/internal/logs
+      CLIENT_EXPORTS_DIR: data/internal/exports
+      CLIENT_VECTOR_DIR: data/internal/vector
+      CLIENT_PROMPT_OVERRIDE_DIR: prompts/internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/healthz').read()",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - ./.env.track-a-vps:/app/deploy/track-a-vps/.env.track-a-vps
+      - ${TRACK_A_DATA_ROOT:-/opt/ai-business-data}/data/internal:/app/data/internal
+      - ${TRACK_A_DATA_ROOT:-/opt/ai-business-data}/prompts/internal:/app/prompts/internal
+      - ${TRACK_A_DATA_ROOT:-/opt/ai-business-data}/secrets/internal:/app/secrets/internal
+
+  db-migrate:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.api
+    profiles: ["ops"]
+    env_file:
+      - ./.env.track-a-vps
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-agent}:${POSTGRES_PASSWORD:-agent}@postgres:5432/${POSTGRES_DB:-agent_platform}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["python", "scripts/init_db.py"]
+
+  web:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.web
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-same-origin}
+    container_name: ai-business-web
+    restart: unless-stopped
+    environment:
+      PUBLIC_SITE_ADDR: ${PUBLIC_SITE_ADDR:-:80}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

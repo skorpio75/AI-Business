@@ -231,7 +231,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T66: Prevent milestone-acceptance routing and handoff release when required quality gates are still failing, blocked, or unresolved
 
 ### Backlog - Internal Delivery Lab and Handover Promotion
-- [ ] B-T67: Define `ad_hoc_session`, `lab_mission`, `handover_pack`, `readiness_gate_result`, and `activation_request` contracts across markdown, backend models, and config
+- [x] B-T67: Define `ad_hoc_session`, `lab_mission`, `handover_pack`, `readiness_gate_result`, and `activation_request` contracts across markdown, backend models, and config
 - [ ] B-T68: Add a generic Track A agent-invocation path so delivery families can run on demand in `internal_operating` mode without waiting for a client mission
 - [ ] B-T69: Add internal `delivery_lab` workflow templates and Mission Control read models for `Ad Hoc Sessions`, `Lab Missions`, `Handover Packs`, and `Activation Queue`
 - [ ] B-T70: Add promotion rules so Track A rehearsal outputs can become an approved `handover_pack` instead of sharing mutable runtime state with Track B
@@ -436,6 +436,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Completed `P5-T10` by exposing aggregated trace endpoints for workflow, approval, and agent inspection so Mission Control and operators can query bundled `workflow_run`, approval, `agent_runs`, and `audit_events` views without reconstructing audit state client-side.
 - Completed `P5-T11` by aligning audit and trace contracts with governed vocabularies: `AgentRunRecord.trigger_event_name` now uses the normalized event contract, `AuditEventRecord.event_name` now uses explicit audit event families, `tool_id` now uses normalized tool IDs, and `mode`, `approval_class`, and `autonomy_class` now flow through typed governed literals in the audit/logger layer. Expanded the normalized event contract to cover the newer commercial and mission lifecycle events documented in `EVENT_MODEL.md` and added validation tests for accepted vs rejected audit values.
 - Completed `H-T04` by adding a governed metadata summary layer over agent registry and specialist responses so Mission Control now reads normalized operating-model, routing-posture, track, replication, and tool-profile labels from backend contracts instead of reformatting raw enum values page by page.
+- Completed `B-T67` by defining the first typed Track A delivery-lab and promotion contracts in `app/models/delivery_lab.py`, registering the related operating states in code and `config/base/state_registry.yaml`, and adding a base `config/base/delivery_lab.yaml` contract registry plus unit coverage for payload, registry, and YAML alignment.
 
 ## Next Action
-Start `B-T67` to define the internal `delivery_lab` state objects and promotion contracts in backend models, config, and runtime-facing payload shapes before opening the generic Track A invocation path.
+Start `B-T68` to add the generic Track A agent-invocation path for ad hoc delivery-family use on top of the new delivery-lab contracts.

@@ -57,6 +57,65 @@ state_registry:
         - procurement-po
         - documentation-handover
 
+    - state_id: ad_hoc_session_state
+      primary_owner: delivery_lab_control_plane
+      steward: Mission Control Agent
+      typical_writers:
+        - future agent invocation API
+        - delivery-lab orchestration layer
+        - Track A operator actions
+      consuming_workflows:
+        - delivery-lab invoke
+        - agent workbench
+        - internal rehearsal
+
+    - state_id: lab_mission_state
+      primary_owner: delivery_pod
+      steward: PMO / Project Control Agent
+      typical_writers:
+        - delivery-lab orchestration layer
+        - PMO / Project Control Agent
+        - Project Management / Delivery Coordination Agent
+      consuming_workflows:
+        - delivery-lab mission
+        - readiness review
+        - handover assembly
+
+    - state_id: handover_pack_state
+      primary_owner: promotion_and_activation_layer
+      steward: Documentation Agent
+      typical_writers:
+        - future handover-pack API
+        - Documentation Agent
+        - PMO / Project Control Agent
+      consuming_workflows:
+        - handover assembly
+        - readiness review
+        - track-b activation
+
+    - state_id: readiness_gate_result_state
+      primary_owner: quality_and_gate_layer
+      steward: QA / Review Agent
+      typical_writers:
+        - future readiness-gate API
+        - QA / Review Agent
+        - Risk / Watchdog Agent
+        - Mission Control Agent
+      consuming_workflows:
+        - readiness review
+        - activation queue
+
+    - state_id: activation_request_state
+      primary_owner: track_b_activation_layer
+      steward: Mission Control Agent
+      typical_writers:
+        - future activation API
+        - tenant bootstrap automation
+        - Mission Control Agent
+      consuming_workflows:
+        - track-b activation
+        - activation queue
+
   persistence:
     - state_id: opportunity_state
       persistence_status: planned
@@ -97,3 +156,43 @@ state_registry:
         - get_approval
         - list_pending_approvals
       notes: Approval state is persisted today as first-class approval records, with workflow-state snapshots carrying approval outcome echoes for run visibility.
+
+    - state_id: ad_hoc_session_state
+      persistence_status: planned
+      canonical_store_kind: postgres_entity_table
+      serialization_kind: structured_columns
+      physical_target: future ad_hoc_sessions table or delivery-lab json snapshot store
+      repository_functions: []
+      notes: Ad hoc Track A delivery-lab sessions are now governed as first-class state, but no backend persistence layer has been implemented yet.
+
+    - state_id: lab_mission_state
+      persistence_status: planned
+      canonical_store_kind: postgres_entity_table
+      serialization_kind: hybrid_projection
+      physical_target: future lab_missions and lab_mission_artifacts tables
+      repository_functions: []
+      notes: Durable Track A rehearsal missions and artifacts are modeled, but the canonical persistence tables and repository functions are still upcoming.
+
+    - state_id: handover_pack_state
+      persistence_status: planned
+      canonical_store_kind: postgres_entity_table
+      serialization_kind: hybrid_projection
+      physical_target: future handover_packs and handover_pack_items tables
+      repository_functions: []
+      notes: Promotion from Track A to Track B should pass through a handover-pack contract rather than shared mutable runtime state, but persistence is not yet implemented.
+
+    - state_id: readiness_gate_result_state
+      persistence_status: planned
+      canonical_store_kind: policy_record
+      serialization_kind: structured_columns
+      physical_target: future readiness_gate_results and readiness_gate_checks tables
+      repository_functions: []
+      notes: Readiness gate results will record explicit activation decisions for handover packs once the review runtime is implemented.
+
+    - state_id: activation_request_state
+      persistence_status: planned
+      canonical_store_kind: policy_record
+      serialization_kind: structured_columns
+      physical_target: future activation_requests table
+      repository_functions: []
+      notes: Track B activation requests are modeled now so later bootstrap automation can depend on a stable contract.

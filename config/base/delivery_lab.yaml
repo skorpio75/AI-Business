@@ -1,0 +1,83 @@
+# Copyright (c) Dario Pizzolante
+delivery_lab_registry:
+  objects:
+    - object_id: ad_hoc_session
+      display_name: Ad Hoc Session
+      scope_kind: ad_hoc_session
+      track: track_a_internal
+      persistence_target: planned ad_hoc_sessions table or json_snapshot store
+      status_values:
+        - draft
+        - active
+        - completed
+        - archived
+        - blocked
+      required_refs:
+        - family_id
+        - task_template_id
+        - output_schema_id
+      notes: Lightweight Track A invocation session for immediate bounded internal work.
+
+    - object_id: lab_mission
+      display_name: Lab Mission
+      scope_kind: saved_lab_mission
+      track: track_a_internal
+      persistence_target: planned lab_missions and lab_mission_artifacts tables
+      status_values:
+        - draft
+        - active
+        - completed
+        - archived
+        - blocked
+      required_refs:
+        - mission_brief
+        - assigned_family_ids
+      notes: Durable Track A rehearsal mission with artifacts and readiness posture.
+
+    - object_id: handover_pack
+      display_name: Handover Pack
+      track: track_a_internal
+      persistence_target: planned handover_packs and handover_pack_items tables
+      status_values:
+        - draft
+        - approved
+        - superseded
+        - activated
+      required_refs:
+        - mission_brief_ref
+        - approved_roster_ref
+        - context_pack_refs
+      notes: Approved artifact bundle promoted from Track A into Track B activation.
+
+    - object_id: readiness_gate_result
+      display_name: Readiness Gate Result
+      track: track_a_internal
+      persistence_target: planned readiness_gate_results and readiness_gate_checks tables
+      status_values:
+        - not_started
+        - in_review
+        - ready
+        - revise
+        - blocked
+        - exec_review
+      required_refs:
+        - handover_pack_id
+        - rubric_version
+      notes: Explicit Track A readiness decision before Track B activation can start.
+
+    - object_id: activation_request
+      display_name: Activation Request
+      track: track_a_internal
+      persistence_target: planned activation_requests table
+      status_values:
+        - queued
+        - seeding
+        - ready_to_start
+        - activated
+        - failed
+        - cancelled
+      required_refs:
+        - handover_pack_id
+        - runtime_env_ref
+        - activation_mode
+      notes: Request to seed or activate the target Track B tenant runtime from an approved handover pack.

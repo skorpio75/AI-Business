@@ -7,7 +7,17 @@ from pydantic import BaseModel, Field
 from app.models.control_plane import ApprovalClass, AutonomyClass, NormalizedEventName, TrackId
 
 
-StateId = Literal["opportunity_state", "project_state", "run_state", "approval_state"]
+StateId = Literal[
+    "opportunity_state",
+    "project_state",
+    "run_state",
+    "approval_state",
+    "ad_hoc_session_state",
+    "lab_mission_state",
+    "handover_pack_state",
+    "readiness_gate_result_state",
+    "activation_request_state",
+]
 PersistenceStatus = Literal["active", "partial", "planned"]
 CanonicalStoreKind = Literal["postgres_entity_table", "postgres_row_table", "json_snapshot", "policy_record"]
 SerializationKind = Literal["structured_columns", "json_document", "hybrid_projection"]
@@ -182,6 +192,62 @@ DEFAULT_STATE_REGISTRY = StateRegistry(
                 "documentation-handover",
             ],
         ),
+        StateOwnershipContract(
+            state_id="ad_hoc_session_state",
+            primary_owner="delivery_lab_control_plane",
+            steward="Mission Control Agent",
+            typical_writers=[
+                "future agent invocation API",
+                "delivery-lab orchestration layer",
+                "Track A operator actions",
+            ],
+            consuming_workflows=["delivery-lab invoke", "agent workbench", "internal rehearsal"],
+        ),
+        StateOwnershipContract(
+            state_id="lab_mission_state",
+            primary_owner="delivery_pod",
+            steward="PMO / Project Control Agent",
+            typical_writers=[
+                "delivery-lab orchestration layer",
+                "PMO / Project Control Agent",
+                "Project Management / Delivery Coordination Agent",
+            ],
+            consuming_workflows=["delivery-lab mission", "readiness review", "handover assembly"],
+        ),
+        StateOwnershipContract(
+            state_id="handover_pack_state",
+            primary_owner="promotion_and_activation_layer",
+            steward="Documentation Agent",
+            typical_writers=[
+                "future handover-pack API",
+                "Documentation Agent",
+                "PMO / Project Control Agent",
+            ],
+            consuming_workflows=["handover assembly", "readiness review", "track-b activation"],
+        ),
+        StateOwnershipContract(
+            state_id="readiness_gate_result_state",
+            primary_owner="quality_and_gate_layer",
+            steward="QA / Review Agent",
+            typical_writers=[
+                "future readiness-gate API",
+                "QA / Review Agent",
+                "Risk / Watchdog Agent",
+                "Mission Control Agent",
+            ],
+            consuming_workflows=["readiness review", "activation queue"],
+        ),
+        StateOwnershipContract(
+            state_id="activation_request_state",
+            primary_owner="track_b_activation_layer",
+            steward="Mission Control Agent",
+            typical_writers=[
+                "future activation API",
+                "tenant bootstrap automation",
+                "Mission Control Agent",
+            ],
+            consuming_workflows=["track-b activation", "activation queue"],
+        ),
     ],
     persistence=[
         StatePersistenceContract(
@@ -240,6 +306,66 @@ DEFAULT_STATE_REGISTRY = StateRegistry(
             notes=(
                 "Approval state is persisted today as first-class approval records, with workflow-state "
                 "snapshots carrying approval outcome echoes for run visibility."
+            ),
+        ),
+        StatePersistenceContract(
+            state_id="ad_hoc_session_state",
+            persistence_status="planned",
+            canonical_store_kind="postgres_entity_table",
+            serialization_kind="structured_columns",
+            physical_target="future ad_hoc_sessions table or delivery-lab json snapshot store",
+            repository_functions=[],
+            notes=(
+                "Ad hoc Track A delivery-lab sessions are now governed as first-class state, but no backend "
+                "persistence layer has been implemented yet."
+            ),
+        ),
+        StatePersistenceContract(
+            state_id="lab_mission_state",
+            persistence_status="planned",
+            canonical_store_kind="postgres_entity_table",
+            serialization_kind="hybrid_projection",
+            physical_target="future lab_missions and lab_mission_artifacts tables",
+            repository_functions=[],
+            notes=(
+                "Durable Track A rehearsal missions and artifacts are modeled, but the canonical persistence "
+                "tables and repository functions are still upcoming."
+            ),
+        ),
+        StatePersistenceContract(
+            state_id="handover_pack_state",
+            persistence_status="planned",
+            canonical_store_kind="postgres_entity_table",
+            serialization_kind="hybrid_projection",
+            physical_target="future handover_packs and handover_pack_items tables",
+            repository_functions=[],
+            notes=(
+                "Promotion from Track A to Track B should pass through a handover-pack contract rather than "
+                "shared mutable runtime state, but persistence is not yet implemented."
+            ),
+        ),
+        StatePersistenceContract(
+            state_id="readiness_gate_result_state",
+            persistence_status="planned",
+            canonical_store_kind="policy_record",
+            serialization_kind="structured_columns",
+            physical_target="future readiness_gate_results and readiness_gate_checks tables",
+            repository_functions=[],
+            notes=(
+                "Readiness gate results will record explicit activation decisions for handover packs once the "
+                "review runtime is implemented."
+            ),
+        ),
+        StatePersistenceContract(
+            state_id="activation_request_state",
+            persistence_status="planned",
+            canonical_store_kind="policy_record",
+            serialization_kind="structured_columns",
+            physical_target="future activation_requests table",
+            repository_functions=[],
+            notes=(
+                "Track B activation requests are modeled now so later bootstrap automation can depend on a "
+                "stable contract."
             ),
         ),
     ],

@@ -4,7 +4,7 @@
 ## Current Focus
 - Active phase: `Phase 5 - Observability + Testing`
 - Active cross-cutting stream: `AI-Business IDE handoff integration`
-- Immediate goal: define the first internal `delivery_lab` contracts and promotion objects for Track A rehearsal work
+- Immediate goal: add the first generic Track A ad hoc invocation path on top of the delivery-lab contracts
 
 ## Now
 - [x] `H-T01` Create the missing meta-model docs from `AI-Business_IDE_Handoff.md`
@@ -19,11 +19,11 @@
 - [x] `P3-T08` Connect approval actions from UI to API
 
 ## Next
-- [ ] `B-T67` Define the internal `delivery_lab` state objects and promotion contracts
+- [ ] `B-T68` Add a generic Track A agent-invocation path for ad hoc delivery-family use
 
 ## Soon After
 - [x] `B-T27A` Enrich the Agent Activity page with operating model and runtime posture labels
-- [ ] `B-T68` Add a generic Track A agent-invocation path for ad hoc delivery-family use
+- [x] `B-T67` Define the internal `delivery_lab` state objects and promotion contracts
 - [ ] `B-T69` Add `Delivery Lab`, `Handover Packs`, and `Activation Queue` Mission Control surfaces
 - [ ] `B-T70` Add `handover_pack` promotion rules and explicit Track B activation flow
 - [ ] `B-T74` Define the Track A internal `Ollama`, shared Track B `Ollama`, and cloud-fallback topology
@@ -52,6 +52,7 @@
 
 ## Recently Finished
 - [x] `P5-T11` Align audit and trace contracts with normalized events, tool IDs, autonomy classes, and approval classes, and expand the normalized event contract to cover the newer lifecycle events documented in `EVENT_MODEL.md`
+- [x] `B-T67` Define typed `delivery_lab`, `handover_pack`, `readiness_gate_result`, and `activation_request` contracts in backend models and base config
 - [x] `H-T04` Reflect normalized metadata in registry/config and later runtime/UI surfaces, including governed operating-model and routing-posture labels in Mission Control
 - [x] `B-T50A` Add `docs/mission-control-portfolio-ui-map.md` with the concrete UI map for `Clients`, `Engagements`, `Missions`, and `Mission Detail`, including proposed view keys, API shapes, and page/component structure
 - [x] `B-T62` Define the mission `quality_gate_plan` contract in backend/config, link `project_state` to quality-gate plans and results, and add a governed Track B default template

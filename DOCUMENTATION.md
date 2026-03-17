@@ -17,6 +17,8 @@ The platform's value proposition lies in accelerating operations through determi
 
 The operating model now also anticipates a Track A `delivery_lab` lane. This lets the firm invoke delivery families internally through ad hoc sessions, saved lab missions, and engagement-bound rehearsal work before promoting approved artifacts into Track B through handover and activation workflows.
 
+Those contracts are now represented directly in the backend and base config through `app/models/delivery_lab.py`, `app/models/operating_state.py`, `config/base/delivery_lab.yaml`, and `config/base/state_registry.yaml`, so later API and UI work can build on stable typed objects rather than doc-only concepts.
+
 At a high level the platform composes several layers:
 
 - **Interfaces:** a React‑based operator console for humans and FastAPI HTTP endpoints for workflow triggers and status.
@@ -183,6 +185,7 @@ Tracing instrumentation (Langfuse) wraps agent calls to capture prompts, outputs
 
 - Pydantic Settings classes centralize configuration with environment‑specific overrides in `config/`.
 - YAML templates define agents, workflows, and platform options; they can be seeded per-client via the `scripts/seed_config.py` script.
+- The Track A rehearsal and promotion layer also has a governed base contract in `config/base/delivery_lab.yaml`, aligned with typed Python models before the invocation APIs are opened.
 
 ### Testing Strategy
 

@@ -631,12 +631,12 @@
 
   .public-site {
     min-height: 100vh;
-    color: #f5f7fb;
+    color: #f3f4f6;
     background:
-      radial-gradient(circle at top left, rgba(32, 91, 255, 0.22), transparent 24%),
-      radial-gradient(circle at 85% 12%, rgba(255, 126, 38, 0.18), transparent 20%),
-      radial-gradient(circle at 50% 100%, rgba(33, 197, 134, 0.12), transparent 28%),
-      linear-gradient(180deg, #09111f 0%, #0c1424 48%, #08101d 100%);
+      radial-gradient(circle at top left, rgba(160, 92, 41, 0.1), transparent 18%),
+      radial-gradient(circle at 82% 10%, rgba(217, 116, 50, 0.08), transparent 16%),
+      radial-gradient(circle at 50% 100%, rgba(106, 67, 42, 0.08), transparent 24%),
+      linear-gradient(180deg, #121416 0%, #171a1d 46%, #101214 100%);
   }
 
   .site-header,
@@ -649,6 +649,7 @@
 
   .site-header {
     @apply flex items-center justify-between gap-6 py-6;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .site-brand {
@@ -659,8 +660,9 @@
   .site-brand__mark {
     @apply inline-flex size-11 items-center justify-center rounded-2xl text-lg font-bold;
     font-family: var(--font-display);
-    background: linear-gradient(145deg, rgba(32, 91, 255, 0.95), rgba(21, 165, 255, 0.72));
-    box-shadow: 0 16px 34px rgba(14, 46, 128, 0.38);
+    color: #17110d;
+    background: #d97432;
+    box-shadow: 0 16px 34px rgba(90, 47, 18, 0.28);
   }
 
   .site-brand strong,
@@ -682,7 +684,7 @@
 
   .site-brand small {
     margin-top: 0.2rem;
-    color: rgba(223, 231, 245, 0.66);
+    color: rgba(212, 216, 223, 0.62);
   }
 
   .site-nav {
@@ -691,16 +693,17 @@
 
   .site-nav a,
   .site-footer a {
-    @apply rounded-full px-4 py-2 no-underline transition;
-    color: rgba(230, 237, 248, 0.74);
-    border: 1px solid transparent;
+    @apply rounded-[0.7rem] px-4 py-2 no-underline transition;
+    color: rgba(214, 219, 226, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.015);
   }
 
   .site-nav a:hover,
   .site-footer a:hover {
     color: #ffffff;
-    border-color: rgba(148, 163, 184, 0.2);
-    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(217, 137, 69, 0.24);
+    background: rgba(217, 137, 69, 0.08);
   }
 
   .site-main {
@@ -756,12 +759,12 @@
 
   .site-kicker {
     @apply mb-3 block text-[0.78rem] font-semibold uppercase tracking-[0.22em];
-    color: #9cbcff;
+    color: #d97432;
   }
 
   .back-link {
     @apply inline-flex items-center rounded-full px-0 py-1 text-sm no-underline transition;
-    color: rgba(173, 188, 214, 0.76);
+    color: rgba(188, 194, 203, 0.76);
   }
 
   .back-link:hover {
@@ -799,7 +802,7 @@
   .booking-card p,
   .site-footer p {
     margin: 0;
-    color: rgba(219, 229, 244, 0.76);
+    color: rgba(207, 212, 220, 0.76);
   }
 
   .site-hero__lead {
@@ -832,23 +835,25 @@
   }
 
   .site-button {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold no-underline transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-[0.72rem] px-6 py-3.5 text-sm font-semibold no-underline transition;
+    border: 1px solid transparent;
   }
 
   .site-button--primary {
-    color: #ffffff;
-    background: linear-gradient(135deg, #ff7d2b, #ff5a1f);
-    box-shadow: 0 18px 34px rgba(255, 100, 31, 0.28);
+    color: #17110d;
+    background: #d97432;
+    border-color: #d97432;
+    box-shadow: 0 18px 34px rgba(95, 51, 20, 0.2);
   }
 
   .site-button--secondary {
-    color: #eef4ff;
-    border: 1px solid rgba(167, 184, 212, 0.24);
-    background: rgba(255, 255, 255, 0.04);
+    color: #edf0f3;
+    border: 1px solid rgba(186, 123, 70, 0.22);
+    background: rgba(138, 84, 45, 0.12);
   }
 
   .site-button:hover {
-    transform: translateY(-2px);
+    filter: brightness(1.04);
   }
 
   .site-stat-strip {
@@ -862,13 +867,13 @@
   .process-card,
   .credibility-band article,
   .booking-card {
-    border: 1px solid rgba(148, 163, 184, 0.16);
+    border: 1px solid rgba(214, 137, 76, 0.1);
     box-shadow: 0 24px 56px rgba(0, 0, 0, 0.18);
   }
 
   .site-stat-strip article {
-    @apply rounded-[1.4rem] px-4 py-4;
-    background: rgba(12, 24, 42, 0.72);
+    @apply rounded-[0.55rem] px-4 py-4;
+    background: rgba(29, 32, 36, 0.88);
     backdrop-filter: blur(14px);
   }
 
@@ -879,36 +884,32 @@
   }
 
   .site-stat-strip span {
-    color: rgba(219, 229, 244, 0.68);
+    color: rgba(199, 204, 213, 0.68);
   }
 
   .hero-insight-card {
-    @apply rounded-[1.9rem] p-6;
-    background: rgba(9, 19, 36, 0.82);
+    @apply rounded-[0.55rem] p-6;
+    background: rgba(27, 30, 34, 0.86);
     backdrop-filter: blur(16px);
   }
 
   .hero-insight-card--primary {
-    background:
-      linear-gradient(180deg, rgba(14, 25, 48, 0.92), rgba(7, 16, 30, 0.9)),
-      linear-gradient(120deg, rgba(32, 91, 255, 0.12), rgba(255, 125, 43, 0.08));
+    background: rgba(27, 30, 34, 0.9);
   }
 
   .hero-insight-card--secondary {
-    background:
-      linear-gradient(180deg, rgba(10, 21, 39, 0.88), rgba(9, 18, 32, 0.82)),
-      linear-gradient(120deg, rgba(33, 197, 134, 0.12), rgba(32, 91, 255, 0.08));
+    background: rgba(24, 27, 30, 0.88);
   }
 
   .hero-chip {
-    @apply inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold;
-    color: #dbe7ff;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(148, 163, 184, 0.16);
+    @apply inline-flex items-center gap-2 rounded-[0.6rem] px-3 py-2 text-xs font-semibold;
+    color: #eceff2;
+    background: rgba(173, 111, 62, 0.12);
+    border: 1px solid rgba(224, 150, 92, 0.16);
   }
 
   .hero-chip--soft {
-    color: #9fd8ff;
+    color: rgba(240, 193, 147, 0.92);
   }
 
   .hero-insight-card h2 {
@@ -919,7 +920,7 @@
 
   .hero-insight-card p {
     @apply m-0 leading-7;
-    color: rgba(226, 234, 248, 0.76);
+    color: rgba(213, 218, 226, 0.76);
   }
 
   .hero-checklist {
@@ -928,9 +929,15 @@
   }
 
   .hero-checklist li {
-    @apply flex items-start gap-3 rounded-[1.15rem] px-4 py-3;
-    background: rgba(255, 255, 255, 0.04);
-    color: #edf3ff;
+    @apply flex items-start gap-3 px-0 py-3;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    color: #eef1f4;
+  }
+
+  .hero-checklist li:first-child {
+    border-top: 0;
+    padding-top: 0;
   }
 
   .hero-mini-grid {
@@ -938,8 +945,14 @@
   }
 
   .hero-mini-grid div {
-    @apply grid gap-1 rounded-[1.15rem] px-4 py-3;
-    background: rgba(255, 255, 255, 0.04);
+    @apply grid gap-1 px-0 py-3;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .hero-mini-grid div:first-child {
+    border-top: 0;
+    padding-top: 0;
   }
 
   .hero-mini-grid strong,
@@ -949,7 +962,7 @@
   }
 
   .hero-mini-grid span {
-    color: rgba(219, 229, 244, 0.7);
+    color: rgba(206, 211, 220, 0.7);
   }
 
   .site-section {
@@ -975,7 +988,9 @@
   }
 
   .service-grid {
-    @apply gap-6 md:grid-cols-3;
+    @apply gap-0 md:grid-cols-3;
+    border-top: 1px solid rgba(214, 137, 76, 0.14);
+    border-bottom: 1px solid rgba(214, 137, 76, 0.14);
   }
 
   .service-card,
@@ -983,15 +998,28 @@
   .process-card,
   .credibility-band article,
   .booking-card {
-    @apply rounded-[1.75rem] p-6;
-    background: rgba(11, 20, 35, 0.72);
+    @apply rounded-[1rem] p-6;
+    background: rgba(26, 29, 33, 0.88);
     backdrop-filter: blur(16px);
   }
 
+  .service-card {
+    @apply rounded-none border-0 border-r px-6 py-8 pr-8;
+    background: transparent;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.07);
+  }
+
+  .service-card:last-child {
+    border-right: 0;
+    padding-right: 1.5rem;
+  }
+
   .service-card__icon {
-    @apply mb-5 inline-flex size-12 items-center justify-center rounded-2xl;
-    color: #dbe7ff;
-    background: linear-gradient(145deg, rgba(32, 91, 255, 0.24), rgba(255, 125, 43, 0.2));
+    @apply mb-5 inline-flex size-12 items-center justify-center rounded-[0.75rem];
+    color: #f4f5f6;
+    background: rgba(217, 116, 50, 0.12);
+    border: 1px solid rgba(217, 116, 50, 0.18);
   }
 
   .service-card h3,
@@ -1011,8 +1039,9 @@
   }
 
   .service-card__meta {
-    @apply grid gap-1 rounded-[1.05rem] px-4 py-3;
-    background: rgba(255, 255, 255, 0.04);
+    @apply grid gap-1 px-0 py-3;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .service-card__meta strong {
@@ -1020,12 +1049,12 @@
   }
 
   .service-card__meta span {
-    color: rgba(219, 229, 244, 0.68);
+    color: rgba(206, 211, 220, 0.68);
   }
 
   .service-card__link {
     @apply mt-1 inline-flex items-center gap-2 text-sm font-semibold no-underline transition;
-    color: #9cbcff;
+    color: rgba(241, 179, 127, 0.94);
   }
 
   .service-card__link:hover {
@@ -1033,11 +1062,12 @@
   }
 
   .experience-panel {
-    @apply gap-7;
+    @apply gap-0 rounded-[0.55rem] px-0 py-0;
+    overflow: hidden;
   }
 
   .experience-panel__profile {
-    @apply grid gap-6 md:grid-cols-[168px_minmax(0,1fr)] md:items-center;
+    @apply grid gap-6 px-6 py-6 md:grid-cols-[168px_minmax(0,1fr)] md:items-center;
   }
 
   .experience-panel__header h3 {
@@ -1049,9 +1079,9 @@
   }
 
   .experience-portrait-frame {
-    @apply overflow-hidden rounded-[1.4rem];
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    background: rgba(255, 255, 255, 0.04);
+    @apply overflow-hidden rounded-[1rem];
+    border: 1px solid rgba(220, 148, 93, 0.12);
+    background: rgba(255, 255, 255, 0.03);
     box-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
     aspect-ratio: 4 / 5;
     width: min(100%, 168px);
@@ -1067,68 +1097,93 @@
   }
 
   .experience-pill-list {
-    @apply md:grid-cols-2;
+    @apply gap-0 border-t md:grid-cols-2;
+    border-color: rgba(255, 255, 255, 0.07);
   }
 
   .experience-pill-list--roomy {
-    @apply gap-4;
+    @apply gap-0;
   }
 
   .experience-pill {
-    @apply rounded-[1.4rem] px-5 py-4 text-sm leading-6;
-    color: #dbe7ff;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(148, 163, 184, 0.12);
+    @apply rounded-none px-5 py-5 text-sm leading-6;
+    color: #edf0f3;
+    background: transparent;
+    border: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .experience-pill--panel {
     min-height: 88px;
   }
 
+  .experience-pill:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .experience-pill:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
   .experience-highlights article {
-    @apply grid gap-2 rounded-[1.35rem] px-5 py-5;
-    background: rgba(255, 255, 255, 0.04);
+    @apply grid gap-2 rounded-none px-6 py-5;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .process-grid {
-    @apply gap-6 md:grid-cols-2 xl:grid-cols-4;
+    @apply gap-0 md:grid-cols-2 xl:grid-cols-4;
+    border-top: 1px solid rgba(214, 137, 76, 0.14);
+    border-bottom: 1px solid rgba(214, 137, 76, 0.14);
   }
 
   .process-card {
+    @apply rounded-none border-0 border-r px-6 py-8 pr-8;
     min-height: 210px;
+    background: transparent;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.07);
   }
 
   .process-card--amber {
-    background:
-      linear-gradient(180deg, rgba(49, 30, 18, 0.78), rgba(21, 20, 21, 0.78)),
-      rgba(11, 20, 35, 0.76);
+    background: transparent;
   }
 
   .process-card--blue {
-    background:
-      linear-gradient(180deg, rgba(17, 37, 88, 0.84), rgba(14, 20, 36, 0.8)),
-      rgba(11, 20, 35, 0.76);
+    background: transparent;
   }
 
   .process-card--green {
-    background:
-      linear-gradient(180deg, rgba(16, 69, 56, 0.82), rgba(14, 20, 36, 0.8)),
-      rgba(11, 20, 35, 0.76);
+    background: transparent;
   }
 
   .process-card--violet {
-    background:
-      linear-gradient(180deg, rgba(82, 28, 112, 0.76), rgba(14, 20, 36, 0.8)),
-      rgba(11, 20, 35, 0.76);
+    background: transparent;
+  }
+
+  .process-card:last-child {
+    border-right: 0;
+    padding-right: 1.5rem;
   }
 
   .credibility-band {
-    @apply gap-6 md:grid-cols-3;
+    @apply gap-0 md:grid-cols-3;
+    border-top: 1px solid rgba(214, 137, 76, 0.14);
+    border-bottom: 1px solid rgba(214, 137, 76, 0.14);
   }
 
   .credibility-band article {
-    @apply grid gap-2 rounded-[1.4rem] px-5 py-5;
+    @apply grid gap-2 rounded-none border-0 border-r px-6 py-7 pr-8;
     min-height: 150px;
+    background: transparent;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.07);
+  }
+
+  .credibility-band article:last-child {
+    border-right: 0;
+    padding-right: 1.5rem;
   }
 
   .site-section--booking {
@@ -1137,9 +1192,7 @@
 
   .booking-card {
     @apply items-center gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)];
-    background:
-      radial-gradient(circle at top right, rgba(32, 91, 255, 0.22), transparent 30%),
-      linear-gradient(180deg, rgba(11, 20, 35, 0.92), rgba(7, 15, 28, 0.92));
+    background: rgba(24, 26, 29, 0.94);
   }
 
   .booking-card__actions {
@@ -1152,9 +1205,9 @@
 
   .page-hero__panel,
   .detail-card {
-    @apply grid gap-5 rounded-[1.75rem] p-7;
-    background: rgba(11, 20, 35, 0.72);
-    border: 1px solid rgba(148, 163, 184, 0.16);
+    @apply grid gap-5 rounded-[0.55rem] p-7;
+    background: rgba(26, 29, 33, 0.9);
+    border: 1px solid rgba(216, 143, 86, 0.1);
     box-shadow: 0 24px 56px rgba(0, 0, 0, 0.18);
     backdrop-filter: blur(16px);
   }
@@ -1168,10 +1221,10 @@
   }
 
   .about-portrait-wrap {
-    @apply overflow-hidden rounded-[1.65rem];
+    @apply overflow-hidden rounded-[1rem];
     width: min(100%, 360px);
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(220, 148, 93, 0.12);
+    background: rgba(255, 255, 255, 0.03);
     box-shadow: 0 22px 44px rgba(0, 0, 0, 0.2);
   }
 
@@ -1192,7 +1245,7 @@
 
   .detail-list {
     @apply m-0 grid gap-3 pl-5;
-    color: rgba(219, 229, 244, 0.76);
+    color: rgba(207, 212, 220, 0.76);
   }
 
   .detail-list li {
@@ -1201,17 +1254,28 @@
 
   .highlight-grid,
   .timeline-list {
-    @apply grid gap-5;
+    @apply grid gap-0;
   }
 
   .highlight-grid {
     @apply lg:grid-cols-3;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .highlight-card,
   .timeline-card {
-    @apply grid gap-2 rounded-[1.35rem] px-5 py-5;
-    background: rgba(255, 255, 255, 0.04);
+    @apply grid gap-2 rounded-none px-6 py-5 pr-8;
+    background: transparent;
+  }
+
+  .highlight-card {
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .highlight-card:last-child {
+    border-right: 0;
+    padding-right: 1.5rem;
   }
 
   .highlight-card strong,
@@ -1223,21 +1287,29 @@
   .timeline-card p,
   .timeline-card span {
     @apply m-0;
-    color: rgba(219, 229, 244, 0.76);
+    color: rgba(207, 212, 220, 0.76);
   }
 
   .timeline-card__top {
     @apply flex flex-wrap items-center justify-between gap-2;
   }
 
+  .timeline-card {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .timeline-card:first-child {
+    border-top: 0;
+  }
+
   .timeline-card__top span {
     @apply text-sm;
-    color: rgba(156, 188, 255, 0.88);
+    color: rgba(236, 177, 128, 0.86);
   }
 
   .site-footer {
     @apply flex flex-wrap items-center justify-between gap-4 border-t px-0 py-8;
-    border-color: rgba(148, 163, 184, 0.12);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   .site-footer p {
@@ -1399,6 +1471,41 @@
 
     .experience-portrait-frame {
       width: min(100%, 210px);
+    }
+
+    .service-grid,
+    .process-grid,
+    .credibility-band,
+    .highlight-grid {
+      border-bottom: 0;
+    }
+
+    .service-card,
+    .process-card,
+    .credibility-band article,
+    .highlight-card {
+      border-right: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding-right: 1.5rem;
+    }
+
+    .service-card:last-child,
+    .process-card:last-child,
+    .credibility-band article:last-child,
+    .highlight-card:last-child {
+      border-bottom: 0;
+    }
+
+    .experience-pill {
+      border-right: 0;
+    }
+
+    .experience-pill:nth-last-child(-n + 2) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .experience-pill:last-child {
+      border-bottom: 0;
     }
   }
 }

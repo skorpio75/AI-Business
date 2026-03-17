@@ -14,6 +14,34 @@ import type {
   WorkflowRun,
 } from "../types";
 
+function isLoopbackHostname(hostname: string): boolean {
+  const normalized = hostname.trim().toLowerCase();
+  return normalized === "localhost" || normalized === "127.0.0.1" || normalized === "::1" || normalized === "[::1]";
+}
+
+function remapLoopbackBaseUrlForLan(baseUrl: string): string {
+  if (typeof window === "undefined" || !/^https?:\/\//.test(baseUrl)) {
+    return baseUrl;
+  }
+
+  const browserHostname = window.location.hostname.trim();
+  if (!browserHostname || isLoopbackHostname(browserHostname)) {
+    return baseUrl;
+  }
+
+  try {
+    const parsedBaseUrl = new URL(baseUrl);
+    if (!isLoopbackHostname(parsedBaseUrl.hostname)) {
+      return baseUrl;
+    }
+
+    parsedBaseUrl.hostname = browserHostname;
+    return parsedBaseUrl.toString().replace(/\/$/, "");
+  } catch {
+    return baseUrl;
+  }
+}
+
 function resolveApiBaseUrl(): string {
   const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
   if (!configuredBaseUrl) {
@@ -25,7 +53,7 @@ function resolveApiBaseUrl(): string {
   if (configuredBaseUrl === "same-origin") {
     return "";
   }
-  return configuredBaseUrl.replace(/\/$/, "");
+  return remapLoopbackBaseUrlForLan(configuredBaseUrl.replace(/\/$/, ""));
 }
 
 export const API_BASE_URL = resolveApiBaseUrl();

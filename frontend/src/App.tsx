@@ -25,8 +25,15 @@ import { ApprovalQueuePage } from "./pages/ApprovalQueuePage";
 import { ChiefAiStrategyPage } from "./pages/ChiefAiStrategyPage";
 import { CtoCioPage } from "./pages/CtoCioPage";
 import { FinanceCockpitPage } from "./pages/FinanceCockpitPage";
+import { PublicLandingPage } from "./pages/PublicLandingPage";
+import { PublicServiceDetailPage } from "./pages/PublicServiceDetailPage";
+import { PublicServicesPage } from "./pages/PublicServicesPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
 import type { ViewKey } from "./types";
+import { getServiceDefinition, type ServiceSlug } from "./lib/publicSite";
+
+const MISSION_CONTROL_PATH = "/mission-control";
+const SERVICES_PATH = "/services";
 
 type ViewDefinition = {
   id: ViewKey;
@@ -139,7 +146,80 @@ const VIEW_GROUPS: Array<{
 
 const NAV_COMPACT_BREAKPOINT = 960;
 
+type PublicRoute =
+  | { kind: "landing" }
+  | { kind: "services" }
+  | { kind: "service-detail"; slug: ServiceSlug };
+
+type AppRoute = { kind: "mission-control" } | { kind: "public"; route: PublicRoute };
+
 export default function App() {
+  const [appRoute, setAppRoute] = useState<AppRoute>(() => resolveAppRoute());
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const handleLocationChange = () => {
+      setAppRoute(resolveAppRoute());
+    };
+
+    window.addEventListener("popstate", handleLocationChange);
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange);
+    };
+  }, []);
+
+  if (appRoute.kind === "public") {
+    return <PublicSiteRouter route={appRoute.route} />;
+  }
+
+  return <MissionControlApp />;
+}
+
+function resolveAppRoute(): AppRoute {
+  if (typeof window === "undefined") {
+    return { kind: "public", route: { kind: "landing" } };
+  }
+
+  const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (pathname === MISSION_CONTROL_PATH) {
+    return { kind: "mission-control" };
+  }
+
+  if (pathname === SERVICES_PATH) {
+    return { kind: "public", route: { kind: "services" } };
+  }
+
+  if (pathname.startsWith(`${SERVICES_PATH}/`)) {
+    const slug = pathname.slice(SERVICES_PATH.length + 1) as ServiceSlug;
+
+    if (getServiceDefinition(slug)) {
+      return { kind: "public", route: { kind: "service-detail", slug } };
+    }
+  }
+
+  return { kind: "public", route: { kind: "landing" } };
+}
+
+function PublicSiteRouter({ route }: { route: PublicRoute }) {
+  if (route.kind === "services") {
+    return <PublicServicesPage />;
+  }
+
+  if (route.kind === "service-detail") {
+    const service = getServiceDefinition(route.slug);
+
+    if (service) {
+      return <PublicServiceDetailPage service={service} />;
+    }
+  }
+
+  return <PublicLandingPage />;
+}
+
+function MissionControlApp() {
   const [activeView, setActiveView] = useState<ViewKey>("workflow-monitor");
   const [refreshToken, setRefreshToken] = useState(0);
   const [isCompactNav, setIsCompactNav] = useState(

@@ -8,11 +8,15 @@ www.stratevia.eu {
 
 stratevia.eu {
     encode zstd gzip
-    root * /srv
 
     @api path /healthz /agents* /dashboard* /specialists* /personal-assistant* /connectors* /knowledge* /workflows* /audit* /approvals* /public*
-    reverse_proxy @api api:8000
+    handle @api {
+        reverse_proxy api:8000
+    }
 
-    try_files {path} /index.html
-    file_server
+    handle {
+        root * /srv
+        try_files {path} /index.html
+        file_server
+    }
 }

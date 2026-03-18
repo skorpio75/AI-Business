@@ -117,11 +117,18 @@ export function PublicLandingPage() {
         </div>
 
         <div className="site-hero__visual" aria-label="Advisory snapshot">
-          <article className="hero-insight-card hero-insight-card--primary">
+          <article className="hero-insight-card hero-insight-card--primary hero-insight-card--brand">
             <span className="hero-chip">
               <CircuitBoard className="size-4" />
-              Advisory focus
+              Stratevia advisory
             </span>
+            <div className="hero-logo-lockup">
+              <img
+                alt="Stratevia logo"
+                className="hero-logo-lockup__image"
+                src="/stratevia-logo.png"
+              />
+            </div>
             <h2>Turn complex initiatives into clear next moves.</h2>
             <p>
               From technology roadmaps to AI-enabled process improvement, the emphasis stays on

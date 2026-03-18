@@ -11,12 +11,12 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
   return (
     <div className="public-site">
       <header className="site-header">
-        <a className="site-brand" href="/">
-          <span className="site-brand__mark">S</span>
-          <span>
-            <strong>Stratevia</strong>
-            <small>AI, transformation, and technology advisory</small>
-          </span>
+        <a aria-label="Stratevia home" className="site-brand" href="/">
+          <img
+            alt=""
+            className="site-brand__logo"
+            src="/stratevia-logo.png"
+          />
         </a>
         <nav className="site-nav" aria-label="Public site navigation">
           {PUBLIC_NAV_LINKS.map((link) => (

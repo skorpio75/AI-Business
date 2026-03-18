@@ -97,6 +97,10 @@ class ModelGateway:
             return message[:240]
         return exc.__class__.__name__
 
+    def _clean_response_excerpt(self, content: str) -> str:
+        excerpt = " ".join(content.split())
+        return excerpt[:180]
+
     def _normalize_email_draft_text(self, draft: str) -> str:
         text = draft.strip()
         lines = text.splitlines()
@@ -347,6 +351,7 @@ class ModelGateway:
         payload: Optional[dict] = None,
         timeout_seconds: float | None = None,
     ) -> tuple[Optional[dict], Optional[str], Optional[str]]:
+        endpoint = f"{self.settings.ollama_base_url.rstrip('/')}{path}"
         body = None
         headers = {}
         method = "GET"
@@ -356,7 +361,7 @@ class ModelGateway:
             method = "POST"
 
         req = urllib_request.Request(
-            f"{self.settings.ollama_base_url.rstrip('/')}{path}",
+            endpoint,
             data=body,
             headers=headers,
             method=method,
@@ -364,11 +369,37 @@ class ModelGateway:
         try:
             with urllib_request.urlopen(req, timeout=timeout_seconds or self.model_timeout_seconds) as response:
                 return json.loads(response.read().decode("utf-8")), None, None
+        except urllib_error.HTTPError as exc:
+            response_excerpt = ""
+            try:
+                response_excerpt = self._clean_response_excerpt(exc.read().decode("utf-8", errors="ignore"))
+            except Exception:
+                response_excerpt = ""
+
+            if exc.code == 404:
+                diagnostic_code = "local_ollama_endpoint_not_found"
+                diagnostic_detail = (
+                    f"Ollama endpoint {endpoint} responded with HTTP 404. "
+                    "This usually means OLLAMA_BASE_URL points to a non-Ollama service, proxy, or wrong path."
+                )
+            else:
+                diagnostic_code = "local_ollama_http_error"
+                diagnostic_detail = (
+                    f"Ollama endpoint {endpoint} responded with HTTP {exc.code}: "
+                    f"{self._clean_exception_message(exc)}."
+                )
+            if response_excerpt:
+                diagnostic_detail = f"{diagnostic_detail} Response excerpt: {response_excerpt}."
+            return (
+                None,
+                diagnostic_code,
+                diagnostic_detail,
+            )
         except urllib_error.URLError as exc:
             return (
                 None,
                 "local_ollama_unreachable",
-                f"Could not reach Ollama at {self.settings.ollama_base_url.rstrip('/')}{path}: {self._clean_exception_message(exc)}.",
+                f"Could not reach Ollama at {endpoint}: {self._clean_exception_message(exc)}.",
             )
         except TimeoutError as exc:
             return (

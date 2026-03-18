@@ -178,6 +178,25 @@ Or use the installer again for idempotent update plus restart:
 bash /opt/ai-business/deploy/track-a-vps/install.sh --repo git@github.com:your-org/your-private-repo.git --branch main
 ```
 
+## Troubleshooting
+
+If specialist panels fall back to rules with an Ollama `HTTP 404` diagnostic, the app reached the configured host but that host was not serving the Ollama API route expected at `/api/generate`.
+
+Quick checks:
+
+```bash
+docker compose --env-file deploy/track-a-vps/.env.track-a-vps -f deploy/track-a-vps/docker-compose.yml ps
+docker compose --env-file deploy/track-a-vps/.env.track-a-vps -f deploy/track-a-vps/docker-compose.yml exec ollama ollama list
+docker compose --env-file deploy/track-a-vps/.env.track-a-vps -f deploy/track-a-vps/docker-compose.yml exec api python -c "from urllib.request import urlopen; print(urlopen('http://ollama:11434/api/tags').read().decode())"
+```
+
+If the last command fails or returns something other than Ollama JSON, verify that:
+
+- `OLLAMA_BASE_URL` still points to the Ollama service
+- the `ollama` container is running in the same compose project
+- no reverse proxy or platform service is answering on that hostname instead
+- `OPENROUTER_API_KEY` is set if you want cloud fallback available when local Ollama is unavailable
+
 ## 6. Backup The Local DB
 
 At minimum, run a daily dump:

@@ -2,7 +2,11 @@
     email {$ACME_EMAIL}
 }
 
-{$PUBLIC_SITE_ADDR:80} {
+www.stratevia.eu {
+    redir https://stratevia.eu{uri} permanent
+}
+
+stratevia.eu {
     encode zstd gzip
     root * /srv
 

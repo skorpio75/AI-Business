@@ -10,7 +10,7 @@ stratevia.eu {
     encode zstd gzip
     root * /srv
 
-    @api path /healthz /agents* /dashboard* /specialists* /personal-assistant* /connectors* /knowledge* /workflows* /audit* /approvals*
+    @api path /healthz /agents* /dashboard* /specialists* /personal-assistant* /connectors* /knowledge* /workflows* /audit* /approvals* /public*
     reverse_proxy @api api:8000
 
     try_files {path} /index.html

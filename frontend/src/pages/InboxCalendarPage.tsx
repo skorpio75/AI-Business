@@ -6,7 +6,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { apiClient } from "../lib/api";
 import { formatDateTime, truncate } from "../lib/format";
-import type { InboxMessage, PersonalAssistantContext, WorkflowRun } from "../types";
+import type { InboxMessage, PersonalAssistantContext, TodoTask, WorkflowRun } from "../types";
 
 type InboxCalendarPageProps = {
   refreshToken: number;
@@ -32,6 +32,7 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
   const [error, setError] = useState<string | null>(null);
   const [lookbackHours, setLookbackHours] = useState(168);
   const [inboxLimit, setInboxLimit] = useState(20);
+  const [taskLimit, setTaskLimit] = useState(20);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [drafting, setDrafting] = useState(false);
   const [draftError, setDraftError] = useState<string | null>(null);
@@ -48,6 +49,7 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
           window_hours: 24,
           inbox_lookback_hours: lookbackHours,
           inbox_limit: inboxLimit,
+          task_limit: taskLimit,
         });
         if (!active) {
           return;
@@ -74,11 +76,16 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
     return () => {
       active = false;
     };
-  }, [refreshToken, lookbackHours, inboxLimit]);
+  }, [refreshToken, lookbackHours, inboxLimit, taskLimit]);
 
   const selectedMessage = useMemo<InboxMessage | null>(
     () => context?.inbox_messages.find((item) => item.message_id === selectedMessageId) ?? context?.inbox_messages[0] ?? null,
     [context, selectedMessageId],
+  );
+
+  const openTasks = useMemo<TodoTask[]>(
+    () => (context?.todo_tasks ?? []).filter((task) => task.status !== "completed"),
+    [context],
   );
 
   async function handleDraftFromInbox() {
@@ -112,12 +119,12 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
     <section className="page-grid">
       <div className="hero-card hero-card--mint">
         <div>
-          <p className="eyebrow">Inbox and calendar</p>
-          <h2>Read live Outlook inputs and launch approval-bound replies.</h2>
+          <p className="eyebrow">Inbox, calendar, and todos</p>
+          <h2>Read live assistant context and launch approval-bound replies.</h2>
         </div>
         <p className="hero-copy">
-          This page reads the configured personal-assistant context and lets you turn a real inbox
-          message into an approval workflow that can later send through Outlook on approval.
+          This page reads the configured provider context and lets you turn a real inbox message
+          into an approval workflow that can later send through the active mail provider on approval.
         </p>
       </div>
 
@@ -148,6 +155,16 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
                 onChange={(event) => setInboxLimit(Number(event.target.value))}
               />
             </label>
+            <label className="form-field form-field--compact">
+              <span>Task limit</span>
+              <Input
+                type="number"
+                min={1}
+                max={100}
+                value={taskLimit}
+                onChange={(event) => setTaskLimit(Number(event.target.value))}
+              />
+            </label>
           </div>
         </div>
         <div className="tag-cloud">
@@ -159,10 +176,15 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
             label={`calendar ${context?.calendar_health?.status ?? "unknown"}`}
             tone={inferTone(context?.calendar_health?.status)}
           />
+          <StatusPill
+            label={`tasks ${context?.tasks_health?.status ?? "unknown"}`}
+            tone={inferTone(context?.tasks_health?.status)}
+          />
           <StatusPill label={`${context?.inbox_messages.length ?? 0} inbox messages`} tone="neutral" />
           <StatusPill label={`${context?.calendar_events.length ?? 0} calendar events`} tone="neutral" />
+          <StatusPill label={`${context?.todo_tasks.length ?? 0} tasks`} tone="neutral" />
         </div>
-        {loading ? <p className="panel-state">Loading live Outlook context...</p> : null}
+        {loading ? <p className="panel-state">Loading live assistant context...</p> : null}
         {error ? <p className="panel-state panel-state--error">{error}</p> : null}
       </section>
 
@@ -268,6 +290,34 @@ export function InboxCalendarPage({ refreshToken, onDrafted }: InboxCalendarPage
               <div className="list-card__meta">
                 <span>{event.location || "No location"}</span>
                 <span>{event.is_all_day ? "All day" : formatDateTime(event.end_at)}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <p className="eyebrow">Todos</p>
+            <h3>Current task list</h3>
+          </div>
+        </div>
+        {!loading && !error && !openTasks.length ? (
+          <p className="panel-state">No open tasks found in the current assistant task list.</p>
+        ) : null}
+        <div className="stack-list">
+          {openTasks.map((task) => (
+            <article key={task.task_id} className="list-card">
+              <div className="list-card__topline">
+                <StatusPill label={task.priority} tone={task.priority === "high" ? "warning" : "neutral"} />
+                <span>{task.due_at ? formatDateTime(task.due_at) : "No due date"}</span>
+              </div>
+              <h4>{task.title}</h4>
+              <p>{truncate(task.body_text || "No task notes", 120)}</p>
+              <div className="list-card__meta">
+                <span>{task.status.replace("_", " ")}</span>
+                <span>{task.metadata.provider ?? "unknown-provider"}</span>
               </div>
             </article>
           ))}

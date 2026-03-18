@@ -54,18 +54,24 @@ storage:
   secret_paths:
     google_oauth: secrets/client-template/google-oauth.json
     microsoft_graph: secrets/client-template/microsoft-graph.json
+    zimbra: secrets/client-template/zimbra.json
 
 connectors:
   inbox_default: null
   calendar_default: null
+  tasks_default: null
   supported_inbox_connectors:
     - gmail
     - outlook
     - microsoft_graph
+    - zimbra
   supported_calendar_connectors:
     - google_calendar
     - outlook
     - microsoft_graph
+    - zimbra
+  supported_task_connectors:
+    - zimbra
 
 models:
   local_model: qwen2.5:1.5b

@@ -36,6 +36,10 @@ class ClientTemplatePackTests(UnitTestCase):
             "config/client-template/docker-compose.client.yaml",
         )
         self.assertEqual(client_config["storage"]["documents_root"], "data/clients/client-template/documents")
+        self.assertEqual(client_config["storage"]["secret_paths"]["zimbra"], "secrets/client-template/zimbra.json")
+        self.assertIn("zimbra", client_config["connectors"]["supported_inbox_connectors"])
+        self.assertIn("zimbra", client_config["connectors"]["supported_calendar_connectors"])
+        self.assertEqual(client_config["connectors"]["supported_task_connectors"], ["zimbra"])
         self.assertEqual(client_config["models"]["routing_posture"], "governed_local_first")
         self.assertEqual(
             client_config["solution_pack"]["default_enabled_workflows"],
@@ -59,10 +63,12 @@ class ClientTemplatePackTests(UnitTestCase):
         self.assertIn("RUNTIME_ENV_FILE=config/client-template/deployment.env.example", env_template)
         self.assertIn("LANGFUSE_ENABLED=false", env_template)
         self.assertIn("LANGFUSE_HOST=https://cloud.langfuse.com", env_template)
+        self.assertIn("ZIMBRA_SECRETS_PATH=secrets/client-template/zimbra.json", env_template)
         self.assertIn("container_name: ${CLIENT_SLUG:-client-template}-agent-platform-postgres", compose_template)
         self.assertIn("name: ${CLIENT_SLUG:-client-template}_postgres_data", compose_template)
         self.assertIn("documents_root: data/clients/client-template/documents", storage_map)
         self.assertIn("google_oauth: secrets/client-template/google-oauth.json", storage_map)
+        self.assertIn("zimbra: secrets/client-template/zimbra.json", storage_map)
 
 
 if __name__ == "__main__":

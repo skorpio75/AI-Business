@@ -10,7 +10,7 @@ This project is a reproducible, privacy-isolated enterprise agent platform desig
 The platform is not shared across clients. Each instance is deployed separately for privacy, compliance, and operational clarity.
 
 ## Current Status
-The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar connectors, dedicated CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels, and typed consulting-style advisory-analysis endpoints that now run through the governed prompt/model layer for both internal specialist counsel and client-specific consulting work.
+The committed codebase is still backend-led. It includes the FastAPI API, workflow orchestration and database layer for the initial email-operations slice, plus a `frontend/` React mission-control scaffold with workflow monitoring, approval handling, explicit model-routing visibility, personal assistant summary fed by configurable inbox/calendar/task connectors, dedicated CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels, and typed consulting-style advisory-analysis endpoints that now run through the governed prompt/model layer for both internal specialist counsel and client-specific consulting work.
 
 ## Principles
 - open source first
@@ -296,19 +296,21 @@ Client-facing advisory specialists can now analyze a bounded client brief instea
 - runtime prompt composition contracts now define family-base prompt assets, workflow-step prompt assets, and injected operating context rules
 - prompt asset naming, storage, and loading conventions are defined, with legacy explicit-path compatibility during migration
 
-## Inbox and Calendar Connectors
-The personal assistant backend can now fetch real inbox and calendar data when configured.
+## Inbox, Calendar, and Task Connectors
+The personal assistant backend can now fetch real inbox, calendar, and task data when configured.
 
 - `INBOX_CONNECTOR=gmail` uses `GOOGLE_ACCESS_TOKEN` against Gmail.
 - `CALENDAR_CONNECTOR=google_calendar` uses `GOOGLE_ACCESS_TOKEN` against Google Calendar.
 - `INBOX_CONNECTOR=outlook` or `microsoft_graph` uses `MICROSOFT_GRAPH_ACCESS_TOKEN` against Microsoft 365 mail.
 - `CALENDAR_CONNECTOR=outlook` or `microsoft_graph` uses `MICROSOFT_GRAPH_ACCESS_TOKEN` against Microsoft 365 calendar.
+- `INBOX_CONNECTOR=zimbra`, `CALENDAR_CONNECTOR=zimbra`, and `TASKS_CONNECTOR=zimbra` use Zimbra REST reads against `ZIMBRA_BASE_URL`.
 - If `GOOGLE_REFRESH_TOKEN` is configured together with `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, the backend refreshes the Google access token automatically when building connector context.
 - If `MICROSOFT_GRAPH_REFRESH_TOKEN` is configured, the backend refreshes the Microsoft Graph access token automatically each time the API starts and when connector context is rebuilt.
-- Provider credentials can live either directly in `.env` or in JSON secret files referenced by `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH`.
+- Zimbra reads support either `ZIMBRA_ACCESS_TOKEN` or `ZIMBRA_USERNAME` plus `ZIMBRA_PASSWORD`.
+- Provider credentials can live either directly in `.env` or in JSON secret files referenced by `GOOGLE_SECRETS_PATH`, `MICROSOFT_GRAPH_SECRETS_PATH`, and `ZIMBRA_SECRETS_PATH`.
 - Track B client instances should also set `RUNTIME_ENV_FILE` so refresh/bootstrap flows write tokens back to the active client env file instead of the shared root `.env`.
 
-Use `PERSONAL_ASSISTANT_ACCOUNT_ID` and `PERSONAL_ASSISTANT_CALENDAR_ID` to target the mailbox/calendar, and keep both connector settings at `null` if you want the previous placeholder behavior.
+Use `PERSONAL_ASSISTANT_ACCOUNT_ID`, `PERSONAL_ASSISTANT_CALENDAR_ID`, and `PERSONAL_ASSISTANT_TASK_LIST_ID` to target the mailbox, calendar, and task list, and keep connector settings at `null` if you want the previous placeholder behavior.
 
 ### Connector Bootstrap Status
 Check the current provider bootstrap state directly from the API:
@@ -317,7 +319,7 @@ Check the current provider bootstrap state directly from the API:
 Invoke-RestMethod -Method Get -Uri http://127.0.0.1:8000/connectors/bootstrap-status | ConvertTo-Json -Depth 6
 ```
 
-That endpoint reports whether Google and Microsoft Graph are selected, whether access and refresh tokens are present, whether client credentials are present, whether refresh is supported, and whether a secret-store path is configured.
+That endpoint reports whether Google, Microsoft Graph, and Zimbra are selected, whether access or static credentials are present, whether refresh is supported, and whether a secret-store path is configured.
 
 ### Google Bootstrap
 For Gmail and Google Calendar, set:
@@ -349,6 +351,15 @@ Then run:
 
 That script starts a Microsoft device-code flow and writes the resulting `MICROSOFT_GRAPH_ACCESS_TOKEN` and `MICROSOFT_GRAPH_REFRESH_TOKEN` into `.env` automatically. After that initial bootstrap, backend startup refreshes the access token automatically. The Azure app still needs delegated Graph permissions for `Mail.Read` and `Calendars.Read`.
 
+### Zimbra Configuration
+For Zimbra reads, set:
+
+- `ZIMBRA_BASE_URL`
+- either `ZIMBRA_ACCESS_TOKEN` or `ZIMBRA_USERNAME` plus `ZIMBRA_PASSWORD`
+- optional `ZIMBRA_SECRETS_PATH` if you prefer JSON-file secret storage over `.env`
+
+Zimbra is currently wired for read-only inbox, calendar, and task-list fetches through the REST API. Reply send-back and task write-back remain separate future work.
+
 ### Outlook Send Approval Flow
 Inbox-derived email workflows now carry the source Outlook message ID through the approval queue. When a CEO approves such an item, the backend sends the reply through Microsoft Graph using the source message reply endpoint.
 
@@ -359,18 +370,18 @@ For that full cycle, the Azure app needs:
 - `Mail.Send`
 
 ### Read Verification
-Once the token is present in `.env`, start the API and read the normalized Outlook data directly:
+Once the provider credentials are present in `.env`, start the API and read the normalized assistant context directly:
 
 ```powershell
 .venv\Scripts\python.exe -m uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
 Invoke-RestMethod -Method Get -Uri http://127.0.0.1:8000/personal-assistant/context | ConvertTo-Json -Depth 6
 ```
 
-That endpoint returns connector health plus the current normalized `inbox_messages` and `calendar_events` payloads used by the dashboard.
+That endpoint returns connector health plus the current normalized `inbox_messages`, `calendar_events`, and `todo_tasks` payloads used by the dashboard.
 
 ### End-to-End Operator Flow
-1. Open the new `Inbox and Calendar` mission-control view.
-2. Refresh live Outlook context and select a real inbox message.
+1. Open the new `Inbox + Calendar + Tasks` mission-control view.
+2. Refresh live provider context and select a real inbox message.
 3. Launch a draft reply workflow from that message.
 4. Review the generated draft in `Approval Queue`.
 5. Edit the draft if needed and keep it pending, or approve it to send through Outlook.

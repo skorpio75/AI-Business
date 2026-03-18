@@ -114,6 +114,8 @@ export const apiClient = {
     window_hours?: number;
     inbox_lookback_hours?: number;
     inbox_limit?: number;
+    task_limit?: number;
+    include_completed_tasks?: boolean;
   }): Promise<PersonalAssistantContext> {
     const search = new URLSearchParams();
     if (params?.window_hours) {
@@ -124,6 +126,12 @@ export const apiClient = {
     }
     if (params?.inbox_limit) {
       search.set("inbox_limit", String(params.inbox_limit));
+    }
+    if (params?.task_limit) {
+      search.set("task_limit", String(params.task_limit));
+    }
+    if (params?.include_completed_tasks) {
+      search.set("include_completed_tasks", "true");
     }
     const suffix = search.size ? `?${search.toString()}` : "";
     return getJson<PersonalAssistantContext>(`/personal-assistant/context${suffix}`);

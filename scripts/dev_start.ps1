@@ -40,18 +40,53 @@ if (Test-Path $rootEnv) {
         $calendarConnector = $envMap["CALENDAR_CONNECTOR"].ToLowerInvariant()
     }
 
+    $tasksConnector = ""
+    if ($envMap.ContainsKey("TASKS_CONNECTOR")) {
+        $tasksConnector = $envMap["TASKS_CONNECTOR"].ToLowerInvariant()
+    }
+
     $graphRefreshToken = ""
     if ($envMap.ContainsKey("MICROSOFT_GRAPH_REFRESH_TOKEN")) {
         $graphRefreshToken = $envMap["MICROSOFT_GRAPH_REFRESH_TOKEN"]
     }
 
+    $zimbraBaseUrl = ""
+    if ($envMap.ContainsKey("ZIMBRA_BASE_URL")) {
+        $zimbraBaseUrl = $envMap["ZIMBRA_BASE_URL"]
+    }
+
+    $zimbraAccessToken = ""
+    if ($envMap.ContainsKey("ZIMBRA_ACCESS_TOKEN")) {
+        $zimbraAccessToken = $envMap["ZIMBRA_ACCESS_TOKEN"]
+    }
+
+    $zimbraUsername = ""
+    if ($envMap.ContainsKey("ZIMBRA_USERNAME")) {
+        $zimbraUsername = $envMap["ZIMBRA_USERNAME"]
+    }
+
+    $zimbraPassword = ""
+    if ($envMap.ContainsKey("ZIMBRA_PASSWORD")) {
+        $zimbraPassword = $envMap["ZIMBRA_PASSWORD"]
+    }
+
     $usesOutlookInbox = @("outlook", "microsoft_graph", "graph") -contains $inboxConnector
     $usesOutlookCalendar = @("outlook", "microsoft_graph", "graph") -contains $calendarConnector
+    $usesZimbra = @("zimbra") -contains $inboxConnector -or @("zimbra") -contains $calendarConnector -or @("zimbra") -contains $tasksConnector
     $hasGraphRefreshToken = -not [string]::IsNullOrWhiteSpace($graphRefreshToken)
+    $hasZimbraAuth = (-not [string]::IsNullOrWhiteSpace($zimbraAccessToken)) -or (
+        (-not [string]::IsNullOrWhiteSpace($zimbraUsername)) -and (-not [string]::IsNullOrWhiteSpace($zimbraPassword))
+    )
 
     if (($usesOutlookInbox -or $usesOutlookCalendar) -and -not $hasGraphRefreshToken) {
         Write-Host "Warning: Outlook connectors are enabled, but MICROSOFT_GRAPH_REFRESH_TOKEN is missing." -ForegroundColor Yellow
         Write-Host "Run '.venv\\Scripts\\python.exe scripts\\microsoft_graph_device_code.py' once to enable automatic token refresh on app startup." -ForegroundColor Yellow
+        Write-Host ""
+    }
+
+    if ($usesZimbra -and ([string]::IsNullOrWhiteSpace($zimbraBaseUrl) -or -not $hasZimbraAuth)) {
+        Write-Host "Warning: Zimbra connectors are enabled, but ZIMBRA_BASE_URL or credentials are missing." -ForegroundColor Yellow
+        Write-Host "Set ZIMBRA_BASE_URL plus either ZIMBRA_ACCESS_TOKEN or ZIMBRA_USERNAME/ZIMBRA_PASSWORD before relying on live reads." -ForegroundColor Yellow
         Write-Host ""
     }
 }

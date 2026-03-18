@@ -210,23 +210,32 @@ The current backend supports the following provider capabilities:
 - Google Calendar event fetch
 - Microsoft Graph mailbox fetch
 - Microsoft Graph calendar fetch
+- Zimbra mailbox fetch via the Zimbra REST API
+- Zimbra calendar fetch via the Zimbra REST API
+- Zimbra task-list fetch via the Zimbra REST API
 
 These integrations may enrich a client advisory brief, but the normalized problem statement, client context/history, mission assessment, recommended services, and upsell opportunities remain platform-side contracts.
 
 ### Approval-bound execution
 - Microsoft Graph reply send for approved Outlook-originated email workflows
 - planned: Microsoft Graph Microsoft To Do task create/update for approved personal-assistant recommendation promotion and priority assignment
+- planned: Zimbra reply send or task write-back only after a governed outbound-action design exists
 
 ### Planned same-tenant Microsoft To Do extension
 - `Inbox & Calendar` is planned to grow into an inbox, calendar, and task workspace when Microsoft 365 is the selected provider stack.
 - Microsoft To Do list/task reads and writes should reuse the same Microsoft Graph tenant ID, client ID, and operator account context already used for Outlook mail and calendar.
 - Assistant recommendations may become candidate tasks, but task creation and approved priority assignment must still flow through platform approval and audit controls before Microsoft To Do is updated.
 
+### Zimbra read-side extension
+- `Inbox & Calendar` now supports a third provider posture where Zimbra supplies mailbox, calendar, and task-list reads through the same account context.
+- Zimbra configuration is static-credential-based in the current slice: `ZIMBRA_BASE_URL` plus either `ZIMBRA_ACCESS_TOKEN` or `ZIMBRA_USERNAME` and `ZIMBRA_PASSWORD`.
+- Zimbra currently remains read-only in MVP; reply send-back and task write-back still require a separate approval-safe outbound design before they are enabled.
+
 ### Bootstrap and secret handling
 - Microsoft Graph device-code bootstrap via `scripts/microsoft_graph_device_code.py`
 - Google local-loopback OAuth bootstrap via `scripts/google_oauth_local_server.py`
 - refresh-token lifecycle handling for Google and Microsoft Graph
-- optional JSON secret-store paths via `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH`
+- optional JSON secret-store paths via `GOOGLE_SECRETS_PATH`, `MICROSOFT_GRAPH_SECRETS_PATH`, and `ZIMBRA_SECRETS_PATH`
 - client-scoped `RUNTIME_ENV_FILE` support so Track B token persistence follows the active tenant env file instead of the shared repo root `.env`
 - bootstrap diagnostics through `GET /connectors/bootstrap-status`
 

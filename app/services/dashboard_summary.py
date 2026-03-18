@@ -94,6 +94,14 @@ class DashboardSummaryService:
                     urgency="low",
                 )
             )
+        if personal_context.tasks_health and personal_context.tasks_health.status != "ok":
+            priorities.append(
+                PersonalAssistantPriority(
+                    title="Reconnect task integration",
+                    reason=personal_context.tasks_health.detail or "Task connector is degraded.",
+                    urgency="low",
+                )
+            )
 
         conflicts: list[ScheduleConflict] = []
         events = sorted(personal_context.calendar_events, key=lambda item: item.start_at)

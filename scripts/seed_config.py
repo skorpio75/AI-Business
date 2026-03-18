@@ -87,6 +87,7 @@ def _build_seed_values(
         "prompt_override_root": f"prompts/clients/{tenant_id}",
         "google_secret_path": f"secrets/{tenant_id}/google-oauth.json",
         "microsoft_secret_path": f"secrets/{tenant_id}/microsoft-graph.json",
+        "zimbra_secret_path": f"secrets/{tenant_id}/zimbra.json",
         "database_url": f"postgresql+psycopg://agent:agent@localhost:{postgres_port}/{database_name}",
     }
 
@@ -116,6 +117,7 @@ def _seed_client_contract(template: dict[str, Any], *, values: dict[str, str]) -
     seeded["storage"]["prompt_override_root"] = values["prompt_override_root"]
     seeded["storage"]["secret_paths"]["google_oauth"] = values["google_secret_path"]
     seeded["storage"]["secret_paths"]["microsoft_graph"] = values["microsoft_secret_path"]
+    seeded["storage"]["secret_paths"]["zimbra"] = values["zimbra_secret_path"]
 
     seeded["notes"] = list(seeded.get("notes", [])) + [
         f"Seeded client instance for tenant `{values['tenant_id']}`.",
@@ -203,6 +205,7 @@ def seed_client_instance(
             "POSTGRES_PORT": values["postgres_port"],
             "GOOGLE_SECRETS_PATH": values["google_secret_path"],
             "MICROSOFT_GRAPH_SECRETS_PATH": values["microsoft_secret_path"],
+            "ZIMBRA_SECRETS_PATH": values["zimbra_secret_path"],
             "CLIENT_DOCUMENTS_DIR": values["documents_root"],
             "CLIENT_LOGS_DIR": values["logs_root"],
             "CLIENT_EXPORTS_DIR": values["exports_root"],

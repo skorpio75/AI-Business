@@ -10,7 +10,7 @@ This runbook covers:
 - seeding a tenant-specific client contract and runtime env file
 - starting isolated PostgreSQL with the Track B compose overlay
 - running database migrations and the API against the tenant env
-- bootstrapping Google or Microsoft connector tokens into the tenant-scoped env or secret store
+- bootstrapping Google or Microsoft connector tokens, or loading Zimbra static credentials, into the tenant-scoped env or secret store
 - verifying the seeded instance with the currently portable workflows
 
 This runbook does not claim that every Track B workflow is executable today. `knowledge-qna` and `email-operations` are the validated reusable services. `document-intake` and `reporting` remain governed workflow-pack contract entries pending service implementation.
@@ -30,6 +30,7 @@ Why this matters:
 - Docker Desktop or another local Docker runtime available
 - optional: Ollama running locally if you want local-model-backed workflow behavior
 - optional: Google or Azure app registration ready if you want live inbox/calendar connectors
+- optional: Zimbra base URL and account credentials if you want live Zimbra inbox/calendar/task connectors
 
 ## 1. Seed The Client Instance
 Run the seed script from the repo root:
@@ -61,7 +62,7 @@ Confirm that:
 - `RUNTIME_ENV_FILE=config/clients/<tenant>.env`
 - `DATABASE_URL` points at the tenant PostgreSQL port and database
 - `CLIENT_DOCUMENTS_DIR`, `CLIENT_LOGS_DIR`, `CLIENT_EXPORTS_DIR`, `CLIENT_VECTOR_DIR`, and `CLIENT_PROMPT_OVERRIDE_DIR` all point inside the tenant roots
-- `GOOGLE_SECRETS_PATH` and `MICROSOFT_GRAPH_SECRETS_PATH` point inside `secrets/<tenant>/`
+- `GOOGLE_SECRETS_PATH`, `MICROSOFT_GRAPH_SECRETS_PATH`, and `ZIMBRA_SECRETS_PATH` point inside `secrets/<tenant>/`
 - optional Langfuse settings such as `LANGFUSE_ENABLED`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST` are set here if this client instance should emit workflow and model traces
 
 Do not edit `config/client-template/` for a live client. Treat that folder as the shared blueprint and `config/clients/` as the generated tenant runtime config.
@@ -165,6 +166,15 @@ Then run:
 ```
 
 The script writes `MICROSOFT_GRAPH_ACCESS_TOKEN` and `MICROSOFT_GRAPH_REFRESH_TOKEN` to the active runtime env file or configured tenant secret store.
+
+### Zimbra
+Populate these values in `config/clients/<tenant>.env` or the tenant secret store path:
+
+- `ZIMBRA_BASE_URL`
+- either `ZIMBRA_ACCESS_TOKEN` or `ZIMBRA_USERNAME` plus `ZIMBRA_PASSWORD`
+- optional `ZIMBRA_SECRETS_PATH`
+
+No separate bootstrap script is required in the current slice. Zimbra support is read-only and becomes active as soon as those values are present in the tenant runtime env or secret store.
 
 ## 9. Smoke Test The Portable Workflows
 ### Knowledge Q&A

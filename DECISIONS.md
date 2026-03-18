@@ -370,3 +370,9 @@ Architecture and implementation decisions with rationale and trade-offs.
 - Date: 2026-03-17
 - Decision: The first OVH Track A production deployment should use a repo-driven installation model in which the VPS holds a checked-out copy of the governed repository and runs the versioned deployment pack from `deploy/track-a-vps/`. This may later evolve toward registry-published images and CI-driven rollout, but the runtime contracts, env model, and compose topology should stay compatible with that future move.
 - Rationale: The current platform is still in a start-slow stage where simplicity and operational clarity matter more than build-pipeline sophistication. A repo-driven VPS install keeps deployment understandable, aligns with the local-first workflow, makes the same deployment artifacts visible in version control, and avoids introducing a half-finished registry/release process before Epic 15 and later ops automation are ready.
+
+## ADR-062: Personal-assistant context should treat tasks as a first-class read seam and allow Zimbra as a static-credential provider
+- Status: Accepted
+- Date: 2026-03-18
+- Decision: The personal-assistant connector layer should expand from inbox plus calendar into inbox, calendar, and task reads, and it should allow Zimbra as a supported read-side provider using a governed `ZIMBRA_BASE_URL` plus either a static auth token or username/password, with optional tenant-scoped secret-file storage.
+- Rationale: The platform already models tasks as a governed tool domain and had roadmap intent to grow the assistant view into a task workspace. Making tasks a first-class read seam now keeps the API and UI contracts honest, while Zimbra support lets the provider layer follow the operator's real mailbox stack without weakening approval or tenant-isolation rules. Static-credential support fits Zimbra's current integration posture better than forcing an unfinished OAuth bootstrap path into the platform prematurely.

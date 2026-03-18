@@ -69,8 +69,10 @@ class Settings(BaseSettings):
     knowledge_vector_dimensions: int = 8
     inbox_connector: str = "null"
     calendar_connector: str = "null"
+    tasks_connector: str = "null"
     personal_assistant_account_id: str = "me"
     personal_assistant_calendar_id: str = "primary"
+    personal_assistant_task_list_id: str = "Tasks"
     personal_assistant_window_hours: int = 24
     personal_assistant_inbox_lookback_hours: int = 24
     google_client_id: Optional[str] = None
@@ -91,6 +93,12 @@ class Settings(BaseSettings):
     microsoft_graph_access_token: Optional[str] = None
     microsoft_graph_refresh_token: Optional[str] = None
     microsoft_graph_secrets_path: Optional[str] = None
+    zimbra_base_url: Optional[str] = None
+    zimbra_access_token: Optional[str] = None
+    zimbra_username: Optional[str] = None
+    zimbra_password: Optional[str] = None
+    zimbra_secrets_path: Optional[str] = None
+    zimbra_request_timeout_seconds: int = 10
     client_documents_dir: str = "data/internal/documents"
     client_logs_dir: str = "data/internal/logs"
     client_exports_dir: str = "data/internal/exports"
@@ -161,6 +169,7 @@ class Settings(BaseSettings):
         for field_name, value in {
             "google_secrets_path": self.google_secrets_path,
             "microsoft_graph_secrets_path": self.microsoft_graph_secrets_path,
+            "zimbra_secrets_path": self.zimbra_secrets_path,
         }.items():
             if value:
                 resolved = _resolve_runtime_path(value)
@@ -181,7 +190,7 @@ def ensure_runtime_directories(settings: Settings) -> None:
     for path in directories:
         path.mkdir(parents=True, exist_ok=True)
 
-    for secret_path in (settings.google_secrets_path, settings.microsoft_graph_secrets_path):
+    for secret_path in (settings.google_secrets_path, settings.microsoft_graph_secrets_path, settings.zimbra_secrets_path):
         resolved = _resolve_runtime_path(secret_path)
         if resolved is not None:
             resolved.parent.mkdir(parents=True, exist_ok=True)

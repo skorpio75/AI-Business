@@ -7,7 +7,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from app.connectors.factory import build_calendar_connector, build_inbox_connector
+from app.connectors.factory import build_calendar_connector, build_inbox_connector, build_task_connector
 from app.connectors.http import ConnectorHttpError
 from app.core.settings import Settings, build_settings, ensure_runtime_directories, get_settings
 from app.knowledge.pgvector_store import PgVectorRetrievalService
@@ -104,6 +104,7 @@ def build_personal_assistant_context_service(current_settings: Settings) -> Pers
     return PersonalAssistantContextService(
         inbox_connector=build_inbox_connector(prepared_settings),
         calendar_connector=build_calendar_connector(prepared_settings),
+        task_connector=build_task_connector(prepared_settings),
     )
 
 
@@ -172,6 +173,7 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> DashboardSummaryResp
     assistant_context = personal_assistant_context.build_context(
         account_id=current_settings.personal_assistant_account_id,
         calendar_id=current_settings.personal_assistant_calendar_id,
+        task_list_id=current_settings.personal_assistant_task_list_id,
         window_hours=current_settings.personal_assistant_window_hours,
         inbox_lookback_hours=current_settings.personal_assistant_inbox_lookback_hours,
     )
@@ -240,15 +242,20 @@ def get_personal_assistant_context(
     window_hours: int = Query(default=settings.personal_assistant_window_hours, ge=1, le=336),
     inbox_lookback_hours: int = Query(default=settings.personal_assistant_inbox_lookback_hours, ge=1, le=720),
     inbox_limit: int = Query(default=25, ge=1, le=100),
+    task_limit: int = Query(default=25, ge=1, le=100),
+    include_completed_tasks: bool = Query(default=False),
 ) -> PersonalAssistantContext:
     current_settings = get_runtime_settings()
     personal_assistant_context = build_personal_assistant_context_service(current_settings)
     return personal_assistant_context.build_context(
         account_id=current_settings.personal_assistant_account_id,
         calendar_id=current_settings.personal_assistant_calendar_id,
+        task_list_id=current_settings.personal_assistant_task_list_id,
         window_hours=window_hours,
         inbox_lookback_hours=inbox_lookback_hours,
         inbox_limit=inbox_limit,
+        task_limit=task_limit,
+        include_completed_tasks=include_completed_tasks,
     )
 
 

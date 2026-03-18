@@ -11,7 +11,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - `DONE`
 
 ## Current Snapshot
-- Updated: 2026-03-17
+- Updated: 2026-03-18
 - Overall Status: `IN_PROGRESS`
 - Active Phase: `Phase 5 - Observability + Testing`
 - Active Cross-Cutting Stream: `AI-Business IDE handoff integration`
@@ -246,7 +246,7 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - [ ] B-T76: Define OVH deployment guidance for compute, storage, networking, database, object storage, and inference evolution across Track A-first and Track B growth stages
 
 ### Backlog - Connector Diagnostics
-- [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, and calendar health
+- [ ] B-T02: Add connector diagnostics endpoint/view for current token load state, provider selection, inbox health, calendar health, and task health
 - [ ] B-T02A: Extend `Inbox & Calendar` with a Microsoft To Do section that uses the same Microsoft Graph tenant, client ID, and operator account context as Outlook/calendar
 - [ ] B-T02B: Convert personal-assistant recommendations into candidate Microsoft To Do tasks and route task creation plus approved priority through CEO approval before write-back
 - [ ] B-T02C: Persist recommendation-to-task approval and audit metadata so Mission Control can trace which assistant recommendations became Microsoft To Do items
@@ -378,11 +378,11 @@ Track implementation progress, phase status, and actionable tasks for the enterp
 - Added a dedicated Agents org view with grouped avatar/status cards.
 - Added dashboard KPI widgets for billing, cashflow, delivery health, and quality gate status.
 - Added a personal assistant summary panel fed by a new dashboard summary endpoint.
-- Replaced null-only personal assistant connector wiring with configurable Gmail, Google Calendar, and Microsoft Graph fetch connectors.
-- Added environment-driven connector selection, account/calendar IDs, and token-based configuration placeholders in `.env.example`.
+- Replaced null-only personal assistant connector wiring with configurable Gmail, Google Calendar, Microsoft Graph, and Zimbra fetch connectors.
+- Added environment-driven connector selection, account/calendar/task IDs, and provider configuration placeholders in `.env.example`.
 - Hardened personal assistant context assembly to use inbox lookback windows and degrade gracefully when connector fetches fail.
 - Added unit coverage for connector selection, normalization helpers, and assistant context error handling.
-- Added a dedicated mission-control inbox/calendar view backed by live personal-assistant context reads, including connector health, recent messages, and agenda items.
+- Added a dedicated mission-control inbox/calendar view backed by live personal-assistant context reads, including connector health, recent messages, agenda items, and task-list reads.
 - Extended email workflow persistence to carry source message metadata, approval/send status, and sent timestamps.
 - Wired Outlook approval completion to `Mail.Send` via Microsoft Graph reply calls so approved inbox-derived drafts can send end-to-end.
 - Added a schema migration for email source/send tracking and applied it locally.

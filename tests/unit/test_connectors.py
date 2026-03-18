@@ -2,10 +2,11 @@
 import unittest
 from datetime import date, datetime, timezone
 
-from app.connectors.factory import build_calendar_connector, build_inbox_connector
+from app.connectors.factory import build_calendar_connector, build_inbox_connector, build_task_connector
 from app.connectors.gmail import GmailInboxConnector
 from app.connectors.google_calendar import GoogleCalendarConnector
 from app.connectors.microsoft_graph import MicrosoftGraphCalendarConnector, MicrosoftGraphInboxConnector
+from app.connectors.zimbra import ZimbraCalendarConnector, ZimbraInboxConnector, ZimbraTaskConnector
 from app.core.settings import Settings
 
 
@@ -36,6 +37,28 @@ class ConnectorFactoryTests(unittest.TestCase):
         connector = build_inbox_connector(settings)
 
         self.assertIsInstance(connector, MicrosoftGraphInboxConnector)
+
+    def test_build_connectors_zimbra(self) -> None:
+        settings = Settings(
+            _env_file=None,
+            inbox_connector="zimbra",
+            calendar_connector="zimbra",
+            tasks_connector="zimbra",
+            zimbra_base_url="https://mail.example.com",
+            zimbra_username="ceo@example.com",
+            zimbra_password="secret",
+            personal_assistant_account_id="dario.pizzolante@stratevia.eu",
+        )
+
+        inbox_connector = build_inbox_connector(settings)
+        calendar_connector = build_calendar_connector(settings)
+        task_connector = build_task_connector(settings)
+
+        self.assertIsInstance(inbox_connector, ZimbraInboxConnector)
+        self.assertIsInstance(calendar_connector, ZimbraCalendarConnector)
+        self.assertIsInstance(task_connector, ZimbraTaskConnector)
+        self.assertEqual(calendar_connector.principal_id, "dario.pizzolante@stratevia.eu")
+        self.assertEqual(task_connector.principal_id, "dario.pizzolante@stratevia.eu")
 
 
 class ConnectorNormalizationTests(unittest.TestCase):
@@ -93,6 +116,96 @@ class ConnectorNormalizationTests(unittest.TestCase):
             event.end_at,
             datetime.combine(date(2026, 3, 21), datetime.min.time(), tzinfo=timezone.utc),
         )
+
+    def test_zimbra_inbox_list_messages_normalizes_rest_payload(self) -> None:
+        connector = ZimbraInboxConnector(
+            base_url="https://mail.example.com",
+            username="dario.pizzolante@stratevia.eu",
+            password="secret",
+        )
+        payload = {
+            "_attrs": {"id": "1"},
+            "m": [
+                {
+                    "id": "msg-1",
+                    "cid": "conv-1",
+                    "su": "Need proposal",
+                    "fr": "client@example.com",
+                    "e": [{"a": "dario.pizzolante@stratevia.eu"}],
+                    "d": "1710151200000",
+                    "f": "u",
+                    "desc": "Please send the first draft.",
+                }
+            ],
+        }
+        connector._get_folder_payload = lambda **kwargs: payload  # type: ignore[method-assign]
+
+        messages = connector.list_messages(account_id="dario.pizzolante@stratevia.eu")
+
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].subject, "Need proposal")
+        self.assertEqual(messages[0].sender, "client@example.com")
+        self.assertTrue(messages[0].is_unread)
+
+    def test_zimbra_calendar_list_events_normalizes_payload(self) -> None:
+        connector = ZimbraCalendarConnector(
+            base_url="https://mail.example.com",
+            username="dario.pizzolante@stratevia.eu",
+            password="secret",
+            principal_id="dario.pizzolante@stratevia.eu",
+        )
+        payload = {
+            "appt": [
+                {
+                    "id": "evt-1",
+                    "name": "Client workshop",
+                    "s": "20260320T090000Z",
+                    "e": "20260320T100000Z",
+                    "loc": "Teams",
+                    "desc": "Review the roadmap",
+                    "at": [{"a": "client@example.com"}, {"a": "dario.pizzolante@stratevia.eu"}],
+                }
+            ]
+        }
+        connector._get_folder_payload = lambda **kwargs: payload  # type: ignore[method-assign]
+
+        events = connector.list_events(
+            calendar_id="primary",
+            start_at=datetime(2026, 3, 20, 0, 0, tzinfo=timezone.utc),
+            end_at=datetime(2026, 3, 21, 0, 0, tzinfo=timezone.utc),
+        )
+
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].title, "Client workshop")
+        self.assertEqual(events[0].location, "Teams")
+        self.assertEqual(events[0].attendees, ["client@example.com", "dario.pizzolante@stratevia.eu"])
+
+    def test_zimbra_task_list_normalizes_payload(self) -> None:
+        connector = ZimbraTaskConnector(
+            base_url="https://mail.example.com",
+            username="dario.pizzolante@stratevia.eu",
+            password="secret",
+            principal_id="dario.pizzolante@stratevia.eu",
+        )
+        payload = {
+            "task": [
+                {
+                    "id": "task-1",
+                    "name": "Reply to client",
+                    "due": "20260321T150000Z",
+                    "priority": "1",
+                    "desc": "Prepare the follow-up note.",
+                }
+            ]
+        }
+        connector._get_folder_payload = lambda **kwargs: payload  # type: ignore[method-assign]
+
+        tasks = connector.list_tasks(list_id="Tasks")
+
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].title, "Reply to client")
+        self.assertEqual(tasks[0].priority, "high")
+        self.assertEqual(tasks[0].status, "not_started")
 
 if __name__ == "__main__":
     unittest.main()

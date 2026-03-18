@@ -160,6 +160,19 @@ export type CalendarEvent = {
   metadata: Record<string, string>;
 };
 
+export type TodoTask = {
+  task_id: string;
+  list_id: string;
+  title: string;
+  body_text?: string | null;
+  due_at?: string | null;
+  completed_at?: string | null;
+  status: "not_started" | "in_progress" | "completed" | "deferred" | "waiting";
+  priority: "low" | "normal" | "high";
+  web_link?: string | null;
+  metadata: Record<string, string>;
+};
+
 export type ConnectorHealth = {
   connector_id: string;
   status: "ok" | "degraded" | "error";
@@ -170,12 +183,15 @@ export type ConnectorHealth = {
 export type PersonalAssistantContext = {
   account_id: string;
   calendar_id: string;
+  task_list_id: string;
   window_start: string;
   window_end: string;
   inbox_messages: InboxMessage[];
   calendar_events: CalendarEvent[];
+  todo_tasks: TodoTask[];
   inbox_health?: ConnectorHealth | null;
   calendar_health?: ConnectorHealth | null;
+  tasks_health?: ConnectorHealth | null;
 };
 
 export type AgentCapability = {

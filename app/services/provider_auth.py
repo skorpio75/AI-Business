@@ -16,6 +16,7 @@ ENV_PATH = DEFAULT_ENV_PATH
 OUTLOOK_PROVIDERS = {"microsoft_graph", "graph", "outlook"}
 GOOGLE_INBOX_PROVIDERS = {"gmail"}
 GOOGLE_CALENDAR_PROVIDERS = {"google", "google_calendar", "google-calendar"}
+ZIMBRA_PROVIDERS = {"zimbra"}
 
 
 class ProviderAuthError(RuntimeError):
@@ -57,6 +58,14 @@ def google_connectors_enabled(settings: Settings) -> bool:
     return (
         settings.inbox_connector.strip().lower() in GOOGLE_INBOX_PROVIDERS
         or settings.calendar_connector.strip().lower() in GOOGLE_CALENDAR_PROVIDERS
+    )
+
+
+def zimbra_connectors_enabled(settings: Settings) -> bool:
+    return (
+        settings.inbox_connector.strip().lower() in ZIMBRA_PROVIDERS
+        or settings.calendar_connector.strip().lower() in ZIMBRA_PROVIDERS
+        or settings.tasks_connector.strip().lower() in ZIMBRA_PROVIDERS
     )
 
 
@@ -115,6 +124,7 @@ def write_secret_file(path_value: Optional[str], values: dict[str, str]) -> None
 def hydrate_provider_settings(settings: Settings) -> Settings:
     google_secret_values = load_secret_file(settings.google_secrets_path)
     graph_secret_values = load_secret_file(settings.microsoft_graph_secrets_path)
+    zimbra_secret_values = load_secret_file(settings.zimbra_secrets_path)
     updates: dict[str, Any] = {}
 
     secret_to_field = {
@@ -127,8 +137,12 @@ def hydrate_provider_settings(settings: Settings) -> Settings:
         "OUTLOOK_CLIENT_SECRET": "outlook_client_secret",
         "MICROSOFT_GRAPH_ACCESS_TOKEN": "microsoft_graph_access_token",
         "MICROSOFT_GRAPH_REFRESH_TOKEN": "microsoft_graph_refresh_token",
+        "ZIMBRA_BASE_URL": "zimbra_base_url",
+        "ZIMBRA_ACCESS_TOKEN": "zimbra_access_token",
+        "ZIMBRA_USERNAME": "zimbra_username",
+        "ZIMBRA_PASSWORD": "zimbra_password",
     }
-    merged = {**google_secret_values, **graph_secret_values}
+    merged = {**google_secret_values, **graph_secret_values, **zimbra_secret_values}
     for env_key, field_name in secret_to_field.items():
         if getattr(settings, field_name) in (None, "") and env_key in merged:
             updates[field_name] = merged[env_key]
@@ -160,6 +174,13 @@ def persist_provider_tokens(
             values["MICROSOFT_GRAPH_REFRESH_TOKEN"] = str(token_payload["refresh_token"])
             os.environ["MICROSOFT_GRAPH_REFRESH_TOKEN"] = values["MICROSOFT_GRAPH_REFRESH_TOKEN"]
         write_secret_file(settings.microsoft_graph_secrets_path, values)
+    elif provider_id == "zimbra":
+        for key in ("base_url", "access_token", "username", "password"):
+            if token_payload.get(key):
+                env_key = f"ZIMBRA_{key.upper()}"
+                values[env_key] = str(token_payload[key])
+                os.environ[env_key] = values[env_key]
+        write_secret_file(settings.zimbra_secrets_path, values)
     else:
         raise ProviderAuthError(f"Unsupported provider_id: {provider_id}")
 
@@ -256,10 +277,23 @@ def describe_provider_bootstrap(settings: Settings) -> ConnectorBootstrapStatusR
 
     graph_inbox_selected = resolved.inbox_connector.strip().lower() in OUTLOOK_PROVIDERS
     graph_calendar_selected = resolved.calendar_connector.strip().lower() in OUTLOOK_PROVIDERS
-    graph_selected = graph_inbox_selected or graph_calendar_selected
+    graph_tasks_selected = False
+    graph_selected = graph_inbox_selected or graph_calendar_selected or graph_tasks_selected
     graph_ready = bool(resolved.microsoft_graph_access_token or resolved.microsoft_graph_refresh_token)
     graph_refresh_supported = bool(
         resolved.outlook_tenant_id and resolved.outlook_client_id and resolved.microsoft_graph_refresh_token
+    )
+
+    zimbra_inbox_selected = resolved.inbox_connector.strip().lower() in ZIMBRA_PROVIDERS
+    zimbra_calendar_selected = resolved.calendar_connector.strip().lower() in ZIMBRA_PROVIDERS
+    zimbra_tasks_selected = resolved.tasks_connector.strip().lower() in ZIMBRA_PROVIDERS
+    zimbra_selected = zimbra_inbox_selected or zimbra_calendar_selected or zimbra_tasks_selected
+    zimbra_ready = bool(
+        resolved.zimbra_base_url
+        and (
+            resolved.zimbra_access_token
+            or (resolved.zimbra_username and resolved.zimbra_password)
+        )
     )
 
     providers = [
@@ -267,10 +301,14 @@ def describe_provider_bootstrap(settings: Settings) -> ConnectorBootstrapStatusR
             provider_id="google",
             inbox_selected=google_inbox_selected,
             calendar_selected=google_calendar_selected,
+            tasks_selected=False,
             access_token_present=bool(resolved.google_access_token),
             refresh_token_present=bool(resolved.google_refresh_token),
             client_id_present=bool(resolved.google_client_id),
             client_secret_present=bool(resolved.google_client_secret),
+            base_url_present=False,
+            username_present=False,
+            password_present=False,
             secret_store_path=resolved.google_secrets_path,
             refresh_supported=google_refresh_supported,
             status=(
@@ -294,10 +332,14 @@ def describe_provider_bootstrap(settings: Settings) -> ConnectorBootstrapStatusR
             provider_id="microsoft_graph",
             inbox_selected=graph_inbox_selected,
             calendar_selected=graph_calendar_selected,
+            tasks_selected=graph_tasks_selected,
             access_token_present=bool(resolved.microsoft_graph_access_token),
             refresh_token_present=bool(resolved.microsoft_graph_refresh_token),
             client_id_present=bool(resolved.outlook_client_id),
             client_secret_present=bool(resolved.outlook_client_secret),
+            base_url_present=False,
+            username_present=False,
+            password_present=False,
             secret_store_path=resolved.microsoft_graph_secrets_path,
             refresh_supported=graph_refresh_supported,
             status=(
@@ -315,6 +357,37 @@ def describe_provider_bootstrap(settings: Settings) -> ConnectorBootstrapStatusR
                 else "Microsoft Graph connectors are selected but need bootstrap credentials."
                 if graph_selected
                 else "Microsoft Graph connector support is available but not selected."
+            ),
+        ),
+        ProviderBootstrapStatus(
+            provider_id="zimbra",
+            inbox_selected=zimbra_inbox_selected,
+            calendar_selected=zimbra_calendar_selected,
+            tasks_selected=zimbra_tasks_selected,
+            access_token_present=bool(resolved.zimbra_access_token),
+            refresh_token_present=False,
+            client_id_present=False,
+            client_secret_present=False,
+            base_url_present=bool(resolved.zimbra_base_url),
+            username_present=bool(resolved.zimbra_username),
+            password_present=bool(resolved.zimbra_password),
+            secret_store_path=resolved.zimbra_secrets_path,
+            refresh_supported=False,
+            status=(
+                "ready"
+                if zimbra_selected and zimbra_ready
+                else "configured"
+                if zimbra_ready
+                else "degraded"
+                if zimbra_selected
+                else "disabled"
+            ),
+            detail=(
+                "Zimbra connectors are selected and credentialed."
+                if zimbra_selected and zimbra_ready
+                else "Zimbra connectors are selected but need base URL and credentials."
+                if zimbra_selected
+                else "Zimbra connector support is available but not selected."
             ),
         ),
     ]

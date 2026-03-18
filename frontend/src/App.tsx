@@ -77,8 +77,8 @@ const VIEW_GROUPS: Array<{
     views: [
       {
         id: "inbox-calendar",
-        label: "Inbox + Calendar",
-        description: "Read live Outlook context and launch reply workflows from real messages.",
+        label: "Inbox + Calendar + Tasks",
+        description: "Read live provider context and launch reply workflows from real messages.",
         icon: Inbox,
       },
       {

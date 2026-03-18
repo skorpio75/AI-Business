@@ -2,7 +2,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from app.models.connectors import CalendarEvent, ConnectorHealth, InboxMessage
+from app.models.connectors import CalendarEvent, ConnectorHealth, InboxMessage, TodoTask
 from app.services.personal_assistant_context import PersonalAssistantContextService
 
 
@@ -58,16 +58,35 @@ class FailingInboxConnector:
         raise RuntimeError("token expired")
 
 
+class RecordingTaskConnector:
+    connector_id = "recording-tasks"
+
+    def healthcheck(self, list_id: str) -> ConnectorHealth:
+        return ConnectorHealth(connector_id=self.connector_id, status="ok")
+
+    def list_tasks(self, *, list_id: str, since=None, limit: int = 50, include_completed: bool = False):
+        return [
+            TodoTask(
+                task_id="t1",
+                list_id=list_id,
+                title="Draft follow-up",
+                due_at=datetime(2026, 3, 11, 12, 0, tzinfo=timezone.utc),
+            )
+        ]
+
+
 class PersonalAssistantContextTests(unittest.TestCase):
     def test_build_context_uses_inbox_lookback_window(self) -> None:
         inbox = RecordingInboxConnector()
         calendar = RecordingCalendarConnector()
-        service = PersonalAssistantContextService(inbox_connector=inbox, calendar_connector=calendar)
+        tasks = RecordingTaskConnector()
+        service = PersonalAssistantContextService(inbox_connector=inbox, calendar_connector=calendar, task_connector=tasks)
         start = datetime(2026, 3, 11, 9, 0, tzinfo=timezone.utc)
 
         context = service.build_context(
             account_id="me",
             calendar_id="primary",
+            task_list_id="Tasks",
             window_start=start,
             window_hours=12,
             inbox_lookback_hours=24,
@@ -76,6 +95,7 @@ class PersonalAssistantContextTests(unittest.TestCase):
         self.assertEqual(inbox.since, start - timedelta(hours=24))
         self.assertEqual(len(context.inbox_messages), 1)
         self.assertEqual(len(context.calendar_events), 1)
+        self.assertEqual(len(context.todo_tasks), 1)
         self.assertIsNotNone(context.inbox_health)
         self.assertEqual(context.inbox_health.status, "ok")
 
@@ -83,9 +103,10 @@ class PersonalAssistantContextTests(unittest.TestCase):
         service = PersonalAssistantContextService(
             inbox_connector=FailingInboxConnector(),
             calendar_connector=RecordingCalendarConnector(),
+            task_connector=RecordingTaskConnector(),
         )
 
-        context = service.build_context(account_id="me", calendar_id="primary")
+        context = service.build_context(account_id="me", calendar_id="primary", task_list_id="Tasks")
 
         self.assertEqual(context.inbox_messages, [])
         self.assertIsNotNone(context.inbox_health)

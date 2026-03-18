@@ -177,6 +177,7 @@ def track_b_runtime_paths(root: Path, tenant_id: str) -> dict[str, Path]:
         "vector_dir": data_root / "vector",
         "google_secret_path": secret_root / "google-oauth.json",
         "microsoft_secret_path": secret_root / "microsoft-graph.json",
+        "zimbra_secret_path": secret_root / "zimbra.json",
     }
 
 
@@ -197,6 +198,7 @@ def track_b_settings_kwargs(
         "client_prompt_override_dir": str(paths["prompt_root"]),
         "google_secrets_path": str(paths["google_secret_path"]),
         "microsoft_graph_secrets_path": str(paths["microsoft_secret_path"]),
+        "zimbra_secrets_path": str(paths["zimbra_secret_path"]),
     }
     settings_kwargs.update(overrides)
     return settings_kwargs

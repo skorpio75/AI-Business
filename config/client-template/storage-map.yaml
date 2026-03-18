@@ -11,6 +11,7 @@ storage:
   secrets:
     google_oauth: secrets/client-template/google-oauth.json
     microsoft_graph: secrets/client-template/microsoft-graph.json
+    zimbra: secrets/client-template/zimbra.json
   notes:
     - Template-only path map for the first Track B deployment pack.
     - Runtime enforcement of isolated storage and credentials now uses tenant-scoped settings validation and runtime directory creation.

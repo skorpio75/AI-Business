@@ -10,6 +10,8 @@ MessageDirection = Literal["inbound", "outbound"]
 ConnectorStatus = Literal["ok", "degraded", "error"]
 EventResponseStatus = Literal["accepted", "tentative", "declined", "needs_action"]
 ProviderBootstrapState = Literal["disabled", "degraded", "configured", "ready"]
+TaskStatus = Literal["not_started", "in_progress", "completed", "deferred", "waiting"]
+TaskPriority = Literal["low", "normal", "high"]
 
 
 class ConnectorHealth(BaseModel):
@@ -62,25 +64,51 @@ class CalendarSyncCursor(BaseModel):
     synced_at: Optional[datetime] = None
 
 
+class TodoTask(BaseModel):
+    task_id: str
+    list_id: str
+    title: str
+    body_text: Optional[str] = None
+    due_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    status: TaskStatus = "not_started"
+    priority: TaskPriority = "normal"
+    web_link: Optional[str] = None
+    metadata: dict[str, str] = Field(default_factory=dict)
+
+
+class TaskSyncCursor(BaseModel):
+    list_id: str
+    cursor: Optional[str] = None
+    synced_at: Optional[datetime] = None
+
+
 class PersonalAssistantContext(BaseModel):
     account_id: str
     calendar_id: str
+    task_list_id: str
     window_start: datetime
     window_end: datetime
     inbox_messages: list[InboxMessage] = Field(default_factory=list)
     calendar_events: list[CalendarEvent] = Field(default_factory=list)
+    todo_tasks: list[TodoTask] = Field(default_factory=list)
     inbox_health: Optional[ConnectorHealth] = None
     calendar_health: Optional[ConnectorHealth] = None
+    tasks_health: Optional[ConnectorHealth] = None
 
 
 class ProviderBootstrapStatus(BaseModel):
     provider_id: str
     inbox_selected: bool = False
     calendar_selected: bool = False
+    tasks_selected: bool = False
     access_token_present: bool = False
     refresh_token_present: bool = False
     client_id_present: bool = False
     client_secret_present: bool = False
+    base_url_present: bool = False
+    username_present: bool = False
+    password_present: bool = False
     secret_store_path: Optional[str] = None
     refresh_supported: bool = False
     status: ProviderBootstrapState = "disabled"

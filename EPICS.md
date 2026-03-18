@@ -90,7 +90,7 @@ The internal business can run key workflows with one human approver.
 - knowledge workflow works
 - proposal workflow produces drafts
 - approval UI is usable
-- provider-backed inbox/calendar context is visible in Mission Control
+- provider-backed inbox/calendar/task context is visible in Mission Control, including Zimbra read support
 - approved Outlook replies can execute through Microsoft Graph after approval
 
 ## Epic 6 - Track B Client Template MVP

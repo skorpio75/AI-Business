@@ -76,6 +76,7 @@ class SampleDataTests(unittest.TestCase):
         self.assertEqual(settings_kwargs["tenant_id"], "acme")
         self.assertEqual(settings_kwargs["runtime_env_file"], str(paths["env_path"]))
         self.assertEqual(settings_kwargs["microsoft_graph_secrets_path"], str(paths["microsoft_secret_path"]))
+        self.assertEqual(settings_kwargs["zimbra_secrets_path"], str(paths["zimbra_secret_path"]))
 
 
 if __name__ == "__main__":

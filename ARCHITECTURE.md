@@ -52,7 +52,7 @@ Infrastructure
 - consulting-oriented specialist analysis outputs that frame the active mission and adjacent account-growth opportunities
 - LLM-backed specialist reasoning through the shared prompt/model layer, with deterministic fallback and schema guardrails
 - operator-facing agent views should expose governed operating-model metadata, including whether a surface is direct `Ollama`, governed `LiteLLM`/`ModelGateway`, or descriptive/tool-first
-- personal assistant operator views are planned to unify inbox, calendar, and Microsoft To Do context under one provider identity, with recommendation-to-task promotion remaining approval-bound before write-back
+- personal assistant operator views are planned to unify inbox, calendar, and task context under one provider identity, with recommendation-to-task promotion remaining approval-bound before write-back
 
 ### Workflows
 - LangGraph orchestration
@@ -128,7 +128,7 @@ Infrastructure
 ## 5. Current Track A Delivery State
 - Mission Control runs as a React operator console with a `shadcn/ui` + Tailwind component foundation in `frontend/`.
 - Mission Control groups navigation by operating task and constrains detail panes so operator views remain readable across desktop and tablet layouts.
-- Provider-backed Gmail, Google Calendar, and Microsoft Graph read connectors are available for live inbox/calendar context.
+- Provider-backed Gmail, Google Calendar, Microsoft Graph, and Zimbra read connectors are available for live inbox/calendar context, and Zimbra also provides read-only personal-assistant task-list fetches.
 - Approved Outlook replies can execute through Microsoft Graph after approval is recorded in this platform.
 - Mission Control exposes explicit routing visibility for local model, cloud route, fallback-rule execution, and whether the local LLM was invoked.
 - Mission Control now includes CTO/CIO, finance, and Chief AI / Digital Strategy specialist panels backed by typed API summaries.
@@ -138,7 +138,7 @@ Infrastructure
 - The internal CTO/CIO and Chief AI specialist panels now also run through the shared model gateway, expose routing metadata in Mission Control, and are assembled from smaller section-level model calls that use compact line-oriented prompts and a fast local-model override to reduce local-model timeout pressure.
 - Shared model timeout control is environment-configurable through `MODEL_TIMEOUT_SECONDS` so local and cloud routing can be tuned without code edits.
 - Agent-family routing posture is now documented separately in `AGENT_LLM_ROUTING_MATRIX.md` so compact direct-Ollama, guarded local drafting, richer governed gateway reasoning, and deterministic/tool-first hybrids are planned explicitly by family rather than assumed uniformly across the catalog.
-- Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google and Microsoft connector credentials.
+- Provider bootstrap now supports Microsoft Graph device-code onboarding, Google local-loopback OAuth onboarding, refresh-token lifecycle handling, and optional JSON secret-store paths for Google, Microsoft, and Zimbra connector credentials.
 - Track B now has an initial deployment template pack in `config/client-template/` with a starter client config, client-scoped env template, compose overlay, and canonical storage/secret path map for cloned client instances.
 - That Track B client config is now expanded into a fuller contract that captures tenant identity, approval/governance defaults, deployment metadata, storage and secret paths, connector defaults, model-routing posture, and initial workflow/service packaging for later bootstrap automation.
 - `scripts/seed_config.py` now materializes tenant-specific client contracts and runtime env files under `config/clients/` and prepares the tenant-scoped storage, prompt, and secret roots expected by the runtime.

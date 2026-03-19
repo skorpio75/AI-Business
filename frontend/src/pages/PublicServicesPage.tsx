@@ -1,6 +1,6 @@
 /* Copyright (c) Dario Pizzolante */
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight, BriefcaseBusiness, ExternalLink, Sparkles, Workflow } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, ExternalLink, Layers3, Sparkles, Workflow } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import { BOOKING_PATH, SERVICE_DEFINITIONS, type ServiceSlug } from "@/lib/publicSite";
@@ -8,6 +8,7 @@ import { BOOKING_PATH, SERVICE_DEFINITIONS, type ServiceSlug } from "@/lib/publi
 const SERVICE_ICONS: Record<ServiceSlug, LucideIcon> = {
   "ai-strategy-roadmapping": Sparkles,
   "automation-digital-operations": Workflow,
+  "delivery-pmo-project-service-management": Layers3,
   "fractional-cio/cdo-transformation-advisory": BriefcaseBusiness,
 };
 
@@ -23,7 +24,7 @@ export function PublicServicesPage() {
           <h1>Focused support across strategy, automation, and technology leadership.</h1>
           <p className="page-lead">
             Explore the core services designed to help organizations modernize, improve operations,
-            and move toward practical AI adoption with clarity.
+            strengthen delivery governance, and move toward practical AI adoption with clarity.
           </p>
         </div>
         <div className="page-hero__panel">
@@ -37,6 +38,14 @@ export function PublicServicesPage() {
       </section>
 
       <section className="page-section">
+        <div className="site-section__intro">
+          <p className="site-kicker">Delivery support</p>
+          <h2>PMO, project management, and service management where execution needs more structure.</h2>
+          <p>
+            Alongside strategy and automation work, delivery support is available for organizations
+            that need stronger governance, coordination, reporting rhythm, and operational follow-through.
+          </p>
+        </div>
         <div className="service-grid">
           {SERVICE_DEFINITIONS.map((service) => {
             const Icon = SERVICE_ICONS[service.slug];

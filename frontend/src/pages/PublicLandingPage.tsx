@@ -39,6 +39,7 @@ type ProcessStep = {
 const SERVICE_ICONS: Record<string, LucideIcon> = {
   "AI Strategy": Sparkles,
   Automation: Workflow,
+  Delivery: Layers3,
   "Fractional CIO/CDO": BriefcaseBusiness,
 };
 

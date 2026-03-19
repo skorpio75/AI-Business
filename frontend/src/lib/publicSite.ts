@@ -2,6 +2,7 @@
 export type ServiceSlug =
   | "ai-strategy-roadmapping"
   | "automation-digital-operations"
+  | "delivery-pmo-project-service-management"
   | "fractional-cio/cdo-transformation-advisory";
 
 export const ABOUT_PATH = "/about";
@@ -242,6 +243,31 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
       "Organizations with too much manual coordination or fragmented processes",
       "Teams looking to digitize internal operations without overcomplicating delivery",
       "Businesses that want practical wins before larger transformation programmes",
+    ],
+  },
+  {
+    slug: "delivery-pmo-project-service-management",
+    title: "Delivery governance, PMO, and service management",
+    shortTitle: "Delivery",
+    tagline: "Add structure, visibility, and follow-through to delivery-critical initiatives.",
+    summary:
+      "Support across PMO, project management, and service management to stabilize delivery, improve coordination, and keep programmes moving with clearer control.",
+    intro:
+      "This service is designed for organizations that need stronger delivery discipline around active projects, operational services, or transformation workstreams.",
+    outcomes: [
+      "Clearer governance, reporting cadence, and delivery visibility",
+      "Better coordination across stakeholders, vendors, and internal teams",
+      "Stronger service management and follow-through on operational priorities",
+    ],
+    engagements: [
+      "PMO support, delivery governance, and progress tracking",
+      "Project management structure, coordination, and checkpoint management",
+      "Service management improvement across operations, support, and accountability",
+    ],
+    fit: [
+      "Organizations with complex delivery efforts that need more control and structure",
+      "Teams managing multiple stakeholders, dependencies, or service issues",
+      "Leaders who want execution discipline without adding unnecessary bureaucracy",
     ],
   },
   {

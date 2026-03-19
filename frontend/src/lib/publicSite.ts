@@ -47,14 +47,14 @@ export const PUBLIC_NAV_LINKS = [
 ] as const;
 
 export const ABOUT_SUMMARY = [
-  "I bring more than two decades of experience across IT leadership, digital transformation, and operational management in international environments. My work has spanned energy, consulting, legal-tech, and public-sector programmes.",
+  "I bring more than two decades of experience across IT leadership, digital transformation, and operational management in international environments. My work has spanned energy, technology consulting, legal-tech, and public-sector programmes.",
   "The common thread is helping organizations modernize, structure delivery, improve governance, and adopt technology in ways that make day-to-day operations stronger.",
 ];
 
 export const EXPERIENCE_PILLS = [
   "20+ years across IT leadership and delivery",
   "Energy, technology consulting, legal-tech, finance, and public sector",
-  "Executive leadership with hands-on programme delivery",
+  "Executive leadership with hands-on technology and delivery experience",
   "Modernization, governance, and practical AI adoption",
 ];
 

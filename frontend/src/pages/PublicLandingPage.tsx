@@ -8,8 +8,13 @@ import {
   CircuitBoard,
   ExternalLink,
   Layers3,
+  PenTool,
+  RefreshCcw,
+  Rocket,
+  Search,
   ShieldCheck,
   Sparkles,
+  TrendingUp,
   Workflow,
 } from "lucide-react";
 
@@ -33,6 +38,7 @@ type ServiceCard = {
 type ProcessStep = {
   title: string;
   summary: string;
+  icon: LucideIcon;
   accent: "amber" | "blue" | "green" | "violet";
 };
 
@@ -54,21 +60,25 @@ const PROCESS: ProcessStep[] = [
   {
     title: "Assess",
     summary: "Clarify the business challenge, current friction points, and the real transformation opportunity.",
+    icon: Search,
     accent: "amber",
   },
   {
     title: "Shape",
     summary: "Define the right mix of strategy, governance, automation, and delivery support for your context.",
+    icon: PenTool,
     accent: "blue",
   },
   {
     title: "Deliver",
     summary: "Move from concept to implementation with practical execution, not slideware or over-designed plans.",
+    icon: Rocket,
     accent: "green",
   },
   {
     title: "Improve",
     summary: "Embed continuous improvement so the business gains stay visible, measurable, and sustainable.",
+    icon: RefreshCcw,
     accent: "violet",
   },
 ];
@@ -160,7 +170,7 @@ export function PublicLandingPage() {
                 <span>Modernization programmes, digitization, and operational structuring</span>
               </div>
               <div>
-                <strong>AI enablement</strong>
+                <strong>Technology & AI enablement</strong>
                 <span>Applied AI, process automation, and pragmatic business adoption</span>
               </div>
             </div>
@@ -245,19 +255,45 @@ export function PublicLandingPage() {
       <section className="site-section site-section--process" id="process">
         <div className="site-section__intro">
           <p className="site-kicker">Process</p>
-          <h2>A clear path from challenge to measurable improvement.</h2>
-          <p>
-            The work is designed to be fast, grounded, and outcome-oriented so decisions move
-            forward without unnecessary complexity.
-          </p>
+          <div className="process-intro-heading">
+            <div className="process-intro-copy">
+              <h2>A clear path from challenge to measurable improvement.</h2>
+              <p>
+                The work is designed to be fast, grounded, and outcome-oriented so decisions move
+                forward without unnecessary complexity.
+              </p>
+            </div>
+            <span className="process-intro-mark" aria-hidden="true">
+              <TrendingUp className="size-12" />
+            </span>
+          </div>
         </div>
         <div className="process-grid">
-          {PROCESS.map((step) => (
+          {PROCESS.map((step, index) => {
+            const Icon = step.icon;
+
+            return (
             <article key={step.title} className={`process-card process-card--${step.accent}`}>
+              <div className="process-card__top">
+                <span className={`process-card__icon process-card__icon--${step.accent}`}>
+                  <Icon className="size-5" />
+                </span>
+                {index < PROCESS.length - 1 ? (
+                  <span className="process-card__flow" aria-hidden="true">
+                    <ArrowRight className="size-4" />
+                  </span>
+                ) : (
+                  <span className="process-card__flow" aria-hidden="true">
+                    <RefreshCcw className="size-4" />
+                  </span>
+                )}
+              </div>
               <h3>{step.title}</h3>
               <p>{step.summary}</p>
+              <div className={`process-card__track process-card__track--${step.accent}`} aria-hidden="true" />
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 

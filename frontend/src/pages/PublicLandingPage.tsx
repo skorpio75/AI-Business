@@ -94,7 +94,7 @@ export function PublicLandingPage() {
           </div>
           <div className="site-hero__actions">
             <a className="site-button site-button--primary" href={BOOKING_PATH}>
-              Book a strategy call
+              Let's talk
               <ArrowRight className="size-4" />
             </a>
             <a className="site-button site-button--secondary" href="/services">

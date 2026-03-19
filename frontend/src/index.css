@@ -708,7 +708,7 @@
   }
 
   .site-hero {
-    @apply grid items-center gap-10 py-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)];
+    @apply grid items-start gap-10 py-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)];
   }
 
   .page-hero {

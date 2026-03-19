@@ -52,7 +52,7 @@ export const ABOUT_SUMMARY = [
 
 export const EXPERIENCE_PILLS = [
   "20+ years across IT leadership and delivery",
-  "Energy, consulting, legal-tech, and public sector",
+  "Energy, technology consulting, legal-tech, finance, and public sector",
   "Executive leadership with hands-on programme delivery",
   "Modernization, governance, and practical AI adoption",
 ];
@@ -76,7 +76,7 @@ export const ABOUT_FACTS = [
   "IT strategy, governance, and modernization roadmaps",
   "Digital transformation with practical execution support",
   "Leadership across teams, budgets, and vendor ecosystems",
-  "Applied AI and automation positioned around business value",
+  "Applied AI and automation positioned around governance and business value",
 ];
 
 export const ACADEMIC_EDUCATION: AcademicEducationItem[] = [

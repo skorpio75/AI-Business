@@ -143,7 +143,7 @@ export function PublicLandingPage() {
               </li>
               <li>
                 <BriefcaseBusiness className="size-4" />
-                PMO, project management, and service management as core competence
+                PMO, project management, and service management support for execution-focused delivery
               </li>
             </ul>
           </article>

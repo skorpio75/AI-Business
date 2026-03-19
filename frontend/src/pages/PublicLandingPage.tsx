@@ -107,12 +107,12 @@ export function PublicLandingPage() {
               <span>years of experience</span>
             </article>
             <article>
-              <strong>4</strong>
-              <span>core sectors served</span>
+              <strong>Ex-Microsoft</strong>
+              <span>big-tech foundation and enterprise perspective</span>
             </article>
             <article>
-              <strong>25</strong>
-              <span>member states coordinated in one programme</span>
+              <strong>International</strong>
+              <span>large programmes, multi-stakeholder delivery, and coordination</span>
             </article>
           </div>
         </div>

@@ -888,9 +888,12 @@
   }
 
   .site-stat-strip strong {
-    @apply block text-[1.8rem];
+    @apply block text-[1.5rem];
     font-family: var(--font-display);
     color: #ffffff;
+    line-height: 1.05;
+    word-break: keep-all;
+    overflow-wrap: normal;
   }
 
   .site-stat-strip span {

@@ -141,6 +141,10 @@ export function PublicLandingPage() {
                 <Layers3 className="size-4" />
                 Delivery structure, modernization, and operating model support
               </li>
+              <li>
+                <BriefcaseBusiness className="size-4" />
+                PMO, project management, and service management as core competence
+              </li>
             </ul>
           </article>
 
@@ -164,7 +168,7 @@ export function PublicLandingPage() {
         </div>
       </section>
 
-      <section className="site-section" id="services">
+      <section className="site-section site-section--services" id="services">
         <div className="site-section__intro">
           <p className="site-kicker">Services</p>
           <h2>Senior support for organizations that need progress, not noise.</h2>
@@ -194,7 +198,7 @@ export function PublicLandingPage() {
         </div>
       </section>
 
-      <section className="site-section site-section--split" id="about">
+      <section className="site-section site-section--split site-section--about" id="about">
         <div className="site-section__intro">
           <p className="site-kicker">About</p>
           <h2>Experienced leadership with a practical delivery mindset.</h2>
@@ -238,7 +242,7 @@ export function PublicLandingPage() {
         </div>
       </section>
 
-      <section className="site-section" id="process">
+      <section className="site-section site-section--process" id="process">
         <div className="site-section__intro">
           <p className="site-kicker">Process</p>
           <h2>A clear path from challenge to measurable improvement.</h2>
@@ -257,7 +261,7 @@ export function PublicLandingPage() {
         </div>
       </section>
 
-      <section className="site-section">
+      <section className="site-section site-section--credibility">
         <div className="credibility-band">
           <article>
             <strong>Executive perspective</strong>

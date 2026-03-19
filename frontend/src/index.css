@@ -984,6 +984,42 @@
     @apply grid gap-6 py-4;
   }
 
+  .site-section--services,
+  .site-section--about,
+  .site-section--process,
+  .site-section--credibility,
+  .site-section--booking {
+    padding: 2rem;
+    border: 1px solid rgba(216, 143, 86, 0.1);
+    border-radius: 1.1rem;
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(14px);
+  }
+
+  .site-section--services {
+    background:
+      radial-gradient(circle at top left, rgba(217, 116, 50, 0.12), transparent 34%),
+      linear-gradient(180deg, rgba(28, 31, 35, 0.92), rgba(24, 27, 31, 0.9));
+  }
+
+  .site-section--about {
+    background:
+      radial-gradient(circle at top right, rgba(194, 125, 78, 0.12), transparent 32%),
+      linear-gradient(180deg, rgba(25, 29, 34, 0.94), rgba(21, 24, 28, 0.9));
+  }
+
+  .site-section--process {
+    background:
+      radial-gradient(circle at 18% 22%, rgba(210, 148, 86, 0.1), transparent 30%),
+      linear-gradient(180deg, rgba(30, 33, 37, 0.94), rgba(24, 27, 31, 0.9));
+  }
+
+  .site-section--credibility {
+    background:
+      radial-gradient(circle at 80% 20%, rgba(217, 116, 50, 0.09), transparent 28%),
+      linear-gradient(180deg, rgba(27, 30, 34, 0.94), rgba(23, 26, 29, 0.9));
+  }
+
   .site-section--split {
     @apply gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.9fr)];
   }
@@ -1202,7 +1238,10 @@
   }
 
   .site-section--booking {
-    padding-bottom: 0;
+    background:
+      radial-gradient(circle at top left, rgba(236, 145, 79, 0.16), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(217, 116, 50, 0.2), transparent 36%),
+      linear-gradient(180deg, rgba(40, 44, 49, 0.96), rgba(30, 33, 38, 0.93));
   }
 
   .booking-card {

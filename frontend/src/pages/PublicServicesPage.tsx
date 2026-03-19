@@ -38,14 +38,6 @@ export function PublicServicesPage() {
       </section>
 
       <section className="page-section">
-        <div className="site-section__intro">
-          <p className="site-kicker">Delivery support</p>
-          <h2>PMO, project management, and service management where execution needs more structure.</h2>
-          <p>
-            Alongside strategy and automation work, delivery support is available for organizations
-            that need stronger governance, coordination, reporting rhythm, and operational follow-through.
-          </p>
-        </div>
         <div className="service-grid">
           {SERVICE_DEFINITIONS.map((service) => {
             const Icon = SERVICE_ICONS[service.slug];

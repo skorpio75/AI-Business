@@ -1,5 +1,6 @@
 /* Copyright (c) Dario Pizzolante */
 import type { ReactNode } from "react";
+import { Linkedin } from "lucide-react";
 
 import { PUBLIC_NAV_LINKS } from "@/lib/publicSite";
 
@@ -30,7 +31,20 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
       <main className="site-main">{children}</main>
 
       <footer className="site-footer">
-        <p>Stratevia, independent advisory for AI, digital transformation, and technology leadership.</p>
+        <div className="site-footer__identity">
+          <img alt="" className="site-footer__mark" src="/stratevia-logo.png" />
+          <div className="site-footer__copy">
+            <p>© 2026 Stratevia</p>
+            <span>Independent advisory for AI, digital transformation, and technology leadership.</span>
+          </div>
+        </div>
+        <div className="site-footer__links">
+          <a href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
+            <Linkedin className="size-4" />
+            LinkedIn
+          </a>
+          <a href="mailto:dario.pizzolante@stratevia.eu">dario.pizzolante@stratevia.eu</a>
+        </div>
       </footer>
     </div>
   );

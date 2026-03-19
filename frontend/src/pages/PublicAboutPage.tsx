@@ -3,12 +3,15 @@ import { ArrowRight } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
+  ACADEMIC_EDUCATION,
   ABOUT_FACTS,
   ABOUT_SUMMARY,
   BOOKING_PATH,
   CAREER_MILESTONES,
   EXPERIENCE_PILLS,
+  LICENSES_AND_CERTIFICATIONS,
   PROGRAMME_HIGHLIGHTS,
+  VOLUNTEERING,
 } from "@/lib/publicSite";
 
 export function PublicAboutPage() {
@@ -92,6 +95,57 @@ export function PublicAboutPage() {
                   <span>{item.period}</span>
                 </div>
                 <p>{item.summary}</p>
+              </article>
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <section className="page-section page-section--service">
+        <article className="detail-card">
+          <p className="detail-card__eyebrow">Education</p>
+          <h2>Academic education</h2>
+          <div className="timeline-list">
+            {ACADEMIC_EDUCATION.map((item) => (
+              <article key={`${item.title}-${item.period}`} className="timeline-card">
+                <div className="timeline-card__top">
+                  <strong>{item.title}</strong>
+                  <span>{item.period}</span>
+                </div>
+                <p>{item.institution}</p>
+              </article>
+            ))}
+          </div>
+        </article>
+
+        <article className="detail-card">
+          <p className="detail-card__eyebrow">Credentials</p>
+          <h2>Licenses and certifications</h2>
+          <div className="timeline-list">
+            {LICENSES_AND_CERTIFICATIONS.map((item) => (
+              <article key={`${item.title}-${item.period}`} className="timeline-card">
+                <div className="timeline-card__top">
+                  <strong>{item.title}</strong>
+                  <span>{item.period}</span>
+                </div>
+                <p>{item.provider}</p>
+              </article>
+            ))}
+          </div>
+        </article>
+
+        <article className="detail-card">
+          <p className="detail-card__eyebrow">Volunteering</p>
+          <h2>Community involvement</h2>
+          <div className="timeline-list">
+            {VOLUNTEERING.map((item) => (
+              <article key={`${item.title}-${item.period}`} className="timeline-card">
+                <div className="timeline-card__top">
+                  <strong>{item.title}</strong>
+                  <span>{item.period}</span>
+                </div>
+                <p>{item.organization}</p>
+                {item.summary ? <p>{item.summary}</p> : null}
               </article>
             ))}
           </div>

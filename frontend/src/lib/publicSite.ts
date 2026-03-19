@@ -19,6 +19,25 @@ export type ServiceDefinition = {
   fit: string[];
 };
 
+export type AcademicEducationItem = {
+  title: string;
+  institution: string;
+  period: string;
+};
+
+export type CertificationItem = {
+  title: string;
+  provider: string;
+  period: string;
+};
+
+export type VolunteeringItem = {
+  title: string;
+  organization: string;
+  period: string;
+  summary?: string;
+};
+
 export const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
@@ -40,7 +59,7 @@ export const EXPERIENCE_PILLS = [
 
 export const PROGRAMME_HIGHLIGHTS = [
   {
-    org: "Societe Electrique de l'Our",
+    org: "Société Électrique de l'Our",
     summary: "Modernization roadmap, cloud transition, governance, and cost optimization.",
   },
   {
@@ -60,6 +79,65 @@ export const ABOUT_FACTS = [
   "Applied AI and automation positioned around business value",
 ];
 
+export const ACADEMIC_EDUCATION: AcademicEducationItem[] = [
+  {
+    title: "Master of Science Computer Science",
+    institution: "Oxford Brookes University",
+    period: "2003 to 2005",
+  },
+  {
+    title: "Bachelor of Science Software Engineering",
+    institution: "University of Bedfordshire",
+    period: "2002 to 2003",
+  },
+  {
+    title: "University Diploma of Technology in Business Computing",
+    institution: "Universite de Luxembourg",
+    period: "1998 to 2001",
+  },
+  {
+    title: "Master of Business Administration courses",
+    institution: "Imperial College London",
+    period: "2011 to 2012",
+  },
+];
+
+export const LICENSES_AND_CERTIFICATIONS: CertificationItem[] = [
+  {
+    title: "IBM RAG and Agentic AI",
+    provider: "Coursera",
+    period: "03/2026",
+  },
+  {
+    title: "Creating an AI Adoption Strategy for Businesses",
+    provider: "LinkedIn",
+    period: "08/2025",
+  },
+  {
+    title: "Cloud Architecture: Design Decisions",
+    provider: "LinkedIn",
+    period: "07/2025",
+  },
+  {
+    title: "Strategic Organization Design",
+    provider: "Coursera",
+    period: "08/2018",
+  },
+];
+
+export const VOLUNTEERING: VolunteeringItem[] = [
+  {
+    title: "Founding member",
+    organization: "Rotary Club Strassen-Bertrange-Mamer",
+    period: "2023 to present",
+  },
+  {
+    title: "Committee member and Chair of the Membership Committee",
+    organization: "Rotary Club Strassen-Bertrange-Mamer",
+    period: "2023 to 2025",
+  },
+];
+
 export const CAREER_MILESTONES = [
   {
     role: "Management Consulting",
@@ -74,7 +152,7 @@ export const CAREER_MILESTONES = [
       "Led the Luxembourg subsidiary, developed local operations, and expanded digitalization and AI-enabled delivery services.",
   },
   {
-    role: "Head of IT, Societe Electrique de l'Our",
+    role: "Head of IT, Société Électrique de l'Our",
     period: "2021 to 2023",
     summary:
       "Owned IT strategy and operations, modernization planning, service improvement, and major transformation initiatives.",

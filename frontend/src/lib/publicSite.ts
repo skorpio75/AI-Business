@@ -101,7 +101,7 @@ export const ACADEMIC_EDUCATION: AcademicEducationItem[] = [
     period: "1998 to 2001",
   },
   {
-    title: "Master of Business Administration courses",
+    title: "Master of Business Administration (studies/partial completion)",
     institution: "Imperial College London",
     period: "2011 to 2012",
   },

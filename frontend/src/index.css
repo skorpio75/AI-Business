@@ -1344,6 +1344,7 @@
   .page-hero__panel,
   .detail-card {
     @apply grid gap-5 rounded-[0.55rem] p-7;
+    align-content: start;
     background: rgba(26, 29, 33, 0.9);
     border: 1px solid rgba(216, 143, 86, 0.1);
     box-shadow: 0 24px 56px rgba(0, 0, 0, 0.18);
@@ -1585,6 +1586,29 @@
   .timeline-card__top span {
     @apply text-sm;
     color: rgba(236, 177, 128, 0.86);
+  }
+
+  .volunteering-brand {
+    @apply flex items-center gap-3;
+    width: fit-content;
+    text-decoration: none;
+  }
+
+  .volunteering-brand__logo {
+    display: block;
+    width: 3rem;
+    height: auto;
+    flex: 0 0 auto;
+  }
+
+  .volunteering-brand span {
+    color: #f0f2f5;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .volunteering-brand:hover span {
+    color: #ffffff;
   }
 
   .site-footer {

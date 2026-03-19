@@ -137,6 +137,15 @@ export function PublicAboutPage() {
         <article className="detail-card">
           <p className="detail-card__eyebrow">Volunteering</p>
           <h2>Community involvement</h2>
+          <a
+            className="volunteering-brand"
+            href="https://strassen-bertrange-mamer.rotary2160.org/fr/"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <img alt="Rotary logo" className="volunteering-brand__logo" src="/rotary-color.svg" />
+            <span>Strassen-Bertrange-Mamer</span>
+          </a>
           <div className="timeline-list">
             {VOLUNTEERING.map((item) => (
               <article key={`${item.title}-${item.period}`} className="timeline-card">

@@ -648,7 +648,7 @@
   }
 
   .site-header {
-    @apply flex items-center justify-between gap-6 py-6;
+    @apply flex items-start justify-between gap-6 py-4;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
@@ -660,7 +660,7 @@
 
   .site-brand__logo {
     display: block;
-    width: min(100%, 220px);
+    width: min(100%, 156px);
     height: auto;
   }
 
@@ -676,28 +676,11 @@
   }
 
   .hero-insight-card--brand {
-    gap: 1.3rem;
+    gap: 1rem;
   }
 
   .hero-insight-card--brand h2 {
-    margin-top: 0.25rem;
-  }
-
-  .hero-logo-lockup {
-    @apply overflow-hidden rounded-[0.9rem];
-    justify-self: start;
-    width: min(100%, 26rem);
-    padding: clamp(0.85rem, 1.2vw, 1rem) clamp(1rem, 1.6vw, 1.25rem);
-    border: 1px solid rgba(224, 150, 92, 0.14);
-    background: rgba(14, 16, 18, 0.72);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  }
-
-  .hero-logo-lockup__image {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
+    margin-top: 0;
   }
 
   .site-nav {
@@ -725,7 +708,7 @@
   }
 
   .site-hero {
-    @apply grid items-center gap-10 py-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)];
+    @apply grid items-center gap-10 py-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)];
   }
 
   .page-hero {
@@ -873,9 +856,10 @@
   }
 
   .site-button--secondary {
-    color: #edf0f3;
-    border: 1px solid rgba(186, 123, 70, 0.22);
-    background: rgba(138, 84, 45, 0.12);
+    color: #17110d;
+    background: #d97432;
+    border-color: #d97432;
+    box-shadow: 0 18px 34px rgba(95, 51, 20, 0.2);
   }
 
   .site-button:hover {
@@ -935,6 +919,11 @@
   }
 
   .hero-chip--soft {
+    color: rgba(240, 193, 147, 0.92);
+  }
+
+  .hero-section-label {
+    @apply m-0 text-xs font-semibold uppercase tracking-[0.16em];
     color: rgba(240, 193, 147, 0.92);
   }
 
@@ -1544,7 +1533,7 @@
     }
 
     .site-brand__logo {
-      width: min(100%, 200px);
+      width: min(100%, 148px);
     }
 
     .site-hero,
@@ -1648,11 +1637,11 @@
     }
 
     .site-hero {
-      padding-top: 1.5rem;
+      padding-top: 1rem;
     }
 
     .site-brand__logo {
-      width: min(100%, 180px);
+      width: min(100%, 140px);
     }
 
     .site-hero__actions,

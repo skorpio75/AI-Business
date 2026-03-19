@@ -39,7 +39,7 @@ type ProcessStep = {
 const SERVICE_ICONS: Record<string, LucideIcon> = {
   "AI Strategy": Sparkles,
   Automation: Workflow,
-  "Fractional CTO": BriefcaseBusiness,
+  "Fractional CIO": BriefcaseBusiness,
 };
 
 const SERVICES: ServiceCard[] = SERVICE_DEFINITIONS.map((service) => ({
@@ -122,13 +122,6 @@ export function PublicLandingPage() {
               <CircuitBoard className="size-4" />
               Stratevia advisory
             </span>
-            <div className="hero-logo-lockup">
-              <img
-                alt="Stratevia logo"
-                className="hero-logo-lockup__image"
-                src="/stratevia-logo.png"
-              />
-            </div>
             <h2>Turn complex initiatives into clear next moves.</h2>
             <p>
               From technology roadmaps to AI-enabled process improvement, the emphasis stays on
@@ -151,7 +144,7 @@ export function PublicLandingPage() {
           </article>
 
           <article className="hero-insight-card hero-insight-card--secondary">
-            <span className="hero-chip hero-chip--soft">Selected background</span>
+            <p className="hero-section-label">Selected background</p>
             <div className="hero-mini-grid">
               <div>
                 <strong>IT leadership</strong>
@@ -207,8 +200,9 @@ export function PublicLandingPage() {
           {ABOUT_SUMMARY.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
-          <a className="site-button site-button--secondary site-button--inline" href={ABOUT_PATH}>
+          <a className="site-button site-button--primary site-button--inline" href={ABOUT_PATH}>
             View full profile
+            <ArrowRight className="size-4" />
           </a>
         </div>
         <div className="experience-panel">

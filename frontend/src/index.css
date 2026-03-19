@@ -633,10 +633,10 @@
     min-height: 100vh;
     color: #f3f4f6;
     background:
-      radial-gradient(circle at top left, rgba(214, 138, 82, 0.18), transparent 24%),
-      radial-gradient(circle at 82% 10%, rgba(224, 132, 71, 0.16), transparent 20%),
-      radial-gradient(circle at 50% 100%, rgba(158, 108, 72, 0.14), transparent 30%),
-      linear-gradient(180deg, #2a2c2f 0%, #34373b 46%, #25282b 100%);
+      radial-gradient(circle at top left, rgba(232, 160, 108, 0.22), transparent 28%),
+      radial-gradient(circle at 82% 10%, rgba(238, 154, 98, 0.2), transparent 24%),
+      radial-gradient(circle at 50% 100%, rgba(190, 134, 95, 0.18), transparent 34%),
+      linear-gradient(180deg, #414449 0%, #4c5157 46%, #3a3f45 100%);
   }
 
   .site-header,

@@ -14,7 +14,6 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
-  TrendingUp,
   Workflow,
 } from "lucide-react";
 
@@ -255,18 +254,11 @@ export function PublicLandingPage() {
       <section className="site-section site-section--process" id="process">
         <div className="site-section__intro">
           <p className="site-kicker">Process</p>
-          <div className="process-intro-heading">
-            <div className="process-intro-copy">
-              <h2>A clear path from challenge to measurable improvement.</h2>
-              <p>
-                The work is designed to be fast, grounded, and outcome-oriented so decisions move
-                forward without unnecessary complexity.
-              </p>
-            </div>
-            <span className="process-intro-mark" aria-hidden="true">
-              <TrendingUp className="size-12" />
-            </span>
-          </div>
+          <h2>A clear path from challenge to measurable improvement.</h2>
+          <p>
+            The work is designed to be fast, grounded, and outcome-oriented so decisions move
+            forward without unnecessary complexity.
+          </p>
         </div>
         <div className="process-grid">
           {PROCESS.map((step, index) => {

@@ -101,7 +101,7 @@ export function PublicBookingPage() {
           <div className="booking-panel__head">
             <strong>Request a conversation</strong>
             <p>
-              Share a bit of context and your request will go directly into Stratevia&apos;s private
+              Share a bit of context and your request will go directly into Stratevia&apos;s
               intake workflow.
             </p>
           </div>
@@ -212,10 +212,7 @@ export function PublicBookingPage() {
               </a>
             </div>
           </form>
-          <p className={`booking-note ${status === "success" ? "booking-note--success" : ""}`}>
-            {responseMessage ||
-              "This form routes into the private platform so visitors see only the website, not the internal AI workspace."}
-          </p>
+
         </div>
       </section>
 

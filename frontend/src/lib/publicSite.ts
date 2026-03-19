@@ -179,7 +179,7 @@ export const BOOKING_POINTS = [
 export const BOOKING_OPTIONS = [
   {
     title: "Strategy conversation",
-    summary: "A first discussion for leaders exploring transformation priorities, technology direction, or AI opportunities.",
+    summary: "A first discussion for exploring transformation priorities, technology direction, or AI opportunities.",
   },
   {
     title: "Operational improvement discussion",
@@ -187,7 +187,7 @@ export const BOOKING_OPTIONS = [
   },
   {
     title: "Advisory fit check",
-    summary: "A straightforward conversation to decide whether strategic advisory or fractional leadership support is the right fit.",
+    summary: "A straightforward conversation to decide whether strategic advisory or fractional leadership or delivery support is the right fit.",
   },
 ];
 

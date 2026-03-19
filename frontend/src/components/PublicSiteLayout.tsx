@@ -1,6 +1,6 @@
 /* Copyright (c) Dario Pizzolante */
 import type { ReactNode } from "react";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 
 import { PUBLIC_NAV_LINKS } from "@/lib/publicSite";
 
@@ -41,9 +41,10 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
         <div className="site-footer__links">
           <a href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
             <Linkedin className="size-4" />
-            LinkedIn
           </a>
-          <a href="mailto:dario.pizzolante@stratevia.eu">dario.pizzolante@stratevia.eu</a>
+          <a href="mailto:dario.pizzolante@stratevia.eu">
+            <Mail className="size-4" />
+          </a>
         </div>
       </footer>
     </div>

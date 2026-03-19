@@ -68,6 +68,10 @@ export const PROGRAMME_HIGHLIGHTS = [
     summary: "IT operating model and programme coordination across 25 member states.",
   },
   {
+    org: "Microsoft",
+    summary: "Executive technology consulting across governance, service management, and operational leadership.",
+  },
+  {
     org: "Net Service Lux",
     summary: "Digitalization growth, local leadership, and AI-enabled solution expansion.",
   },

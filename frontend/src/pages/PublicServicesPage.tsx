@@ -29,7 +29,10 @@ export function PublicServicesPage() {
         </div>
         <div className="page-hero__panel">
           <strong>How I work</strong>
-          <p>Senior advisory, practical framing, clear next steps, and delivery-minded guidance.</p>
+          <p>
+            Senior advisory with a rare blend of strategy, technology, and delivery expertise,
+            combined with practical framing and clear next steps.
+          </p>
           <a className="site-button site-button--primary" href={BOOKING_PATH}>
             Start a conversation
             <ArrowRight className="size-4" />

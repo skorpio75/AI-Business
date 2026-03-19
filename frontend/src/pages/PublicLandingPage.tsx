@@ -89,8 +89,8 @@ export function PublicLandingPage() {
             creates real business value.
           </p>
           <div className="hero-inline-note">
-            Senior support across strategy, transformation, and AI adoption with a practical
-            delivery mindset.
+            Senior support with a rare blend of strategy, technology, and delivery expertise
+            across transformation and AI adoption.
           </div>
           <div className="site-hero__actions">
             <a className="site-button site-button--primary" href={BOOKING_PATH}>

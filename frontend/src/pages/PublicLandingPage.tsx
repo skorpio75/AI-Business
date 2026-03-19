@@ -39,7 +39,7 @@ type ProcessStep = {
 const SERVICE_ICONS: Record<string, LucideIcon> = {
   "AI Strategy": Sparkles,
   Automation: Workflow,
-  "Fractional CIO": BriefcaseBusiness,
+  "Fractional CIO/CDO": BriefcaseBusiness,
 };
 
 const SERVICES: ServiceCard[] = SERVICE_DEFINITIONS.map((service) => ({

@@ -2,7 +2,7 @@
 export type ServiceSlug =
   | "ai-strategy-roadmapping"
   | "automation-digital-operations"
-  | "fractional-cio-transformation-advisory";
+  | "fractional-cio/cdo-transformation-advisory";
 
 export const ABOUT_PATH = "/about";
 export const BOOKING_PATH = "/booking";
@@ -245,9 +245,9 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
     ],
   },
   {
-    slug: "fractional-cio-transformation-advisory",
-    title: "Fractional CIO and transformation advisory",
-    shortTitle: "Fractional CIO",
+    slug: "fractional-cio/cdo-transformation-advisory",
+    title: "Fractional CIO/CDO and transformation advisory",
+    shortTitle: "Fractional CIO/CDO",
     tagline: "Bring senior technology leadership into critical decisions and delivery moments.",
     summary:
       "Get experienced support across technology direction, modernization choices, delivery structure, vendor coordination, and executive-level decision making.",

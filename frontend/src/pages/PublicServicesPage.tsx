@@ -8,7 +8,7 @@ import { BOOKING_PATH, SERVICE_DEFINITIONS, type ServiceSlug } from "@/lib/publi
 const SERVICE_ICONS: Record<ServiceSlug, LucideIcon> = {
   "ai-strategy-roadmapping": Sparkles,
   "automation-digital-operations": Workflow,
-  "fractional-cio-transformation-advisory": BriefcaseBusiness,
+  "fractional-cio/cdo-transformation-advisory": BriefcaseBusiness,
 };
 
 export function PublicServicesPage() {

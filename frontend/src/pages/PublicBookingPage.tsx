@@ -78,19 +78,18 @@ export function PublicBookingPage() {
         kicker="Contact"
         title="Start with a focused conversation."
         lead="A first discussion to understand your context, priorities, and whether Stratevia is the right fit."
-        panel={
-          <>
-            <p className="image-hero__panel-eyebrow">Reasons to reach out</p>
-            <ul className="image-hero__list">
-              {CONTACT_REASONS.map((reason) => (
-                <li key={reason}>{reason}</li>
-              ))}
-            </ul>
-          </>
-        }
       />
 
-      <section className="page-section page-section--light">
+      <section className="page-section page-section--light contact-layout">
+        <article className="contact-reasons">
+          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Reasons to reach out</p>
+          <ul className="detail-list detail-list--dark">
+            {CONTACT_REASONS.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </article>
+
         <article className="detail-card detail-card--light booking-form-panel">
           <div className="booking-panel__head">
             <strong>Request a conversation</strong>

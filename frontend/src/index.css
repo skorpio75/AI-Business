@@ -421,16 +421,26 @@
 
   .content-block__aside {
     display: grid !important;
-    justify-items: end !important;
+    justify-items: stretch !important;
+    align-self: stretch !important;
   }
 
   .content-block__portrait {
     overflow: hidden !important;
-    width: min(100%, 220px) !important;
-    border-radius: 1.35rem !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    border-radius: 0 !important;
     border: 1px solid rgba(23, 23, 23, 0.08) !important;
     box-shadow: 0 16px 34px rgba(24, 24, 24, 0.1) !important;
     background: #f8f4ee !important;
+  }
+
+  .content-block__portrait .image-hero__portrait {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center top !important;
   }
 
   .content-block--with-aside .content-block__copy {
@@ -2591,6 +2601,10 @@
     box-shadow: none !important;
   }
 
+  .public-site .image-hero {
+    border-radius: 0 !important;
+  }
+
   .public-site .hero-visual-card,
   .public-site .image-hero__panel,
   .public-site .detail-card,
@@ -2635,6 +2649,31 @@
   .public-site .timeline-card--light,
   .public-site .site-footer {
     background: #f5f5f5 !important;
+  }
+}
+
+@layer components {
+  .public-site .hero-visual-card,
+  .public-site .image-hero__panel {
+    border-radius: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.32) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: none !important;
+  }
+
+  .public-site .hero-visual-card__eyebrow,
+  .public-site .image-hero__panel-eyebrow,
+  .public-site .hero-visual-card h2,
+  .public-site .image-hero__panel strong {
+    color: #d86c2c !important;
+  }
+
+  .public-site .hero-bullet-list,
+  .public-site .hero-bullet-list li,
+  .public-site .image-hero__list li,
+  .public-site .image-hero__panel-summary {
+    color: rgba(255, 255, 255, 0.92) !important;
   }
 }
 

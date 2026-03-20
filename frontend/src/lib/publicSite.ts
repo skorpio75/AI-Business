@@ -228,8 +228,8 @@ export const ACADEMIC_EDUCATION: AcademicEducationItem[] = [
     period: "2002 to 2003",
   },
   {
-    title: "University Diploma of Technology, Business Computing",
-    institution: "Universite de Luxembourg",
+    title: "Diploma of Technology, Business Computing",
+    institution: "University of Luxembourg",
     period: "1998 to 2001",
   },
 ] as const;

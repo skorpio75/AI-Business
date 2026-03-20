@@ -408,15 +408,17 @@
   .content-block--with-aside {
     display: grid !important;
     gap: 1.25rem !important;
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 240px) !important;
+    grid-template-columns: minmax(0, 0.82fr) minmax(230px, 290px) !important;
     align-items: start !important;
-    padding: 2.25rem !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
   .content-block__main {
     display: grid !important;
     gap: 0.75rem !important;
     min-width: 0 !important;
+    padding: 2.25rem !important;
   }
 
   .content-block__aside {
@@ -431,9 +433,9 @@
     height: 100% !important;
     min-height: 100% !important;
     border-radius: 0 !important;
-    border: 1px solid rgba(23, 23, 23, 0.08) !important;
-    box-shadow: 0 16px 34px rgba(24, 24, 24, 0.1) !important;
-    background: #f8f4ee !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 
   .content-block__portrait .image-hero__portrait {
@@ -445,7 +447,7 @@
 
   .content-block--with-aside .content-block__copy {
     gap: 0.95rem !important;
-    max-width: none !important;
+    max-width: 41rem !important;
   }
 
   .content-block--with-aside .content-block__copy p {
@@ -474,11 +476,14 @@
 
     .content-block--with-aside {
       grid-template-columns: 1fr !important;
-      padding: 2rem !important;
     }
 
     .content-block__aside {
       justify-items: start !important;
+    }
+
+    .content-block__main {
+      padding: 2rem !important 2rem 0 !important;
     }
   }
 

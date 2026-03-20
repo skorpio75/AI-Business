@@ -2973,6 +2973,31 @@
 }
 
 @layer components {
+  .public-site .contact-layout {
+    grid-template-columns: minmax(0, 72rem) !important;
+    justify-content: center !important;
+  }
+
+  .public-site .booking-form-panel {
+    width: 100% !important;
+    max-width: 72rem !important;
+    margin-inline: auto !important;
+    padding: 2.5rem 2.75rem !important;
+  }
+
+  @media (max-width: 960px) {
+    .public-site .contact-layout {
+      grid-template-columns: 1fr !important;
+    }
+
+    .public-site .booking-form-panel {
+      max-width: 100% !important;
+      padding: 2rem 1.5rem !important;
+    }
+  }
+}
+
+@layer components {
   .public-site .site-header,
   .public-site .site-header--overlay,
   .public-site .site-footer {

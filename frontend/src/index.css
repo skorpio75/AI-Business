@@ -2831,6 +2831,209 @@
 }
 
 @layer components {
+  .public-site .site-hero--home,
+  .public-site .image-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 23rem) !important;
+    gap: 1.25rem !important;
+    align-items: end !important;
+  }
+
+  .public-site .site-hero--home .site-hero__content,
+  .public-site .image-hero__content {
+    max-width: 42rem !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .public-site .site-hero--home h1 {
+    max-width: 8.2ch !important;
+    font-size: clamp(2.7rem, 4.9vw, 4.35rem) !important;
+    line-height: 0.93 !important;
+  }
+
+  .public-site .image-hero h1 {
+    max-width: 7.8ch !important;
+    font-size: clamp(2.55rem, 4.5vw, 4rem) !important;
+    line-height: 0.94 !important;
+  }
+
+  .public-site .site-hero--home .site-hero__lead,
+  .public-site .image-hero__lead,
+  .public-site .image-hero__body p {
+    max-width: 38rem !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card,
+  .public-site .image-hero__panel {
+    width: 23rem !important;
+    max-width: 23rem !important;
+    margin-top: 2rem !important;
+    justify-self: end !important;
+    align-self: end !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card h2 {
+    max-width: 10ch !important;
+    font-size: clamp(1.18rem, 1.6vw, 1.45rem) !important;
+  }
+
+  .public-site .image-hero__panel h2,
+  .public-site .image-hero__panel-summary {
+    max-width: 19rem !important;
+  }
+
+  @media (max-width: 960px) {
+    .public-site .site-hero--home,
+    .public-site .image-hero {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+    }
+
+    .public-site .site-hero--home .site-hero__content,
+    .public-site .image-hero__content {
+      max-width: 100% !important;
+    }
+
+    .public-site .site-hero--home h1 {
+      max-width: 7.8ch !important;
+      font-size: clamp(2.35rem, 10vw, 4rem) !important;
+    }
+
+    .public-site .image-hero h1 {
+      max-width: 8ch !important;
+      font-size: clamp(2.25rem, 9.2vw, 3.8rem) !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card,
+    .public-site .image-hero__panel {
+      width: 100% !important;
+      max-width: 22rem !important;
+      margin-top: 0.25rem !important;
+      justify-self: start !important;
+      align-self: start !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card h2,
+    .public-site .image-hero__panel h2,
+    .public-site .image-hero__panel-summary {
+      max-width: none !important;
+    }
+  }
+}
+
+@layer components {
+  .public-site .site-header,
+  .public-site .site-header--overlay,
+  .public-site .site-nav a,
+  .public-site .context-nav a,
+  .public-site .section-switcher,
+  .public-site .section-drawer,
+  .public-site .section-drawer__rail,
+  .public-site .section-drawer__panel,
+  .public-site .section-drawer__item,
+  .public-site .hero-visual-card,
+  .public-site .image-hero__panel,
+  .public-site .detail-card,
+  .public-site .detail-card--light,
+  .public-site .service-summary-card,
+  .public-site .pillar-card,
+  .public-site .trust-card,
+  .public-site .process-simple-card,
+  .public-site .format-card,
+  .public-site .content-block,
+  .public-site .background-strip,
+  .public-site .cta-band,
+  .public-site .experience-card,
+  .public-site .next-step-card,
+  .public-site .direct-contact-card,
+  .public-site .booking-form-panel,
+  .public-site .timeline-card,
+  .public-site .timeline-card--light,
+  .public-site .content-block__portrait,
+  .public-site .background-strip__list span,
+  .public-site .site-footer,
+  .public-site .site-footer a,
+  .public-site .booking-form-panel .booking-field input,
+  .public-site .booking-form-panel .booking-field select,
+  .public-site .booking-form-panel .booking-field textarea {
+    border: 0 !important;
+    border-color: transparent !important;
+  }
+}
+
+@layer components {
+  .public-site .site-hero--home {
+    grid-template-columns: minmax(0, 0.88fr) minmax(320px, 0.52fr) !important;
+    gap: 2.75rem !important;
+    align-items: end !important;
+  }
+
+  .public-site .site-hero--home .site-kicker--light {
+    color: #d86c2c !important;
+  }
+
+  .public-site .site-hero--home .site-hero__content {
+    min-width: 0 !important;
+    max-width: 38rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .public-site .site-hero--home h1 {
+    max-width: 7.2ch !important;
+    font-size: clamp(2.9rem, 5.6vw, 4.8rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  .public-site .site-hero--home .site-hero__lead {
+    max-width: 31rem !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card {
+    width: min(100%, 25rem) !important;
+    max-width: 25rem !important;
+    margin-top: 8rem !important;
+    justify-self: end !important;
+    align-self: end !important;
+    z-index: 2 !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card h2 {
+    max-width: 10ch !important;
+    font-size: clamp(1.25rem, 1.9vw, 1.65rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  @media (max-width: 960px) {
+    .public-site .site-hero--home {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+    }
+
+    .public-site .site-hero--home .site-hero__content {
+      max-width: 100% !important;
+      padding-right: 0 !important;
+    }
+
+    .public-site .site-hero--home h1 {
+      max-width: 7.6ch !important;
+      font-size: clamp(2.6rem, 12vw, 4.3rem) !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card {
+      width: 100% !important;
+      max-width: 24rem !important;
+      margin-top: 0.25rem !important;
+      justify-self: start !important;
+      align-self: start !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card h2 {
+      max-width: none !important;
+    }
+  }
+}
+
+@layer components {
   .app-shell {
     @apply min-h-screen px-4 py-5 md:px-7 md:py-7;
   }
@@ -4664,6 +4867,135 @@
 
     .experience-pill:last-child {
       border-bottom: 0;
+    }
+  }
+}
+
+@layer components {
+  .public-site .site-hero--home {
+    grid-template-columns: minmax(0, 42rem) minmax(19rem, 23rem) !important;
+    justify-content: start !important;
+    gap: 1.25rem !important;
+    align-items: end !important;
+  }
+
+  .public-site .site-hero--home .site-hero__content {
+    max-width: 42rem !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .public-site .site-hero--home h1 {
+    max-width: 7.2ch !important;
+    font-size: clamp(2.55rem, 4.55vw, 4.25rem) !important;
+    line-height: 0.92 !important;
+    text-wrap: balance !important;
+  }
+
+  .public-site .site-hero--home .site-hero__lead {
+    max-width: 31rem !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card {
+    width: min(100%, 23rem) !important;
+    max-width: 23rem !important;
+    margin-top: 0 !important;
+    justify-self: start !important;
+    align-self: end !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card h2 {
+    max-width: none !important;
+    font-size: clamp(1.08rem, 1.55vw, 1.38rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .public-site .image-hero {
+    grid-template-columns: minmax(0, 40rem) minmax(19rem, 23rem) !important;
+    justify-content: start !important;
+    gap: 1.25rem !important;
+    align-items: end !important;
+  }
+
+  .public-site .image-hero__content {
+    max-width: 40rem !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .public-site .image-hero h1 {
+    max-width: 7.3ch !important;
+    font-size: clamp(2.5rem, 4.35vw, 4.1rem) !important;
+    line-height: 0.93 !important;
+    text-wrap: balance !important;
+  }
+
+  .public-site .image-hero__lead,
+  .public-site .image-hero__body p {
+    max-width: 30rem !important;
+  }
+
+  .public-site .image-hero__panel {
+    width: min(100%, 23rem) !important;
+    max-width: 23rem !important;
+    margin-top: 0 !important;
+    justify-self: start !important;
+    align-self: end !important;
+  }
+
+  .public-site .image-hero__panel h2,
+  .public-site .image-hero__panel-summary {
+    max-width: none !important;
+  }
+
+  @media (max-width: 1100px) {
+    .public-site .site-hero--home {
+      grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem) !important;
+      gap: 1.1rem !important;
+    }
+
+    .public-site .image-hero {
+      grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem) !important;
+      gap: 1.1rem !important;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .public-site .site-hero--home,
+    .public-site .image-hero {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+    }
+
+    .public-site .site-hero--home .site-hero__content,
+    .public-site .image-hero__content {
+      max-width: 100% !important;
+      padding-right: 0 !important;
+    }
+
+    .public-site .site-hero--home h1 {
+      max-width: 7.1ch !important;
+      font-size: clamp(2.45rem, 10.2vw, 4rem) !important;
+    }
+
+    .public-site .image-hero h1 {
+      max-width: 7.1ch !important;
+      font-size: clamp(2.35rem, 9.6vw, 3.85rem) !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card,
+    .public-site .image-hero__panel {
+      width: 100% !important;
+      max-width: 22rem !important;
+      margin-top: 0 !important;
+      justify-self: start !important;
+      align-self: start !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card h2,
+    .public-site .image-hero__panel h2,
+    .public-site .image-hero__panel-summary {
+      max-width: none !important;
     }
   }
 }

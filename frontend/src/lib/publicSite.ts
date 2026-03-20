@@ -173,6 +173,21 @@ export const ENGAGEMENT_FORMATS = [
 export const ABOUT_LEAD =
   "I work with organisations that need senior guidance across transformation, technology decisions, delivery, and practical AI adoption.";
 
+export const ABOUT_HERO_HIGHLIGHTS = [
+  {
+    title: "20+ years",
+    summary: "leadership, transformation, delivery",
+  },
+  {
+    title: "Ex-Microsoft",
+    summary: "big-tech & enterprise grounding",
+  },
+  {
+    title: "International",
+    summary: "multi-stakeholder programmes",
+  },
+] as const;
+
 export const ABOUT_SUMMARY = [
   "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across international environments.",
   "Clients typically engage when they need clarity, stronger governance, better execution structure, or senior advisory support without adding unnecessary complexity.",

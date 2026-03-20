@@ -445,6 +445,45 @@
     object-position: center top !important;
   }
 
+  .image-hero__panel--about-highlights {
+    width: min(100%, 28rem) !important;
+    margin-top: 7.5rem !important;
+    align-self: end !important;
+  }
+
+  .about-hero-highlight-stack {
+    display: grid !important;
+    gap: 0 !important;
+  }
+
+  .about-hero-highlight-row {
+    display: grid !important;
+    gap: 0.2rem !important;
+    padding: 0.95rem 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
+  }
+
+  .about-hero-highlight-row:first-child {
+    border-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .about-hero-highlight-row h2 {
+    margin: 0 !important;
+    color: #d86c2c !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .about-hero-highlight-row p {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.84) !important;
+    font-size: 0.94rem !important;
+    line-height: 1.35 !important;
+  }
+
   .content-block--with-aside .content-block__copy {
     gap: 0.95rem !important;
     max-width: 41rem !important;
@@ -476,6 +515,10 @@
 
     .content-block--with-aside {
       grid-template-columns: 1fr !important;
+    }
+
+    .image-hero__panel--about-highlights {
+      margin-top: 0.5rem !important;
     }
 
     .content-block__aside {

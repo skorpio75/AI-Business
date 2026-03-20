@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { PublicImageHero } from "@/components/PublicImageHero";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
+  ABOUT_HERO_HIGHLIGHTS,
   ABOUT_LEAD,
   ABOUT_SUMMARY,
   ACADEMIC_EDUCATION,
@@ -22,6 +23,17 @@ export function PublicAboutPage() {
         kicker="About"
         title="Dario Pizzolante"
         lead={ABOUT_LEAD}
+        panel={
+          <div className="about-hero-highlight-stack">
+            {ABOUT_HERO_HIGHLIGHTS.map((item) => (
+              <article key={item.title} className="about-hero-highlight-row">
+                <h2>{item.title}</h2>
+                <p>{item.summary}</p>
+              </article>
+            ))}
+          </div>
+        }
+        panelClassName="image-hero__panel--about-highlights"
         actions={
           <>
             <a className="site-button site-button--primary" href={CONTACT_PATH}>
@@ -35,12 +47,12 @@ export function PublicAboutPage() {
       <section className="page-section page-section--light">
         <article className="content-block content-block--with-aside">
           <div className="content-block__main">
-          <p className="site-kicker">Professional summary</p>
-          <div className="content-block__copy">
-            {ABOUT_SUMMARY.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+            <p className="site-kicker">Professional summary</p>
+            <div className="content-block__copy">
+              {ABOUT_SUMMARY.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
           </div>
           <aside className="content-block__aside">
             <div className="content-block__portrait">

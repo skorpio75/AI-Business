@@ -17,7 +17,7 @@ export function PublicServicesPage() {
         backHref="/"
         backLabel="Home"
         kicker="Services"
-        title="Services for organisations facing change, complexity, or execution pressure."
+        title="Services for organisations facing change and complexity."
         lead="Stratevia works at the intersection of business priorities, technology decisions, delivery structure, and practical AI opportunity."
         panel={
           <>

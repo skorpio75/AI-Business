@@ -1,6 +1,6 @@
 /* Copyright (c) Dario Pizzolante */
 import { useEffect, useState, type ReactNode } from "react";
-import { ArrowRight, CircleUserRound, Linkedin, Mail, Menu, MessageCircleMore, X } from "lucide-react";
+import { ArrowRight, CircleUserRound, Mail, Menu, MessageCircleMore, X } from "lucide-react";
 
 import {
   PUBLIC_NAV_LINKS,
@@ -145,7 +145,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
                 >
                   <X className="size-5" />
                 </button>
-                <img alt="" className="section-drawer__logo" src="/stratevia-logo.png" />
+                <img alt="" className="section-drawer__logo" src="/logo_black_cropped.png" />
               </div>
 
               <nav className="section-family-nav" aria-label="Section families">
@@ -204,17 +204,19 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
 
       <footer className="site-footer">
         <div className="site-footer__identity">
-          <img alt="" className="site-footer__mark" src="/stratevia-logo.png" />
+          <img alt="" className="site-footer__mark" src="/logo_black_cropped.png" />
           <div className="site-footer__copy">
             <p>&copy; 2026 Stratevia - All rights reserved</p>
             <span>Independent advisory for transformation, AI, and technology leadership.</span>
           </div>
         </div>
         <div className="site-footer__links">
-          <a href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
-            <Linkedin className="size-4" />
+          <a className="site-footer__link site-footer__link--linkedin" href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
+            <span className="site-footer__linkedin-badge" aria-hidden="true">
+              <span>in</span>
+            </span>
           </a>
-          <a href="mailto:contact@stratevia.eu">
+          <a className="site-footer__link site-footer__link--mail" href="mailto:contact@stratevia.eu">
             <Mail className="size-4" />
           </a>
         </div>

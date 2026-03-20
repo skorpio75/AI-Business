@@ -78,7 +78,7 @@ export const HOME_HERO = {
   eyebrow: "Independent advisory for transformation and practical AI",
   title: "Strategy. Transformation. Execution.",
   summary:
-    "I help organisations simplify change, improve governance and delivery, and turn technology + AI into practical business value.",
+    "Improve governance and delivery, turn technology + AI into practical business value.",
   focusAreas: [
     "Strategy and governance",
     "Technology, AI and automation",

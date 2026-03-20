@@ -2723,6 +2723,111 @@
   .public-site .image-hero__panel-summary {
     color: rgba(255, 255, 255, 0.92) !important;
   }
+
+  .public-site .site-footer__link--linkedin,
+  .public-site .site-footer__link--linkedin:hover {
+    background: transparent !important;
+    border-color: rgba(17, 17, 17, 0.08) !important;
+  }
+
+  .public-site .site-footer__link--mail,
+  .public-site .site-footer__link--mail svg {
+    color: #4b5563 !important;
+  }
+
+  .public-site .site-footer__link {
+    width: 2.1rem !important;
+    height: 2.1rem !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .public-site .site-footer__linkedin-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #0a66c2 !important;
+    color: #ffffff !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  .public-site .site-footer__link--mail svg {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
+
+@layer components {
+  .public-site .site-hero--home {
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.58fr) !important;
+    gap: 2.25rem !important;
+    align-items: end !important;
+  }
+
+  .public-site .site-hero--home .site-kicker--light {
+    color: #d86c2c !important;
+  }
+
+  .public-site .site-hero--home .site-hero__content {
+    max-width: 100% !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .public-site .site-hero--home h1 {
+    max-width: 9.2ch !important;
+    font-size: clamp(2.85rem, 5.7vw, 5rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  .public-site .site-hero--home .site-hero__lead {
+    max-width: 34rem !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card {
+    width: min(100%, 27rem) !important;
+    margin-top: 7rem !important;
+    justify-self: end !important;
+    align-self: end !important;
+  }
+
+  .public-site .site-hero--home .hero-visual-card h2 {
+    font-size: clamp(1.45rem, 2vw, 1.9rem) !important;
+    max-width: 11ch !important;
+  }
+
+  @media (max-width: 960px) {
+    .public-site .site-hero--home {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+    }
+
+    .public-site .site-hero--home .site-hero__content {
+      padding-right: 0 !important;
+    }
+
+    .public-site .site-hero--home h1 {
+      max-width: 8.5ch !important;
+      font-size: clamp(2.8rem, 12vw, 4.6rem) !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card {
+      width: min(100%, 24rem) !important;
+      margin-top: 0.5rem !important;
+      justify-self: start !important;
+      align-self: start !important;
+    }
+
+    .public-site .site-hero--home .hero-visual-card h2 {
+      max-width: none !important;
+    }
+  }
 }
 
 @layer components {

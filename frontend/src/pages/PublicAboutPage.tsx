@@ -99,7 +99,7 @@ export function PublicAboutPage() {
         </div>
       </section>
 
-      <section className="page-section page-section--light page-section--credentials band-section band-section--soft">
+      <section className="page-section page-section--light band-section band-section--soft">
         <div className="band-shell">
           <div className="page-section--credentials">
             <article className="detail-card detail-card--light">

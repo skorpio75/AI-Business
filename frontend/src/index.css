@@ -2831,6 +2831,24 @@
 }
 
 @layer components {
+  .public-site .timeline-list--light {
+    gap: 0 !important;
+  }
+
+  .public-site .timeline-list--light .timeline-card--light {
+    padding-top: 1.35rem !important;
+    padding-bottom: 1.35rem !important;
+    border-top: 1px solid rgba(23, 23, 23, 0.08) !important;
+    background: transparent !important;
+  }
+
+  .public-site .timeline-list--light .timeline-card--light:first-child {
+    border-top: 0 !important;
+    padding-top: 0 !important;
+  }
+}
+
+@layer components {
   .public-site .site-hero--home,
   .public-site .image-hero {
     grid-template-columns: minmax(0, 1fr) minmax(320px, 23rem) !important;

@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { ArrowRight } from "lucide-react";
 
+import { PublicImageHero } from "@/components/PublicImageHero";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import { CONTACT_PATH, type ServiceDefinition } from "@/lib/publicSite";
 
@@ -11,27 +12,30 @@ type PublicServiceDetailPageProps = {
 export function PublicServiceDetailPage({ service }: PublicServiceDetailPageProps) {
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--light">
-        <div className="page-hero__content">
-          <a className="back-link back-link--dark" href="/services">
-            All services
-          </a>
-          <p className="site-kicker">{service.shortTitle}</p>
-          <h1>{service.title}</h1>
-          <p className="page-lead page-lead--dark">{service.tagline}</p>
-          <p className="page-copy page-copy--dark">{service.intro}</p>
-          <p className="page-copy page-copy--dark page-copy--accent">{service.bestFor}</p>
-        </div>
-        <div className="page-hero__panel page-hero__panel--light">
-          <strong>What this service brings</strong>
-          <p>{service.summary}</p>
-          <ul className="detail-list detail-list--dark">
+      <PublicImageHero
+        backHref="/services"
+        backLabel="All services"
+        kicker={service.shortTitle}
+        title={service.title}
+        lead={service.tagline}
+        body={
+          <>
+            <p>{service.intro}</p>
+            <p className="image-hero__accent-copy">{service.bestFor}</p>
+          </>
+        }
+        panel={
+          <>
+            <p className="image-hero__panel-eyebrow">What this service brings</p>
+            <p className="image-hero__panel-summary">{service.summary}</p>
+            <ul className="image-hero__list">
             {service.proofPoints.map((item) => (
               <li key={item}>{item}</li>
             ))}
-          </ul>
-        </div>
-      </section>
+            </ul>
+          </>
+        }
+      />
 
       <section className="page-section page-section--light page-section--service-detail">
         <article className="detail-card detail-card--light">

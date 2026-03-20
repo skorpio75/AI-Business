@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { ArrowRight } from "lucide-react";
 
+import { PublicImageHero } from "@/components/PublicImageHero";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   ABOUT_LEAD,
@@ -15,26 +16,39 @@ import {
 export function PublicAboutPage() {
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--light page-hero--about-clean">
-        <div className="page-hero__content">
-          <a className="back-link back-link--dark" href="/">
-            Home
-          </a>
-          <p className="site-kicker">About</p>
-          <h1>Dario Pizzolante</h1>
-          <p className="page-lead page-lead--dark">{ABOUT_LEAD}</p>
-          <div className="page-hero__actions">
+      <PublicImageHero
+        backHref="/"
+        backLabel="Home"
+        kicker="About"
+        title="Dario Pizzolante"
+        lead={ABOUT_LEAD}
+        actions={
+          <>
             <a className="site-button site-button--primary" href={CONTACT_PATH}>
               Book a call
               <ArrowRight className="size-4" />
             </a>
+          </>
+        }
+      />
+
+      <section className="page-section page-section--light">
+        <article className="detail-card detail-card--light about-background-card">
+          <div className="about-background-card__media">
+            <div className="image-hero__portrait-wrap">
+              <img alt="Portrait of Dario Pizzolante" className="image-hero__portrait" src="/dario-pizzolante.jpg" />
+            </div>
           </div>
-        </div>
-        <div className="about-portrait-panel">
-          <div className="about-portrait-wrap about-portrait-wrap--clean">
-            <img alt="Portrait of Dario Pizzolante" className="about-portrait" src="/dario-pizzolante.jpg" />
+          <div className="about-background-card__content">
+            <p className="detail-card__eyebrow detail-card__eyebrow--dark">Representative background</p>
+            <h2>Senior support across leadership, transformation, and practical delivery.</h2>
+            <ul className="detail-list detail-list--dark">
+              {ABOUT_CORE_STRENGTHS.map((item) => (
+                <li key={item.title}>{item.title}</li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </article>
       </section>
 
       <section className="page-section page-section--light">

@@ -2,6 +2,7 @@
 import { type FormEvent, useState } from "react";
 import { ArrowRight, LoaderCircle } from "lucide-react";
 
+import { PublicImageHero } from "@/components/PublicImageHero";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import { apiClient } from "@/lib/api";
 import {
@@ -71,19 +72,23 @@ export function PublicBookingPage() {
 
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--light">
-        <div className="page-hero__content">
-          <a className="back-link back-link--dark" href="/">
-            Home
-          </a>
-          <p className="site-kicker">Contact</p>
-          <h1>Start with a focused conversation.</h1>
-          <p className="page-lead page-lead--dark">
-            A first discussion to understand your context, priorities, and whether Stratevia is
-            the right fit.
-          </p>
-        </div>
-      </section>
+      <PublicImageHero
+        backHref="/"
+        backLabel="Home"
+        kicker="Contact"
+        title="Start with a focused conversation."
+        lead="A first discussion to understand your context, priorities, and whether Stratevia is the right fit."
+        panel={
+          <>
+            <p className="image-hero__panel-eyebrow">Reasons to reach out</p>
+            <ul className="image-hero__list">
+              {CONTACT_REASONS.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
+          </>
+        }
+      />
 
       <section className="page-section page-section--light contact-layout">
         <article className="contact-reasons">

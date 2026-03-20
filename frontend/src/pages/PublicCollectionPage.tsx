@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { ArrowRight } from "lucide-react";
 
+import { PublicImageHero } from "@/components/PublicImageHero";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import { CONTACT_PATH, type PublicSectionDefinition } from "@/lib/publicSite";
 
@@ -11,16 +12,13 @@ type PublicCollectionPageProps = {
 export function PublicCollectionPage({ section }: PublicCollectionPageProps) {
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--light">
-        <div className="page-hero__content">
-          <a className="back-link back-link--dark" href="/">
-            Home
-          </a>
-          <p className="site-kicker">{section.label}</p>
-          <h1>{section.label}</h1>
-          <p className="page-lead page-lead--dark">{section.description}</p>
-        </div>
-      </section>
+      <PublicImageHero
+        backHref="/"
+        backLabel="Home"
+        kicker={section.label}
+        title={section.label}
+        lead={section.description}
+      />
 
       <section className="page-section page-section--light">
         <div className="service-summary-grid">

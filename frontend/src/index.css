@@ -246,6 +246,235 @@
 }
 
 @layer components {
+  .image-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr) !important;
+    align-items: end !important;
+    gap: clamp(1.5rem, 3vw, 2.5rem) !important;
+    width: min(1180px, calc(100% - 2rem)) !important;
+    min-height: clamp(32rem, 48vw, 41rem) !important;
+    margin: 0 auto !important;
+    padding: clamp(1.75rem, 3vw, 2.5rem) !important;
+    border-radius: 2rem !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background:
+      linear-gradient(180deg, rgba(35, 39, 44, 0.44), rgba(22, 27, 32, 0.56)),
+      linear-gradient(120deg, rgba(35, 42, 49, 0.7), rgba(27, 31, 35, 0.18)),
+      url("/Luxembourg.jpg") center 34% / cover no-repeat !important;
+    box-shadow: 0 28px 72px rgba(63, 46, 32, 0.16) !important;
+  }
+
+  .image-hero__content,
+  .image-hero__panel {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .image-hero__content {
+    display: grid !important;
+    gap: 1rem !important;
+    align-content: start !important;
+    max-width: 42rem !important;
+    padding: clamp(0.25rem, 1vw, 1rem) !important;
+    color: #ffffff !important;
+  }
+
+  .image-hero .back-link {
+    color: rgba(255, 255, 255, 0.78) !important;
+  }
+
+  .image-hero .back-link:hover {
+    color: #ffffff !important;
+  }
+
+  .image-hero .site-kicker,
+  .image-hero .site-kicker--light {
+    color: #e78643 !important;
+  }
+
+  .image-hero h1 {
+    margin: 0 !important;
+    max-width: 11ch !important;
+    color: #ffffff !important;
+    font-family: var(--font-display) !important;
+    font-size: clamp(3.1rem, 6.2vw, 5.4rem) !important;
+    line-height: 0.93 !important;
+    letter-spacing: -0.045em !important;
+  }
+
+  .image-hero__lead,
+  .image-hero__body p {
+    margin: 0 !important;
+    max-width: 60ch !important;
+    color: rgba(255, 255, 255, 0.84) !important;
+    font-size: 1.08rem !important;
+    line-height: 1.75 !important;
+  }
+
+  .image-hero__body {
+    display: grid !important;
+    gap: 0.8rem !important;
+  }
+
+  .image-hero__accent-copy {
+    color: #f3d2ba !important;
+    font-weight: 600 !important;
+  }
+
+  .image-hero__actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.85rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .image-hero__panel {
+    display: grid !important;
+    gap: 1rem !important;
+    align-content: start !important;
+    justify-self: end !important;
+    width: min(100%, 33rem) !important;
+    min-height: 18rem !important;
+    margin-top: 4.5rem !important;
+    padding: 1.5rem !important;
+    border-radius: 1.5rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    backdrop-filter: blur(16px) !important;
+    color: #f7f2eb !important;
+  }
+
+  .image-hero__panel--portrait {
+    width: min(100%, 24rem) !important;
+  }
+
+  .image-hero__panel-eyebrow {
+    margin: 0 !important;
+    color: rgba(255, 224, 200, 0.88) !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+  }
+
+  .image-hero__panel-summary {
+    margin: 0 !important;
+    color: #fff7ef !important;
+    font-size: 1rem !important;
+    line-height: 1.7 !important;
+  }
+
+  .image-hero__list {
+    display: grid !important;
+    gap: 1rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+  }
+
+  .image-hero__list li {
+    margin: 0 !important;
+    color: rgba(255, 247, 239, 0.92) !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .image-hero__list--compact {
+    gap: 0.75rem !important;
+  }
+
+  .image-hero__portrait-wrap {
+    overflow: hidden !important;
+    width: min(100%, 12rem) !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 16px 34px rgba(16, 14, 12, 0.22) !important;
+  }
+
+  .image-hero__portrait {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .about-background-card {
+    display: grid !important;
+    gap: 1.5rem !important;
+    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) !important;
+    align-items: center !important;
+  }
+
+  .about-background-card__media {
+    display: grid !important;
+    justify-items: start !important;
+  }
+
+  .about-background-card__content {
+    display: grid !important;
+    gap: 0.9rem !important;
+  }
+
+  .about-background-card__content h2 {
+    margin: 0 !important;
+    color: #171717 !important;
+  }
+
+  @media (max-width: 1024px) {
+    .image-hero {
+      grid-template-columns: minmax(0, 1fr) !important;
+      min-height: unset !important;
+      background-position: center 30% !important;
+    }
+
+    .image-hero h1 {
+      max-width: 12ch !important;
+      font-size: clamp(2.9rem, 11vw, 4.6rem) !important;
+    }
+
+    .image-hero__panel {
+      justify-self: stretch !important;
+      width: 100% !important;
+      min-height: unset !important;
+      margin-top: 0.5rem !important;
+    }
+
+    .about-background-card {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .image-hero {
+      width: min(100%, calc(100% - 1rem)) !important;
+      padding: 1.25rem !important;
+      border-radius: 1.6rem !important;
+      background-position: center 26% !important;
+    }
+
+    .image-hero__content {
+      gap: 0.85rem !important;
+      padding: 0.1rem !important;
+    }
+
+    .image-hero__lead,
+    .image-hero__body p {
+      font-size: 1rem !important;
+      line-height: 1.65 !important;
+    }
+
+    .image-hero__panel {
+      padding: 1.3rem !important;
+      border-radius: 1.4rem !important;
+    }
+
+    .image-hero__list {
+      gap: 0.8rem !important;
+    }
+  }
+}
+
+@layer components {
   .site-header {
     display: grid !important;
     grid-template-columns: auto minmax(0, 1fr) auto !important;

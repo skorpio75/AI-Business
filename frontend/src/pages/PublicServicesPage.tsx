@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { ArrowRight } from "lucide-react";
 
+import { PublicImageHero } from "@/components/PublicImageHero";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   CONTACT_PATH,
@@ -12,27 +13,23 @@ import {
 export function PublicServicesPage() {
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--light">
-        <div className="page-hero__content">
-          <a className="back-link back-link--dark" href="/">
-            Home
-          </a>
-          <p className="site-kicker">Services</p>
-          <h1>Services for organisations facing change, complexity, or execution pressure.</h1>
-          <p className="page-lead page-lead--dark">
-            Stratevia works at the intersection of business priorities, technology decisions,
-            delivery structure, and practical AI opportunity.
-          </p>
-        </div>
-        <div className="page-hero__panel page-hero__panel--light">
-          <strong>Typical reasons clients engage</strong>
-          <ul className="detail-list detail-list--dark">
+      <PublicImageHero
+        backHref="/"
+        backLabel="Home"
+        kicker="Services"
+        title="Services for organisations facing change, complexity, or execution pressure."
+        lead="Stratevia works at the intersection of business priorities, technology decisions, delivery structure, and practical AI opportunity."
+        panel={
+          <>
+            <p className="image-hero__panel-eyebrow">Typical reasons clients engage</p>
+            <ul className="image-hero__list">
             {SERVICES_HERO_REASONS.map((reason) => (
               <li key={reason}>{reason}</li>
             ))}
-          </ul>
-        </div>
-      </section>
+            </ul>
+          </>
+        }
+      />
 
       <section className="page-section page-section--light">
         <div className="service-summary-grid">

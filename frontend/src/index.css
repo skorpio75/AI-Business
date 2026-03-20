@@ -19,6 +19,13 @@
 }
 
 @layer components {
+  .public-site,
+  .public-site * ,
+  .public-site *::before,
+  .public-site *::after {
+    border-radius: 0 !important;
+  }
+
   .booking-form-panel,
   .booking-form-panel.detail-card,
   .booking-form-panel.detail-card--light {

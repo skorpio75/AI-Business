@@ -2842,6 +2842,137 @@
 }
 
 @layer components {
+  .public-site .band-section {
+    width: 100% !important;
+    padding: 3.5rem 0 !important;
+    background: #ffffff !important;
+  }
+
+  .public-site .band-section--soft {
+    background: #f5f5f2 !important;
+  }
+
+  .public-site .band-section--tint {
+    background: #eef4f0 !important;
+  }
+
+  .public-site .band-shell {
+    width: min(1240px, calc(100% - 3rem)) !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    gap: 2rem !important;
+  }
+
+  .public-site .section-heading--band {
+    max-width: 52rem !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 1.25rem !important;
+    border-bottom: 1px solid rgba(23, 23, 23, 0.12) !important;
+  }
+
+  .public-site .section-heading--band h2 {
+    margin: 0 !important;
+  }
+
+  .public-site .band-panel,
+  .public-site .band-shell .pillar-card,
+  .public-site .band-shell .process-simple-card,
+  .public-site .band-shell .trust-card,
+  .public-site .band-shell .service-summary-card,
+  .public-site .band-shell .format-card,
+  .public-site .band-shell .detail-card--light,
+  .public-site .band-shell .experience-card,
+  .public-site .band-shell .contact-reasons,
+  .public-site .band-shell .next-step-card,
+  .public-site .band-shell .direct-contact-card,
+  .public-site .band-shell .content-block,
+  .public-site .band-shell .background-strip,
+  .public-site .band-shell .cta-band,
+  .public-site .band-shell .booking-form-panel {
+    border: 1px solid rgba(23, 23, 23, 0.1) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .public-site .band-shell .pillar-grid,
+  .public-site .band-shell .trust-grid,
+  .public-site .band-shell .format-grid,
+  .public-site .band-shell .next-step-grid,
+  .public-site .band-shell .service-summary-grid,
+  .public-site .band-shell .experience-grid,
+  .public-site .band-shell .page-section--service-detail,
+  .public-site .band-shell .page-section--credentials {
+    gap: 1.5rem !important;
+  }
+
+  .public-site .band-shell .service-summary-card__meta,
+  .public-site .band-shell .booking-note,
+  .public-site .band-shell .booking-consent,
+  .public-site .band-shell .booking-consent--light,
+  .public-site .band-shell .about-hero-highlight-row {
+    border-top: 1px solid rgba(23, 23, 23, 0.1) !important;
+  }
+
+  .public-site .band-shell .background-strip__list {
+    gap: 0.85rem !important;
+  }
+
+  .public-site .band-shell .background-strip__list span,
+  .public-site .band-shell .direct-contact-card__links a {
+    border: 1px solid rgba(23, 23, 23, 0.12) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .public-site .band-shell .process-simple-card__index {
+    background: rgba(216, 108, 44, 0.1) !important;
+  }
+
+  .public-site .band-shell .text-link,
+  .public-site .band-shell .landing-text-link {
+    color: #d86c2c !important;
+  }
+
+  @media (max-width: 960px) {
+    .public-site .band-section {
+      padding: 2.5rem 0 !important;
+    }
+
+    .public-site .band-shell {
+      width: calc(100% - 1.5rem) !important;
+      gap: 1.5rem !important;
+    }
+  }
+}
+
+@layer components {
+  .public-site .page-section--credentials {
+    align-items: stretch !important;
+  }
+
+  .public-site .page-section--credentials > .detail-card--light {
+    align-content: start !important;
+  }
+
+  .public-site .page-section--credentials .timeline-list--light {
+    align-content: start !important;
+  }
+
+  .public-site .page-section--credentials .timeline-card__header-stacked {
+    display: grid !important;
+    justify-items: start !important;
+    gap: 0.35rem !important;
+  }
+
+  .public-site .page-section--credentials .timeline-card__period {
+    font-size: 1rem !important;
+    color: #666666 !important;
+  }
+}
+
+@layer components {
   .public-site .site-header,
   .public-site .site-header--overlay,
   .public-site .site-footer {

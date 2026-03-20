@@ -44,102 +44,114 @@ export function PublicAboutPage() {
         }
       />
 
-      <section className="page-section page-section--light">
-        <article className="content-block content-block--with-aside">
-          <div className="content-block__main">
-            <p className="site-kicker">Professional summary</p>
-            <div className="content-block__copy">
-              {ABOUT_SUMMARY.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+      <section className="page-section page-section--light band-section band-section--soft">
+        <div className="band-shell">
+          <article className="content-block content-block--with-aside band-panel">
+            <div className="content-block__main">
+              <p className="site-kicker">Professional summary</p>
+              <div className="content-block__copy">
+                {ABOUT_SUMMARY.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </div>
+            <aside className="content-block__aside">
+              <div className="content-block__portrait">
+                <img alt="Portrait of Dario Pizzolante" className="image-hero__portrait" src="/dario-pizzolante.jpg" />
+              </div>
+            </aside>
+          </article>
+        </div>
+      </section>
+
+      <section className="page-section page-section--light band-section">
+        <div className="band-shell">
+          <div className="section-heading section-heading--band">
+            <p className="site-kicker">Core strengths</p>
+            <h2>Senior support across leadership, transformation, and practical delivery.</h2>
           </div>
-          <aside className="content-block__aside">
-            <div className="content-block__portrait">
-              <img alt="Portrait of Dario Pizzolante" className="image-hero__portrait" src="/dario-pizzolante.jpg" />
-            </div>
-          </aside>
-        </article>
-      </section>
-
-      <section className="page-section page-section--light">
-        <div className="section-heading">
-          <p className="site-kicker">Core strengths</p>
-          <h2>Senior support across leadership, transformation, and practical delivery.</h2>
-        </div>
-        <div className="trust-grid">
-          {ABOUT_CORE_STRENGTHS.map((item) => (
-            <article key={item.title} className="trust-card">
-              <h3>{item.title}</h3>
-              <p>{item.summary}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="page-section page-section--light">
-        <div className="section-heading">
-          <p className="site-kicker">Representative experience</p>
-          <h2>Selected roles and environments.</h2>
-        </div>
-        <div className="experience-grid">
-          {REPRESENTATIVE_EXPERIENCE.map((item) => (
-            <article key={item.organization} className="experience-card">
-              <p className="experience-card__org">{item.organization}</p>
-              <h3>{item.role}</h3>
-              <p>{item.summary}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="page-section page-section--light page-section--credentials">
-        <article className="detail-card detail-card--light">
-          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Education</p>
-          <h2>Academic background</h2>
-          <div className="timeline-list timeline-list--light">
-            {ACADEMIC_EDUCATION.map((item) => (
-              <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
-                <div className="timeline-card__top">
-                  <strong>{item.title}</strong>
-                  <span>{item.period}</span>
-                </div>
-                <p>{item.institution}</p>
+          <div className="trust-grid">
+            {ABOUT_CORE_STRENGTHS.map((item) => (
+              <article key={item.title} className="trust-card">
+                <h3>{item.title}</h3>
+                <p>{item.summary}</p>
               </article>
             ))}
           </div>
-        </article>
+        </div>
+      </section>
 
-        <article className="detail-card detail-card--light">
-          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Selected credentials</p>
-          <h2>Relevant ongoing development</h2>
-          <div className="timeline-list timeline-list--light">
-            {SELECTED_CREDENTIALS.map((item) => (
-              <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
-                <div className="timeline-card__top">
-                  <strong>{item.title}</strong>
-                  <span>{item.period}</span>
-                </div>
-                <p>{item.provider}</p>
+      <section className="page-section page-section--light band-section band-section--tint">
+        <div className="band-shell">
+          <div className="section-heading section-heading--band">
+            <p className="site-kicker">Representative experience</p>
+            <h2>Selected roles and environments.</h2>
+          </div>
+          <div className="experience-grid">
+            {REPRESENTATIVE_EXPERIENCE.map((item) => (
+              <article key={item.organization} className="experience-card">
+                <p className="experience-card__org">{item.organization}</p>
+                <h3>{item.role}</h3>
+                <p>{item.summary}</p>
               </article>
             ))}
           </div>
-        </article>
+        </div>
       </section>
 
-      <section className="page-section page-section--light">
-        <article className="cta-band cta-band--compact">
-          <div>
-            <p className="site-kicker">Contact</p>
-            <h2>If your organisation needs senior advisory support, let&apos;s talk.</h2>
+      <section className="page-section page-section--light page-section--credentials band-section band-section--soft">
+        <div className="band-shell">
+          <div className="page-section--credentials">
+            <article className="detail-card detail-card--light">
+              <p className="detail-card__eyebrow detail-card__eyebrow--dark">Education</p>
+              <h2>Academic background</h2>
+              <div className="timeline-list timeline-list--light">
+                {ACADEMIC_EDUCATION.map((item) => (
+                  <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
+                    <div className="timeline-card__header-stacked">
+                      <strong>{item.title}</strong>
+                      <span className="timeline-card__period">{item.period}</span>
+                    </div>
+                    <p>{item.institution}</p>
+                  </article>
+                ))}
+              </div>
+            </article>
+
+            <article className="detail-card detail-card--light">
+              <p className="detail-card__eyebrow detail-card__eyebrow--dark">Selected credentials</p>
+              <h2>Relevant ongoing development</h2>
+              <div className="timeline-list timeline-list--light">
+                {SELECTED_CREDENTIALS.map((item) => (
+                  <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
+                    <div className="timeline-card__header-stacked">
+                      <strong>{item.title}</strong>
+                      <span className="timeline-card__period">{item.period}</span>
+                    </div>
+                    <p>{item.provider}</p>
+                  </article>
+                ))}
+              </div>
+            </article>
           </div>
-          <div className="cta-band__actions">
-            <a className="site-button site-button--primary" href={CONTACT_PATH}>
-              Book a call
-              <ArrowRight className="size-4" />
-            </a>
-          </div>
-        </article>
+        </div>
+      </section>
+
+      <section className="page-section page-section--light band-section">
+        <div className="band-shell">
+          <article className="cta-band cta-band--compact band-panel">
+            <div>
+              <p className="site-kicker">Contact</p>
+              <h2>If your organisation needs senior advisory support, let&apos;s talk.</h2>
+            </div>
+            <div className="cta-band__actions">
+              <a className="site-button site-button--primary" href={CONTACT_PATH}>
+                Book a call
+                <ArrowRight className="size-4" />
+              </a>
+            </div>
+          </article>
+        </div>
       </section>
     </PublicSiteLayout>
   );

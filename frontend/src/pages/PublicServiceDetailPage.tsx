@@ -37,62 +37,72 @@ export function PublicServiceDetailPage({ service }: PublicServiceDetailPageProp
         }
       />
 
-      <section className="page-section page-section--light page-section--service-detail">
-        <article className="detail-card detail-card--light">
-          <p className="detail-card__eyebrow detail-card__eyebrow--dark">The challenge</p>
-          <h2>Common situations where this service helps</h2>
-          <ul className="detail-list detail-list--dark">
-            {service.clientProblems.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+      <section className="page-section page-section--light band-section band-section--soft">
+        <div className="band-shell">
+          <div className="section-heading section-heading--band">
+            <p className="site-kicker">{service.shortTitle}</p>
+            <h2>Structured around decisions, outcomes, and fit.</h2>
+          </div>
+          <div className="page-section--service-detail">
+            <article className="detail-card detail-card--light">
+              <p className="detail-card__eyebrow detail-card__eyebrow--dark">The challenge</p>
+              <h2>Common situations where this service helps</h2>
+              <ul className="detail-list detail-list--dark">
+                {service.clientProblems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
 
-        <article className="detail-card detail-card--light">
-          <p className="detail-card__eyebrow detail-card__eyebrow--dark">What this engagement delivers</p>
-          <h2>Clear outcomes you can work with</h2>
-          <ul className="detail-list detail-list--dark">
-            {service.outcomes.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+            <article className="detail-card detail-card--light">
+              <p className="detail-card__eyebrow detail-card__eyebrow--dark">What this engagement delivers</p>
+              <h2>Clear outcomes you can work with</h2>
+              <ul className="detail-list detail-list--dark">
+                {service.outcomes.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
 
-        <article className="detail-card detail-card--light">
-          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Typical engagement</p>
-          <h2>How support is usually structured</h2>
-          <ul className="detail-list detail-list--dark">
-            {service.engagements.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+            <article className="detail-card detail-card--light">
+              <p className="detail-card__eyebrow detail-card__eyebrow--dark">Typical engagement</p>
+              <h2>How support is usually structured</h2>
+              <ul className="detail-list detail-list--dark">
+                {service.engagements.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
 
-        <article className="detail-card detail-card--light">
-          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Best fit</p>
-          <h2>Who this is for</h2>
-          <ul className="detail-list detail-list--dark">
-            {service.fit.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+            <article className="detail-card detail-card--light">
+              <p className="detail-card__eyebrow detail-card__eyebrow--dark">Best fit</p>
+              <h2>Who this is for</h2>
+              <ul className="detail-list detail-list--dark">
+                {service.fit.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
+          </div>
+        </div>
       </section>
 
-      <section className="page-section page-section--light">
-        <article className="cta-band cta-band--compact">
-          <div>
-            <p className="site-kicker">Contact</p>
-            <h2>Want to see if this is the right fit?</h2>
-            <p>Book a first conversation.</p>
-          </div>
-          <div className="cta-band__actions">
-            <a className="site-button site-button--primary" href={CONTACT_PATH}>
-              Book a call
-              <ArrowRight className="size-4" />
-            </a>
-          </div>
-        </article>
+      <section className="page-section page-section--light band-section">
+        <div className="band-shell">
+          <article className="cta-band cta-band--compact band-panel">
+            <div>
+              <p className="site-kicker">Contact</p>
+              <h2>Want to see if this is the right fit?</h2>
+              <p>Book a first conversation.</p>
+            </div>
+            <div className="cta-band__actions">
+              <a className="site-button site-button--primary" href={CONTACT_PATH}>
+                Book a call
+                <ArrowRight className="size-4" />
+              </a>
+            </div>
+          </article>
+        </div>
       </section>
     </PublicSiteLayout>
   );

@@ -27,6 +27,7 @@ import { CtoCioPage } from "./pages/CtoCioPage";
 import { FinanceCockpitPage } from "./pages/FinanceCockpitPage";
 import { PublicAboutPage } from "./pages/PublicAboutPage";
 import { PublicBookingPage } from "./pages/PublicBookingPage";
+import { PublicCollectionPage } from "./pages/PublicCollectionPage";
 import { PublicLandingPage } from "./pages/PublicLandingPage";
 import { PublicServiceDetailPage } from "./pages/PublicServiceDetailPage";
 import { PublicServicesPage } from "./pages/PublicServicesPage";
@@ -35,10 +36,16 @@ import { API_BASE_URL } from "./lib/api";
 import type { ViewKey } from "./types";
 import {
   ABOUT_PATH,
+  CASE_STUDIES_PATH,
   CONTACT_PATH,
+  getSectionDefinition,
+  getSectionKeyForPath,
   LEGACY_BOOKING_PATH,
+  INSIGHTS_PATH,
+  PROJECTS_PATH,
   getServiceDefinition,
   normalizeServiceSlug,
+  type PublicSectionKey,
   type ServiceSlug,
 } from "./lib/publicSite";
 
@@ -161,6 +168,7 @@ type PublicRoute =
   | { kind: "about" }
   | { kind: "contact" }
   | { kind: "services" }
+  | { kind: "collection"; section: PublicSectionKey }
   | { kind: "service-detail"; slug: ServiceSlug };
 
 type AppRoute = { kind: "mission-control" } | { kind: "public"; route: PublicRoute };
@@ -204,6 +212,18 @@ function resolveAppRoute(): AppRoute {
     return { kind: "public", route: { kind: "services" } };
   }
 
+  if (pathname === CASE_STUDIES_PATH) {
+    return { kind: "public", route: { kind: "collection", section: "case-studies" } };
+  }
+
+  if (pathname === PROJECTS_PATH) {
+    return { kind: "public", route: { kind: "collection", section: "projects" } };
+  }
+
+  if (pathname === INSIGHTS_PATH) {
+    return { kind: "public", route: { kind: "collection", section: "insights" } };
+  }
+
   if (pathname === ABOUT_PATH) {
     return { kind: "public", route: { kind: "about" } };
   }
@@ -234,6 +254,14 @@ function PublicSiteRouter({ route }: { route: PublicRoute }) {
 
   if (route.kind === "services") {
     return <PublicServicesPage />;
+  }
+
+  if (route.kind === "collection") {
+    const section = getSectionDefinition(route.section);
+
+    if (section) {
+      return <PublicCollectionPage section={section} />;
+    }
   }
 
   if (route.kind === "service-detail") {

@@ -8,6 +8,27 @@ export type ServiceSlug =
 export const ABOUT_PATH = "/about";
 export const CONTACT_PATH = "/contact";
 export const LEGACY_BOOKING_PATH = "/booking";
+export const CASE_STUDIES_PATH = "/case-studies";
+export const PROJECTS_PATH = "/projects";
+export const INSIGHTS_PATH = "/insights";
+
+export type PublicSectionKey = "services" | "case-studies" | "projects" | "insights";
+
+export type PublicSectionItem = {
+  id: string;
+  label: string;
+  href: string;
+  summary: string;
+};
+
+export type PublicSectionDefinition = {
+  key: PublicSectionKey;
+  label: string;
+  path: string;
+  shortLabel: string;
+  description: string;
+  items: PublicSectionItem[];
+};
 
 export type ServiceDefinition = {
   slug: ServiceSlug;
@@ -49,8 +70,6 @@ export type ExperienceItem = {
 };
 
 export const PUBLIC_NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/services", label: "Services" },
   { href: ABOUT_PATH, label: "About" },
   { href: CONTACT_PATH, label: "Contact" },
 ] as const;
@@ -257,7 +276,7 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   {
     slug: "ai-strategy-roadmapping",
     title: "AI Strategy & Roadmapping",
-    shortTitle: "AI Strategy",
+    shortTitle: "Technology & AI Strategy",
     tagline: "Move from AI interest to a focused, realistic business plan.",
     summary: "Clarify the use cases, priorities, and roadmap before investing in the wrong direction.",
     intro:
@@ -400,6 +419,116 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   },
 ] as const;
 
+export const CASE_STUDY_ITEMS = [
+  {
+    id: "transformation-governance",
+    label: "Transformation governance",
+    href: `${CASE_STUDIES_PATH}#transformation-governance`,
+    summary: "Examples of modernization work structured around governance, sequencing, and executive alignment.",
+  },
+  {
+    id: "operational-efficiency",
+    label: "Operational efficiency",
+    href: `${CASE_STUDIES_PATH}#operational-efficiency`,
+    summary: "Selected examples focused on simplification, delivery discipline, and day-to-day operational improvement.",
+  },
+  {
+    id: "ai-enablement",
+    label: "AI enablement",
+    href: `${CASE_STUDIES_PATH}#ai-enablement`,
+    summary: "Illustrative cases showing how AI and automation can be framed around practical business value.",
+  },
+] as const;
+
+export const PROJECT_ITEMS = [
+  {
+    id: "fractional-leadership",
+    label: "Fractional leadership",
+    href: `${PROJECTS_PATH}#fractional-leadership`,
+    summary: "Mission formats that bring senior technology and transformation guidance into critical periods.",
+  },
+  {
+    id: "delivery-reinforcement",
+    label: "Delivery reinforcement",
+    href: `${PROJECTS_PATH}#delivery-reinforcement`,
+    summary: "Project and PMO-oriented support for organisations under execution pressure.",
+  },
+  {
+    id: "roadmaps-diagnostics",
+    label: "Roadmaps and diagnostics",
+    href: `${PROJECTS_PATH}#roadmaps-diagnostics`,
+    summary: "Focused assessments used to clarify priorities, risks, and realistic next steps.",
+  },
+] as const;
+
+export const INSIGHT_ITEMS = [
+  {
+    id: "advisory-notes",
+    label: "Advisory notes",
+    href: `${INSIGHTS_PATH}#advisory-notes`,
+    summary: "Short perspectives on strategy, transformation, and technology leadership.",
+  },
+  {
+    id: "ai-automation",
+    label: "AI and automation",
+    href: `${INSIGHTS_PATH}#ai-automation`,
+    summary: "Views on practical adoption, operating-model impact, and business value.",
+  },
+  {
+    id: "news-updates",
+    label: "News and updates",
+    href: `${INSIGHTS_PATH}#news-updates`,
+    summary: "Selected updates on current work, themes, and evolving priorities.",
+  },
+] as const;
+
+export const PUBLIC_SECTION_DEFINITIONS: PublicSectionDefinition[] = [
+  {
+    key: "services",
+    label: "Services",
+    shortLabel: "Services",
+    path: "/services",
+    description: "Core advisory offers across technology, delivery, transformation, and practical AI.",
+    items: SERVICE_DEFINITIONS.map((service) => ({
+      id: service.slug,
+      label: service.shortTitle,
+      href: `/services/${service.slug}`,
+      summary: service.summary,
+    })),
+  },
+  {
+    key: "case-studies",
+    label: "Case studies",
+    shortLabel: "Case studies",
+    path: CASE_STUDIES_PATH,
+    description: "Illustrative examples of how advisory work translates into clearer decisions and stronger execution.",
+    items: [...CASE_STUDY_ITEMS],
+  },
+  {
+    key: "projects",
+    label: "Projects",
+    shortLabel: "Projects",
+    path: PROJECTS_PATH,
+    description: "Engagement shapes and project formats designed to support concrete delivery and change needs.",
+    items: [...PROJECT_ITEMS],
+  },
+  {
+    key: "insights",
+    label: "Blog / News",
+    shortLabel: "Blog / News",
+    path: INSIGHTS_PATH,
+    description: "Perspectives, notes, and updates across transformation, governance, technology, and AI.",
+    items: [...INSIGHT_ITEMS],
+  },
+] as const;
+
+const SECTION_PATHS: Array<[PublicSectionKey, string]> = [
+  ["services", "/services"],
+  ["case-studies", CASE_STUDIES_PATH],
+  ["projects", PROJECTS_PATH],
+  ["insights", INSIGHTS_PATH],
+];
+
 const LEGACY_SERVICE_SLUGS: Record<string, ServiceSlug> = {
   "fractional-cio/cdo-transformation-advisory": "fractional-cio-transformation-advisory",
 };
@@ -414,4 +543,18 @@ export function normalizeServiceSlug(slug: string): ServiceSlug | null {
 
 export function getServiceDefinition(slug: ServiceSlug) {
   return SERVICE_DEFINITIONS.find((service) => service.slug === slug);
+}
+
+export function getSectionDefinition(key: PublicSectionKey) {
+  return PUBLIC_SECTION_DEFINITIONS.find((section) => section.key === key);
+}
+
+export function getSectionKeyForPath(pathname: string): PublicSectionKey | null {
+  for (const [key, path] of SECTION_PATHS) {
+    if (pathname === path || pathname.startsWith(`${path}/`)) {
+      return key;
+    }
+  }
+
+  return null;
 }

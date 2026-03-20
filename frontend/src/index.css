@@ -1,5 +1,5 @@
 /* Copyright (c) Dario Pizzolante */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -2384,9 +2384,9 @@
 }
 
 @theme inline {
-  --font-sans: "IBM Plex Sans", "Aptos", sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Aptos", "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "Consolas", monospace;
-  --font-display: "Space Grotesk", "Trebuchet MS", sans-serif;
+  --font-display: "Plus Jakarta Sans", "Aptos", "Segoe UI", sans-serif;
 }
 
 @layer base {

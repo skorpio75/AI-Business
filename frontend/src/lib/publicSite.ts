@@ -76,7 +76,7 @@ export const PUBLIC_NAV_LINKS = [
 
 export const HOME_HERO = {
   eyebrow: "Independent advisory for transformation and practical AI",
-  title: "Strategy. Delivery. Technology.",
+  title: "Strategy. Transformation. Execution.",
   summary:
     "I help organisations simplify change, improve governance and delivery, and turn technology + AI into practical business value.",
   focusAreas: [

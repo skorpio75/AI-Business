@@ -33,7 +33,7 @@ export function PublicLandingPage() {
         </div>
 
         <aside className="hero-visual-card" aria-label="Stratevia advisory focus">
-          <h2>One advisory partner across strategy, technology, and delivery.</h2>
+          <h2>One advisory partner across strategy, technology and delivery.</h2>
           <ul className="hero-bullet-list">
             {HOME_HERO.focusAreas.map((item) => (
               <li key={item}>{item}</li>

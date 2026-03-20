@@ -2831,6 +2831,28 @@
 }
 
 @layer components {
+  .public-site .site-header,
+  .public-site .site-header--overlay,
+  .public-site .site-footer {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+@layer components {
+  .public-site .site-header,
+  .public-site .site-header--overlay,
+  .public-site .site-footer {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
+@layer components {
   .public-site .timeline-list--light {
     gap: 0 !important;
   }
@@ -2845,6 +2867,246 @@
   .public-site .timeline-list--light .timeline-card--light:first-child {
     border-top: 0 !important;
     padding-top: 0 !important;
+  }
+}
+
+@layer components {
+  .public-site .site-header,
+  .public-site .site-section,
+  .public-site .page-section,
+  .public-site .site-footer,
+  .public-site .page-hero,
+  .public-site .site-hero--home,
+  .public-site .image-hero {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+@layer components {
+  .public-site .site-main {
+    display: block !important;
+    padding-bottom: 5rem !important;
+    background: #ffffff !important;
+  }
+
+  .public-site .site-header,
+  .public-site .site-footer {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  .public-site .site-header {
+    background: #ffffff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    min-height: 8rem !important;
+    align-items: center !important;
+  }
+
+  .public-site .site-nav a,
+  .public-site .context-nav a,
+  .public-site .section-switcher {
+    color: #2f2f2f !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .public-site .site-nav a:hover,
+  .public-site .site-nav a.is-active,
+  .public-site .context-nav a:hover,
+  .public-site .context-nav a.is-active {
+    color: #c97a24 !important;
+    background: transparent !important;
+  }
+
+  .public-site .site-brand__logo {
+    width: 240px !important;
+  }
+
+  .landing-hero-banner {
+    width: min(1280px, calc(100% - 2rem)) !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+
+  .landing-hero-banner__image {
+    width: 100% !important;
+    height: 520px !important;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)),
+      url("/Luxembourg.jpg") center center / cover no-repeat !important;
+  }
+
+  .landing-intro-shell {
+    width: min(1280px, calc(100% - 2rem)) !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  .landing-intro-panel {
+    width: min(100%, 760px) !important;
+    margin-top: -9rem !important;
+    background: #ffffff !important;
+    padding: 4rem 4rem 3rem !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  .landing-intro-panel__eyebrow,
+  .landing-section__eyebrow {
+    margin: 0 0 1rem !important;
+    color: #c97a24 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+  }
+
+  .landing-intro-panel h1,
+  .landing-section__heading h2,
+  .landing-service-item h3,
+  .landing-proof-item h3 {
+    color: #2f2f2f !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .landing-intro-panel h1 {
+    margin: 0 !important;
+    font-size: clamp(2.7rem, 5vw, 4.2rem) !important;
+    line-height: 1.02 !important;
+    max-width: 12ch !important;
+  }
+
+  .landing-intro-panel p {
+    margin: 1.5rem 0 0 !important;
+    max-width: 40rem !important;
+    color: #555555 !important;
+    font-size: 1.1rem !important;
+    line-height: 1.8 !important;
+  }
+
+  .landing-intro-panel__actions {
+    display: flex !important;
+    gap: 1rem !important;
+    flex-wrap: wrap !important;
+    margin-top: 2rem !important;
+  }
+
+  .landing-intro-panel .site-button--primary {
+    background: #c97a24 !important;
+    border-color: #c97a24 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .landing-intro-panel .site-button--secondary {
+    background: transparent !important;
+    border: 1px solid rgba(47, 47, 47, 0.18) !important;
+    color: #2f2f2f !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .landing-section {
+    width: min(1280px, calc(100% - 2rem)) !important;
+    margin: 0 auto !important;
+    padding: 3rem 0 0 !important;
+  }
+
+  .landing-section__heading {
+    margin-bottom: 2rem !important;
+    max-width: 48rem !important;
+  }
+
+  .landing-section__heading h2 {
+    margin: 0 !important;
+    font-size: clamp(2rem, 3.4vw, 3rem) !important;
+    line-height: 1.06 !important;
+  }
+
+  .landing-service-list,
+  .landing-proof-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    border-top: 1px solid rgba(47, 47, 47, 0.12) !important;
+    border-bottom: 1px solid rgba(47, 47, 47, 0.12) !important;
+    background: transparent !important;
+  }
+
+  .landing-service-item,
+  .landing-proof-item {
+    padding: 2rem 2rem 2rem 0 !important;
+    border-right: 1px solid rgba(47, 47, 47, 0.12) !important;
+    background: transparent !important;
+  }
+
+  .landing-service-item:last-child,
+  .landing-proof-item:last-child {
+    border-right: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .landing-service-item h3,
+  .landing-proof-item h3 {
+    margin: 0 0 1rem !important;
+    font-size: 1.5rem !important;
+  }
+
+  .landing-service-item p,
+  .landing-proof-item p {
+    margin: 0 !important;
+    color: #5c5c5c !important;
+    line-height: 1.8 !important;
+  }
+
+  .landing-text-link {
+    display: inline-block !important;
+    margin-top: 1.25rem !important;
+    color: #c97a24 !important;
+    text-decoration: none !important;
+  }
+
+  .landing-text-link:hover {
+    text-decoration: underline !important;
+  }
+
+  @media (max-width: 960px) {
+    .landing-hero-banner__image {
+      height: 380px !important;
+    }
+
+    .landing-intro-panel {
+      width: 100% !important;
+      margin-top: -4rem !important;
+      padding: 2rem !important;
+    }
+
+    .landing-service-list,
+    .landing-proof-list {
+      grid-template-columns: 1fr !important;
+    }
+
+    .landing-service-item,
+    .landing-proof-item {
+      padding: 1.5rem 0 !important;
+      border-right: 0 !important;
+      border-bottom: 1px solid rgba(47, 47, 47, 0.12) !important;
+    }
+
+    .landing-service-item:last-child,
+    .landing-proof-item:last-child {
+      border-bottom: 0 !important;
+    }
   }
 }
 
@@ -4890,6 +5152,12 @@
 }
 
 @layer components {
+  .public-site .site-hero--home {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
   .public-site .site-hero--home {
     grid-template-columns: minmax(0, 42rem) minmax(19rem, 23rem) !important;
     justify-content: start !important;

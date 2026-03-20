@@ -2864,7 +2864,7 @@
   }
 
   .public-site .section-heading--band {
-    max-width: 52rem !important;
+    max-width: 60rem !important;
     margin-bottom: 0 !important;
     padding-bottom: 1.25rem !important;
     border-bottom: 1px solid rgba(23, 23, 23, 0.12) !important;
@@ -5290,27 +5290,27 @@
   }
 
   .public-site .site-hero--home {
-    grid-template-columns: minmax(0, 42rem) minmax(19rem, 23rem) !important;
+    grid-template-columns: minmax(0, 48rem) minmax(19rem, 23rem) !important;
     justify-content: space-between !important;
     gap: 1.25rem !important;
     align-items: end !important;
   }
 
   .public-site .site-hero--home .site-hero__content {
-    max-width: 42rem !important;
+    max-width: 48rem !important;
     min-width: 0 !important;
     padding-right: 0 !important;
   }
 
   .public-site .site-hero--home h1 {
-    max-width: 7.2ch !important;
-    font-size: clamp(2.55rem, 4.55vw, 4.25rem) !important;
+    max-width: 10.5ch !important;
+    font-size: clamp(2.55rem, 4.45vw, 4.25rem) !important;
     line-height: 0.92 !important;
     text-wrap: balance !important;
   }
 
   .public-site .site-hero--home .site-hero__lead {
-    max-width: 31rem !important;
+    max-width: 38rem !important;
   }
 
   .public-site .site-hero--home .hero-visual-card {
@@ -5328,28 +5328,28 @@
   }
 
   .public-site .image-hero {
-    grid-template-columns: minmax(0, 40rem) minmax(19rem, 23rem) !important;
+    grid-template-columns: minmax(0, 46rem) minmax(19rem, 23rem) !important;
     justify-content: space-between !important;
     gap: 1.25rem !important;
     align-items: end !important;
   }
 
   .public-site .image-hero__content {
-    max-width: 40rem !important;
+    max-width: 46rem !important;
     min-width: 0 !important;
     padding-right: 0 !important;
   }
 
   .public-site .image-hero h1 {
-    max-width: 7.3ch !important;
-    font-size: clamp(2.5rem, 4.35vw, 4.1rem) !important;
+    max-width: 10.5ch !important;
+    font-size: clamp(2.5rem, 4.25vw, 4.1rem) !important;
     line-height: 0.93 !important;
     text-wrap: balance !important;
   }
 
   .public-site .image-hero__lead,
   .public-site .image-hero__body p {
-    max-width: 30rem !important;
+    max-width: 38rem !important;
   }
 
   .public-site .image-hero__panel {
@@ -5367,13 +5367,13 @@
 
   @media (max-width: 1100px) {
     .public-site .site-hero--home {
-      grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem) !important;
+      grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 20rem) !important;
       justify-content: space-between !important;
       gap: 1.1rem !important;
     }
 
     .public-site .image-hero {
-      grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem) !important;
+      grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 20rem) !important;
       justify-content: space-between !important;
       gap: 1.1rem !important;
     }
@@ -5393,12 +5393,12 @@
     }
 
     .public-site .site-hero--home h1 {
-      max-width: 7.1ch !important;
+      max-width: 9ch !important;
       font-size: clamp(2.45rem, 10.2vw, 4rem) !important;
     }
 
     .public-site .image-hero h1 {
-      max-width: 7.1ch !important;
+      max-width: 9ch !important;
       font-size: clamp(2.35rem, 9.6vw, 3.85rem) !important;
     }
 

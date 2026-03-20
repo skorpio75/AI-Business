@@ -399,7 +399,7 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   {
     slug: "fractional-cio-transformation-advisory",
     title: "Fractional CIO / Transformation Advisory",
-    shortTitle: "Fractional CIO",
+    shortTitle: "Fractional CIO & CDO",
     tagline: "Bring senior technology leadership into critical decisions and delivery moments.",
     summary: "Access senior advisory support across strategy, modernization, governance, and executive decision-making.",
     intro:

@@ -21,7 +21,7 @@ export function PublicAboutPage() {
         backHref="/"
         backLabel="Home"
         kicker="About"
-        title="Dario Pizzolante"
+        title="Stratevia"
         lead={ABOUT_LEAD}
         panel={
           <div className="about-hero-highlight-stack">
@@ -48,7 +48,7 @@ export function PublicAboutPage() {
         <div className="band-shell">
           <article className="content-block content-block--with-aside band-panel">
             <div className="content-block__main">
-              <p className="site-kicker">Professional summary</p>
+              <p className="site-kicker">Dario Pizzolante</p>
               <div className="content-block__copy">
                 {ABOUT_SUMMARY.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>

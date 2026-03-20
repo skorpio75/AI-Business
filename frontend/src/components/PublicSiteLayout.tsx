@@ -145,7 +145,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
                 >
                   <X className="size-5" />
                 </button>
-                <img alt="" className="section-drawer__logo" src="/logo_black_cropped.png" />
+                <img alt="" className="section-drawer__logo" src="/stratevia-logo.png" />
               </div>
 
               <nav className="section-family-nav" aria-label="Section families">

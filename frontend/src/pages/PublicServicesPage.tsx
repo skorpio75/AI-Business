@@ -1,69 +1,88 @@
 /* Copyright (c) Dario Pizzolante */
-import type { LucideIcon } from "lucide-react";
-import { ArrowRight, BriefcaseBusiness, ExternalLink, Layers3, Sparkles, Workflow } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
-import { BOOKING_PATH, SERVICE_DEFINITIONS, type ServiceSlug } from "@/lib/publicSite";
-
-const SERVICE_ICONS: Record<ServiceSlug, LucideIcon> = {
-  "ai-strategy-roadmapping": Sparkles,
-  "automation-digital-operations": Workflow,
-  "delivery-pmo-project-service-management": Layers3,
-  "fractional-cio/cdo-transformation-advisory": BriefcaseBusiness,
-};
+import {
+  CONTACT_PATH,
+  ENGAGEMENT_FORMATS,
+  SERVICES_HERO_REASONS,
+  SERVICE_DEFINITIONS,
+} from "@/lib/publicSite";
 
 export function PublicServicesPage() {
   return (
     <PublicSiteLayout>
-      <section className="page-hero">
+      <section className="page-hero page-hero--light">
         <div className="page-hero__content">
-          <a className="back-link" href="/">
+          <a className="back-link back-link--dark" href="/">
             Home
           </a>
           <p className="site-kicker">Services</p>
-          <h1>Focused support across strategy, automation, and technology leadership.</h1>
-          <p className="page-lead">
-            Explore the core services designed to help organizations modernize, improve operations,
-            strengthen delivery governance, and move toward practical AI adoption with clarity.
+          <h1>Services for organisations facing change, complexity, or execution pressure.</h1>
+          <p className="page-lead page-lead--dark">
+            Stratevia works at the intersection of business priorities, technology decisions,
+            delivery structure, and practical AI opportunity.
           </p>
         </div>
-        <div className="page-hero__panel">
-          <strong>How I work</strong>
-          <p>
-            Senior advisory with a rare blend of strategy, technology, and delivery expertise,
-            combined with practical framing and clear next steps.
-          </p>
-          <a className="site-button site-button--primary" href={BOOKING_PATH}>
-            Start a conversation
-            <ArrowRight className="size-4" />
-          </a>
+        <div className="page-hero__panel page-hero__panel--light">
+          <strong>Typical reasons clients engage</strong>
+          <ul className="detail-list detail-list--dark">
+            {SERVICES_HERO_REASONS.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      <section className="page-section">
-        <div className="service-grid">
-          {SERVICE_DEFINITIONS.map((service) => {
-            const Icon = SERVICE_ICONS[service.slug];
-
-            return (
-              <article key={service.slug} className="service-card service-card--detailed">
-                <span className="service-card__icon">
-                  <Icon className="size-5" />
-                </span>
-                <h3>{service.title}</h3>
-                <p>{service.summary}</p>
-                <div className="service-card__meta">
-                  <strong>Typical focus</strong>
-                  <span>{service.engagements[0]}</span>
-                </div>
-                <a className="service-card__link" href={`/services/${service.slug}`}>
-                  Open service page
-                  <ExternalLink className="size-4" />
-                </a>
-              </article>
-            );
-          })}
+      <section className="page-section page-section--light">
+        <div className="service-summary-grid">
+          {SERVICE_DEFINITIONS.map((service) => (
+            <article key={service.slug} className="service-summary-card">
+              <p className="service-summary-card__eyebrow">{service.shortTitle}</p>
+              <h2>{service.title}</h2>
+              <p>{service.summary}</p>
+              <div className="service-summary-card__meta">
+                <strong>Best for</strong>
+                <span>{service.bestFor.replace(/^Best for /, "")}</span>
+              </div>
+              <a className="text-link" href={`/services/${service.slug}`}>
+                View service
+                <ArrowRight className="size-4" />
+              </a>
+            </article>
+          ))}
         </div>
+      </section>
+
+      <section className="page-section page-section--light">
+        <div className="section-heading">
+          <p className="site-kicker">Engagement formats</p>
+          <h2>Different ways to bring in senior support.</h2>
+        </div>
+        <div className="format-grid">
+          {ENGAGEMENT_FORMATS.map((format) => (
+            <article key={format.title} className="format-card">
+              <h3>{format.title}</h3>
+              <p>{format.summary}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="page-section page-section--light">
+        <article className="cta-band cta-band--compact">
+          <div>
+            <p className="site-kicker">Contact</p>
+            <h2>Not sure which service fits?</h2>
+            <p>Start with a short discovery conversation.</p>
+          </div>
+          <div className="cta-band__actions">
+            <a className="site-button site-button--primary" href={CONTACT_PATH}>
+              Book a call
+              <ArrowRight className="size-4" />
+            </a>
+          </div>
+        </article>
       </section>
     </PublicSiteLayout>
   );

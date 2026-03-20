@@ -1,19 +1,14 @@
 /* Copyright (c) Dario Pizzolante */
 import { type FormEvent, useState } from "react";
-import {
-  ArrowRight,
-  CalendarDays,
-  Check,
-  LoaderCircle,
-  MessageSquareText,
-} from "lucide-react";
+import { ArrowRight, LoaderCircle } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import { apiClient } from "@/lib/api";
 import {
-  BOOKING_OPTIONS,
-  BOOKING_POINTS,
-  BOOKING_TIMING_OPTIONS,
+  CONTACT_NEXT_STEPS,
+  CONTACT_PATH,
+  CONTACT_REASONS,
+  CONTACT_TIMING_OPTIONS,
   SERVICE_DEFINITIONS,
 } from "@/lib/publicSite";
 
@@ -35,7 +30,7 @@ const INITIAL_FORM: BookingFormState = {
   roleTitle: "",
   serviceInterest: "",
   challengeSummary: "",
-  preferredTiming: BOOKING_TIMING_OPTIONS[0],
+  preferredTiming: CONTACT_TIMING_OPTIONS[0],
   consentToContact: true,
 };
 
@@ -58,7 +53,7 @@ export function PublicBookingPage() {
         service_interest: form.serviceInterest || undefined,
         challenge_summary: form.challengeSummary,
         preferred_timing: form.preferredTiming || undefined,
-        website_path: typeof window === "undefined" ? "/booking" : window.location.pathname,
+        website_path: typeof window === "undefined" ? CONTACT_PATH : window.location.pathname,
         consent_to_contact: form.consentToContact,
       });
       setStatus("success");
@@ -76,36 +71,38 @@ export function PublicBookingPage() {
 
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--booking">
+      <section className="page-hero page-hero--light">
         <div className="page-hero__content">
-          <a className="back-link" href="/">
+          <a className="back-link back-link--dark" href="/">
             Home
           </a>
-          <p className="site-kicker">Booking</p>
-          <h1>Start with a focused, practical conversation.</h1>
-          <p className="page-lead">
-            The first step is a short discussion designed to clarify your context, identify the
-            right priority, and decide what kind of support makes the most sense.
+          <p className="site-kicker">Contact</p>
+          <h1>Start with a focused conversation.</h1>
+          <p className="page-lead page-lead--dark">
+            A first discussion to understand your context, priorities, and whether Stratevia is
+            the right fit.
           </p>
-          <div className="booking-points">
-            {BOOKING_POINTS.map((point) => (
-              <div key={point} className="booking-point">
-                <Check className="size-4" />
-                <span>{point}</span>
-              </div>
-            ))}
-          </div>
         </div>
+      </section>
 
-        <div className="page-hero__panel booking-form-panel">
+      <section className="page-section page-section--light contact-layout">
+        <article className="contact-reasons">
+          <p className="site-kicker">Reasons to reach out</p>
+          <h2>Bring clarity to the pressure point.</h2>
+          <ul className="detail-list detail-list--dark">
+            {CONTACT_REASONS.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </article>
+
+        <article className="detail-card detail-card--light booking-form-panel">
           <div className="booking-panel__head">
             <strong>Request a conversation</strong>
-            <p>
-              Share a bit of context and your request will go directly into Stratevia&apos;s
-              intake workflow.
-            </p>
+            <p>Share a bit of context and your request will be reviewed directly.</p>
           </div>
-          <form className="booking-form" onSubmit={handleSubmit}>
+
+          <form className="booking-form booking-form--light" onSubmit={handleSubmit}>
             <div className="booking-form__grid">
               <label className="booking-field">
                 <span>Name</span>
@@ -150,7 +147,7 @@ export function PublicBookingPage() {
                 />
               </label>
               <label className="booking-field">
-                <span>Service of interest</span>
+                <span>Topic of interest</span>
                 <select
                   name="serviceInterest"
                   value={form.serviceInterest}
@@ -165,13 +162,13 @@ export function PublicBookingPage() {
                 </select>
               </label>
               <label className="booking-field">
-                <span>Timing</span>
+                <span>Preferred timing</span>
                 <select
                   name="preferredTiming"
                   value={form.preferredTiming}
                   onChange={(event) => updateField("preferredTiming", event.target.value)}
                 >
-                  {BOOKING_TIMING_OPTIONS.map((option) => (
+                  {CONTACT_TIMING_OPTIONS.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
@@ -181,7 +178,7 @@ export function PublicBookingPage() {
             </div>
 
             <label className="booking-field booking-field--full">
-              <span>What would you like to discuss?</span>
+              <span>Briefly describe your context</span>
               <textarea
                 name="challengeSummary"
                 required
@@ -191,7 +188,7 @@ export function PublicBookingPage() {
               />
             </label>
 
-            <label className="booking-consent">
+            <label className="booking-consent booking-consent--light">
               <input
                 checked={form.consentToContact}
                 name="consentToContact"
@@ -207,46 +204,45 @@ export function PublicBookingPage() {
                 {status === "submitting" ? "Sending request" : "Send request"}
               </button>
               <a className="site-button site-button--secondary" href="/services">
+                View services
                 <ArrowRight className="size-4" />
-                Review services first
               </a>
             </div>
           </form>
 
-        </div>
+          {responseMessage ? (
+            <p className={`booking-note ${status === "success" ? "booking-note--success" : "booking-note--error"}`}>
+              {responseMessage}
+            </p>
+          ) : null}
+        </article>
       </section>
 
-      <section className="page-section">
-        <div className="booking-option-grid">
-          {BOOKING_OPTIONS.map((option, index) => (
-            <article key={option.title} className="booking-option">
-              <div className="booking-option__index">0{index + 1}</div>
-              <h2>{option.title}</h2>
-              <p>{option.summary}</p>
+      <section className="page-section page-section--light">
+        <div className="section-heading">
+          <p className="site-kicker">What happens next</p>
+          <h2>Simple, direct, and obligation-free.</h2>
+        </div>
+        <div className="next-step-grid">
+          {CONTACT_NEXT_STEPS.map((step) => (
+            <article key={step} className="next-step-card">
+              <p>{step}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="page-section">
-        <article className="detail-card detail-card--wide">
-          <p className="detail-card__eyebrow">Next step</p>
-          <h2>How booking can evolve</h2>
-          <div className="timeline-list">
-            <article className="timeline-card">
-              <div className="timeline-card__top">
-                <strong>Now</strong>
-                <CalendarDays className="size-4" />
-              </div>
-              <p>A live booking form routes advisory inquiries into the private intake platform.</p>
-            </article>
-            <article className="timeline-card">
-              <div className="timeline-card__top">
-                <strong>Next</strong>
-                <MessageSquareText className="size-4" />
-              </div>
-              <p>Add scheduler sync, qualification steps, and follow-up automation behind the same hidden workflow.</p>
-            </article>
+      <section className="page-section page-section--light">
+        <article className="direct-contact-card">
+          <div>
+            <p className="site-kicker">Direct contact</p>
+            <h2>Prefer a direct introduction?</h2>
+          </div>
+          <div className="direct-contact-card__links">
+            <a href="mailto:dario.pizzolante@stratevia.eu">dario.pizzolante@stratevia.eu</a>
+            <a href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
+              LinkedIn
+            </a>
           </div>
         </article>
       </section>

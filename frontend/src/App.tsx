@@ -33,7 +33,14 @@ import { PublicServicesPage } from "./pages/PublicServicesPage";
 import { WorkflowMonitorPage } from "./pages/WorkflowMonitorPage";
 import { API_BASE_URL } from "./lib/api";
 import type { ViewKey } from "./types";
-import { ABOUT_PATH, BOOKING_PATH, getServiceDefinition, type ServiceSlug } from "./lib/publicSite";
+import {
+  ABOUT_PATH,
+  CONTACT_PATH,
+  LEGACY_BOOKING_PATH,
+  getServiceDefinition,
+  normalizeServiceSlug,
+  type ServiceSlug,
+} from "./lib/publicSite";
 
 const MISSION_CONTROL_PATH = "/mission-control";
 const SERVICES_PATH = "/services";
@@ -152,7 +159,7 @@ const NAV_COMPACT_BREAKPOINT = 960;
 type PublicRoute =
   | { kind: "landing" }
   | { kind: "about" }
-  | { kind: "booking" }
+  | { kind: "contact" }
   | { kind: "services" }
   | { kind: "service-detail"; slug: ServiceSlug };
 
@@ -201,14 +208,14 @@ function resolveAppRoute(): AppRoute {
     return { kind: "public", route: { kind: "about" } };
   }
 
-  if (pathname === BOOKING_PATH) {
-    return { kind: "public", route: { kind: "booking" } };
+  if (pathname === CONTACT_PATH || pathname === LEGACY_BOOKING_PATH) {
+    return { kind: "public", route: { kind: "contact" } };
   }
 
   if (pathname.startsWith(`${SERVICES_PATH}/`)) {
-    const slug = pathname.slice(SERVICES_PATH.length + 1) as ServiceSlug;
+    const slug = normalizeServiceSlug(pathname.slice(SERVICES_PATH.length + 1));
 
-    if (getServiceDefinition(slug)) {
+    if (slug && getServiceDefinition(slug)) {
       return { kind: "public", route: { kind: "service-detail", slug } };
     }
   }
@@ -221,7 +228,7 @@ function PublicSiteRouter({ route }: { route: PublicRoute }) {
     return <PublicAboutPage />;
   }
 
-  if (route.kind === "booking") {
+  if (route.kind === "contact") {
     return <PublicBookingPage />;
   }
 

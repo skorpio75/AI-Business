@@ -3,10 +3,11 @@ export type ServiceSlug =
   | "ai-strategy-roadmapping"
   | "automation-digital-operations"
   | "delivery-pmo-project-service-management"
-  | "fractional-cio/cdo-transformation-advisory";
+  | "fractional-cio-transformation-advisory";
 
 export const ABOUT_PATH = "/about";
-export const BOOKING_PATH = "/booking";
+export const CONTACT_PATH = "/contact";
+export const LEGACY_BOOKING_PATH = "/booking";
 
 export type ServiceDefinition = {
   slug: ServiceSlug;
@@ -15,9 +16,12 @@ export type ServiceDefinition = {
   tagline: string;
   summary: string;
   intro: string;
+  bestFor: string;
+  clientProblems: string[];
   outcomes: string[];
   engagements: string[];
   fit: string[];
+  proofPoints: string[];
 };
 
 export type AcademicEducationItem = {
@@ -32,166 +36,217 @@ export type CertificationItem = {
   period: string;
 };
 
-export type VolunteeringItem = {
+export type HighlightItem = {
   title: string;
+  summary: string;
+  href?: string;
+};
+
+export type ExperienceItem = {
   organization: string;
-  period: string;
-  summary?: string;
+  role: string;
+  summary: string;
 };
 
 export const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: ABOUT_PATH, label: "About" },
-  { href: BOOKING_PATH, label: "Booking" },
+  { href: CONTACT_PATH, label: "Contact" },
 ] as const;
 
+export const HOME_HERO = {
+  eyebrow: "Independent advisory for transformation and practical AI",
+  title: "Strategy. Delivery. Technology.",
+  summary:
+    "I help organisations simplify change, improve governance and delivery, and turn technology + AI into practical business value.",
+  focusAreas: [
+    "Strategy and governance",
+    "Technology, AI and automation",
+    "Delivery and transformation support",
+  ],
+};
+
+export const HOME_SERVICE_PILLARS = [
+  {
+    title: "Technology & transformation advisory",
+    summary: "Clarify priorities, structure initiatives, and move forward with a realistic path.",
+    href: "/services/fractional-cio-transformation-advisory",
+  },
+  {
+    title: "AI & automation enablement",
+    summary: "Turn AI and process improvement into focused use cases with clear business value.",
+    href: "/services/ai-strategy-roadmapping",
+  },
+  {
+    title: "Delivery governance & fractional leadership",
+    summary: "Bring senior structure to programmes, PMO needs, and execution pressure points.",
+    href: "/services/delivery-pmo-project-service-management",
+  },
+] as const;
+
+export const HOW_I_WORK_STEPS = [
+  {
+    title: "Assess",
+    summary: "Understand the context, blockers, and objectives.",
+  },
+  {
+    title: "Prioritise",
+    summary: "Define the most valuable path forward.",
+  },
+  {
+    title: "Deliver",
+    summary: "Support execution with structure and senior guidance.",
+  },
+] as const;
+
+export const STRATEVIA_PROOF_POINTS = [
+  {
+    title: "Senior executive experience",
+    summary: "Leadership across IT, transformation, governance, and operating environments.",
+  },
+  {
+    title: "Business + technology perspective",
+    summary: "Advice shaped around outcomes, not technology for its own sake.",
+  },
+  {
+    title: "Practical execution focus",
+    summary: "Clear decisions, realistic sequencing, and support that helps work move.",
+  },
+] as const;
+
+export const SELECTED_BACKGROUND = [
+  "Microsoft",
+  "Unified Patent Court",
+  "Societe Electrique de l'Our",
+  "Net Service Lux",
+] as const;
+
+export const SELECTED_BACKGROUND_SUMMARY =
+  "Experience spanning leadership, modernization, governance, and operational transformation.";
+
+export const SERVICES_HERO_REASONS = [
+  "Unclear transformation priorities",
+  "AI interest but no roadmap",
+  "Manual or fragmented operations",
+  "Need senior guidance without a full-time hire",
+] as const;
+
+export const ENGAGEMENT_FORMATS = [
+  {
+    title: "Strategic advisory",
+    summary: "Short, focused support for decisions, direction, and prioritisation.",
+  },
+  {
+    title: "Transformation support",
+    summary: "Hands-on guidance to shape and stabilise change initiatives.",
+  },
+  {
+    title: "Fractional leadership",
+    summary: "Senior technology and transformation input without a permanent executive hire.",
+  },
+  {
+    title: "PMO / delivery reinforcement",
+    summary: "Added governance, cadence, and follow-through for pressured delivery work.",
+  },
+] as const;
+
+export const ABOUT_LEAD =
+  "I work with organisations that need senior guidance across transformation, technology decisions, delivery governance, and practical AI adoption.";
+
 export const ABOUT_SUMMARY = [
-  "I bring more than two decades of experience across IT leadership, digital transformation, and operational management in international environments. My work has spanned energy, technology consulting, legal-tech, and public-sector programmes.",
-  "The common thread is helping organizations modernize, structure delivery, improve governance, and adopt technology in ways that make day-to-day operations stronger.",
+  "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across international environments.",
+  "Clients typically engage when they need clarity, stronger governance, better execution structure, or senior advisory support without adding unnecessary complexity.",
 ];
 
-export const EXPERIENCE_PILLS = [
-  "20+ years across IT leadership and delivery",
-  "Energy, technology consulting, legal-tech, finance, and public sector",
-  "Executive leadership with hands-on technology and delivery experience",
-  "Modernization, governance, and practical AI adoption",
-];
+export const ABOUT_CORE_STRENGTHS = [
+  {
+    title: "Transformation leadership",
+    summary: "From modernization roadmaps to operating-model decisions and programme structure.",
+  },
+  {
+    title: "Governance and delivery",
+    summary: "Senior support for PMO, service management, stakeholder alignment, and follow-through.",
+  },
+  {
+    title: "Practical AI enablement",
+    summary: "Applying AI and automation where they support delivery, operations, and business value.",
+  },
+] as const;
 
-export const PROGRAMME_HIGHLIGHTS = [
+export const REPRESENTATIVE_EXPERIENCE: ExperienceItem[] = [
   {
-    org: "Société Électrique de l'Our",
-    summary: "Modernization roadmap, cloud transition, governance, and cost optimization.",
+    organization: "Microsoft",
+    role: "Technology consulting and operational leadership",
+    summary: "Executive-level perspective across governance, service management, and enterprise delivery.",
   },
   {
-    org: "Unified Patent Court",
-    summary: "IT operating model and programme coordination across 25 member states.",
+    organization: "Unified Patent Court",
+    role: "IT coordination and programme setup",
+    summary: "Supported the IT function and programme structure of a new European jurisdiction.",
   },
   {
-    org: "Microsoft",
-    summary: "Executive technology consulting across governance, service management, and operational leadership.",
+    organization: "Societe Electrique de l'Our",
+    role: "Head of IT",
+    summary: "Owned modernization planning, cloud transition, governance, and service improvement.",
   },
   {
-    org: "Net Service Lux",
-    summary: "Digitalization growth, local leadership, and AI-enabled solution expansion.",
+    organization: "Net Service Lux",
+    role: "Managing Director",
+    summary: "Led local growth, digitalization delivery, and AI-enabled service expansion.",
   },
-];
-
-export const ABOUT_FACTS = [
-  "IT strategy, governance, and modernization roadmaps",
-  "Digital transformation with practical execution support",
-  "Leadership across teams, budgets, and vendor ecosystems",
-  "Applied AI and automation positioned around governance and business value",
-];
+] as const;
 
 export const ACADEMIC_EDUCATION: AcademicEducationItem[] = [
   {
-    title: "Master of Science Computer Science",
+    title: "Master of Science, Computer Science",
     institution: "Oxford Brookes University",
     period: "2003 to 2005",
   },
   {
-    title: "Bachelor of Science Software Engineering",
+    title: "Bachelor of Science, Software Engineering",
     institution: "University of Bedfordshire",
     period: "2002 to 2003",
   },
   {
-    title: "University Diploma of Technology in Business Computing",
+    title: "University Diploma of Technology, Business Computing",
     institution: "Universite de Luxembourg",
     period: "1998 to 2001",
   },
-  {
-    title: "Master of Business Administration (studies/partial completion)",
-    institution: "Imperial College London",
-    period: "2011 to 2012",
-  },
-];
+] as const;
 
-export const LICENSES_AND_CERTIFICATIONS: CertificationItem[] = [
+export const SELECTED_CREDENTIALS: CertificationItem[] = [
   {
     title: "IBM RAG and Agentic AI",
     provider: "Coursera",
-    period: "03/2026",
+    period: "2026",
   },
   {
     title: "Creating an AI Adoption Strategy for Businesses",
     provider: "LinkedIn",
-    period: "08/2025",
-  },
-  {
-    title: "Cloud Architecture: Design Decisions",
-    provider: "LinkedIn",
-    period: "07/2025",
+    period: "2025",
   },
   {
     title: "Strategic Organization Design",
     provider: "Coursera",
-    period: "08/2018",
+    period: "2018",
   },
-];
+] as const;
 
-export const VOLUNTEERING: VolunteeringItem[] = [
-  {
-    title: "Founding member",
-    organization: "Rotary Club Strassen-Bertrange-Mamer",
-    period: "2023 to present",
-  },
-  {
-    title: "Committee member and Chair of the Membership Committee",
-    organization: "Rotary Club Strassen-Bertrange-Mamer",
-    period: "2023 to 2025",
-  },
-];
+export const CONTACT_REASONS = [
+  "A transformation initiative needs structure",
+  "AI opportunity needs prioritisation",
+  "Delivery is slipping",
+  "Senior support is needed without a full-time hire",
+] as const;
 
-export const CAREER_MILESTONES = [
-  {
-    role: "Management Consulting",
-    period: "2025 to present",
-    summary:
-      "Management consulting and digitalization support focused on operational efficiency and day-to-day business improvement.",
-  },
-  {
-    role: "Managing Director, Net Service Lux",
-    period: "2023 to 2025",
-    summary:
-      "Led the Luxembourg subsidiary, developed local operations, and expanded digitalization and AI-enabled delivery services.",
-  },
-  {
-    role: "Head of IT, Société Électrique de l'Our",
-    period: "2021 to 2023",
-    summary:
-      "Owned IT strategy and operations, modernization planning, service improvement, and major transformation initiatives.",
-  },
-  {
-    role: "IT Working Group Coordinator and IT Manager, Unified Patent Court",
-    period: "2016 to 2019",
-    summary:
-      "Helped establish the IT function of a new European jurisdiction and coordinated a multi-workstream international programme.",
-  },
-];
+export const CONTACT_NEXT_STEPS = [
+  "Your request is reviewed directly.",
+  "The first reply focuses on fit and next step.",
+  "There is no obligation.",
+] as const;
 
-export const BOOKING_POINTS = [
-  "A focused first conversation about your business context and priorities",
-  "Clear identification of the most valuable next step",
-  "A practical view of where strategy, modernization, or AI can help",
-];
-
-export const BOOKING_OPTIONS = [
-  {
-    title: "Strategy conversation",
-    summary: "A first discussion for exploring transformation priorities, technology direction, or AI opportunities.",
-  },
-  {
-    title: "Operational improvement discussion",
-    summary: "A session centered on process friction, delivery bottlenecks, and practical modernization needs.",
-  },
-  {
-    title: "Advisory fit check",
-    summary: "A straightforward conversation to decide whether strategic advisory or fractional leadership or delivery support is the right fit.",
-  },
-];
-
-export const BOOKING_TIMING_OPTIONS = [
+export const CONTACT_TIMING_OPTIONS = [
   "As soon as possible",
   "Within the next 2 weeks",
   "Within the next month",
@@ -201,105 +256,161 @@ export const BOOKING_TIMING_OPTIONS = [
 export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   {
     slug: "ai-strategy-roadmapping",
-    title: "AI strategy and roadmapping",
+    title: "AI Strategy & Roadmapping",
     shortTitle: "AI Strategy",
     tagline: "Move from AI interest to a focused, realistic business plan.",
-    summary:
-      "Clarify the highest-value use cases, governance needs, delivery priorities, and practical sequence for adopting AI in your business.",
+    summary: "Clarify the use cases, priorities, and roadmap before investing in the wrong direction.",
     intro:
-      "This service is designed for organizations that want to explore AI seriously without rushing into scattered tools or vague experimentation.",
+      "This service helps organisations approach AI with clarity, realism, and a business-led sequence instead of scattered experimentation.",
+    bestFor: "Best for organisations that need structure before committing time and budget to AI initiatives.",
+    clientProblems: [
+      "AI interest exists, but priorities are unclear",
+      "Use cases feel disconnected from business value",
+      "Leadership wants a practical roadmap before moving further",
+    ],
     outcomes: [
-      "A clearer AI opportunity picture tied to business goals",
-      "A practical roadmap with priorities, dependencies, and next steps",
-      "Better alignment between leadership, operations, and technology decisions",
+      "A clearer view of where AI can create value",
+      "A practical roadmap with priorities and next steps",
+      "Better alignment across leadership, operations, and technology",
     ],
     engagements: [
-      "Executive workshops and opportunity framing",
-      "Use-case prioritization and roadmap design",
-      "AI governance, delivery, and operating model guidance",
+      "Executive workshop",
+      "Diagnostic and prioritisation",
+      "Roadmap and action plan",
+      "Follow-up advisory support",
     ],
     fit: [
-      "Leaders who want to understand where AI can create real value",
-      "Teams planning modernization and process improvement",
-      "Organizations that need a structured starting point before investing further",
+      "Leadership teams exploring AI seriously",
+      "Organisations modernising operations and decision-making",
+      "Businesses that want a structured starting point",
+    ],
+    proofPoints: [
+      "Business-led use-case framing",
+      "Governance and delivery awareness",
+      "Practical sequencing over hype",
     ],
   },
   {
     slug: "automation-digital-operations",
-    title: "Automation and digital operations",
+    title: "Automation & Digital Operations",
     shortTitle: "Automation",
     tagline: "Reduce friction, simplify operations, and improve the way work gets done.",
-    summary:
-      "Identify repetitive effort, streamline internal workflows, and support digital operations with better process design, automation, and practical tooling.",
+    summary: "Identify manual bottlenecks, redesign workflows, and support more efficient day-to-day operations.",
     intro:
-      "This service focuses on business efficiency first. The goal is to make daily operations easier, clearer, and more scalable.",
+      "This service focuses on operational efficiency first, using automation and better process design to make work simpler and more reliable.",
+    bestFor: "Best for organisations dealing with repetitive effort, fragmented workflows, or operational drag.",
+    clientProblems: [
+      "Too much manual coordination across teams",
+      "Processes are fragmented or inconsistent",
+      "Digital operations need simplification before scaling further",
+    ],
     outcomes: [
-      "Less manual effort and fewer operational bottlenecks",
-      "Cleaner process flow and better day-to-day execution",
-      "A stronger foundation for future AI and digital initiatives",
+      "Less manual effort and fewer bottlenecks",
+      "Clearer process flow and execution discipline",
+      "A stronger operational base for future digital or AI work",
     ],
     engagements: [
-      "Process review and operational diagnosis",
-      "Automation opportunity mapping and solution shaping",
-      "Digital workflow design and implementation support",
+      "Operational review",
+      "Diagnostic and prioritisation",
+      "Workflow design and action plan",
+      "Implementation support",
     ],
     fit: [
-      "Organizations with too much manual coordination or fragmented processes",
-      "Teams looking to digitize internal operations without overcomplicating delivery",
-      "Businesses that want practical wins before larger transformation programmes",
+      "Teams overloaded by manual tasks",
+      "Businesses looking for practical efficiency gains",
+      "Organisations modernising operations without overengineering",
+    ],
+    proofPoints: [
+      "Process-first approach",
+      "Practical automation opportunities",
+      "Operational clarity before tool sprawl",
     ],
   },
   {
     slug: "delivery-pmo-project-service-management",
-    title: "Delivery governance, PMO, and service management",
-    shortTitle: "Delivery",
-    tagline: "Add structure, visibility, and follow-through to delivery-critical initiatives.",
-    summary:
-      "Support across PMO, project management, and service management to stabilize delivery, improve coordination, and keep programmes moving with clearer control.",
+    title: "Delivery Governance, PMO & Service Management",
+    shortTitle: "Delivery Governance",
+    tagline: "Add structure, visibility, and follow-through to critical initiatives.",
+    summary: "Strengthen governance, cadence, and coordination when delivery work needs more control.",
     intro:
-      "This service is designed for organizations that need stronger delivery discipline around active projects, operational services, or transformation workstreams.",
+      "This service supports programmes, projects, and service environments that need better structure, clearer visibility, and stronger follow-through.",
+    bestFor: "Best for organisations under delivery pressure that need structure without adding unnecessary bureaucracy.",
+    clientProblems: [
+      "Initiatives are moving, but coordination is weak",
+      "Priorities and ownership are not clear enough",
+      "Leaders need better visibility across delivery and service issues",
+    ],
     outcomes: [
-      "Clearer governance, reporting cadence, and delivery visibility",
-      "Better coordination across stakeholders, vendors, and internal teams",
-      "Stronger service management and follow-through on operational priorities",
+      "Clearer governance and reporting cadence",
+      "Better coordination across stakeholders and dependencies",
+      "Stronger execution discipline around active work",
     ],
     engagements: [
-      "PMO support, delivery governance, and progress tracking",
-      "Project management structure, coordination, and checkpoint management",
-      "Service management improvement across operations, support, and accountability",
+      "Executive workshop",
+      "Diagnostic and delivery stabilisation",
+      "Governance model and action plan",
+      "Ongoing PMO or service advisory support",
     ],
     fit: [
-      "Organizations with complex delivery efforts that need more control and structure",
-      "Teams managing multiple stakeholders, dependencies, or service issues",
-      "Leaders who want execution discipline without adding unnecessary bureaucracy",
+      "Programmes with multiple stakeholders or vendors",
+      "Teams that need stronger project or service management discipline",
+      "Leaders who want more control and clearer reporting",
+    ],
+    proofPoints: [
+      "Governance and checkpoint design",
+      "PMO and service management support",
+      "Execution focus with practical cadence",
     ],
   },
   {
-    slug: "fractional-cio/cdo-transformation-advisory",
-    title: "Fractional CIO/CDO and transformation advisory",
-    shortTitle: "Fractional CIO/CDO",
+    slug: "fractional-cio-transformation-advisory",
+    title: "Fractional CIO / Transformation Advisory",
+    shortTitle: "Fractional CIO",
     tagline: "Bring senior technology leadership into critical decisions and delivery moments.",
-    summary:
-      "Get experienced support across technology direction, modernization choices, delivery structure, vendor coordination, and executive-level decision making.",
+    summary: "Access senior advisory support across strategy, modernization, governance, and executive decision-making.",
     intro:
-      "This service is a strong fit when the business needs senior guidance but does not need, or does not yet want, a full-time executive hire.",
+      "This service is designed for organisations that need experienced technology and transformation guidance without making a full-time executive hire.",
+    bestFor: "Best for organisations that need senior direction, but not a permanent executive role.",
+    clientProblems: [
+      "Technology decisions need stronger business alignment",
+      "Modernization pressure is rising without enough senior guidance",
+      "Leadership needs a steady advisory counterpart for critical choices",
+    ],
     outcomes: [
-      "Stronger technology decisions with clearer business alignment",
-      "Better structure around delivery, governance, and modernization work",
-      "Senior guidance for leadership discussions, vendors, and execution priorities",
+      "Stronger technology and transformation decisions",
+      "Clearer governance around delivery and modernization",
+      "Senior support for leadership, vendors, and execution priorities",
     ],
     engagements: [
-      "Technology leadership on a fractional or advisory basis",
-      "Roadmap and architecture guidance for modernization initiatives",
-      "Executive support across delivery governance and transformation planning",
+      "Executive workshop",
+      "Strategic diagnostic",
+      "Roadmap and action plan",
+      "Fractional leadership or advisory follow-through",
     ],
     fit: [
-      "Growing businesses that need senior technology perspective",
-      "Leaders navigating change, vendor decisions, or modernization pressure",
-      "Organizations that want practical guidance across strategy and execution",
+      "Growing organisations that need senior technology perspective",
+      "Leadership teams navigating modernization or vendor decisions",
+      "Businesses needing guidance across strategy and execution",
+    ],
+    proofPoints: [
+      "Executive-level guidance",
+      "Business and technology alignment",
+      "Flexible support model",
     ],
   },
-];
+] as const;
+
+const LEGACY_SERVICE_SLUGS: Record<string, ServiceSlug> = {
+  "fractional-cio/cdo-transformation-advisory": "fractional-cio-transformation-advisory",
+};
+
+export function normalizeServiceSlug(slug: string): ServiceSlug | null {
+  if (slug in LEGACY_SERVICE_SLUGS) {
+    return LEGACY_SERVICE_SLUGS[slug];
+  }
+
+  return SERVICE_DEFINITIONS.some((service) => service.slug === slug) ? (slug as ServiceSlug) : null;
+}
 
 export function getServiceDefinition(slug: ServiceSlug) {
   return SERVICE_DEFINITIONS.find((service) => service.slug === slug);

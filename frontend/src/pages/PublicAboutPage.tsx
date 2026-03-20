@@ -3,111 +3,89 @@ import { ArrowRight } from "lucide-react";
 
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
-  ACADEMIC_EDUCATION,
-  ABOUT_FACTS,
+  ABOUT_LEAD,
   ABOUT_SUMMARY,
-  BOOKING_PATH,
-  CAREER_MILESTONES,
-  EXPERIENCE_PILLS,
-  LICENSES_AND_CERTIFICATIONS,
-  PROGRAMME_HIGHLIGHTS,
-  VOLUNTEERING,
+  ACADEMIC_EDUCATION,
+  ABOUT_CORE_STRENGTHS,
+  CONTACT_PATH,
+  REPRESENTATIVE_EXPERIENCE,
+  SELECTED_CREDENTIALS,
 } from "@/lib/publicSite";
 
 export function PublicAboutPage() {
   return (
     <PublicSiteLayout>
-      <section className="page-hero page-hero--about">
+      <section className="page-hero page-hero--light page-hero--about-clean">
         <div className="page-hero__content">
-          <a className="back-link" href="/">
+          <a className="back-link back-link--dark" href="/">
             Home
           </a>
           <p className="site-kicker">About</p>
           <h1>Dario Pizzolante</h1>
-          <p className="page-lead">
-            IT leadership, modernization, and AI-enabled business transformation.
-          </p>
-          {ABOUT_SUMMARY.map((paragraph) => (
-            <p key={paragraph} className="page-copy">
-              {paragraph}
-            </p>
-          ))}
+          <p className="page-lead page-lead--dark">{ABOUT_LEAD}</p>
+          <div className="page-hero__actions">
+            <a className="site-button site-button--primary" href={CONTACT_PATH}>
+              Book a call
+              <ArrowRight className="size-4" />
+            </a>
+          </div>
         </div>
-        <div className="page-hero__panel page-hero__panel--portrait">
-          <div className="about-portrait-wrap">
+        <div className="about-portrait-panel">
+          <div className="about-portrait-wrap about-portrait-wrap--clean">
             <img alt="Portrait of Dario Pizzolante" className="about-portrait" src="/dario-pizzolante.jpg" />
           </div>
-          <a className="site-button site-button--primary" href={BOOKING_PATH}>
-            Book a first conversation
-            <ArrowRight className="size-4" />
-          </a>
         </div>
       </section>
 
-      <section className="page-section page-section--about-grid">
-        <article className="detail-card">
-          <p className="detail-card__eyebrow">Experience</p>
-          <h2>Core focus areas</h2>
-          <div className="experience-pill-list experience-pill-list--roomy">
-            {EXPERIENCE_PILLS.map((pill) => (
-              <span key={pill} className="experience-pill experience-pill--panel">
-                {pill}
-              </span>
-            ))}
-          </div>
-        </article>
-
-        <article className="detail-card">
-          <p className="detail-card__eyebrow">Strengths</p>
-          <h2>How that experience translates into client value</h2>
-          <ul className="detail-list">
-            {ABOUT_FACTS.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
-      </section>
-
-      <section className="page-section">
-        <article className="detail-card detail-card--wide">
-          <p className="detail-card__eyebrow">Selected programmes</p>
-          <h2>Representative leadership and transformation work</h2>
-          <div className="highlight-grid">
-            {PROGRAMME_HIGHLIGHTS.map((item) => (
-              <article key={item.org} className="highlight-card">
-                <strong>{item.org}</strong>
-                <p>{item.summary}</p>
-              </article>
+      <section className="page-section page-section--light">
+        <article className="content-block">
+          <p className="site-kicker">Professional summary</p>
+          <div className="content-block__copy">
+            {ABOUT_SUMMARY.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
         </article>
       </section>
 
-      <section className="page-section">
-        <article className="detail-card detail-card--wide">
-          <p className="detail-card__eyebrow">Career path</p>
-          <h2>Selected milestones</h2>
-          <div className="timeline-list">
-            {CAREER_MILESTONES.map((item) => (
-              <article key={`${item.role}-${item.period}`} className="timeline-card">
-                <div className="timeline-card__top">
-                  <strong>{item.role}</strong>
-                  <span>{item.period}</span>
-                </div>
-                <p>{item.summary}</p>
-              </article>
-            ))}
-          </div>
-        </article>
+      <section className="page-section page-section--light">
+        <div className="section-heading">
+          <p className="site-kicker">Core strengths</p>
+          <h2>Senior support grounded in structure and execution.</h2>
+        </div>
+        <div className="trust-grid">
+          {ABOUT_CORE_STRENGTHS.map((item) => (
+            <article key={item.title} className="trust-card">
+              <h3>{item.title}</h3>
+              <p>{item.summary}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
-      <section className="page-section page-section--service">
-        <article className="detail-card">
-          <p className="detail-card__eyebrow">Education</p>
-          <h2>Academic education</h2>
-          <div className="timeline-list">
+      <section className="page-section page-section--light">
+        <div className="section-heading">
+          <p className="site-kicker">Representative experience</p>
+          <h2>Selected roles and environments.</h2>
+        </div>
+        <div className="experience-grid">
+          {REPRESENTATIVE_EXPERIENCE.map((item) => (
+            <article key={item.organization} className="experience-card">
+              <p className="experience-card__org">{item.organization}</p>
+              <h3>{item.role}</h3>
+              <p>{item.summary}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="page-section page-section--light page-section--credentials">
+        <article className="detail-card detail-card--light">
+          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Education</p>
+          <h2>Academic background</h2>
+          <div className="timeline-list timeline-list--light">
             {ACADEMIC_EDUCATION.map((item) => (
-              <article key={`${item.title}-${item.period}`} className="timeline-card">
+              <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
                 <div className="timeline-card__top">
                   <strong>{item.title}</strong>
                   <span>{item.period}</span>
@@ -118,12 +96,12 @@ export function PublicAboutPage() {
           </div>
         </article>
 
-        <article className="detail-card">
-          <p className="detail-card__eyebrow">Credentials</p>
-          <h2>Licenses and certifications</h2>
-          <div className="timeline-list">
-            {LICENSES_AND_CERTIFICATIONS.map((item) => (
-              <article key={`${item.title}-${item.period}`} className="timeline-card">
+        <article className="detail-card detail-card--light">
+          <p className="detail-card__eyebrow detail-card__eyebrow--dark">Selected credentials</p>
+          <h2>Relevant ongoing development</h2>
+          <div className="timeline-list timeline-list--light">
+            {SELECTED_CREDENTIALS.map((item) => (
+              <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
                 <div className="timeline-card__top">
                   <strong>{item.title}</strong>
                   <span>{item.period}</span>
@@ -133,30 +111,19 @@ export function PublicAboutPage() {
             ))}
           </div>
         </article>
+      </section>
 
-        <article className="detail-card">
-          <p className="detail-card__eyebrow">Volunteering</p>
-          <h2>Community involvement</h2>
-          <a
-            className="volunteering-brand"
-            href="https://strassen-bertrange-mamer.rotary2160.org/fr/"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <img alt="Rotary logo" className="volunteering-brand__logo" src="/rotary-color.svg" />
-            <span>Strassen-Bertrange-Mamer</span>
-          </a>
-          <div className="timeline-list">
-            {VOLUNTEERING.map((item) => (
-              <article key={`${item.title}-${item.period}`} className="timeline-card">
-                <div className="timeline-card__top">
-                  <strong>{item.title}</strong>
-                  <span>{item.period}</span>
-                </div>
-                <p>{item.organization}</p>
-                {item.summary ? <p>{item.summary}</p> : null}
-              </article>
-            ))}
+      <section className="page-section page-section--light">
+        <article className="cta-band cta-band--compact">
+          <div>
+            <p className="site-kicker">Contact</p>
+            <h2>If your organisation needs senior advisory support, let&apos;s talk.</h2>
+          </div>
+          <div className="cta-band__actions">
+            <a className="site-button site-button--primary" href={CONTACT_PATH}>
+              Book a call
+              <ArrowRight className="size-4" />
+            </a>
           </div>
         </article>
       </section>

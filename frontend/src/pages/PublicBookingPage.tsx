@@ -239,7 +239,7 @@ export function PublicBookingPage() {
             <h2>Prefer a direct introduction?</h2>
           </div>
           <div className="direct-contact-card__links">
-            <a href="mailto:dario.pizzolante@stratevia.eu">dario.pizzolante@stratevia.eu</a>
+            <a href="mailto:contact@stratevia.eu">contact@stratevia.eu</a>
             <a href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
               LinkedIn
             </a>

@@ -47,7 +47,7 @@ class ConnectorFactoryTests(unittest.TestCase):
             zimbra_base_url="https://mail.example.com",
             zimbra_username="ceo@example.com",
             zimbra_password="secret",
-            personal_assistant_account_id="dario.pizzolante@stratevia.eu",
+            personal_assistant_account_id="contact@stratevia.eu",
         )
 
         inbox_connector = build_inbox_connector(settings)
@@ -57,8 +57,8 @@ class ConnectorFactoryTests(unittest.TestCase):
         self.assertIsInstance(inbox_connector, ZimbraInboxConnector)
         self.assertIsInstance(calendar_connector, ZimbraCalendarConnector)
         self.assertIsInstance(task_connector, ZimbraTaskConnector)
-        self.assertEqual(calendar_connector.principal_id, "dario.pizzolante@stratevia.eu")
-        self.assertEqual(task_connector.principal_id, "dario.pizzolante@stratevia.eu")
+        self.assertEqual(calendar_connector.principal_id, "contact@stratevia.eu")
+        self.assertEqual(task_connector.principal_id, "contact@stratevia.eu")
 
 
 class ConnectorNormalizationTests(unittest.TestCase):
@@ -120,7 +120,7 @@ class ConnectorNormalizationTests(unittest.TestCase):
     def test_zimbra_inbox_list_messages_normalizes_rest_payload(self) -> None:
         connector = ZimbraInboxConnector(
             base_url="https://mail.example.com",
-            username="dario.pizzolante@stratevia.eu",
+            username="contact@stratevia.eu",
             password="secret",
         )
         payload = {
@@ -131,7 +131,7 @@ class ConnectorNormalizationTests(unittest.TestCase):
                     "cid": "conv-1",
                     "su": "Need proposal",
                     "fr": "client@example.com",
-                    "e": [{"a": "dario.pizzolante@stratevia.eu"}],
+                    "e": [{"a": "contact@stratevia.eu"}],
                     "d": "1710151200000",
                     "f": "u",
                     "desc": "Please send the first draft.",
@@ -140,7 +140,7 @@ class ConnectorNormalizationTests(unittest.TestCase):
         }
         connector._get_folder_payload = lambda **kwargs: payload  # type: ignore[method-assign]
 
-        messages = connector.list_messages(account_id="dario.pizzolante@stratevia.eu")
+        messages = connector.list_messages(account_id="contact@stratevia.eu")
 
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].subject, "Need proposal")
@@ -150,9 +150,9 @@ class ConnectorNormalizationTests(unittest.TestCase):
     def test_zimbra_calendar_list_events_normalizes_payload(self) -> None:
         connector = ZimbraCalendarConnector(
             base_url="https://mail.example.com",
-            username="dario.pizzolante@stratevia.eu",
+            username="contact@stratevia.eu",
             password="secret",
-            principal_id="dario.pizzolante@stratevia.eu",
+            principal_id="contact@stratevia.eu",
         )
         payload = {
             "appt": [
@@ -163,7 +163,7 @@ class ConnectorNormalizationTests(unittest.TestCase):
                     "e": "20260320T100000Z",
                     "loc": "Teams",
                     "desc": "Review the roadmap",
-                    "at": [{"a": "client@example.com"}, {"a": "dario.pizzolante@stratevia.eu"}],
+                    "at": [{"a": "client@example.com"}, {"a": "contact@stratevia.eu"}],
                 }
             ]
         }
@@ -178,14 +178,14 @@ class ConnectorNormalizationTests(unittest.TestCase):
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].title, "Client workshop")
         self.assertEqual(events[0].location, "Teams")
-        self.assertEqual(events[0].attendees, ["client@example.com", "dario.pizzolante@stratevia.eu"])
+        self.assertEqual(events[0].attendees, ["client@example.com", "contact@stratevia.eu"])
 
     def test_zimbra_task_list_normalizes_payload(self) -> None:
         connector = ZimbraTaskConnector(
             base_url="https://mail.example.com",
-            username="dario.pizzolante@stratevia.eu",
+            username="contact@stratevia.eu",
             password="secret",
-            principal_id="dario.pizzolante@stratevia.eu",
+            principal_id="contact@stratevia.eu",
         )
         payload = {
             "task": [

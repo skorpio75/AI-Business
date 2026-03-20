@@ -214,7 +214,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
           <a href="https://www.linkedin.com/in/dariopizzolante" rel="noreferrer" target="_blank">
             <Linkedin className="size-4" />
           </a>
-          <a href="mailto:dario.pizzolante@stratevia.eu">
+          <a href="mailto:contact@stratevia.eu">
             <Mail className="size-4" />
           </a>
         </div>

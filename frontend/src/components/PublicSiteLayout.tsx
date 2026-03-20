@@ -161,6 +161,19 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
                   </a>
                 ))}
               </nav>
+
+              <nav className="section-drawer__utility-nav" aria-label="General pages">
+                {PUBLIC_NAV_LINKS.map((link) => (
+                  <a
+                    key={link.href}
+                    className={isActiveLink(link.href) ? "is-active" : undefined}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
             </div>
 
             <div className="section-drawer__panel">

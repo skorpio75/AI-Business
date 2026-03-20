@@ -2439,6 +2439,206 @@
 }
 
 @layer components {
+  .public-site {
+    background: #ffffff !important;
+  }
+
+  .public-site .site-header,
+  .public-site .site-header--overlay {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border-bottom-color: rgba(17, 17, 17, 0.08) !important;
+    box-shadow: none !important;
+  }
+
+  .public-site .site-nav a,
+  .public-site .context-nav a,
+  .public-site .section-switcher {
+    color: #171717 !important;
+  }
+
+  .public-site .site-nav a:hover,
+  .public-site .site-nav a.is-active,
+  .public-site .context-nav a:hover,
+  .public-site .context-nav a.is-active {
+    background: #f3f4f6 !important;
+    color: #171717 !important;
+  }
+
+  .public-site .section-drawer {
+    background: #ffffff !important;
+    border-color: rgba(17, 17, 17, 0.08) !important;
+  }
+
+  .public-site .section-drawer__rail {
+    background: #f3f4f6 !important;
+    color: #171717 !important;
+  }
+
+  .public-site .section-drawer__rail .site-kicker,
+  .public-site .section-drawer__rail .section-family-nav a,
+  .public-site .section-drawer__rail .section-drawer__utility-nav a,
+  .public-site .section-switcher--drawer {
+    color: #171717 !important;
+  }
+
+  .public-site .section-drawer__rail .section-family-nav a.is-active,
+  .public-site .section-drawer__rail .section-family-nav a:hover,
+  .public-site .section-drawer__utility-nav a.is-active,
+  .public-site .section-drawer__utility-nav a:hover {
+    background: #e9ebef !important;
+  }
+
+  .public-site .hero-visual-card,
+  .public-site .image-hero__panel,
+  .public-site .detail-card,
+  .public-site .detail-card--light,
+  .public-site .service-summary-card,
+  .public-site .pillar-card,
+  .public-site .trust-card,
+  .public-site .process-simple-card,
+  .public-site .format-card,
+  .public-site .content-block,
+  .public-site .background-strip,
+  .public-site .cta-band,
+  .public-site .experience-card,
+  .public-site .next-step-card,
+  .public-site .direct-contact-card,
+  .public-site .booking-form-panel,
+  .public-site .timeline-card,
+  .public-site .timeline-card--light {
+    background: #f3f4f6 !important;
+    border-color: rgba(17, 17, 17, 0.07) !important;
+    box-shadow: 0 12px 34px rgba(17, 17, 17, 0.04) !important;
+  }
+
+  .public-site .hero-visual-card,
+  .public-site .image-hero__panel,
+  .public-site .hero-visual-card h2,
+  .public-site .image-hero__panel-summary,
+  .public-site .hero-bullet-list,
+  .public-site .hero-bullet-list li,
+  .public-site .image-hero__list li,
+  .public-site .hero-visual-card__eyebrow,
+  .public-site .image-hero__panel-eyebrow {
+    color: #171717 !important;
+  }
+
+  .public-site .background-strip__list span,
+  .public-site .site-footer a,
+  .public-site .content-block__portrait,
+  .public-site .booking-form-panel .booking-field input,
+  .public-site .booking-form-panel .booking-field select,
+  .public-site .booking-form-panel .booking-field textarea {
+    background: #ffffff !important;
+    border-color: rgba(17, 17, 17, 0.08) !important;
+  }
+
+  .public-site .cta-band {
+    background: #f3f4f6 !important;
+  }
+
+  .public-site .process-simple-card__index {
+    background: #e9ebef !important;
+  }
+
+  .public-site .site-footer {
+    background: #f3f4f6 !important;
+    border-color: rgba(17, 17, 17, 0.08) !important;
+    box-shadow: none !important;
+  }
+
+  .public-site .site-footer,
+  .public-site .site-footer__identity,
+  .public-site .site-footer__copy,
+  .public-site .site-footer__links,
+  .public-site .site-footer__copy p,
+  .public-site .site-footer__copy span {
+    color: #171717 !important;
+  }
+
+  .public-site .site-footer a:hover {
+    background: #e9ebef !important;
+  }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    background: #ffffff !important;
+  }
+}
+
+@layer components {
+  html,
+  body,
+  #root,
+  .app-shell,
+  .app-main,
+  .public-site,
+  .public-site .site-main,
+  .public-site .site-section,
+  .public-site .page-section,
+  .public-site .site-section--light,
+  .public-site .page-section--light {
+    background: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .public-site .site-hero--home,
+  .public-site .image-hero {
+    box-shadow: none !important;
+  }
+
+  .public-site .hero-visual-card,
+  .public-site .image-hero__panel,
+  .public-site .detail-card,
+  .public-site .detail-card--light,
+  .public-site .service-summary-card,
+  .public-site .pillar-card,
+  .public-site .trust-card,
+  .public-site .process-simple-card,
+  .public-site .format-card,
+  .public-site .content-block,
+  .public-site .background-strip,
+  .public-site .cta-band,
+  .public-site .experience-card,
+  .public-site .next-step-card,
+  .public-site .direct-contact-card,
+  .public-site .booking-form-panel,
+  .public-site .timeline-card,
+  .public-site .timeline-card--light,
+  .public-site .site-footer,
+  .public-site .section-drawer,
+  .public-site .section-drawer__rail {
+    box-shadow: none !important;
+  }
+
+  .public-site .hero-visual-card,
+  .public-site .image-hero__panel,
+  .public-site .detail-card,
+  .public-site .detail-card--light,
+  .public-site .service-summary-card,
+  .public-site .pillar-card,
+  .public-site .trust-card,
+  .public-site .process-simple-card,
+  .public-site .format-card,
+  .public-site .content-block,
+  .public-site .background-strip,
+  .public-site .cta-band,
+  .public-site .experience-card,
+  .public-site .next-step-card,
+  .public-site .direct-contact-card,
+  .public-site .booking-form-panel,
+  .public-site .timeline-card,
+  .public-site .timeline-card--light,
+  .public-site .site-footer {
+    background: #f5f5f5 !important;
+  }
+}
+
+@layer components {
   .app-shell {
     @apply min-h-screen px-4 py-5 md:px-7 md:py-7;
   }

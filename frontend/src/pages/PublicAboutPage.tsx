@@ -33,39 +33,27 @@ export function PublicAboutPage() {
       />
 
       <section className="page-section page-section--light">
-        <article className="detail-card detail-card--light about-background-card">
-          <div className="about-background-card__media">
-            <div className="image-hero__portrait-wrap">
-              <img alt="Portrait of Dario Pizzolante" className="image-hero__portrait" src="/dario-pizzolante.jpg" />
-            </div>
-          </div>
-          <div className="about-background-card__content">
-            <p className="detail-card__eyebrow detail-card__eyebrow--dark">Representative background</p>
-            <h2>Senior support across leadership, transformation, and practical delivery.</h2>
-            <ul className="detail-list detail-list--dark">
-              {ABOUT_CORE_STRENGTHS.map((item) => (
-                <li key={item.title}>{item.title}</li>
-              ))}
-            </ul>
-          </div>
-        </article>
-      </section>
-
-      <section className="page-section page-section--light">
-        <article className="content-block">
+        <article className="content-block content-block--with-aside">
+          <div className="content-block__main">
           <p className="site-kicker">Professional summary</p>
           <div className="content-block__copy">
             {ABOUT_SUMMARY.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          </div>
+          <aside className="content-block__aside">
+            <div className="content-block__portrait">
+              <img alt="Portrait of Dario Pizzolante" className="image-hero__portrait" src="/dario-pizzolante.jpg" />
+            </div>
+          </aside>
         </article>
       </section>
 
       <section className="page-section page-section--light">
         <div className="section-heading">
           <p className="site-kicker">Core strengths</p>
-          <h2>Senior support grounded in structure and execution.</h2>
+          <h2>Senior support across leadership, transformation, and practical delivery.</h2>
         </div>
         <div className="trust-grid">
           {ABOUT_CORE_STRENGTHS.map((item) => (

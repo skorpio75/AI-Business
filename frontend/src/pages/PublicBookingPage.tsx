@@ -90,17 +90,7 @@ export function PublicBookingPage() {
         }
       />
 
-      <section className="page-section page-section--light contact-layout">
-        <article className="contact-reasons">
-          <p className="site-kicker">Reasons to reach out</p>
-          <h2>Bring clarity to the pressure point.</h2>
-          <ul className="detail-list detail-list--dark">
-            {CONTACT_REASONS.map((reason) => (
-              <li key={reason}>{reason}</li>
-            ))}
-          </ul>
-        </article>
-
+      <section className="page-section page-section--light">
         <article className="detail-card detail-card--light booking-form-panel">
           <div className="booking-panel__head">
             <strong>Request a conversation</strong>

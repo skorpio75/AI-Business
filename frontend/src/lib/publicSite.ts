@@ -171,7 +171,7 @@ export const ENGAGEMENT_FORMATS = [
 ] as const;
 
 export const ABOUT_LEAD =
-  "I work with organisations that need senior guidance across transformation, technology decisions, delivery governance, and practical AI adoption.";
+  "I work with organisations that need senior guidance across transformation, technology decisions, delivery, and practical AI adoption.";
 
 export const ABOUT_SUMMARY = [
   "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across international environments.",

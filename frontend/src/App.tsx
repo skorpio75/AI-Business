@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 
+import { ScrollToTopButton } from "./components/ScrollToTopButton";
 import { Button } from "./components/ui/button";
 import { AgentActivityPage } from "./pages/AgentActivityPage";
 import { AgentsOrgPage } from "./pages/AgentsOrgPage";
@@ -191,11 +192,12 @@ export default function App() {
     };
   }, []);
 
-  if (appRoute.kind === "public") {
-    return <PublicSiteRouter route={appRoute.route} />;
-  }
-
-  return <MissionControlApp />;
+  return (
+    <>
+      {appRoute.kind === "public" ? <PublicSiteRouter route={appRoute.route} /> : <MissionControlApp />}
+      <ScrollToTopButton />
+    </>
+  );
 }
 
 function resolveAppRoute(): AppRoute {

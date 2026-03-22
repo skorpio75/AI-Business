@@ -212,11 +212,11 @@ export const ABOUT_PROFILE_TITLE =
   "Independent advisor in IT leadership, digital transformation, and AI-enabled operational improvement.";
 
 export const ABOUT_SUMMARY = [
-  "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across energy, technology consulting, legal-tech, finance, and public-sector environments.",
-  "Across that experience, I have worked at both executive and delivery level: defining technology roadmaps, structuring governance, leading complex programmes, managing IT operations and budgets, and guiding multidisciplinary teams in international settings where clarity, coordination, and follow-through matter.",
-  "That includes helping establish the IT function and operating model for the Unified Patent Court across 25 member states, leading modernization and cloud-transition initiatives as Head of IT at Societe Electrique de l'Our, developing digitalization and AI-enabled offerings as Managing Director of Net Service Lux, and building a strong consulting and service-delivery foundation earlier in my career at Microsoft and other enterprise environments.",
-  "Today, organisations typically engage when they need clearer transformation priorities, a practical roadmap for digitalization or AI adoption, stronger delivery governance, or senior support to improve operations without adding unnecessary complexity.",
-  "My approach stays business-led, executive, and well rounded: I bring enough technical depth to work credibly with delivery teams, while keeping the focus on decision-making, governance, business efficiency, and practical adoption.",
+  "Dario Pizzolante brings more than two decades of experience in IT leadership, digital transformation, service management, and operational improvement across energy, technology consulting, legal-tech, finance, and public-sector environments.",
+  "Over the course of his career, he has worked at both executive and delivery level, shaping technology roadmaps, establishing governance, leading complex programmes, managing IT operations and budgets, and guiding multidisciplinary teams in international environments where clarity, coordination, and follow-through are essential.",
+  "His experience spans international institutions, energy, technology consulting, and digital services, including work on operating-model design, modernization, cloud transition, and AI-enabled service development.",
+  "Today, organisations typically engage him when they need clearer transformation priorities, a practical roadmap for digitalization or AI adoption, stronger delivery governance, or senior support to improve operations without adding unnecessary complexity.",
+  "His approach is business-led, executive, and well rounded, combining enough technical depth to work credibly with delivery teams while keeping the focus on decision-making, governance, business efficiency, and practical adoption.",
 ];
 
 export const ABOUT_CORE_STRENGTHS = [
@@ -433,6 +433,7 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
       "Diagnostic and delivery stabilisation",
       "Governance model and action plan",
       "Ongoing PMO or service advisory support",
+      "Project and/or service delivery management",
     ],
     fit: [
       "Programmes with multiple stakeholders or vendors",

@@ -10,6 +10,7 @@ import {
   CONTACT_PATH,
   CONTACT_REASONS,
   CONTACT_TIMING_OPTIONS,
+  SERVICE_PILLARS,
   SERVICE_DEFINITIONS,
 } from "@/lib/publicSite";
 
@@ -77,18 +78,27 @@ export function PublicBookingPage() {
         backLabel="Home"
         kicker="Contact"
         title="Start with a focused conversation."
-        lead="A first discussion to understand your context, priorities, and whether Stratevia is the right fit."
+        lead="A first discussion to understand whether your needs are mainly about transformation priorities, AI and digital operations, or delivery governance support."
       />
 
       <section className="page-section page-section--light band-section band-section--soft">
         <div className="band-shell">
           <div className="contact-layout">
-            
+            <aside className="contact-reasons">
+              <p className="site-kicker">Where I can help</p>
+              <h2>Typical reasons organisations get in touch.</h2>
+              {CONTACT_REASONS.map((reason) => (
+                <p key={reason}>{reason}</p>
+              ))}
+            </aside>
 
             <article className="detail-card detail-card--light booking-form-panel">
-              <div className="booking-panel__head">t.
+              <div className="booking-panel__head">
                 <strong>Request a conversation</strong>
-                <p>Share a bit of context and your request will be reviewed directly.</p>
+                <p>
+                  Share a bit of context and, if useful, indicate whether this is mainly about
+                  assessment and transformation, AI and digital operations, or delivery support.
+                </p>
               </div>
 
               <form className="booking-form booking-form--light" onSubmit={handleSubmit}>
@@ -136,18 +146,27 @@ export function PublicBookingPage() {
                     />
                   </label>
                   <label className="booking-field">
-                    <span>Topic of interest</span>
+                    <span>Service area or topic of interest</span>
                     <select
                       name="serviceInterest"
                       value={form.serviceInterest}
                       onChange={(event) => updateField("serviceInterest", event.target.value)}
                     >
                       <option value="">Choose if you already know</option>
-                      {SERVICE_DEFINITIONS.map((service) => (
-                        <option key={service.slug} value={service.title}>
-                          {service.title}
-                        </option>
-                      ))}
+                      <optgroup label="Service pillars">
+                        {SERVICE_PILLARS.map((pillar) => (
+                          <option key={pillar.key} value={pillar.title}>
+                            {pillar.title}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Detailed services">
+                        {SERVICE_DEFINITIONS.map((service) => (
+                          <option key={service.slug} value={service.title}>
+                            {service.title}
+                          </option>
+                        ))}
+                      </optgroup>
                     </select>
                   </label>
                   <label className="booking-field">
@@ -170,6 +189,7 @@ export function PublicBookingPage() {
                   <span>Briefly describe your context</span>
                   <textarea
                     name="challengeSummary"
+                    placeholder="What are you trying to assess, improve, or stabilise right now?"
                     required
                     rows={5}
                     value={form.challengeSummary}

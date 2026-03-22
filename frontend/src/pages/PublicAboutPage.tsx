@@ -142,7 +142,7 @@ export function PublicAboutPage() {
           <article className="cta-band cta-band--compact band-panel">
             <div>
               <p className="site-kicker">Contact</p>
-              <h2>If your organisation needs senior advisory support, let&apos;s talk.</h2>
+              <h2>If you need clarity on transformation, AI adoption, or delivery support, let&apos;s talk.</h2>
             </div>
             <div className="cta-band__actions">
               <a className="site-button site-button--primary" href={CONTACT_PATH}>

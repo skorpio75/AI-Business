@@ -51,6 +51,14 @@ export type ServiceDefinition = {
   proofPoints: string[];
 };
 
+export type ServicePillarDefinition = {
+  key: ServicePillarKey;
+  title: string;
+  href: string;
+  homeSummary: string;
+  servicesSummary: string;
+};
+
 export type AcademicEducationItem = {
   title: string;
   institution: string;
@@ -92,44 +100,26 @@ export const HOME_HERO = {
   ],
 };
 
-export const HOME_SERVICE_PILLARS = [
+export const SERVICE_PILLARS: ServicePillarDefinition[] = [
   {
     key: "assessment-transformation-advisory",
     title: "Assessment & Transformation Advisory",
-    summary: "Clarify the current state, identify priorities, and define the most valuable path forward.",
+    homeSummary: "Clarify the current state, identify priorities, and define the most valuable path forward.",
+    servicesSummary: "Clarify the current state, align priorities, and define the roadmap for change.",
     href: "/services#assessment-transformation-advisory",
   },
   {
     key: "ai-automation-digital-operations",
     title: "AI, Automation & Digital Operations",
-    summary: "Identify practical AI and automation opportunities, simplify operations, and build a realistic roadmap.",
+    homeSummary: "Identify practical AI and automation opportunities, simplify operations, and build a realistic roadmap.",
+    servicesSummary: "Turn AI and digital operations into practical initiatives with clear business value.",
     href: "/services#ai-automation-digital-operations",
   },
   {
     key: "delivery-governance-execution-support",
     title: "Delivery Governance & Execution Support",
-    summary: "Strengthen PMO, governance, coordination, and follow-through on critical initiatives.",
-    href: "/services#delivery-governance-execution-support",
-  },
-] as const;
-
-export const SERVICES_PILLAR_SECTIONS = [
-  {
-    key: "assessment-transformation-advisory",
-    title: "Assessment & Transformation Advisory",
-    summary: "Clarify the current state, align priorities, and define the roadmap for change.",
-    href: "/services#assessment-transformation-advisory",
-  },
-  {
-    key: "ai-automation-digital-operations",
-    title: "AI, Automation & Digital Operations",
-    summary: "Turn AI and digital operations into practical initiatives with clear business value.",
-    href: "/services#ai-automation-digital-operations",
-  },
-  {
-    key: "delivery-governance-execution-support",
-    title: "Delivery Governance & Execution Support",
-    summary: "Bring structure, visibility, and execution discipline to programmes and initiatives under pressure.",
+    homeSummary: "Strengthen PMO, governance, coordination, and follow-through on critical initiatives.",
+    servicesSummary: "Bring structure, visibility, and execution discipline to programmes and initiatives under pressure.",
     href: "/services#delivery-governance-execution-support",
   },
 ] as const;
@@ -201,7 +191,7 @@ export const ENGAGEMENT_FORMATS = [
 ] as const;
 
 export const ABOUT_LEAD =
-  "I work with organisations that need senior guidance across transformation, technology decisions, delivery, and practical AI adoption.";
+  "I work with organisations that need senior advisory support to assess transformation priorities, shape AI and digital operations, and strengthen delivery governance when execution matters.";
 
 export const ABOUT_HERO_HIGHLIGHTS = [
   {
@@ -220,7 +210,7 @@ export const ABOUT_HERO_HIGHLIGHTS = [
 
 export const ABOUT_SUMMARY = [
   "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across international environments.",
-  "Clients typically engage when they need clarity, stronger governance, better execution structure, or senior advisory support without adding unnecessary complexity.",
+  "Clients typically engage when they need clearer transformation priorities, a practical roadmap for AI or digital operations, or stronger delivery governance and execution support without adding unnecessary complexity.",
 ];
 
 export const ABOUT_CORE_STRENGTHS = [
@@ -298,9 +288,9 @@ export const SELECTED_CREDENTIALS: CertificationItem[] = [
 ] as const;
 
 export const CONTACT_REASONS = [
-  "A transformation initiative needs structure",
-  "AI opportunity needs prioritisation",
-  "Delivery is slipping",
+  "Transformation priorities or modernization choices need clarity",
+  "AI or digital operations need a practical roadmap",
+  "Delivery governance or PMO support is needed on a critical initiative",
   "Senior support is needed without a full-time hire",
 ] as const;
 
@@ -323,24 +313,24 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
     pillarKey: "ai-automation-digital-operations",
     title: "AI Strategy & Roadmapping",
     shortTitle: "AI Strategy",
-    tagline: "Move from AI interest to a focused, realistic business plan.",
-    summary: "Clarify the most valuable AI use cases, priorities, and roadmap before investing in the wrong direction.",
+    tagline: "Move from AI interest to a focused roadmap with practical business value.",
+    summary: "Clarify the most valuable AI use cases, priorities, and delivery path before investing in disconnected ideas.",
     intro:
-      "This service helps organisations approach AI with clarity, realism, and a business-led sequence instead of scattered experimentation or disconnected pilots.",
-    bestFor: "Best for organisations that need structure before committing time and budget to AI initiatives.",
+      "This service helps organisations approach AI with clarity, realism, and a business-led sequence so adoption supports operations, decision-making, and measurable outcomes.",
+    bestFor: "Best for organisations that need a practical AI roadmap before committing time and budget to initiatives.",
     clientProblems: [
       "AI interest exists, but priorities are unclear",
-      "Use cases feel disconnected from business value",
+      "Use cases feel disconnected from business priorities or operational reality",
       "Leadership wants a practical roadmap before moving further",
     ],
     outcomes: [
-      "A clearer view of where AI can create value",
-      "A practical roadmap with priorities and next steps",
-      "Better alignment across leadership, operations, and technology",
+      "A clearer view of where AI can create business value",
+      "A practical roadmap with priorities, sequencing, and next steps",
+      "Better alignment across leadership, operations, and technology teams",
     ],
     engagements: [
       "Executive workshop",
-      "Diagnostic and prioritisation",
+      "AI opportunity diagnostic and prioritisation",
       "Roadmap and action plan",
       "Follow-up advisory support",
     ],
@@ -361,23 +351,23 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
     title: "Automation & Digital Operations",
     shortTitle: "Digital Operations",
     tagline: "Reduce friction, simplify operations, and improve the way work gets done.",
-    summary: "Identify manual bottlenecks, redesign workflows, and support more efficient day-to-day operations.",
+    summary: "Identify manual bottlenecks, simplify workflows, and improve day-to-day operations with practical automation.",
     intro:
-      "This service focuses on operational efficiency first, using automation and better process design to make work simpler and more reliable.",
-    bestFor: "Best for organisations dealing with repetitive effort, fragmented workflows, or operational drag.",
+      "This service focuses on operational efficiency first, using automation and better process design to make work simpler, more reliable, and easier to scale.",
+    bestFor: "Best for organisations dealing with repetitive effort, fragmented workflows, or inefficient digital operations.",
     clientProblems: [
       "Too much manual coordination across teams",
       "Processes are fragmented or inconsistent",
       "Digital operations need simplification before scaling further",
     ],
     outcomes: [
-      "Less manual effort and fewer bottlenecks",
-      "Clearer process flow and execution discipline",
-      "A stronger operational base for future digital or AI work",
+      "Less manual effort and fewer operational bottlenecks",
+      "Clearer workflows with stronger day-to-day execution discipline",
+      "A stronger operational foundation for future digital or AI work",
     ],
     engagements: [
       "Operational review",
-      "Diagnostic and prioritisation",
+      "Operational diagnostic and prioritisation",
       "Workflow design and action plan",
       "Implementation support",
     ],
@@ -398,9 +388,9 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
     title: "Delivery Governance, PMO & Service Management",
     shortTitle: "Delivery Governance",
     tagline: "Add structure, visibility, and follow-through to critical initiatives.",
-    summary: "Strengthen governance, cadence, and coordination when delivery work needs more control.",
+    summary: "Strengthen governance, cadence, and coordination when delivery work needs more visibility and control.",
     intro:
-      "This service supports programmes, projects, and service environments that need better structure, clearer visibility, and stronger follow-through.",
+      "This service supports programmes, projects, and service environments that need better structure, clearer visibility, and stronger execution discipline.",
     bestFor: "Best for organisations under delivery pressure that need structure without adding unnecessary bureaucracy.",
     clientProblems: [
       "Initiatives are moving, but coordination is weak",
@@ -410,7 +400,7 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
     outcomes: [
       "Clearer governance and reporting cadence",
       "Better coordination across stakeholders and dependencies",
-      "Stronger execution discipline around active work",
+      "Stronger execution discipline across active work and service priorities",
     ],
     engagements: [
       "Executive workshop",
@@ -434,36 +424,36 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
     pillarKey: "assessment-transformation-advisory",
     title: "Fractional CIO / Transformation Advisory",
     shortTitle: "Transformation Advisory",
-    tagline: "Bring senior transformation and technology leadership into critical decisions and change priorities.",
-    summary: "Access senior advisory support to assess priorities, shape roadmaps, and guide modernization with confidence.",
+    tagline: "Bring senior transformation and technology leadership to assessment, prioritisation, and roadmap decisions.",
+    summary: "Access senior advisory support to assess the current state, clarify priorities, and shape a practical transformation path.",
     intro:
-      "This service is designed for organisations that need experienced technology and transformation guidance to clarify direction, shape change, and support key decisions without making a full-time executive hire.",
-    bestFor: "Best for organisations that need senior direction, but not a permanent executive role.",
+      "This service is designed for organisations that need experienced technology and transformation guidance to assess where they are, decide what matters most, and move forward with a realistic roadmap without making a full-time executive hire.",
+    bestFor: "Best for organisations that need senior transformation direction, but not a permanent executive role.",
     clientProblems: [
+      "Transformation priorities are not yet clear enough",
       "Technology decisions need stronger business alignment",
-      "Modernization pressure is rising without enough senior guidance",
-      "Leadership needs a steady advisory counterpart for critical choices",
+      "Leadership needs a senior advisory counterpart for critical modernization choices",
     ],
     outcomes: [
+      "A clearer view of priorities, risks, and transformation options",
       "Stronger technology and transformation decisions",
-      "Clearer governance around delivery and modernization",
-      "Senior support for leadership, vendors, and execution priorities",
+      "A practical roadmap for modernization, governance, and next steps",
     ],
     engagements: [
       "Executive workshop",
-      "Strategic diagnostic",
+      "Current-state and strategic diagnostic",
       "Roadmap and action plan",
       "Fractional leadership or advisory follow-through",
     ],
     fit: [
-      "Growing organisations that need senior technology perspective",
-      "Leadership teams navigating modernization or vendor decisions",
-      "Businesses needing guidance across strategy and execution",
+      "Leadership teams navigating transformation or modernization decisions",
+      "Organisations that need senior technology perspective without a full-time hire",
+      "Businesses that need clearer direction before major execution commitments",
     ],
     proofPoints: [
-      "Executive-level guidance",
+      "Executive-level assessment and guidance",
       "Business and technology alignment",
-      "Flexible support model",
+      "Flexible advisory or fractional support model",
     ],
   },
 ] as const;
@@ -539,11 +529,11 @@ export const PUBLIC_SECTION_DEFINITIONS: PublicSectionDefinition[] = [
     path: "/services",
     description:
       "Three advisory pillars spanning assessment, AI and automation, and delivery governance support.",
-    items: HOME_SERVICE_PILLARS.map((pillar) => ({
+    items: SERVICE_PILLARS.map((pillar) => ({
       id: pillar.key,
       label: pillar.title,
       href: pillar.href,
-      summary: pillar.summary,
+      summary: pillar.servicesSummary,
     })),
   },
   {

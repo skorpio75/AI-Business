@@ -6,9 +6,8 @@ import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   CONTACT_PATH,
   ENGAGEMENT_FORMATS,
-  HOME_SERVICE_PILLARS,
+  SERVICE_PILLARS,
   SERVICES_HERO_REASONS,
-  SERVICES_PILLAR_SECTIONS,
   getServicesForPillar,
 } from "@/lib/publicSite";
 
@@ -40,10 +39,10 @@ export function PublicServicesPage() {
             <h2>3 focused areas of advisory support.</h2>
           </div>
           <div className="pillar-grid">
-            {HOME_SERVICE_PILLARS.map((pillar) => (
+            {SERVICE_PILLARS.map((pillar) => (
               <article key={pillar.key} className="pillar-card">
                 <h3>{pillar.title}</h3>
-                <p>{pillar.summary}</p>
+                <p>{pillar.homeSummary}</p>
                 <a className="text-link" href={pillar.href}>
                   Explore pillar
                   <ArrowRight className="size-4" />
@@ -61,12 +60,12 @@ export function PublicServicesPage() {
             <h2>Specialist support grouped under each pillar.</h2>
           </div>
           <div className="service-group-stack">
-            {SERVICES_PILLAR_SECTIONS.map((pillar) => (
+            {SERVICE_PILLARS.map((pillar) => (
               <section key={pillar.key} className="service-group-block" id={pillar.key}>
                 <div className="service-group-block__header">
                   <p className="site-kicker">Service pillar</p>
                   <h2>{pillar.title}</h2>
-                  <p>{pillar.summary}</p>
+                  <p>{pillar.servicesSummary}</p>
                 </div>
                 <div className="service-summary-grid">
                   {getServicesForPillar(pillar.key).map((service) => (

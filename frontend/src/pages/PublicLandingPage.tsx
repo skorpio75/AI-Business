@@ -6,7 +6,7 @@ import {
   ABOUT_PATH,
   CONTACT_PATH,
   HOME_HERO,
-  HOME_SERVICE_PILLARS,
+  SERVICE_PILLARS,
   HOW_I_WORK_STEPS,
   SELECTED_BACKGROUND,
   SELECTED_BACKGROUND_SUMMARY,
@@ -49,10 +49,10 @@ export function PublicLandingPage() {
             <h2>3 focused ways to move transformation forward.</h2>
           </div>
           <div className="pillar-grid">
-            {HOME_SERVICE_PILLARS.map((pillar) => (
+            {SERVICE_PILLARS.map((pillar) => (
               <article key={pillar.title} className="pillar-card">
                 <h3>{pillar.title}</h3>
-                <p>{pillar.summary}</p>
+                <p>{pillar.homeSummary}</p>
                 <a className="text-link" href={pillar.href}>
                   Learn more
                   <ArrowRight className="size-4" />

@@ -226,7 +226,7 @@ export const ABOUT_CORE_STRENGTHS = [
   },
   {
     title: "Governance and delivery",
-    summary: "Senior support for PMO, service management, stakeholder alignment, and follow-through.",
+    summary: "Senior support for PMO & project management, service management, stakeholder alignment, and follow-through.",
   },
   {
     title: "Practical AI enablement",

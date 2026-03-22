@@ -9,6 +9,7 @@ import {
   ABOUT_LEAD,
   ABOUT_LANGUAGES,
   ABOUT_PROFILE_TITLE,
+  ABOUT_ROTARY,
   ABOUT_SUMMARY,
   ACADEMIC_EDUCATION,
   ABOUT_CORE_STRENGTHS,
@@ -145,6 +146,18 @@ export function PublicAboutPage() {
                       <p className="detail-card__eyebrow detail-card__eyebrow--dark">Languages</p>
                       <p>{ABOUT_LANGUAGES.join(" | ")}</p>
                     </div>
+
+                    <section className="profile-affiliation">
+                      <div className="profile-affiliation__logo">
+                        <img alt="Rotary logo" src="/rotary-color.svg" />
+                      </div>
+                      <div className="profile-affiliation__content">
+                        <p className="detail-card__eyebrow detail-card__eyebrow--dark">Rotary</p>
+                        <h3>{ABOUT_ROTARY.title}</h3>
+                        <p className="profile-affiliation__period">{ABOUT_ROTARY.period}</p>
+                        <p>{ABOUT_ROTARY.summary}</p>
+                      </div>
+                    </section>
                   </div>
                 )}
               </div>

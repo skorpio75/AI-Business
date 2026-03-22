@@ -306,6 +306,13 @@ export const ABOUT_LANGUAGES = [
   "Luxembourgish: C2",
 ] as const;
 
+export const ABOUT_ROTARY = {
+  title: "Rotary Club Strassen-Bertrange-Mamer",
+  period: "2023 to present",
+  summary:
+    "Founding member, committee member, and Chair of the Membership Committee.",
+} as const;
+
 export const CONTACT_REASONS = [
   "Transformation priorities or modernization choices need clarity",
   "AI or digital operations need a practical roadmap",

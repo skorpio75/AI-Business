@@ -1898,6 +1898,50 @@
     line-height: 1.7;
   }
 
+  .profile-affiliation {
+    display: grid;
+    grid-template-columns: minmax(96px, 132px) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(23, 23, 23, 0.08);
+  }
+
+  .profile-affiliation__logo {
+    display: grid;
+    justify-items: start;
+  }
+
+  .profile-affiliation__logo img {
+    display: block;
+    width: min(100%, 6.75rem);
+    height: auto;
+  }
+
+  .profile-affiliation__content {
+    @apply grid;
+    gap: 0.35rem;
+  }
+
+  .profile-affiliation__content h3,
+  .profile-affiliation__content p {
+    @apply m-0;
+  }
+
+  .profile-affiliation__content h3 {
+    font-size: 1.2rem;
+    line-height: 1.15;
+  }
+
+  .profile-affiliation__period {
+    color: #666666;
+  }
+
+  .profile-affiliation__content p:last-child {
+    color: #585858;
+    line-height: 1.7;
+  }
+
   .page-hero--about-clean {
     @apply items-center;
   }
@@ -1995,6 +2039,11 @@
   @media (max-width: 640px) {
     .profile-card__portrait {
       min-height: 18rem;
+    }
+
+    .profile-affiliation {
+      grid-template-columns: 1fr;
+      align-items: start;
     }
 
     .profile-tabs__button {

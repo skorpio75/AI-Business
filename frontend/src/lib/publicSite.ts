@@ -208,9 +208,15 @@ export const ABOUT_HERO_HIGHLIGHTS = [
   },
 ] as const;
 
+export const ABOUT_PROFILE_TITLE =
+  "Independent advisor in IT leadership, digital transformation, and AI-enabled operational improvement.";
+
 export const ABOUT_SUMMARY = [
-  "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across international environments.",
-  "Clients typically engage when they need clearer transformation priorities, a practical roadmap for AI or digital operations, or stronger delivery governance and execution support without adding unnecessary complexity.",
+  "My background combines more than two decades of IT leadership, digital transformation, service management, and operational improvement across energy, technology consulting, legal-tech, finance, and public-sector environments.",
+  "Across that experience, I have worked at both executive and delivery level: defining technology roadmaps, structuring governance, leading complex programmes, managing IT operations and budgets, and guiding multidisciplinary teams in international settings where clarity, coordination, and follow-through matter.",
+  "That includes helping establish the IT function and operating model for the Unified Patent Court across 25 member states, leading modernization and cloud-transition initiatives as Head of IT at Societe Electrique de l'Our, developing digitalization and AI-enabled offerings as Managing Director of Net Service Lux, and building a strong consulting and service-delivery foundation earlier in my career at Microsoft and other enterprise environments.",
+  "Today, organisations typically engage when they need clearer transformation priorities, a practical roadmap for digitalization or AI adoption, stronger delivery governance, or senior support to improve operations without adding unnecessary complexity.",
+  "My approach stays business-led, executive, and well rounded: I bring enough technical depth to work credibly with delivery teams, while keeping the focus on decision-making, governance, business efficiency, and practical adoption.",
 ];
 
 export const ABOUT_CORE_STRENGTHS = [
@@ -253,6 +259,11 @@ export const REPRESENTATIVE_EXPERIENCE: ExperienceItem[] = [
 
 export const ACADEMIC_EDUCATION: AcademicEducationItem[] = [
   {
+    title: "Master of Business Administration (partially completed)",
+    institution: "Imperial College London",
+    period: "2011 to 2012",
+  },
+  {
     title: "Master of Science, Computer Science",
     institution: "Oxford Brookes University",
     period: "2003 to 2005",
@@ -285,6 +296,14 @@ export const SELECTED_CREDENTIALS: CertificationItem[] = [
     provider: "Coursera",
     period: "2018",
   },
+] as const;
+
+export const ABOUT_LANGUAGES = [
+  "French: C2",
+  "German: C1",
+  "English: C2",
+  "Italian: C1",
+  "Luxembourgish: C2",
 ] as const;
 
 export const CONTACT_REASONS = [

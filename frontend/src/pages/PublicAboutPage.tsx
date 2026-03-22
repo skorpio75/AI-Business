@@ -1,4 +1,5 @@
 /* Copyright (c) Dario Pizzolante */
+import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 import { PublicImageHero } from "@/components/PublicImageHero";
@@ -6,6 +7,8 @@ import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   ABOUT_HERO_HIGHLIGHTS,
   ABOUT_LEAD,
+  ABOUT_LANGUAGES,
+  ABOUT_PROFILE_TITLE,
   ABOUT_SUMMARY,
   ACADEMIC_EDUCATION,
   ABOUT_CORE_STRENGTHS,
@@ -14,7 +17,16 @@ import {
   SELECTED_CREDENTIALS,
 } from "@/lib/publicSite";
 
+type AboutProfileTab = "overview" | "resume";
+
+const ABOUT_PROFILE_TABS: Array<{ id: AboutProfileTab; label: string }> = [
+  { id: "overview", label: "Overview" },
+  { id: "resume", label: "Resume" },
+];
+
 export function PublicAboutPage() {
+  const [activeTab, setActiveTab] = useState<AboutProfileTab>("overview");
+
   return (
     <PublicSiteLayout>
       <PublicImageHero
@@ -46,20 +58,97 @@ export function PublicAboutPage() {
 
       <section className="page-section page-section--light band-section band-section--soft">
         <div className="band-shell">
-          <article className="content-block content-block--with-aside band-panel">
-            <div className="content-block__main">
-              <p className="site-kicker">Dario Pizzolante</p>
-              <div className="content-block__copy">
-                {ABOUT_SUMMARY.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
-            <aside className="content-block__aside">
-              <div className="content-block__portrait">
+          <article className="profile-card band-panel">
+            <aside className="profile-card__sidebar">
+              <div className="profile-card__portrait">
                 <img alt="Portrait of Dario Pizzolante" className="image-hero__portrait" src="/dario-pizzolante.jpg" />
               </div>
             </aside>
+
+            <div className="profile-card__main">
+              <div className="profile-card__header">
+                <p className="site-kicker">Biography</p>
+                <h2>Dario Pizzolante</h2>
+                <p className="profile-card__title">{ABOUT_PROFILE_TITLE}</p>
+              </div>
+
+              <div aria-label="Profile sections" className="profile-tabs" role="tablist">
+                {ABOUT_PROFILE_TABS.map((tab) => {
+                  const isActive = activeTab === tab.id;
+
+                  return (
+                    <button
+                      key={tab.id}
+                      aria-controls={`about-panel-${tab.id}`}
+                      aria-selected={isActive}
+                      className={`profile-tabs__button${isActive ? " profile-tabs__button--active" : ""}`}
+                      id={`about-tab-${tab.id}`}
+                      role="tab"
+                      type="button"
+                      onClick={() => setActiveTab(tab.id)}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div
+                aria-labelledby={`about-tab-${activeTab}`}
+                className="profile-card__panel"
+                id={`about-panel-${activeTab}`}
+                role="tabpanel"
+              >
+                {activeTab === "overview" ? (
+                  <div className="profile-biography">
+                    {ABOUT_SUMMARY.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="profile-resume">
+                    <div className="profile-resume__grid">
+                      <section className="profile-resume__section">
+                        <p className="detail-card__eyebrow detail-card__eyebrow--dark">Education</p>
+                        <h3>Academic background</h3>
+                        <div className="timeline-list timeline-list--light">
+                          {ACADEMIC_EDUCATION.map((item) => (
+                            <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
+                              <div className="timeline-card__header-stacked">
+                                <strong>{item.title}</strong>
+                                <span className="timeline-card__period">{item.period}</span>
+                              </div>
+                              <p>{item.institution}</p>
+                            </article>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section className="profile-resume__section">
+                        <p className="detail-card__eyebrow detail-card__eyebrow--dark">Credentials</p>
+                        <h3>Relevant ongoing development</h3>
+                        <div className="timeline-list timeline-list--light">
+                          {SELECTED_CREDENTIALS.map((item) => (
+                            <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
+                              <div className="timeline-card__header-stacked">
+                                <strong>{item.title}</strong>
+                                <span className="timeline-card__period">{item.period}</span>
+                              </div>
+                              <p>{item.provider}</p>
+                            </article>
+                          ))}
+                        </div>
+                      </section>
+                    </div>
+
+                    <div className="profile-languages">
+                      <p className="detail-card__eyebrow detail-card__eyebrow--dark">Languages</p>
+                      <p>{ABOUT_LANGUAGES.join(" | ")}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </article>
         </div>
       </section>
@@ -95,44 +184,6 @@ export function PublicAboutPage() {
                 <p>{item.summary}</p>
               </article>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="page-section page-section--light band-section band-section--soft">
-        <div className="band-shell">
-          <div className="page-section--credentials">
-            <article className="detail-card detail-card--light">
-              <p className="detail-card__eyebrow detail-card__eyebrow--dark">Education</p>
-              <h2>Academic background</h2>
-              <div className="timeline-list timeline-list--light">
-                {ACADEMIC_EDUCATION.map((item) => (
-                  <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
-                    <div className="timeline-card__header-stacked">
-                      <strong>{item.title}</strong>
-                      <span className="timeline-card__period">{item.period}</span>
-                    </div>
-                    <p>{item.institution}</p>
-                  </article>
-                ))}
-              </div>
-            </article>
-
-            <article className="detail-card detail-card--light">
-              <p className="detail-card__eyebrow detail-card__eyebrow--dark">Selected credentials</p>
-              <h2>Relevant ongoing development</h2>
-              <div className="timeline-list timeline-list--light">
-                {SELECTED_CREDENTIALS.map((item) => (
-                  <article key={`${item.title}-${item.period}`} className="timeline-card timeline-card--light">
-                    <div className="timeline-card__header-stacked">
-                      <strong>{item.title}</strong>
-                      <span className="timeline-card__period">{item.period}</span>
-                    </div>
-                    <p>{item.provider}</p>
-                  </article>
-                ))}
-              </div>
-            </article>
           </div>
         </div>
       </section>

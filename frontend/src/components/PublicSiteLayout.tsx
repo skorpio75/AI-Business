@@ -113,7 +113,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
           </button>
 
           <a aria-label="Stratevia home" className="site-brand" href="/">
-            <img alt="" className="site-brand__logo" src="/logo_black_cropped.png" />
+            <img alt="" className="site-brand__logo" src="/logo.png" />
           </a>
         </div>
 
@@ -168,7 +168,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
                 >
                   <X className="size-5" />
                 </button>
-                <img alt="" className="section-drawer__logo" src="/logo_black_cropped.png" />
+                <img alt="" className="section-drawer__logo" src="/logo.png" />
               </div>
 
               <nav className="section-family-nav" aria-label="Section families">
@@ -227,7 +227,7 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
 
       <footer className="site-footer">
         <div className="site-footer__identity">
-          <img alt="" className="site-footer__mark" src="/logo_black_cropped.png" />
+          <img alt="" className="site-footer__mark" src="/logo.png" />
           <div className="site-footer__copy">
             <p>&copy; 2026 Stratevia - All rights reserved</p>
             <span>Independent advisory for transformation, AI, and technology leadership.</span>

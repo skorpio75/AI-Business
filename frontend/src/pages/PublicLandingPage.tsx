@@ -1,6 +1,7 @@
 /* Copyright (c) Dario Pizzolante */
 import { ArrowRight } from "lucide-react";
 
+import { PublicPillarAccordion } from "@/components/PublicPillarAccordion";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   ABOUT_PATH,
@@ -48,18 +49,7 @@ export function PublicLandingPage() {
             <p className="site-kicker">What I help with</p>
             <h2>3 focused ways to move transformation forward.</h2>
           </div>
-          <div className="pillar-grid">
-            {SERVICE_PILLARS.map((pillar) => (
-              <article key={pillar.title} className="pillar-card">
-                <h3>{pillar.title}</h3>
-                <p>{pillar.homeSummary}</p>
-                <a className="text-link" href={pillar.href}>
-                  Learn more
-                  <ArrowRight className="size-4" />
-                </a>
-              </article>
-            ))}
-          </div>
+          <PublicPillarAccordion items={SERVICE_PILLARS} />
         </div>
       </section>
 

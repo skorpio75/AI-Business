@@ -2,6 +2,7 @@
 import { ArrowRight } from "lucide-react";
 
 import { PublicImageHero } from "@/components/PublicImageHero";
+import { PublicPillarAccordion } from "@/components/PublicPillarAccordion";
 import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   CONTACT_PATH,
@@ -38,18 +39,7 @@ export function PublicServicesPage() {
             <p className="site-kicker">Service pillars</p>
             <h2>3 focused areas of advisory support.</h2>
           </div>
-          <div className="pillar-grid">
-            {SERVICE_PILLARS.map((pillar) => (
-              <article key={pillar.key} className="pillar-card">
-                <h3>{pillar.title}</h3>
-                <p>{pillar.homeSummary}</p>
-                <a className="text-link" href={pillar.href}>
-                  Explore pillar
-                  <ArrowRight className="size-4" />
-                </a>
-              </article>
-            ))}
-          </div>
+          <PublicPillarAccordion items={SERVICE_PILLARS} />
         </div>
       </section>
 

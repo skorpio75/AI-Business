@@ -86,7 +86,7 @@ export function PublicBookingPage() {
             
 
             <article className="detail-card detail-card--light booking-form-panel">
-              <div className="booking-panel__head">
+              <div className="booking-panel__head">t.
                 <strong>Request a conversation</strong>
                 <p>Share a bit of context and your request will be reviewed directly.</p>
               </div>

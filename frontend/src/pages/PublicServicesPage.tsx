@@ -6,8 +6,10 @@ import { PublicSiteLayout } from "@/components/PublicSiteLayout";
 import {
   CONTACT_PATH,
   ENGAGEMENT_FORMATS,
+  HOME_SERVICE_PILLARS,
   SERVICES_HERO_REASONS,
-  SERVICE_DEFINITIONS,
+  SERVICES_PILLAR_SECTIONS,
+  getServicesForPillar,
 } from "@/lib/publicSite";
 
 export function PublicServicesPage() {
@@ -17,8 +19,8 @@ export function PublicServicesPage() {
         backHref="/"
         backLabel="Home"
         kicker="Services"
-        title="Services for organisations facing change and complexity."
-        lead="Stratevia works at the intersection of business priorities, technology decisions, delivery structure, and practical AI opportunity."
+        title="Services for organisations navigating transformation, delivery, and AI."
+        lead="Stratevia helps organisations assess change, improve digital operations, and strengthen delivery through senior advisory support."
         panel={
           <>
             <p className="image-hero__panel-eyebrow">Typical reasons clients engage</p>
@@ -34,21 +36,16 @@ export function PublicServicesPage() {
       <section className="page-section page-section--light band-section band-section--soft">
         <div className="band-shell">
           <div className="section-heading section-heading--band">
-            <p className="site-kicker">Services</p>
-            <h2>Structured advisory offers.</h2>
+            <p className="site-kicker">Service pillars</p>
+            <h2>3 focused areas of advisory support.</h2>
           </div>
-          <div className="service-summary-grid">
-            {SERVICE_DEFINITIONS.map((service) => (
-              <article key={service.slug} className="service-summary-card">
-                <p className="service-summary-card__eyebrow">{service.shortTitle}</p>
-                <h2>{service.title}</h2>
-                <p>{service.summary}</p>
-                <div className="service-summary-card__meta">
-                  <strong>Best for</strong>
-                  <span>{service.bestFor.replace(/^Best for /, "")}</span>
-                </div>
-                <a className="text-link" href={`/services/${service.slug}`}>
-                  View service
+          <div className="pillar-grid">
+            {HOME_SERVICE_PILLARS.map((pillar) => (
+              <article key={pillar.key} className="pillar-card">
+                <h3>{pillar.title}</h3>
+                <p>{pillar.summary}</p>
+                <a className="text-link" href={pillar.href}>
+                  Explore pillar
                   <ArrowRight className="size-4" />
                 </a>
               </article>
@@ -58,6 +55,43 @@ export function PublicServicesPage() {
       </section>
 
       <section className="page-section page-section--light band-section">
+        <div className="band-shell">
+          <div className="section-heading section-heading--band">
+            <p className="site-kicker">Detailed services</p>
+            <h2>Specialist support grouped under each pillar.</h2>
+          </div>
+          <div className="service-group-stack">
+            {SERVICES_PILLAR_SECTIONS.map((pillar) => (
+              <section key={pillar.key} className="service-group-block" id={pillar.key}>
+                <div className="service-group-block__header">
+                  <p className="site-kicker">Service pillar</p>
+                  <h2>{pillar.title}</h2>
+                  <p>{pillar.summary}</p>
+                </div>
+                <div className="service-summary-grid">
+                  {getServicesForPillar(pillar.key).map((service) => (
+                    <article key={service.slug} className="service-summary-card">
+                      <p className="service-summary-card__eyebrow">{service.shortTitle}</p>
+                      <h2>{service.title}</h2>
+                      <p>{service.summary}</p>
+                      <div className="service-summary-card__meta">
+                        <strong>Best for</strong>
+                        <span>{service.bestFor.replace(/^Best for /, "")}</span>
+                      </div>
+                      <a className="text-link" href={`/services/${service.slug}`}>
+                        View service
+                        <ArrowRight className="size-4" />
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="page-section page-section--light band-section band-section--soft">
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">Engagement formats</p>
@@ -79,7 +113,7 @@ export function PublicServicesPage() {
           <article className="cta-band cta-band--compact band-panel">
             <div>
               <p className="site-kicker">Contact</p>
-              <h2>Not sure which service fits?</h2>
+              <h2>Not sure which service or format fits?</h2>
               <p>Start with a short discovery conversation.</p>
             </div>
             <div className="cta-band__actions">

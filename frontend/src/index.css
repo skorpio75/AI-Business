@@ -1544,6 +1544,34 @@
     @apply grid gap-5 lg:grid-cols-2;
   }
 
+  .service-group-stack {
+    @apply grid gap-10;
+  }
+
+  .service-group-block {
+    @apply grid gap-6;
+    scroll-margin-top: 7rem;
+  }
+
+  .service-group-block + .service-group-block {
+    @apply border-t pt-8;
+    border-color: rgba(23, 23, 23, 0.08);
+  }
+
+  .service-group-block__header {
+    @apply grid gap-3 max-w-[46rem];
+  }
+
+  .service-group-block__header h2 {
+    @apply m-0 text-[2rem];
+    line-height: 1.04;
+  }
+
+  .service-group-block__header p:last-child {
+    @apply m-0 text-[1rem];
+    color: #585858;
+  }
+
   .service-summary-card {
     @apply grid gap-4 rounded-[1.5rem] p-7;
     background: #ffffff;

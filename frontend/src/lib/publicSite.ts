@@ -5,6 +5,11 @@ export type ServiceSlug =
   | "delivery-pmo-project-service-management"
   | "fractional-cio-transformation-advisory";
 
+export type ServicePillarKey =
+  | "assessment-transformation-advisory"
+  | "ai-automation-digital-operations"
+  | "delivery-governance-execution-support";
+
 export const ABOUT_PATH = "/about";
 export const CONTACT_PATH = "/contact";
 export const LEGACY_BOOKING_PATH = "/booking";
@@ -32,6 +37,7 @@ export type PublicSectionDefinition = {
 
 export type ServiceDefinition = {
   slug: ServiceSlug;
+  pillarKey: ServicePillarKey;
   title: string;
   shortTitle: string;
   tagline: string;
@@ -75,62 +81,86 @@ export const PUBLIC_NAV_LINKS = [
 ] as const;
 
 export const HOME_HERO = {
-  eyebrow: "Independent advisory for transformation and practical AI",
-  title: "Strategy. Transformation. Execution.",
+  eyebrow: "Technology, AI and transformation advisory",
+  title: "Clarity for transformation. Structure for delivery.",
   summary:
-    "Improve governance and delivery, turn technology + AI into practical business value.",
+    "Stratevia helps organisations assess priorities, design practical roadmaps, and strengthen execution across technology, operations, and AI.",
   focusAreas: [
-    "Strategy and governance",
-    "Technology, AI and automation",
-    "Delivery and transformation support",
+    "Assessment and prioritisation",
+    "AI, automation and digital operations",
+    "Delivery governance and execution support",
   ],
 };
 
 export const HOME_SERVICE_PILLARS = [
   {
-    title: "Technology & transformation advisory",
-    summary: "Clarify priorities, structure initiatives, and move forward with a realistic path.",
-    href: "/services/fractional-cio-transformation-advisory",
+    key: "assessment-transformation-advisory",
+    title: "Assessment & Transformation Advisory",
+    summary: "Clarify the current state, identify priorities, and define the most valuable path forward.",
+    href: "/services#assessment-transformation-advisory",
   },
   {
-    title: "AI & automation enablement",
-    summary: "Turn AI and process improvement into focused use cases with clear business value.",
-    href: "/services/ai-strategy-roadmapping",
+    key: "ai-automation-digital-operations",
+    title: "AI, Automation & Digital Operations",
+    summary: "Identify practical AI and automation opportunities, simplify operations, and build a realistic roadmap.",
+    href: "/services#ai-automation-digital-operations",
   },
   {
-    title: "Delivery governance & fractional leadership",
-    summary: "Bring senior structure to programmes, PMO needs, and execution pressure points.",
-    href: "/services/delivery-pmo-project-service-management",
+    key: "delivery-governance-execution-support",
+    title: "Delivery Governance & Execution Support",
+    summary: "Strengthen PMO, governance, coordination, and follow-through on critical initiatives.",
+    href: "/services#delivery-governance-execution-support",
+  },
+] as const;
+
+export const SERVICES_PILLAR_SECTIONS = [
+  {
+    key: "assessment-transformation-advisory",
+    title: "Assessment & Transformation Advisory",
+    summary: "Clarify the current state, align priorities, and define the roadmap for change.",
+    href: "/services#assessment-transformation-advisory",
+  },
+  {
+    key: "ai-automation-digital-operations",
+    title: "AI, Automation & Digital Operations",
+    summary: "Turn AI and digital operations into practical initiatives with clear business value.",
+    href: "/services#ai-automation-digital-operations",
+  },
+  {
+    key: "delivery-governance-execution-support",
+    title: "Delivery Governance & Execution Support",
+    summary: "Bring structure, visibility, and execution discipline to programmes and initiatives under pressure.",
+    href: "/services#delivery-governance-execution-support",
   },
 ] as const;
 
 export const HOW_I_WORK_STEPS = [
   {
     title: "Assess",
-    summary: "Understand the context, blockers, and objectives.",
+    summary: "Understand the context, constraints, delivery issues, and business priorities.",
   },
   {
-    title: "Prioritise",
-    summary: "Define the most valuable path forward.",
+    title: "Design",
+    summary: "Define the roadmap, governance, and practical next steps.",
   },
   {
     title: "Deliver",
-    summary: "Support execution with structure and senior guidance.",
+    summary: "Support execution with structure, cadence, and senior guidance.",
   },
 ] as const;
 
 export const STRATEVIA_PROOF_POINTS = [
   {
-    title: "Senior executive experience",
-    summary: "Leadership across IT, transformation, governance, and operating environments.",
+    title: "Senior transformation leadership",
+    summary: "Experience across IT leadership, governance, modernization, and operational change.",
   },
   {
-    title: "Business + technology perspective",
-    summary: "Advice shaped around outcomes, not technology for its own sake.",
+    title: "Business-led technology perspective",
+    summary: "Advice grounded in outcomes, not technology for its own sake.",
   },
   {
-    title: "Practical execution focus",
-    summary: "Clear decisions, realistic sequencing, and support that helps work move.",
+    title: "Structured execution support",
+    summary: "Clear prioritisation, delivery discipline, and practical follow-through.",
   },
 ] as const;
 
@@ -142,7 +172,7 @@ export const SELECTED_BACKGROUND = [
 ] as const;
 
 export const SELECTED_BACKGROUND_SUMMARY =
-  "Experience spanning leadership, modernization, governance, and operational transformation.";
+  "Experience spanning executive leadership, modernization, governance, and delivery in complex environments.";
 
 export const SERVICES_HERO_REASONS = [
   "Unclear transformation priorities",
@@ -290,12 +320,13 @@ export const CONTACT_TIMING_OPTIONS = [
 export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   {
     slug: "ai-strategy-roadmapping",
+    pillarKey: "ai-automation-digital-operations",
     title: "AI Strategy & Roadmapping",
-    shortTitle: "Technology & AI Strategy",
+    shortTitle: "AI Strategy",
     tagline: "Move from AI interest to a focused, realistic business plan.",
-    summary: "Clarify the use cases, priorities, and roadmap before investing in the wrong direction.",
+    summary: "Clarify the most valuable AI use cases, priorities, and roadmap before investing in the wrong direction.",
     intro:
-      "This service helps organisations approach AI with clarity, realism, and a business-led sequence instead of scattered experimentation.",
+      "This service helps organisations approach AI with clarity, realism, and a business-led sequence instead of scattered experimentation or disconnected pilots.",
     bestFor: "Best for organisations that need structure before committing time and budget to AI initiatives.",
     clientProblems: [
       "AI interest exists, but priorities are unclear",
@@ -326,8 +357,9 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   },
   {
     slug: "automation-digital-operations",
+    pillarKey: "ai-automation-digital-operations",
     title: "Automation & Digital Operations",
-    shortTitle: "Automation",
+    shortTitle: "Digital Operations",
     tagline: "Reduce friction, simplify operations, and improve the way work gets done.",
     summary: "Identify manual bottlenecks, redesign workflows, and support more efficient day-to-day operations.",
     intro:
@@ -362,6 +394,7 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   },
   {
     slug: "delivery-pmo-project-service-management",
+    pillarKey: "delivery-governance-execution-support",
     title: "Delivery Governance, PMO & Service Management",
     shortTitle: "Delivery Governance",
     tagline: "Add structure, visibility, and follow-through to critical initiatives.",
@@ -398,12 +431,13 @@ export const SERVICE_DEFINITIONS: ServiceDefinition[] = [
   },
   {
     slug: "fractional-cio-transformation-advisory",
+    pillarKey: "assessment-transformation-advisory",
     title: "Fractional CIO / Transformation Advisory",
-    shortTitle: "Fractional CIO & CDO",
-    tagline: "Bring senior technology leadership into critical decisions and delivery moments.",
-    summary: "Access senior advisory support across strategy, modernization, governance, and executive decision-making.",
+    shortTitle: "Transformation Advisory",
+    tagline: "Bring senior transformation and technology leadership into critical decisions and change priorities.",
+    summary: "Access senior advisory support to assess priorities, shape roadmaps, and guide modernization with confidence.",
     intro:
-      "This service is designed for organisations that need experienced technology and transformation guidance without making a full-time executive hire.",
+      "This service is designed for organisations that need experienced technology and transformation guidance to clarify direction, shape change, and support key decisions without making a full-time executive hire.",
     bestFor: "Best for organisations that need senior direction, but not a permanent executive role.",
     clientProblems: [
       "Technology decisions need stronger business alignment",
@@ -503,12 +537,13 @@ export const PUBLIC_SECTION_DEFINITIONS: PublicSectionDefinition[] = [
     label: "Services",
     shortLabel: "Services",
     path: "/services",
-    description: "Core advisory offers across technology, delivery, transformation, and practical AI.",
-    items: SERVICE_DEFINITIONS.map((service) => ({
-      id: service.slug,
-      label: service.shortTitle,
-      href: `/services/${service.slug}`,
-      summary: service.summary,
+    description:
+      "Three advisory pillars spanning assessment, AI and automation, and delivery governance support.",
+    items: HOME_SERVICE_PILLARS.map((pillar) => ({
+      id: pillar.key,
+      label: pillar.title,
+      href: pillar.href,
+      summary: pillar.summary,
     })),
   },
   {
@@ -558,6 +593,10 @@ export function normalizeServiceSlug(slug: string): ServiceSlug | null {
 
 export function getServiceDefinition(slug: ServiceSlug) {
   return SERVICE_DEFINITIONS.find((service) => service.slug === slug);
+}
+
+export function getServicesForPillar(pillarKey: ServicePillarKey) {
+  return SERVICE_DEFINITIONS.filter((service) => service.pillarKey === pillarKey);
 }
 
 export function getSectionDefinition(key: PublicSectionKey) {

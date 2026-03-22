@@ -20,10 +20,16 @@ const STORAGE_KEY = "public-nav-section";
 export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
   const pathname =
     typeof window === "undefined" ? "/" : window.location.pathname.replace(/\/+$/, "") || "/";
-  const currentHash = typeof window === "undefined" ? "" : window.location.hash;
   const isHome = pathname === "/";
   const routeSectionKey = getSectionKeyForPath(pathname);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [currentHash, setCurrentHash] = useState(() => {
+    if (typeof window === "undefined") {
+      return "";
+    }
+
+    return window.location.hash;
+  });
   const [preferredSectionKey, setPreferredSectionKey] = useState<PublicSectionKey>(() => {
     if (typeof window === "undefined") {
       return DEFAULT_SECTION_KEY;
@@ -43,6 +49,23 @@ export function PublicSiteLayout({ children }: PublicSiteLayoutProps) {
       window.localStorage.setItem(STORAGE_KEY, routeSectionKey);
     }
   }, [routeSectionKey]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const handleHashChange = () => {
+      setCurrentHash(window.location.hash);
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    handleHashChange();
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
 
   const activeSectionKey = routeSectionKey ?? preferredSectionKey;
   const activeSection = getSectionDefinition(activeSectionKey) ?? getSectionDefinition(DEFAULT_SECTION_KEY)!;

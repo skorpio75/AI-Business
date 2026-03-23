@@ -47,7 +47,7 @@ export function PublicLandingPage() {
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">What I help with</p>
-            <h2>3 focused ways to move transformation forward.</h2>
+            <h2>3 focused ways to move transformation forward</h2>
           </div>
           <PublicPillarAccordion items={SERVICE_PILLARS} />
         </div>
@@ -57,7 +57,7 @@ export function PublicLandingPage() {
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">How I work</p>
-            <h2>3 clear steps from diagnosis to delivery.</h2>
+            <h2>3 clear steps from diagnosis to delivery</h2>
           </div>
           <div className="process-simple-grid">
             {HOW_I_WORK_STEPS.map((step, index) => (
@@ -75,7 +75,7 @@ export function PublicLandingPage() {
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">Why Stratevia</p>
-            <h2>Senior advisory with practical execution discipline.</h2>
+            <h2>Senior advisory with practical execution discipline</h2>
           </div>
           <div className="trust-grid">
             {STRATEVIA_PROOF_POINTS.map((point) => (
@@ -93,7 +93,7 @@ export function PublicLandingPage() {
           <article className="background-strip band-panel">
             <div>
               <p className="site-kicker">Selected background</p>
-              <h2>Experience across leadership, modernization, and delivery.</h2>
+              <h2>Experience across leadership, modernization, and delivery</h2>
             </div>
             <div className="background-strip__list">
               {SELECTED_BACKGROUND.map((item) => (
@@ -111,7 +111,7 @@ export function PublicLandingPage() {
             <div>
               <p className="site-kicker">Contact</p>
               <h2>Need clarity on priorities, delivery, or AI adoption?</h2>
-              <p>Start with a focused conversation to assess fit and next steps.</p>
+              <p>Start with a focused conversation to assess fit and next steps</p>
             </div>
             <div className="cta-band__actions">
               <a className="site-button site-button--primary" href={CONTACT_PATH}>

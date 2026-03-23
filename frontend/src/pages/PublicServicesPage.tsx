@@ -37,7 +37,7 @@ export function PublicServicesPage() {
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">Service pillars</p>
-            <h2>3 focused areas of advisory support.</h2>
+            <h2>3 focused areas of advisory support</h2>
           </div>
           <PublicPillarAccordion items={SERVICE_PILLARS} />
         </div>
@@ -47,7 +47,7 @@ export function PublicServicesPage() {
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">Detailed services</p>
-            <h2>Specialist support grouped under each pillar.</h2>
+            <h2>Service pillars</h2>
           </div>
           <div className="service-group-stack">
             {SERVICE_PILLARS.map((pillar) => (
@@ -84,7 +84,7 @@ export function PublicServicesPage() {
         <div className="band-shell">
           <div className="section-heading section-heading--band">
             <p className="site-kicker">Engagement formats</p>
-            <h2>Different ways to bring in senior support.</h2>
+            <h2>Different ways to bring in senior support</h2>
           </div>
           <div className="format-grid">
             {ENGAGEMENT_FORMATS.map((format) => (
